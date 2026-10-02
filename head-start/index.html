@@ -109,6 +109,16 @@ body.rail-collapsed main { margin-inline: auto; }
 .bar > i { display: block; height: 100%; width: 0; background: var(--mint); border-radius: 99px; transition: width .4s ease; }
 .toc { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 1px; }
 .toc .part { padding-top: 6px; }
+.toc .part.home button { justify-content: flex-start; font-weight: 600; font-family: var(--font-body); font-size: 0.95rem; text-transform: none; letter-spacing: 0; display: flex; align-items: center; gap: 8px; color: var(--ink); }
+.toc .part.home button svg { flex: none; color: var(--muted); }
+.toc .part.home button.active { background: var(--accent-soft); color: var(--accent); }
+.toc .part.home button.active svg { color: var(--accent); }
+.all-courses { display: inline-flex; align-items: center; gap: 6px; align-self: flex-start; font-size: 0.88rem; color: var(--muted); text-decoration: none; padding: 6px 10px; border-radius: 8px; }
+.all-courses:hover { color: var(--accent); background: var(--bg); }
+.hero-cta { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.hero-cta .cta { border: 0; background: var(--accent); color: var(--surface); font-weight: 700; font-size: 1rem; padding: 12px 20px; border-radius: 10px; }
+.hero-cta .cta:hover { filter: brightness(1.08); }
+.hero-cta .alt { border: 1px solid var(--line); background: transparent; color: var(--ink); font-size: 0.95rem; padding: 11px 16px; border-radius: 10px; }
 .toc .part button { width: 100%; display: grid; grid-template-columns: 1fr auto; gap: 8px; align-items: baseline; text-align: left; border: 0; background: transparent; color: var(--muted); padding: 8px 10px; border-radius: 7px; font-family: var(--font-mono); font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.07em; }
 .toc .part button:hover { background: var(--surface); color: var(--ink); }
 .toc .part button.active { color: var(--ink); font-weight: 600; }
@@ -419,6 +429,7 @@ dialog.cert::backdrop { background: rgba(10, 15, 20, .6); }
       </div>
       <button class="cert-open" id="certBtn" type="button" hidden><svg width="18" height="18" viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="8" r="5.5" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M6.5 12.2L5 18l5-2.4 5 2.4-1.5-5.8" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>Your certificate</button>
       <ul class="toc" id="toc"></ul>
+      <a class="all-courses" href="https://courses.rahuldevsharma.com/"><svg width="16" height="16" viewBox="0 0 20 20" aria-hidden="true"><path d="M12 4l-6 6 6 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>All courses</a>
       <button class="ghost" id="resetBtn" type="button">Clear my progress</button>
     </div>
   </aside>
@@ -436,6 +447,7 @@ dialog.cert::backdrop { background: rgba(10, 15, 20, .6); }
         <span>Starts from zero</span>
       </div>
       <p class="stack">Covers the tools many enterprise teams use: <code>Java</code> <code>SQL</code> <code>MongoDB</code> <code>Python</code> <code>AWS CloudWatch</code> <code>Bitbucket</code> <code>Jira</code> <code>Confluence</code><span>Using GitHub, GitLab or another cloud instead? The ideas carry straight over.</span></p>
+      <div class="hero-cta" id="heroCta"></div>
       <p class="label">What's inside: 11 short parts, 20–60 minutes each. Go at your own pace.</p>
       <div class="plan" id="plan"></div>
     </header>
@@ -2473,7 +2485,7 @@ Is there a step I'm missing?</pre></div>
       if (el.matches("section.ch")) { grp.chapters.push(el); el.dataset.pi = PARTS.length - 1; }
     }
   });
-  PARTS[0].els.unshift($("welcome"));
+  var HERO = $("welcome");
   $("plan").innerHTML = PARTS.map(function (p, i) {
     var mins = p.chapters.reduce(function (n, c) { return n + (+c.dataset.min || 0); }, 0);
     return '<button type="button" data-go="' + i + '"><b>Part ' + (i + 1) + "</b><span>" + esc(p.title) + " · " + mins + " min</span></button>";
@@ -2483,9 +2495,10 @@ Is there a step I'm missing?</pre></div>
     var nav = document.createElement("nav"); nav.className = "pager"; nav.setAttribute("aria-label", "Part navigation");
     var prev = PARTS[i - 1], next = PARTS[i + 1];
     nav.innerHTML =
+      (i === 0 ? '<button type="button" data-go="-1"><small>← Back to</small><b>Home</b></button>' : "") +
       (prev ? '<button type="button" data-go="' + (i - 1) + '"><small>← Previous · ' + esc(prev.label) + "</small><b>" + esc(prev.title) + "</b></button>" : "") +
       (next ? '<button type="button" class="next" data-go="' + (i + 1) + '"><small>Next · ' + esc(next.label) + " →</small><b>" + esc(next.title) + "</b></button>"
-            : '<button type="button" class="next" data-go="0"><small>You finished all five parts</small><b>Back to the start</b></button>');
+            : '<button type="button" class="next" data-go="-1"><small>You reached the end</small><b>Back to Home</b></button>');
     var last = p.els[p.els.length - 1];
     last.parentNode.insertBefore(nav, last.nextSibling);
     p.els.push(nav);
@@ -2498,7 +2511,9 @@ Is there a step I'm missing?</pre></div>
   function showPart(i, targetId) {
     activePart = i;
     PARTS.forEach(function (p, j) { p.els.forEach(function (el) { el.hidden = j !== i; }); });
-    try { localStorage.setItem(KEY + "-part", String(i)); } catch (e) {}
+    HERO.hidden = i !== -1;
+    try { localStorage.setItem(KEY + "-part", String(i)); if (i >= 0) localStorage.setItem(KEY + "-last", String(i)); } catch (e) {}
+    if (i === -1) renderCta();
     renderToc();
     var target = targetId && $(targetId);
     if (target) target.scrollIntoView(); else window.scrollTo(0, 0);
@@ -2506,8 +2521,17 @@ Is there a step I'm missing?</pre></div>
   }
   mainEl.addEventListener("click", function (e) { var b = e.target.closest(".pager button"); if (b) showPart(+b.dataset.go); });
 
+  function renderCta() {
+    var last = -1;
+    try { last = parseInt(localStorage.getItem(KEY + "-last"), 10); } catch (e) {}
+    var html = '<button type="button" class="cta" data-go="0">Start Part 1 →</button>';
+    if (last >= 0 && last < PARTS.length) html = '<button type="button" class="cta" data-go="' + last + '">Continue: ' + esc(PARTS[last].label) + " · " + esc(PARTS[last].title) + " →</button>" + (last > 0 ? '<button type="button" class="alt" data-go="0">Start from Part 1</button>' : "");
+    $("heroCta").innerHTML = html;
+  }
+  $("heroCta").addEventListener("click", function (e) { var b = e.target.closest("button"); if (b) showPart(+b.dataset.go); });
+
   function renderToc() {
-    var html = "";
+    var html = '<li class="part home"><button type="button" data-part="-1" class="' + (activePart === -1 ? "active" : "") + '"' + (activePart === -1 ? ' aria-current="page"' : "") + '><svg width="16" height="16" viewBox="0 0 20 20" aria-hidden="true"><path d="M3.5 9.5L10 4l6.5 5.5V16a1 1 0 0 1-1 1h-3.5v-4.5h-4V17H4.5a1 1 0 0 1-1-1z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg><span>Home</span></button></li>';
     PARTS.forEach(function (p, i) {
       var ps = partScore(p), on = i === activePart;
       html += '<li class="part"><button type="button" data-part="' + i + '" class="' + (on ? "active" : "") + '" aria-expanded="' + on + '"><span>' + esc(p.label) + " · " + esc(p.title) + '</span><span class="score' + (ps[1] && ps[0] === ps[1] ? " done" : "") + '">' + ps[0] + "/" + ps[1] + "</span></button></li>";
@@ -2556,6 +2580,7 @@ Is there a step I'm missing?</pre></div>
 
   function highlightToc() {
     var y = window.scrollY + 140, cur = null;
+    if (activePart < 0) return;
     PARTS[activePart].chapters.forEach(function (s) { if (s.offsetTop <= y) cur = s.id; });
     document.querySelectorAll(".toc a").forEach(function (a) { a.classList.toggle("on", a.dataset.id === cur); });
   }
@@ -2567,9 +2592,10 @@ Is there a step I'm missing?</pre></div>
     if (a) { e.preventDefault(); $(a.dataset.id).scrollIntoView({ behavior: "smooth" }); }
   });
   (function initialPart() {
-    var start = 0, hashEl = location.hash && document.getElementById(location.hash.slice(1));
+    var start = -1, hashEl = location.hash && document.getElementById(location.hash.slice(1));
     if (hashEl && hashEl.dataset.pi) { showPart(+hashEl.dataset.pi, hashEl.id); return; }
-    try { var saved = parseInt(localStorage.getItem(KEY + "-part"), 10); if (saved >= 0 && saved < PARTS.length) start = saved; } catch (e) {}
+    if (hashEl && hashEl.id === "welcome") { showPart(-1); return; }
+    try { var saved = parseInt(localStorage.getItem(KEY + "-part"), 10); if (saved >= -1 && saved < PARTS.length) start = saved; } catch (e) {}
     showPart(start);
   })();
 

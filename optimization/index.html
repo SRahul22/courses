@@ -122,6 +122,16 @@ body.rail-collapsed .rail-body, body.rail-collapsed .rail .brand-name { display:
 .toc .part > button { width: 100%; display: grid; grid-template-columns: 1fr auto; gap: 8px; align-items: baseline; text-align: left; border: 0; background: transparent; color: var(--muted); padding: 8px 10px; border-radius: 7px; font-family: var(--font-mono); font-size: 0.71rem; text-transform: uppercase; letter-spacing: 0.06em; line-height: 1.4; }
 .toc .part > button:hover { background: var(--bg); color: var(--ink); }
 .toc .part > button.active { color: var(--ink); font-weight: 600; background: var(--bg); }
+.toc .part.home > button { display: flex; align-items: center; justify-content: flex-start; gap: 8px; font-family: var(--font-body); font-size: 0.95rem; text-transform: none; letter-spacing: 0; color: var(--ink); font-weight: 600; }
+.toc .part.home > button svg { flex: none; color: var(--muted); }
+.toc .part.home > button.active { background: var(--accent-soft); color: var(--accent); }
+.toc .part.home > button.active svg { color: var(--accent); }
+.all-courses { display: inline-flex; align-items: center; gap: 6px; align-self: flex-start; font-size: 0.88rem; color: var(--muted); text-decoration: none; padding: 6px 10px; border-radius: 8px; }
+.all-courses:hover { color: var(--accent); background: var(--bg); }
+.hero-cta { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.hero-cta .cta { border: 0; background: var(--accent); color: var(--surface); font-weight: 700; font-size: 1rem; padding: 12px 20px; border-radius: 10px; text-align: left; }
+.hero-cta .cta:hover { filter: brightness(1.08); }
+.hero-cta .alt { border: 1px solid var(--line); background: transparent; color: var(--ink); font-size: 0.95rem; padding: 11px 16px; border-radius: 10px; }
 .toc .chs { list-style: none; margin: 2px 0 6px; padding: 0; display: flex; flex-direction: column; gap: 1px; }
 .toc a { display: grid; grid-template-columns: 1fr auto; gap: 8px; align-items: center; text-decoration: none; color: var(--ink); padding: 5px 10px 5px 20px; border-radius: 7px; font-size: 0.9rem; line-height: 1.35; }
 .toc a:hover { background: var(--bg); }
@@ -430,6 +440,7 @@ dialog.cert::backdrop { background: rgba(10, 15, 20, .6); }
       </div>
       <button class="cert-open" id="certBtn" type="button" hidden><svg width="18" height="18" viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="8" r="5.5" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M6.5 12.2L5 18l5-2.4 5 2.4-1.5-5.8" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>Your certificate</button>
       <ul class="toc" id="toc"></ul>
+      <a class="all-courses" href="https://courses.rahuldevsharma.com/"><svg width="16" height="16" viewBox="0 0 20 20" aria-hidden="true"><path d="M12 4l-6 6 6 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>All courses</a>
       <button class="ghost" id="resetBtn" type="button">Clear my progress</button>
     </div>
   </aside>
@@ -7935,7 +7946,7 @@ So $\sum\norm{\g_k}^2\lt\infty$, hence $\norm{\g_k}\to0$, and $\min_{k\le N}\nor
 
   var LEVELS = { b: "Beginner", n: "Next step", d: "Going deeper" };
   var parts = $$("#parts > article.part");
-  var current = -1;
+  var current = -2;   // -1 = Home, 0.. = parts
 
   /* ---------- math ---------- */
   function renderMath(root) {
@@ -8183,6 +8194,12 @@ So $\sum\norm{\g_k}^2\lt\infty$, hence $\norm{\g_k}\to0$, and $\min_{k\le N}\nor
 
   /* ---------- rail ---------- */
   var toc = $("#toc");
+  (function () {
+    var li = h("li", { class: "part home" });
+    var b = h("button", { type: "button", "data-part": "-1" }, '<svg width="16" height="16" viewBox="0 0 20 20" aria-hidden="true"><path d="M3.5 9.5L10 4l6.5 5.5V16a1 1 0 0 1-1 1h-3.5v-4.5h-4V17H4.5a1 1 0 0 1-1-1z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg><span>Home</span>');
+    b.addEventListener("click", function () { showPart(-1, true); closeDrawer(); });
+    li.appendChild(b); toc.appendChild(li);
+  })();
   parts.forEach(function (art, pi) {
     var li = h("li", { class: "part" });
     var b = h("button", { type: "button", "data-part": pi }, "<span>" + art.dataset.num + " · " + art.dataset.title + "</span><span class=\"score\" data-pscore=\"" + pi + "\"></span>");
@@ -8234,23 +8251,48 @@ So $\sum\norm{\g_k}^2\lt\infty$, hence $\norm{\g_k}\to0$, and $\min_{k\le N}\nor
   /* ---------- part switching ---------- */
   var hero = $("#welcome");
   function showPart(i, scrollTop, anchor) {
-    if (i < 0 || i >= parts.length) return;
+    if (i < -1 || i >= parts.length) return;
     if (i !== current) {
       parts.forEach(function (p, k) { p.hidden = k !== i; });
       current = i; store.set("downhill-part", String(i));
-      renderMath(parts[i]);
-      DH.mountWidgets(parts[i]);
-      $$(".toc .part > button").forEach(function (b, k) { b.classList.toggle("active", k === i); b.setAttribute("aria-current", k === i ? "true" : "false"); });
+      if (i >= 0) { store.set("downhill-last", String(i)); renderMath(parts[i]); DH.mountWidgets(parts[i]); }
+      $$(".toc .part > button").forEach(function (b) { var on = +b.dataset.part === i; b.classList.toggle("active", on); b.setAttribute("aria-current", on ? "true" : "false"); });
       $$(".toc .chs").forEach(function (u, k) { u.hidden = k !== i; });
       buildPager();
     }
-    if (hero) hero.hidden = i !== 0;
+    if (hero) hero.hidden = i !== -1;
+    if (i === -1) renderCta();
     if (anchor) { var t = document.getElementById(anchor); if (t) setTimeout(function () { t.scrollIntoView(); }, 30); }
-    else if (scrollTop) { window.scrollTo(0, 0); history.replaceState(null, "", "#" + parts[i].id); }
+    else if (scrollTop) { window.scrollTo(0, 0); history.replaceState(null, "", "#" + (i < 0 ? "welcome" : parts[i].id)); }
+  }
+  // Home: "Start Part 1" for new visitors, "Continue: Part N" for returning ones
+  var cta = $("#heroCta");
+  if (!cta && hero) {   // right under the opening paragraph(s), so it's visible without scrolling
+    cta = h("div", { class: "hero-cta", id: "heroCta" });
+    var after = $(".stack", hero) || $(".lede", hero);
+    if (after) after.insertAdjacentElement("afterend", cta); else hero.appendChild(cta);
+  }
+  function renderCta() {
+    if (!cta) return;
+    var last = parseInt(store.get("downhill-last", "-1"), 10);
+    var first = parts[0];
+    cta.innerHTML = "";
+    if (last >= 0 && last < parts.length) {
+      var c = h("button", { type: "button", class: "cta" }, "Continue: Part " + parts[last].dataset.num + " · " + parts[last].dataset.title + " →");
+      c.addEventListener("click", function () { showPart(last, true); }); cta.appendChild(c);
+      if (last > 0) { var a = h("button", { type: "button", class: "alt" }, "Start from Part " + first.dataset.num); a.addEventListener("click", function () { showPart(0, true); }); cta.appendChild(a); }
+    } else {
+      var s0 = h("button", { type: "button", class: "cta" }, "Start Part " + first.dataset.num + " →");
+      s0.addEventListener("click", function () { showPart(0, true); }); cta.appendChild(s0);
+    }
   }
   DH.showPart = showPart;
   function buildPager() {
     var pg = $("#pager"); pg.innerHTML = "";
+    if (current === 0) {
+      var bh = h("button", { type: "button" }, "<small>← Back to</small><b>Home</b>");
+      bh.addEventListener("click", function () { showPart(-1, true); }); pg.appendChild(bh);
+    }
     if (current > 0) {
       var a = parts[current - 1];
       var b1 = h("button", { type: "button" }, "<small>← Previous part</small><b>" + a.dataset.num + " · " + a.dataset.title + "</b>");
@@ -8264,7 +8306,8 @@ So $\sum\norm{\g_k}^2\lt\infty$, hence $\norm{\g_k}\to0$, and $\min_{k\le N}\nor
   }
   function route() {
     var id = decodeURIComponent(location.hash.slice(1));
-    if (!id || id === "top") { showPart(current >= 0 ? current : 0, false); return; }
+    if (!id || id === "top") { showPart(current >= -1 ? current : -1, false); return; }
+    if (id === "welcome" || id === "home") { showPart(-1, true); return; }
     var el = document.getElementById(id);
     if (!el) return;
     var art = el.closest("article.part");
@@ -8401,7 +8444,7 @@ So $\sum\norm{\g_k}^2\lt\infty$, hence $\norm{\g_k}\to0$, and $\min_{k\le N}\nor
     updateScores();
     var startHash = location.hash.slice(1);
     if (startHash && document.getElementById(startHash)) route();
-    else showPart(Math.min(parts.length - 1, Math.max(0, parseInt(store.get("downhill-part", "0"), 10) || 0)), false);
+    else { var sp = parseInt(store.get("downhill-part", "-1"), 10); showPart(isNaN(sp) ? -1 : Math.min(parts.length - 1, Math.max(-1, sp)), false); }
   }
   DH.boot = boot;
   DH._internal = { allQ: allQ, allP: allP, prog: function () { return prog; } };
