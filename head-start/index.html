@@ -226,7 +226,7 @@ section.ch { display: flex; flex-direction: column; gap: 22px; scroll-margin-top
 .detail > div { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
 .detail .oops, .detail .oops .label { color: var(--warn); }
 .detail .good .label { color: var(--mint); }
-.detail pre.code { font-size: 0.78rem; }
+.detail pre.code { font-size: 0.78rem; white-space: pre-wrap; overflow-wrap: anywhere; overflow-x: visible; }
 .risk { font-family: var(--font-mono); font-size: 0.74rem; padding: 2px 8px; border-radius: 99px; align-self: flex-start; }
 .risk.low { background: var(--mint-soft); color: var(--mint); }
 .risk.mid { background: var(--warn-soft); color: var(--warn); }
@@ -242,10 +242,13 @@ section.ch { display: flex; flex-direction: column; gap: 22px; scroll-margin-top
 @keyframes pop { from { transform: scale(.85); opacity: .3; } to { transform: none; opacity: 1; } }
 
 /* terminal & code */
-.term { background: var(--code-bg); color: var(--code-fg); font-family: var(--font-mono); font-size: 0.8rem; border-radius: 8px; padding: 12px 14px; max-height: 170px; overflow: auto; line-height: 1.55; }
+.term { background: var(--code-bg); color: var(--code-fg); font-family: var(--font-mono); font-size: 0.8rem; border-radius: 8px; padding: 12px 14px; overflow-wrap: anywhere; line-height: 1.55; }
 .term .p { color: var(--code-dim); }
-.term .o { color: var(--code-dim); display: block; padding-left: 14px; }
+.term .o { color: var(--code-dim); display: block; padding-left: 14px; white-space: pre-wrap; }
+.term .more { color: var(--code-dim); opacity: .7; font-size: 0.72rem; margin-bottom: 4px; }
 .hint { font-size: 0.9rem; color: var(--muted); }
+pre.code, .table-wrap, .graph-wrap, .tty { scrollbar-width: thin; scrollbar-color: var(--code-dim) transparent; }
+pre.code { white-space: pre-wrap; overflow-wrap: anywhere; }
 pre.code { margin: 0; background: var(--code-bg); color: var(--code-fg); font-family: var(--font-mono); font-size: 0.82rem; line-height: 1.6; padding: 16px; border-radius: 8px; overflow-x: auto; }
 pre.code .c { color: #8FD6B3; }
 pre.code .k { color: #9DB5FF; }
@@ -275,8 +278,8 @@ pre.code .x { color: #FF9C8A; }
 .here b { font-family: var(--font-mono); color: var(--accent); }
 
 /* conflict & trace */
-.codelines { background: var(--code-bg); color: var(--code-fg); font-family: var(--font-mono); font-size: 0.8rem; border-radius: 8px; padding: 10px 0; overflow-x: auto; }
-.codelines .ln { display: block; white-space: pre; padding: 1px 16px; min-width: max-content; }
+.codelines { background: var(--code-bg); color: var(--code-fg); font-family: var(--font-mono); font-size: 0.8rem; border-radius: 8px; padding: 10px 0; }
+.codelines .ln { display: block; white-space: pre-wrap; overflow-wrap: anywhere; padding: 1px 16px 1px 32px; text-indent: -16px; }
 .codelines .mk { color: #FF9C8A; }
 .codelines .ours { background: rgba(126, 156, 255, .16); }
 .codelines .theirs { background: rgba(78, 207, 165, .16); }
@@ -2572,7 +2575,17 @@ Is there a step I'm missing?</pre></div>
   /* ---------- chapter 3: staging ---------- */
   var st = { work: false, stage: false, local: [], remote: [], n: 0 };
   var MSGS = ["Add remember-me checkbox", "Handle empty password", "Show loading spinner", "Fix button alignment"];
-  function sLog(cmd, out) { var t = $("sTerm"); t.innerHTML += '<div><span class="p">$</span> ' + esc(cmd) + (out ? '<span class="o">' + esc(out) + "</span>" : "") + "</div>"; t.scrollTop = t.scrollHeight; }
+  function trimTerm(t) {
+    var entries = t.querySelectorAll(".entry"), keep = 5, hidden = entries.length - keep;
+    for (var i = 0; i < hidden; i++) entries[i].remove();
+    var note = t.querySelector(".more");
+    if (hidden > 0 || note) {
+      if (!note) { note = document.createElement("div"); note.className = "more"; t.insertBefore(note, t.firstChild); }
+      t.dataset.dropped = (+(t.dataset.dropped || 0)) + Math.max(0, hidden);
+      note.textContent = "… " + t.dataset.dropped + " earlier command" + (t.dataset.dropped === "1" ? "" : "s");
+    }
+  }
+  function sLog(cmd, out) { var t = $("sTerm"); t.insertAdjacentHTML("beforeend", '<div class="entry"><span class="p">$</span> ' + esc(cmd) + (out ? '<span class="o">' + esc(out) + "</span>" : "") + "</div>"); trimTerm(t); }
   function renderStage() {
     $("zWork").innerHTML = st.work ? '<span class="token">login.js (modified)</span>' : "";
     $("zStage").innerHTML = st.stage ? '<span class="token staged">login.js (staged)</span>' : "";
@@ -2624,9 +2637,9 @@ Is there a step I'm missing?</pre></div>
   var gMsgs = { main: ["Update README", "Bump version to 2.4.1", "Fix typo in footer"], feat: ["Add remember-me checkbox", "Extend session to 30 days", "Add session tests", "Polish checkbox styles"] };
   function gInit() {
     g = { commits: [{ id: 0, branch: "main", lane: 0, parents: [], msg: "Initial commit" }], branches: { main: { lane: 0, head: 0 } }, cur: "main", mi: 0, fi: 0, didReturn: false, merged: false };
-    $("gTerm").innerHTML = ""; gLog("git log --oneline", "Initial commit"); gRender();
+    $("gTerm").innerHTML = ""; delete $("gTerm").dataset.dropped; gLog("git log --oneline", "Initial commit"); gRender();
   }
-  function gLog(cmd, out) { var t = $("gTerm"); t.innerHTML += '<div><span class="p">$</span> ' + esc(cmd) + (out ? '<span class="o">' + esc(out) + "</span>" : "") + "</div>"; t.scrollTop = t.scrollHeight; }
+  function gLog(cmd, out) { var t = $("gTerm"); t.insertAdjacentHTML("beforeend", '<div class="entry"><span class="p">$</span> ' + esc(cmd) + (out ? '<span class="o">' + esc(out) + "</span>" : "") + "</div>"); trimTerm(t); }
   function gCommit() {
     var b = g.branches[g.cur], isMain = g.cur === "main";
     var msg = isMain ? gMsgs.main[g.mi++ % gMsgs.main.length] : gMsgs.feat[g.fi++ % gMsgs.feat.length];
