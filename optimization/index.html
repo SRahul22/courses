@@ -150,11 +150,13 @@ main { display: flex; flex-direction: column; gap: 64px; min-width: 0; width: 10
 .howto b { font-family: var(--font-display); }
 
 .part-view { display: flex; flex-direction: column; gap: 64px; }
+article.part { display: flex; flex-direction: column; gap: 64px; }  /* space between the part intro and each chapter */
 .part-divider { display: flex; flex-direction: column; gap: 10px; padding-top: 28px; border-top: 2px solid var(--ink); }
 .part-divider .pnum { font-family: var(--font-mono); font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); }
 .part-divider h2 { font-size: clamp(1.9rem, 3.6vw, 2.6rem); font-weight: 800; }
 .part-divider .lede { max-width: 68ch; font-size: 1.05rem; }
-.part-map { display: flex; flex-wrap: wrap; gap: 8px; }
+.part-map { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+.part-divider .youneed { margin-top: 6px; max-width: 68ch; }
 .part-map a { font-size: 0.86rem; text-decoration: none; border: 1px solid var(--line); border-radius: 99px; padding: 4px 12px; color: var(--ink); background: var(--surface); }
 .part-map a:hover { border-color: var(--accent); }
 .part-map .lvl { margin-left: 6px; }
@@ -347,6 +349,7 @@ kbd { font-family: var(--font-mono); font-size: 0.82em; border: 1px solid var(--
 @keyframes pop { from { transform: translateY(4px); opacity: .2; } to { transform: none; opacity: 1; } }
 
 @media (max-width: 900px) {
+  article.part { gap: 48px; }
   body { font-size: 16px; }
   .shell, body.rail-collapsed .shell { display: block; min-height: 0; }
   .topbar { display: flex; align-items: center; gap: 12px; position: sticky; top: 0; z-index: 30; background: var(--surface); border-bottom: 1px solid var(--line); padding: 8px 16px 8px 12px; }
