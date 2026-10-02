@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Courses by Rahul Dev Sharma</title>
+<meta name="description" content="Free, interactive, self-paced courses that start from zero: optimization methods, software engineering basics, and more.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Courses by Rahul Dev Sharma">
+<meta property="og:description" content="Free, interactive, self-paced courses that start from zero: optimization methods, software engineering basics, and more.">
+<meta property="og:url" content="https://courses.rahuldevsharma.com/">
+<meta name="theme-color" content="#F3F5F7" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0E1319" media="(prefers-color-scheme: dark)">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+:root { --bg:#F3F5F7; --surface:#FFFFFF; --ink:#17202A; --muted:#586474; --line:#D8DEE6; --accent:#2C57CF; --mint:#12806A; }
+@media (prefers-color-scheme: dark) { :root { --bg:#0E1319; --surface:#151C25; --ink:#E5EBF2; --muted:#95A2B2; --line:#263240; --accent:#7E9CFF; --mint:#4ECFA5; color-scheme: dark; } }
+* { box-sizing: border-box; }
+body { margin:0; background:var(--bg); color:var(--ink); font-family:"Atkinson Hyperlegible",system-ui,sans-serif; font-size:17px; line-height:1.6; }
+main { max-width:1040px; margin:0 auto; padding:56px 16px 80px; display:flex; flex-direction:column; gap:40px; }
+.eyebrow { font-family:"JetBrains Mono",monospace; font-size:.78rem; letter-spacing:.08em; text-transform:uppercase; color:var(--accent); }
+h1 { font-family:"Bricolage Grotesque",sans-serif; font-weight:800; font-size:clamp(2rem,5vw,3.1rem); line-height:1.1; letter-spacing:-.02em; margin:8px 0 12px; }
+.lede { color:var(--muted); font-size:1.15rem; max-width:62ch; margin:0; }
+.grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:20px; }
+a.card { display:flex; flex-direction:column; text-decoration:none; color:inherit; background:var(--surface); border:1px solid var(--line); border-radius:14px; overflow:hidden; transition:border-color .15s, transform .15s; }
+a.card:hover { border-color:var(--accent); transform:translateY(-2px); }
+a.card:focus-visible { outline:3px solid var(--accent); outline-offset:3px; }
+a.card img { display:block; width:100%; aspect-ratio:1200/630; object-fit:cover; border-bottom:1px solid var(--line); background:var(--bg); }
+.body { padding:16px 18px 20px; display:flex; flex-direction:column; gap:8px; }
+.body h2 { font-family:"Bricolage Grotesque",sans-serif; font-size:1.35rem; margin:0; }
+.body p { margin:0; color:var(--muted); font-size:.96rem; }
+.tags { display:flex; flex-wrap:wrap; gap:6px; margin-top:4px; }
+.tags span { font-family:"JetBrains Mono",monospace; font-size:.72rem; border:1px solid var(--line); border-radius:99px; padding:2px 9px; color:var(--muted); }
+.go { color:var(--accent); font-weight:700; margin-top:6px; }
+footer { color:var(--muted); font-size:.9rem; border-top:1px solid var(--line); padding-top:20px; }
+footer a { color:var(--accent); }
+@media (prefers-reduced-motion: reduce) { a.card { transition:none; } a.card:hover { transform:none; } }
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <span class="eyebrow">Free · interactive · self-paced</span>
+    <h1>Courses that start from zero</h1>
+    <p class="lede">Each course explains ideas in plain language first, lets you try them hands-on, and checks your understanding with real practice questions. No sign-up: your progress stays in your browser.</p>
+  </header>
+  <section class="grid" aria-label="Courses">
+    <a class="card" href="optimization/">
+      <img src="optimization/preview.png" alt="Downhill: optimization methods, explained from zero" loading="lazy">
+      <div class="body">
+        <h2>Downhill</h2>
+        <p>Computational methods of optimization, from school algebra to conjugate gradients and quasi-Newton methods. Based on IISc's E0 230.</p>
+        <div class="tags"><span>14 parts</span><span>maths</span><span>exam practice</span></div>
+        <span class="go">Start learning →</span>
+      </div>
+    </a>
+    <a class="card" href="head-start/">
+      <img src="head-start/preview.png" alt="HEAD Start: a field guide for new software engineers" loading="lazy">
+      <div class="body">
+        <h2>HEAD Start</h2>
+        <p>A field guide for new software engineers: Git, code review, databases, APIs, testing and shipping safely, explained from zero.</p>
+        <div class="tags"><span>11 parts</span><span>software engineering</span><span>beginner</span></div>
+        <span class="go">Start learning →</span>
+      </div>
+    </a>
+  </section>
+  <footer>Made by <a href="https://rahuldevsharma.com">Rahul Dev Sharma</a>. Independent learning resources; see each course's acknowledgement for credits.</footer>
+</main>
+</body>
+</html>
