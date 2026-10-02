@@ -100,6 +100,7 @@ button:focus-visible, input:focus-visible, select:focus-visible, summary:focus-v
 .rail-head .brand { flex: 1; }
 .rail-body { display: flex; flex-direction: column; gap: 16px; }
 .icon-btn { flex: none; display: inline-grid; place-items: center; width: 36px; height: 36px; border: 1px solid var(--line); border-radius: 8px; background: transparent; color: var(--muted); }
+.icon-btn svg { display: block; }
 .icon-btn:hover { color: var(--ink); background: var(--bg); }
 .rail-actions { display: flex; gap: 6px; flex: none; }
 .ic-close { display: none; }
@@ -213,11 +214,11 @@ figure.fig figcaption { font-size: 0.88rem; color: var(--muted); }
 
 /* go deeper */
 details.deeper { border: 1px dashed var(--plum); border-radius: var(--r); padding: 12px 18px; max-width: 76ch; background: transparent; }
-details.deeper > summary { cursor: pointer; font-weight: 700; color: var(--plum); list-style: none; display: flex; gap: 10px; align-items: baseline; }
+details.deeper > summary { cursor: pointer; font-weight: 700; color: var(--plum); list-style: none; display: block; position: relative; padding-right: 96px; }
 details.deeper > summary::-webkit-details-marker { display: none; }
-details.deeper > summary::before { content: "＋"; font-family: var(--font-mono); }
+details.deeper > summary::before { content: "＋"; font-family: var(--font-mono); margin-right: 10px; }
 details.deeper[open] > summary::before { content: "－"; }
-details.deeper > summary .opt-tag { margin-left: auto; }
+details.deeper > summary .opt-tag { position: absolute; right: 0; top: 2px; }
 details.deeper[open] > summary { margin-bottom: 12px; }
 details.deeper > .inner { display: flex; flex-direction: column; gap: 12px; }
 .opt-tag { font-family: var(--font-mono); font-size: 0.66rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); border: 1px solid var(--line); border-radius: 99px; padding: 1px 8px; font-weight: 400; white-space: nowrap; }
@@ -255,7 +256,7 @@ details.deeper > .inner { display: flex; flex-direction: column; gap: 12px; }
 
 /* predict-then-reveal */
 .predict { display: flex; flex-direction: column; gap: 10px; }
-.predict .q-text { font-weight: 700; }
+.predict .q-text { font-weight: 700; display: block; }
 
 /* worked examples */
 .example { border: 1px solid var(--line); border-radius: var(--r); background: var(--surface); padding: 18px 20px; display: flex; flex-direction: column; gap: 12px; max-width: 80ch; }
@@ -296,9 +297,10 @@ details.deeper > .inner { display: flex; flex-direction: column; gap: 12px; }
 .dodont .do .label { color: var(--mint); }
 .dodont .dont .label { color: var(--warn); }
 .dodont ul { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; font-size: 0.95rem; }
-.dodont li { display: grid; grid-template-columns: 18px minmax(0, 1fr); gap: 6px; }
-.dodont .do li::before { content: "✓"; color: var(--mint); font-weight: 700; }
-.dodont .dont li::before { content: "✗"; color: var(--warn); font-weight: 700; }
+.dodont li { position: relative; padding-left: 24px; }  /* block flow: inline maths must not become grid cells */
+.dodont li::before { position: absolute; left: 0; top: 0; font-weight: 700; }
+.dodont .do li::before { content: "✓"; color: var(--mint); }
+.dodont .dont li::before { content: "✗"; color: var(--warn); }
 
 /* takeaways */
 .takeaways { border: 1px solid var(--mint); background: var(--mint-soft); border-radius: var(--r); padding: 18px 20px; display: flex; flex-direction: column; gap: 10px; }
