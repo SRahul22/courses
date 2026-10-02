@@ -136,6 +136,32 @@ body.rail-collapsed main { margin-inline: auto; }
 .toc a.on { background: var(--accent-soft); color: var(--accent); font-weight: 700; }
 .toc .score { font-family: var(--font-mono); font-size: 0.72rem; color: var(--muted); font-variant-numeric: tabular-nums; }
 .toc .score.done { color: var(--mint); }
+/* sidebar list v2: sentence-case titles, number badges, quiet scores */
+.rail .toc { gap: 0; }
+.rail .toc > li { margin-bottom: 2px; }
+.rail .toc .part { padding-top: 0; }
+.rail .toc .part > button { display: grid; grid-template-columns: 30px minmax(0, 1fr) auto; align-items: center; gap: 10px; width: 100%; padding: 8px 10px 8px 6px; border: 0; border-radius: 10px; background: transparent; color: var(--ink); text-align: left; font-family: var(--font-body); font-size: 0.93rem; font-weight: 500; text-transform: none; letter-spacing: 0; line-height: 1.3; }
+.rail .toc .part > button:hover { background: var(--bg); }
+.rail .toc .part > button.active { background: var(--accent-soft); }
+.rail .toc .pn { justify-self: center; display: inline-grid; place-items: center; min-width: 26px; height: 26px; padding: 0 6px; border-radius: 99px; border: 1px solid var(--line); background: var(--surface); color: var(--muted); font-family: var(--font-mono); font-size: 0.72rem; font-weight: 600; text-transform: none; }
+.rail .toc .part > button.active .pn { background: var(--accent); border-color: var(--accent); color: var(--surface); }
+.rail .toc .part > button.complete .pn { background: var(--mint); border-color: var(--mint); color: var(--surface); }
+.rail .toc .part.home > button .pn { border: 0; background: transparent; color: var(--muted); }
+.rail .toc .part.home > button.active .pn { background: transparent; color: var(--accent); }
+.rail .toc .pt { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.rail .toc .pt b { font-weight: 600; overflow-wrap: anywhere; }
+.rail .toc .part > button.active .pt b { color: var(--accent); }
+.rail .toc .pt small { font-size: 0.74rem; font-weight: 400; color: var(--muted); }
+.rail .toc .part > button .score { font-size: 0.7rem; color: var(--muted); }
+.rail .toc .part > button .score.done { color: var(--mint); font-weight: 700; }
+.rail .toc li.sub, .rail .toc .chs { margin: 0 0 2px 20px; padding-left: 12px; border-left: 2px solid var(--line); }
+.rail .toc li.sub { margin-bottom: 0; padding-block: 1px; }
+.rail .toc li.sub a, .rail .toc .chs a { margin: 0; padding: 6px 10px; border-radius: 8px; font-size: 0.88rem; line-height: 1.35; color: var(--muted); }
+.rail .toc li.sub a:hover, .rail .toc .chs a:hover { color: var(--ink); background: var(--bg); }
+.rail .toc li.sub a.on, .rail .toc .chs a.on { color: var(--accent); background: var(--accent-soft); font-weight: 600; }
+.rail-foot { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px; padding-top: 12px; border-top: 1px solid var(--line); }
+.rail-foot .all-courses, .rail-foot .ghost { align-self: auto; }
+
 
 /* content */
 main { display: flex; flex-direction: column; gap: 72px; min-width: 0; width: 100%; max-width: 1320px; margin-inline: 0; padding-inline: clamp(24px, 3.5vw, 64px); padding-block: 40px 96px; }
@@ -191,6 +217,21 @@ details.deeper > * + * { margin-top: 14px; }
 .plan button b { font-family: var(--font-display); font-size: 0.98rem; }
 .plan button span { color: var(--muted); }
 .plan button:hover span { color: var(--accent); }
+/* Home: "What's inside" as readable cards */
+.plan-head { display: flex; flex-direction: column; gap: 2px; margin-top: 8px; }
+.plan-head h3 { font-family: var(--font-display); font-size: 1.2rem; font-weight: 700; }
+.plan-head p { color: var(--muted); font-size: 0.95rem; }
+.plan { grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 10px; }
+.plan button.plan-card { display: grid; grid-template-columns: 34px minmax(0, 1fr); align-items: center; gap: 12px; padding: 12px 14px; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); color: var(--ink); text-align: left; font-size: 0.95rem; }
+.plan button.plan-card:hover { border-color: var(--accent); }
+.plan-card .pn { justify-self: center; display: inline-grid; place-items: center; min-width: 32px; height: 32px; padding: 0 6px; border-radius: 99px; background: var(--accent-soft); color: var(--accent); font-family: var(--font-mono); font-size: 0.8rem; font-weight: 700; }
+.plan-card.prereq .pn { background: var(--mint-soft); color: var(--mint); }
+.plan-card.exam .pn { background: var(--plum-soft); color: var(--plum); }
+.plan-card .pc { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.plan-card .pc b { font-family: var(--font-body); font-weight: 700; font-size: 0.98rem; line-height: 1.3; color: var(--ink); }
+.plan-card .pc small { font-size: 0.82rem; color: var(--muted); }
+.plan button.plan-card:hover .pc b { color: var(--accent); }
+
 kbd { font-family: var(--font-mono); font-size: 0.82em; border: 1px solid var(--line); border-bottom-width: 2px; border-radius: 4px; padding: 0 5px; background: var(--surface); }
 
 .stack { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; font-size: 0.92rem; color: var(--muted); }
@@ -429,8 +470,10 @@ dialog.cert::backdrop { background: rgba(10, 15, 20, .6); }
       </div>
       <button class="cert-open" id="certBtn" type="button" hidden><svg width="18" height="18" viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="8" r="5.5" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M6.5 12.2L5 18l5-2.4 5 2.4-1.5-5.8" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>Your certificate</button>
       <ul class="toc" id="toc"></ul>
-      <a class="all-courses" href="https://courses.rahuldevsharma.com/"><svg width="16" height="16" viewBox="0 0 20 20" aria-hidden="true"><path d="M12 4l-6 6 6 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>All courses</a>
-      <button class="ghost" id="resetBtn" type="button">Clear my progress</button>
+      <div class="rail-foot">
+        <a class="all-courses" href="https://courses.rahuldevsharma.com/"><svg width="16" height="16" viewBox="0 0 20 20" aria-hidden="true"><path d="M12 4l-6 6 6 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>All courses</a>
+        <button class="ghost" id="resetBtn" type="button">Clear my progress</button>
+      </div>
     </div>
   </aside>
 
@@ -448,7 +491,7 @@ dialog.cert::backdrop { background: rgba(10, 15, 20, .6); }
       </div>
       <p class="stack">Covers the tools many enterprise teams use: <code>Java</code> <code>SQL</code> <code>MongoDB</code> <code>Python</code> <code>AWS CloudWatch</code> <code>Bitbucket</code> <code>Jira</code> <code>Confluence</code><span>Using GitHub, GitLab or another cloud instead? The ideas carry straight over.</span></p>
       <div class="hero-cta" id="heroCta"></div>
-      <p class="label">What's inside: 11 short parts, 20–60 minutes each. Go at your own pace.</p>
+      <div class="plan-head"><h3>What's inside</h3><p>11 short parts. Go at your own pace.</p></div>
       <div class="plan" id="plan"></div>
     </header>
 
@@ -2487,8 +2530,8 @@ Is there a step I'm missing?</pre></div>
   });
   var HERO = $("welcome");
   $("plan").innerHTML = PARTS.map(function (p, i) {
-    var mins = p.chapters.reduce(function (n, c) { return n + (+c.dataset.min || 0); }, 0);
-    return '<button type="button" data-go="' + i + '"><b>Part ' + (i + 1) + "</b><span>" + esc(p.title) + " · " + mins + " min</span></button>";
+    var n = p.chapters.length;
+    return '<button type="button" class="plan-card" data-go="' + i + '" aria-label="' + esc(p.label + ": " + p.title) + '"><span class="pn">' + (i + 1) + '</span><span class="pc"><b>' + esc(p.title) + "</b><small>" + n + " chapter" + (n === 1 ? "" : "s") + "</small></span></button>";
   }).join("");
   $("plan").addEventListener("click", function (e) { var b = e.target.closest("button"); if (b) showPart(+b.dataset.go); });
   PARTS.forEach(function (p, i) {
@@ -2531,10 +2574,11 @@ Is there a step I'm missing?</pre></div>
   $("heroCta").addEventListener("click", function (e) { var b = e.target.closest("button"); if (b) showPart(+b.dataset.go); });
 
   function renderToc() {
-    var html = '<li class="part home"><button type="button" data-part="-1" class="' + (activePart === -1 ? "active" : "") + '"' + (activePart === -1 ? ' aria-current="page"' : "") + '><svg width="16" height="16" viewBox="0 0 20 20" aria-hidden="true"><path d="M3.5 9.5L10 4l6.5 5.5V16a1 1 0 0 1-1 1h-3.5v-4.5h-4V17H4.5a1 1 0 0 1-1-1z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg><span>Home</span></button></li>';
+    var html = '<li class="part home"><button type="button" data-part="-1" class="' + (activePart === -1 ? "active" : "") + '"' + (activePart === -1 ? ' aria-current="page"' : "") + '><span class="pn"><svg width="17" height="17" viewBox="0 0 20 20" aria-hidden="true"><path d="M3.5 9.5L10 4l6.5 5.5V16a1 1 0 0 1-1 1h-3.5v-4.5h-4V17H4.5a1 1 0 0 1-1-1z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg></span><span class="pt"><b>Home</b></span></button></li>';
     PARTS.forEach(function (p, i) {
       var ps = partScore(p), on = i === activePart;
-      html += '<li class="part"><button type="button" data-part="' + i + '" class="' + (on ? "active" : "") + '" aria-expanded="' + on + '"><span>' + esc(p.label) + " · " + esc(p.title) + '</span><span class="score' + (ps[1] && ps[0] === ps[1] ? " done" : "") + '">' + ps[0] + "/" + ps[1] + "</span></button></li>";
+      var complete = ps[1] && ps[0] === ps[1];
+      html += '<li class="part"><button type="button" data-part="' + i + '" class="' + (on ? "active" : "") + (complete ? " complete" : "") + '" aria-expanded="' + on + '" aria-label="' + esc(p.label + ": " + p.title) + '"><span class="pn">' + (i + 1) + '</span><span class="pt"><b>' + esc(p.title) + "</b><small>" + p.chapters.length + " chapter" + (p.chapters.length === 1 ? "" : "s") + '</small></span><span class="score' + (complete ? " done" : "") + '">' + ps[0] + "/" + ps[1] + "</span></button></li>";
       if (!on) return;
       p.chapters.forEach(function (s) {
         var sc = chapterScore(s.id), len = QUIZ[s.id] ? QUIZ[s.id].length : 0;

@@ -138,6 +138,32 @@ body.rail-collapsed .rail-body, body.rail-collapsed .rail .brand-name { display:
 .toc a.on { background: var(--accent-soft); color: var(--accent); font-weight: 700; }
 .toc .score { font-family: var(--font-mono); font-size: 0.7rem; color: var(--muted); font-variant-numeric: tabular-nums; text-transform: none; letter-spacing: 0; white-space: nowrap; }
 .toc .score.done { color: var(--mint); }
+/* sidebar list v2: sentence-case titles, number badges, quiet scores */
+.rail .toc { gap: 0; }
+.rail .toc > li { margin-bottom: 2px; }
+.rail .toc .part { padding-top: 0; }
+.rail .toc .part > button { display: grid; grid-template-columns: 30px minmax(0, 1fr) auto; align-items: center; gap: 10px; width: 100%; padding: 8px 10px 8px 6px; border: 0; border-radius: 10px; background: transparent; color: var(--ink); text-align: left; font-family: var(--font-body); font-size: 0.93rem; font-weight: 500; text-transform: none; letter-spacing: 0; line-height: 1.3; }
+.rail .toc .part > button:hover { background: var(--bg); }
+.rail .toc .part > button.active { background: var(--accent-soft); }
+.rail .toc .pn { justify-self: center; display: inline-grid; place-items: center; min-width: 26px; height: 26px; padding: 0 6px; border-radius: 99px; border: 1px solid var(--line); background: var(--surface); color: var(--muted); font-family: var(--font-mono); font-size: 0.72rem; font-weight: 600; text-transform: none; }
+.rail .toc .part > button.active .pn { background: var(--accent); border-color: var(--accent); color: var(--surface); }
+.rail .toc .part > button.complete .pn { background: var(--mint); border-color: var(--mint); color: var(--surface); }
+.rail .toc .part.home > button .pn { border: 0; background: transparent; color: var(--muted); }
+.rail .toc .part.home > button.active .pn { background: transparent; color: var(--accent); }
+.rail .toc .pt { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.rail .toc .pt b { font-weight: 600; overflow-wrap: anywhere; }
+.rail .toc .part > button.active .pt b { color: var(--accent); }
+.rail .toc .pt small { font-size: 0.74rem; font-weight: 400; color: var(--muted); }
+.rail .toc .part > button .score { font-size: 0.7rem; color: var(--muted); }
+.rail .toc .part > button .score.done { color: var(--mint); font-weight: 700; }
+.rail .toc li.sub, .rail .toc .chs { margin: 0 0 2px 20px; padding-left: 12px; border-left: 2px solid var(--line); }
+.rail .toc li.sub { margin-bottom: 0; padding-block: 1px; }
+.rail .toc li.sub a, .rail .toc .chs a { margin: 0; padding: 6px 10px; border-radius: 8px; font-size: 0.88rem; line-height: 1.35; color: var(--muted); }
+.rail .toc li.sub a:hover, .rail .toc .chs a:hover { color: var(--ink); background: var(--bg); }
+.rail .toc li.sub a.on, .rail .toc .chs a.on { color: var(--accent); background: var(--accent-soft); font-weight: 600; }
+.rail-foot { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px; padding-top: 12px; border-top: 1px solid var(--line); }
+.rail-foot .all-courses, .rail-foot .ghost { align-self: auto; }
+
 .ghost { border: 1px solid var(--line); background: transparent; color: var(--muted); padding: 6px 12px; border-radius: 8px; font-size: 0.85rem; align-self: flex-start; }
 .ghost:hover { color: var(--ink); border-color: var(--muted); }
 
@@ -155,6 +181,21 @@ main { display: flex; flex-direction: column; gap: 64px; min-width: 0; width: 10
 .plan button:hover span { color: var(--accent); }
 .plan button.prereq { border-top-color: var(--mint); }
 .plan button.exam { border-top-color: var(--plum); }
+/* Home: "What's inside" as readable cards */
+.plan-head { display: flex; flex-direction: column; gap: 2px; margin-top: 8px; }
+.plan-head h3 { font-family: var(--font-display); font-size: 1.2rem; font-weight: 700; }
+.plan-head p { color: var(--muted); font-size: 0.95rem; }
+.plan { grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 10px; }
+.plan button.plan-card { display: grid; grid-template-columns: 34px minmax(0, 1fr); align-items: center; gap: 12px; padding: 12px 14px; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); color: var(--ink); text-align: left; font-size: 0.95rem; }
+.plan button.plan-card:hover { border-color: var(--accent); }
+.plan-card .pn { justify-self: center; display: inline-grid; place-items: center; min-width: 32px; height: 32px; padding: 0 6px; border-radius: 99px; background: var(--accent-soft); color: var(--accent); font-family: var(--font-mono); font-size: 0.8rem; font-weight: 700; }
+.plan-card.prereq .pn { background: var(--mint-soft); color: var(--mint); }
+.plan-card.exam .pn { background: var(--plum-soft); color: var(--plum); }
+.plan-card .pc { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.plan-card .pc b { font-family: var(--font-body); font-weight: 700; font-size: 0.98rem; line-height: 1.3; color: var(--ink); }
+.plan-card .pc small { font-size: 0.82rem; color: var(--muted); }
+.plan button.plan-card:hover .pc b { color: var(--accent); }
+
 .howto { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 12px; max-width: none; }
 .howto > div { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 14px 16px; display: flex; flex-direction: column; gap: 6px; font-size: 0.94rem; }
 .howto b { font-family: var(--font-display); }
@@ -440,8 +481,10 @@ dialog.cert::backdrop { background: rgba(10, 15, 20, .6); }
       </div>
       <button class="cert-open" id="certBtn" type="button" hidden><svg width="18" height="18" viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="8" r="5.5" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M6.5 12.2L5 18l5-2.4 5 2.4-1.5-5.8" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>Your certificate</button>
       <ul class="toc" id="toc"></ul>
-      <a class="all-courses" href="https://courses.rahuldevsharma.com/"><svg width="16" height="16" viewBox="0 0 20 20" aria-hidden="true"><path d="M12 4l-6 6 6 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>All courses</a>
-      <button class="ghost" id="resetBtn" type="button">Clear my progress</button>
+      <div class="rail-foot">
+        <a class="all-courses" href="https://courses.rahuldevsharma.com/"><svg width="16" height="16" viewBox="0 0 20 20" aria-hidden="true"><path d="M12 4l-6 6 6 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>All courses</a>
+        <button class="ghost" id="resetBtn" type="button">Clear my progress</button>
+      </div>
     </div>
   </aside>
 
@@ -465,7 +508,7 @@ dialog.cert::backdrop { background: rgba(10, 15, 20, .6); }
         <div><b>"Go deeper" is optional</b><span>Proofs and extra theory sit in purple dashed boxes. Everything you need for the exam stays in the main path.</span></div>
       </div>
       <p><b>Preparing for an exam?</b> Part 12 has practice problems in the professor's style, adapted from past papers.</p>
-      <p class="label">What's inside: fourteen parts of 1–2.5 hours each, split into short chapters. Go at your own pace; your progress is saved in this browser.</p>
+      <div class="plan-head"><h3>What's inside</h3><p>Fourteen parts, each split into short chapters. Go at your own pace; your progress is saved in this browser.</p></div>
       <div class="plan" id="plan"></div>
     </header>
 
@@ -8196,13 +8239,14 @@ So $\sum\norm{\g_k}^2\lt\infty$, hence $\norm{\g_k}\to0$, and $\min_{k\le N}\nor
   var toc = $("#toc");
   (function () {
     var li = h("li", { class: "part home" });
-    var b = h("button", { type: "button", "data-part": "-1" }, '<svg width="16" height="16" viewBox="0 0 20 20" aria-hidden="true"><path d="M3.5 9.5L10 4l6.5 5.5V16a1 1 0 0 1-1 1h-3.5v-4.5h-4V17H4.5a1 1 0 0 1-1-1z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg><span>Home</span>');
+    var b = h("button", { type: "button", "data-part": "-1" }, '<span class="pn"><svg width="16" height="16" viewBox="0 0 20 20" aria-hidden="true"><path d="M3.5 9.5L10 4l6.5 5.5V16a1 1 0 0 1-1 1h-3.5v-4.5h-4V17H4.5a1 1 0 0 1-1-1z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg></span><span class="pt"><b>Home</b></span>');
     b.addEventListener("click", function () { showPart(-1, true); closeDrawer(); });
     li.appendChild(b); toc.appendChild(li);
   })();
   parts.forEach(function (art, pi) {
     var li = h("li", { class: "part" });
-    var b = h("button", { type: "button", "data-part": pi }, "<span>" + art.dataset.num + " · " + art.dataset.title + "</span><span class=\"score\" data-pscore=\"" + pi + "\"></span>");
+    var nch = $$("section.ch", art).length;
+    var b = h("button", { type: "button", "data-part": pi, "aria-label": "Part " + art.dataset.num + ": " + art.dataset.title }, "<span class=\"pn\">" + art.dataset.num + "</span><span class=\"pt\"><b>" + art.dataset.title + "</b><small>" + nch + " chapter" + (nch === 1 ? "" : "s") + "</small></span><span class=\"score\" data-pscore=\"" + pi + "\"></span>");
     b.addEventListener("click", function () { showPart(pi, true); closeDrawer(); });
     li.appendChild(b);
     var ul = h("ul", { class: "chs" });
@@ -8218,7 +8262,8 @@ So $\sum\norm{\g_k}^2\lt\infty$, hence $\norm{\g_k}\to0$, and $\min_{k\le N}\nor
   // hero plan
   var plan = $("#plan");
   if (plan) parts.forEach(function (art, pi) {
-    var b = h("button", { type: "button", class: art.dataset.kind || "" }, "<span>Part " + art.dataset.num + "</span><b>" + art.dataset.title + "</b><span>" + $$("section.ch", art).length + " chapters · " + art.dataset.min + " min</span>");
+    var n = $$("section.ch", art).length;
+    var b = h("button", { type: "button", class: "plan-card " + (art.dataset.kind || ""), "aria-label": "Part " + art.dataset.num + ": " + art.dataset.title }, "<span class=\"pn\">" + art.dataset.num + "</span><span class=\"pc\"><b>" + art.dataset.title + "</b><small>" + n + " chapter" + (n === 1 ? "" : "s") + "</small></span>");
     b.addEventListener("click", function () { showPart(pi, true); });
     plan.appendChild(b);
   });
@@ -8240,6 +8285,7 @@ So $\sum\norm{\g_k}^2\lt\infty$, hence $\norm{\g_k}\to0$, and $\min_{k\le N}\nor
     parts.forEach(function (art, pi) {
       var s = scoreOf(art), el = $('[data-pscore="' + pi + '"]');
       el.textContent = s[0] + "/" + s[1]; el.classList.toggle("done", s[1] > 0 && s[0] === s[1]);
+      el.parentElement.classList.toggle("complete", s[1] > 0 && s[0] === s[1]);
       $$("section.ch", art).forEach(function (ch) {
         var c = scoreOf(ch), e2 = $('[data-cscore="' + ch.id + '"]');
         e2.textContent = c[1] ? c[0] + "/" + c[1] : ""; e2.classList.toggle("done", c[1] > 0 && c[0] === c[1]);
