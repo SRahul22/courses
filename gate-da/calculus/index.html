@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Maths refreshers · Simple GATE DA</title>
+<title>Calculus & optimization · Simple GATE DA</title>
 <meta name="description" content="A free, interactive course for the GATE DA (Data Science and Artificial Intelligence) exam. Starts from school maths, explains every idea visually, and works through real previous-year questions.">
 <meta name="theme-color" content="#F6F2EC" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#14110F" media="(prefers-color-scheme: dark)">
@@ -11,7 +11,7 @@
 <meta property="og:title" content="Simple GATE DA: GATE Data Science & AI, from zero">
 <meta property="og:description" content="A free, interactive course for the GATE DA (Data Science and Artificial Intelligence) exam. Starts from school maths, explains every idea visually, and works through real previous-year questions.">
 <meta property="og:site_name" content="Simple GATE DA">
-<meta property="og:url" content="https://courses.rahuldevsharma.com/gate-da/refreshers/">
+<meta property="og:url" content="https://courses.rahuldevsharma.com/gate-da/calculus/">
 <meta property="og:image" content="https://courses.rahuldevsharma.com/gate-da/preview.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
@@ -593,665 +593,372 @@ dialog.cert::backdrop { background: rgba(10, 15, 20, .6); }
 
   <main id="top">
     <header class="hero" id="welcome">
-      <span class="eyebrow">Module 1 · Maths refreshers</span>
-      <h1>Forgot school maths? Good. We start there.</h1>
-      <p class="lede">GATE DA assumes maths you learned years ago and probably haven't touched since. This module rebuilds it, quickly and without judgement: functions and logs, sums and sets, derivatives and integrals, vectors and matrices. Each chapter shows where the idea turns up in real GATE questions, so you know why you're learning it.</p>
+      <span class="eyebrow">Module 5 · Calculus &amp; optimization</span>
+      <h1>Calculus for GATE DA: limits, slopes and the best possible answer</h1>
+      <p class="lede">The DA syllabus keeps calculus to a single variable, and the questions are very consistent: evaluate a limit, check whether a piecewise function is continuous and differentiable, use a Taylor series, and find maxima and minima, often on an interval. This module covers exactly that, and ends with the optimisation ideas that machine learning is built on.</p>
       <div class="promise">
-        <span>No prior knowledge assumed</span>
-        <span>Ten short chapters</span>
-        <span>Every idea linked to a GATE question</span>
+        <span>Every calculus PYQ type</span>
+        <span>Zoom, slide and see the slope</span>
+        <span>Exam shortcuts for limits</span>
       </div>
-      <p class="stack">Already comfortable with a chapter? Jump straight to its quiz: if you get it right, move on. Nothing here is wasted time, because every later module builds on these ideas.</p>
+      <p class="stack"><b>You need:</b> the derivatives refresher (<a href="../refreshers/#r-deriv">Refreshers 3.1</a>) and functions (<a href="../refreshers/#r-functions">Refreshers 1.1</a>).</p>
       <div class="howto">
-        <div><b>Read, then do</b><span>Plain words first, then a picture you can play with, then the formula.</span></div>
-        <div><b>You grade yourself</b><span>A wrong answer gives a hint. A second one, or one click, shows the full solution.</span></div>
-        <div><b>"Go deeper" is optional</b><span>Extras sit in dashed boxes. Everything you need for GATE stays in the main path.</span></div>
+        <div><b>Picture first</b><span>Every limit, kink and turning point is drawn before it's computed.</span></div>
+        <div><b>Real questions</b><span>Actual GATE DA calculus questions from 2024–2026, solved step by step.</span></div>
+        <div><b>Exam formats</b><span>MCQ, MSQ and NAT practice, like the paper.</span></div>
       </div>
-      <div class="plan-head"><h3>What's inside</h3><p>Four parts. Go at your own pace; your progress is saved in this browser.</p></div>
+      <div class="plan-head"><h3>What's inside</h3><p>Three parts. Go at your own pace; your progress is saved in this browser.</p></div>
       <div class="plan" id="plan"></div>
     </header>
 
     <div id="parts">
-<article class="part" data-id="r1" data-num="1" data-title="Functions, exponentials and logs" data-min="95" data-kind="prereq">
-<p class="part-lede">The two ideas every other module quietly depends on. First, functions and their graphs: lines, parabolas, absolute values and the piecewise functions that GATE uses to describe probabilities. Second, exponentials and logarithms, which run through the exponential distribution, the sigmoid in machine learning and entropy in decision trees.</p>
-<p class="youneed"><b>You need:</b> arithmetic and the idea that a letter can stand for a number. That's it.</p>
+<article class="part" data-id="ca1" data-num="1" data-title="Limits and continuity" data-min="100">
+<p class="part-lede">Limits describe what a function is heading towards; continuity and differentiability describe whether its graph has gaps or sharp corners. GATE DA asks a limit almost every year (often a 0/0 form) and regularly asks whether a piecewise function, or ReLU, is continuous and differentiable.</p>
+<p class="youneed"><b>You need:</b> functions and logs (<a href="../refreshers/#part-r1">Refreshers Part 1</a>) and derivatives (<a href="../refreshers/#r-deriv">Refreshers 3.1</a>).</p>
 
-<section class="ch" id="r-functions" data-level="b" data-min="45" data-title="Functions and their graphs" data-src="Class 9–11 algebra; GATE DA 2024 Q37, 2025 Q19, Q39, Q48">
-<h2>Functions: machines that turn one number into another</h2>
-<div class="opener"><p>A function takes an input number and returns exactly one output number, and its graph is a picture of every input–output pair at once.</p><p>Probability distributions, loss functions, activation functions, eigenvalue equations: almost everything in GATE DA is a function. Reading one quickly is a skill you'll use in every module.</p><p>It's like a vending machine: press button B4 and you always get the same snack. Same input, same output, every time.</p></div>
+<section class="ch" id="ca-limits" data-level="b" data-min="50" data-title="Limits" data-src="Limits; GATE DA 2024 Q60; 2025 Q32; 2026 Q45">
+<h2>Limits: where a function is heading</h2>
+<div class="opener"><p>$\lim_{x\to a} f(x) = L$ means $f(x)$ gets as close as you like to $L$ when $x$ is close enough to $a$, whatever happens exactly at $a$.</p><p>A limit appears in almost every GATE DA paper, usually a "0/0" form that needs a standard limit, a conjugate, L'Hôpital's rule or a Taylor series. They're quick marks once you know the toolkit.</p><p>It's like a run chase that ends exactly at the target: the run rate needed tells you where the scoreboard is heading even before the last ball.</p></div>
 
 <div class="radar"><span class="label">Where it shows up in GATE DA</span>
-<p>Rarely asked on its own, but used everywhere. Piecewise functions describe distributions and activations; you'll need to read them fluently.</p>
-<div class="pyqs"><span>2025 Q19 · piecewise CDF</span><span>2025 Q39 · piecewise CDF</span><span>2024 Q37 · piecewise continuity</span><span>2025 Q48 · ReLU = max(x, 0)</span><span>2024 Q23 · |h₁ − h₂|</span></div>
-<span class="heat">Heat: <b>used in every paper</b> as part of bigger questions</span></div>
+<p>A direct limit question in most papers, usually NAT.</p>
+<div class="pyqs"><span>2024 Q60 · ln((x² + 1)cos x)/x²</span><span>2025 Q32 · √(t² + t) − t</span><span>2026 Q45 · limit of a Poisson sum</span></div>
+<span class="heat">Heat: <b>every year</b>, 1–2 marks</span></div>
 
 <div class="prose">
-<p>Suppose the Data Premier League charges ₹200 per ticket, plus a ₹50 booking fee per order. If you buy $x$ tickets, you pay $200x + 50$ rupees. That rule is a function. We give it a name, say $f$, and write</p>
-$$f(x) = 200x + 50.$$
-<p>Read $f(x)$ as "f of x": the output when the input is $x$. So $f(3) = 200\cdot 3 + 50 = 650$. The letter $x$ is just a placeholder; $f(t) = 200t + 50$ is the same function.</p>
-<p>The <b>graph</b> of $f$ is the set of all points $(x, f(x))$ drawn on a grid. The horizontal axis holds inputs and the vertical axis holds outputs. A graph lets you see a function's whole behaviour at once: where it rises, where it falls, where it crosses zero.</p>
-</div>
-
-<div class="box def" data-k="Definition" data-name="Function"><p>A <b>function</b> $f$ assigns to each allowed input $x$ exactly one output $f(x)$. The set of allowed inputs is the <b>domain</b>. "$f:\R\to\R$" means: inputs are real numbers, outputs are real numbers.</p></div>
-
-<div class="prose">
-<h3>The five shapes you'll meet constantly</h3>
+<p>Look at $f(x) = \dfrac{x^2 - 4}{x - 2}$. At $x = 2$ it's $\frac00$: undefined. But for every other $x$ you can cancel: $f(x) = x + 2$. So as $x$ approaches 2, $f(x)$ approaches 4. The function has a hole at $x = 2$, and the limit fills it in: $\lim_{x\to2} f(x) = 4$.</p>
 <ul>
-<li><b>Line</b> $f(x) = mx + c$. The <b>slope</b> $m$ says how much the output rises per unit step right; $c$ is where it crosses the vertical axis.</li>
-<li><b>Parabola</b> $f(x) = ax^2 + bx + c$. A U shape if $a \gt 0$, an upside-down U if $a \lt 0$. Its turning point (the <b>vertex</b>) sits at $x = -\dfrac{b}{2a}$.</li>
-<li><b>Absolute value</b> $|x|$: "drop the minus sign". $|{-3}| = 3$, $|3| = 3$. Its graph is a V. Geometrically, $|a - b|$ is the distance between $a$ and $b$ on the number line.</li>
-<li><b>ReLU</b> $\max(0, x)$: zero for negative inputs, the input itself otherwise. It's the most common activation function in neural networks.</li>
-<li><b>Piecewise</b> functions use different rules on different stretches of the input. ReLU is one; so is the ticket function above if bulk orders get a discount.</li>
+<li><b>One-sided limits:</b> $x \to a^-$ (from the left) and $x \to a^+$ (from the right). The limit exists exactly when both exist and are equal.</li>
+<li><b>Limits at infinity:</b> what happens as $x$ grows without bound. For a ratio of polynomials, only the leading terms matter: $\lim_{x\to\infty}\frac{3x^2 + 1}{x^2 - 5} = 3$.</li>
+<li>If $f$ is continuous at $a$ (no hole, jump or blow-up), the limit is just $f(a)$: substitute.</li>
 </ul>
 </div>
 
-<div class="panel try"><span class="label">Try it</span><p class="task">Pick a shape and move the sliders. Watch how each number changes the graph: for the parabola, see the vertex move as you change $b$; for the piecewise one, find where the graph reaches height ½ (you'll need that in the GATE question below).</p><div class="widget" data-w="r_func"></div></div>
+<div class="box plain" data-k="Key idea" data-name="The standard limits (all as x → 0)"><ul>
+<li>$\dfrac{\sin x}{x} \to 1$, &nbsp; $\dfrac{1 - \cos x}{x^2} \to \dfrac12$</li>
+<li>$\dfrac{e^x - 1}{x} \to 1$, &nbsp; $\dfrac{\ln(1 + x)}{x} \to 1$</li>
+<li>$(1 + x)^{1/x} \to e$</li>
+</ul><p>Variants follow by substitution: $\frac{\sin 3x}{x} = 3\cdot\frac{\sin 3x}{3x} \to 3$; $\frac{\ln(1 + x^2)}{x^2} \to 1$.</p></div>
 
-<div class="prose">
-<h3>Solving equations and inequalities</h3>
-<p>"Solve $f(x) = k$" means: which inputs give output $k$? On the graph, draw a horizontal line at height $k$ and read off where it hits the curve.</p>
-<ul>
-<li><b>Linear:</b> $200x + 50 = 1050$ ⇒ $200x = 1000$ ⇒ $x = 5$. Do the same thing to both sides until $x$ is alone.</li>
-<li><b>Quadratic:</b> $ax^2 + bx + c = 0$ has solutions $x = \dfrac{-b \pm \sqrt{b^2 - 4ac}}{2a}$. The part under the root, $b^2 - 4ac$, is the <b>discriminant</b>: positive means two real roots, zero means one, negative means none (the parabola never touches the axis). You'll meet this again with eigenvalues.</li>
-<li><b>Inequalities</b> work like equations, with one twist: multiplying or dividing both sides by a negative number <b>flips</b> the sign. $-2x \gt 6$ ⇒ $x \lt -3$.</li>
-</ul>
-</div>
-
-<div class="callout"><b>Careful:</b> with fractions, cross-multiplying $\dfrac{p}{q} = \dfrac{r}{s}$ into $ps = qr$ is fine for equations. For inequalities it is only safe when you know the denominators are positive.</div>
-
-<div class="example"><div class="problem">
-<div class="pyq"><span class="label">GATE DA 2025 · Q19 · MCQ · 1 mark</span>
-<p>Let $X$ be a continuous random variable whose cumulative distribution function (CDF) $F_X(x)$, for some $t$, is given as follows:</p>
-$$F_X(x) = \begin{cases} 0 & x \le t \\ \dfrac{x-t}{4-t} & t \le x \le 4 \\ 1 & x \ge 4 \end{cases}$$
-<p>If the median of $X$ is 3, then what is the value of $t$?</p>
-<ol class="abcd"><li data-l="(A)">2</li><li data-l="(B)">1</li><li data-l="(C)">−1</li><li data-l="(D)">0</li></ol></div>
-<p>You don't need to know what a CDF is yet (that's Probability, Part 3). All you need: <b>the median is the input where $F_X$ equals ½</b>. Everything else is reading a piecewise function and solving an equation.</p></div>
-<ol class="steps">
-<li><p>The median is 3, so $F_X(3) = \tfrac12$.</p><p class="why-step">This is the one fact we're given. It turns the question into an equation.</p></li>
-<li><p>Which piece applies at $x = 3$? The middle one, as long as $t \le 3 \le 4$. So $\dfrac{3-t}{4-t} = \dfrac12$.</p><p class="why-step">A piecewise function uses different formulas on different stretches. The outer pieces are flat at 0 and 1, and neither can equal ½, so it must be the middle piece.</p></li>
-<li><p>Cross-multiply: $2(3 - t) = 4 - t$ ⇒ $6 - 2t = 4 - t$ ⇒ $t = 2$.</p><p class="why-step">Safe for an equation. Collect the $t$ terms on one side: $6 - 4 = 2t - t$.</p></li>
-<li><p>Check: $t = 2 \le 3 \le 4$ ✓, and $F_X(3) = \tfrac{1}{2}$ ✓. Answer <b>(A) 2</b>.</p><p class="why-step">Always check that your answer is consistent with the assumption you made in step 2 (here, that 3 lies in the middle piece). On GATE, plugging your answer back in costs ten seconds and catches most slips. The official key agrees: (A).</p></li>
+<div class="box alg" data-k="Toolkit" data-name="Breaking a 0/0 or ∞/∞ form"><ol>
+<li><b>Factor and cancel</b> (polynomials).</li>
+<li><b>Conjugate</b> for square roots: multiply by $\frac{\sqrt{A} + B}{\sqrt{A} + B}$.</li>
+<li><b>Standard limits</b> above, after a substitution.</li>
+<li><b>L'Hôpital's rule:</b> if the form is $\frac00$ or $\frac\infty\infty$, then $\lim\frac{f}{g} = \lim\frac{f'}{g'}$ (differentiate top and bottom separately). Repeat if needed.</li>
+<li><b>Taylor series</b> (Part 2): replace each function by its first few terms.</li>
 </ol></div>
 
-<details class="deeper"><summary>Go deeper: why the vertex is at −b/(2a)</summary><p>Complete the square: $ax^2 + bx + c = a\left(x + \frac{b}{2a}\right)^2 + c - \frac{b^2}{4a}$. A square is never negative, so if $a \gt 0$ the smallest value happens when the bracket is zero, at $x = -\frac{b}{2a}$. The same algebra, set equal to zero, gives the quadratic formula. In the calculus refresher you'll get the same answer by setting the slope $2ax + b$ to zero.</p></details>
+<div class="panel try"><span class="label">Try it</span><p class="task">Each function has a problem point where plugging in gives 0/0. Zoom in around it: the graph has a single missing point (the hollow dot), and the limit is the height of that hole. The table shows values creeping up on it from both sides.</p><div class="widget" data-w="ca_limit"></div></div>
+
+<div class="example"><div class="problem">
+<div class="pyq"><span class="label">GATE DA 2024 · Q60 · NAT · 2 marks</span>
+<p>Evaluate the following limit: $$\lim_{x\to0}\frac{\ln\big((x^2 + 1)\cos x\big)}{x^2} = \underline{\hspace{3em}}.$$</p></div></div>
+<ol class="steps">
+<li><p>Split the log of a product: $\ln\big((x^2+1)\cos x\big) = \ln(1 + x^2) + \ln(\cos x)$. So the limit is $\displaystyle\lim\frac{\ln(1 + x^2)}{x^2} + \lim\frac{\ln\cos x}{x^2}$.</p><p class="why-step">$\ln(ab) = \ln a + \ln b$ turns one hard limit into two familiar ones.</p></li>
+<li><p>First term: with $u = x^2 \to 0$, it's $\frac{\ln(1 + u)}{u} \to 1$.</p><p class="why-step">A standard limit after substitution.</p></li>
+<li><p>Second term ($\frac00$): L'Hôpital gives $\dfrac{-\tan x}{2x} \to -\dfrac12$, since $\frac{\tan x}{x} \to 1$.</p><p class="why-step">$\frac{d}{dx}\ln\cos x = \frac{-\sin x}{\cos x} = -\tan x$. (Or Taylor: $\ln\cos x \approx -\frac{x^2}{2}$.)</p></li>
+<li><p>Total: $1 - \tfrac12 = $ <b>0.5</b>.</p><p class="why-step">Official key: 0.5.</p></li>
+</ol></div>
 
 <div class="practice">
-<div class="prob" data-id="r-functions-p1" data-ans="3;-4" data-labels="x at the vertex;lowest value"><div class="stem"><p>For $f(x) = x^2 - 6x + 5$, where is the vertex, and what is the lowest value $f$ reaches?</p></div><div class="hint"><p>Vertex at $x = -b/(2a)$ with $a = 1$, $b = -6$. Then plug that $x$ back into $f$.</p></div><div class="sol"><p>$x = -(-6)/(2\cdot 1) = 3$. Then $f(3) = 9 - 18 + 5 = -4$. Since $a = 1 \gt 0$ the parabola opens upward, so $-4$ is its lowest value.</p></div></div>
-<div class="prob" data-id="r-functions-p2" data-ans="2" data-labels="larger root"><div class="stem"><p>Solve $2x^2 - 3x - 2 = 0$. Enter the larger root.</p></div><div class="hint"><p>Use $x = \frac{-b \pm \sqrt{b^2-4ac}}{2a}$ with $a=2$, $b=-3$, $c=-2$.</p></div><div class="sol"><p>Discriminant $= 9 + 16 = 25$, so $x = \frac{3 \pm 5}{4}$: $x = 2$ or $x = -\tfrac12$. The larger root is $2$. Check: $2\cdot4 - 6 - 2 = 0$ ✓.</p></div></div>
-<div class="prob" data-id="r-functions-p3" data-ans="x < 2" data-choices="x < 2|x > 2|x < −2|x > −2"><div class="stem"><p>Which describes every $x$ with $-3x + 6 \gt 0$?</p></div><div class="hint"><p>Move the 6 across, then divide by −3, and remember what dividing by a negative does to the inequality sign.</p></div><div class="sol"><p>$-3x \gt -6$. Divide by $-3$ and flip the sign: $x \lt 2$. Check with $x = 0$: $6 \gt 0$ ✓; with $x = 3$: $-3 \gt 0$ ✗.</p></div></div>
-<div class="prob" data-id="r-functions-p4" data-ans="2" data-labels="a"><div class="stem"><p>A piecewise function is $f(x) = x + 1$ for $x \lt 1$ and $f(x) = ax$ for $x \ge 1$. For which $a$ do the two pieces meet at $x = 1$ (so the graph has no jump)?</p></div><div class="hint"><p>The left piece is heading towards $1 + 1$ as $x$ approaches 1. The right piece is $a \cdot 1$ at $x = 1$. Make them equal.</p></div><div class="sol"><p>Left piece at $x=1$: $1 + 1 = 2$. Right piece: $a \cdot 1 = a$. No jump means $a = 2$. This "make the pieces agree at the boundary" idea is exactly how GATE 2024 Q37 starts, which you'll solve in <a href="../calculus/#ca-continuity">Calculus 1.2</a>.</p></div></div>
+<div class="prob" data-id="ca-limits-p1" data-ans="0.5" data-labels="limit"><div class="stem"><div class="pyq"><span class="label">GATE DA 2025 · Q32 · NAT · 1 mark</span><p>$\displaystyle\lim_{t\to+\infty}\left(\sqrt{t^2 + t} - t\right) = $ ______ (Round off to one decimal place)</p></div></div><div class="hint"><p>∞ − ∞ form. Multiply and divide by the conjugate $\sqrt{t^2 + t} + t$.</p></div><div class="sol"><p>$\sqrt{t^2+t} - t = \dfrac{(t^2 + t) - t^2}{\sqrt{t^2 + t} + t} = \dfrac{t}{\sqrt{t^2 + t} + t} = \dfrac{1}{\sqrt{1 + 1/t} + 1} \to \dfrac12$. Official key: 0.5.</p></div></div>
+<div class="prob" data-id="ca-limits-p2" data-ans="3" data-labels="limit"><div class="stem"><p>$\displaystyle\lim_{x\to0}\frac{\sin 3x}{x}$.</p></div><div class="hint"><p>Write it as $3\cdot\frac{\sin 3x}{3x}$.</p></div><div class="sol"><p>$3\times1 = 3$.</p></div></div>
+<div class="prob" data-id="ca-limits-p3" data-ans="2" data-labels="limit"><div class="stem"><p>$\displaystyle\lim_{x\to0}\frac{e^{2x} - 1}{x}$.</p></div><div class="hint"><p>Substitute $u = 2x$, or use L'Hôpital.</p></div><div class="sol"><p>$2\cdot\frac{e^{2x} - 1}{2x} \to 2$. L'Hôpital: $\frac{2e^{2x}}{1} \to 2$.</p></div></div>
+<div class="prob" data-id="ca-limits-p4" data-ans="3" data-labels="limit"><div class="stem"><p>$\displaystyle\lim_{x\to\infty}\frac{3x^2 + 1}{x^2 - 5}$.</p></div><div class="hint"><p>Divide top and bottom by $x^2$.</p></div><div class="sol"><p>$\frac{3 + 1/x^2}{1 - 5/x^2} \to 3$.</p></div></div>
 </div>
 
-<div class="dodont"><ul><li>Sketch the graph, even roughly, before solving. A picture tells you how many answers to expect.</li><li>For a piecewise function, first decide which piece applies, then use only that formula.</li><li>Plug your answer back in. It's the cheapest check there is.</li></ul><ul><li>Forgetting to flip the inequality sign when multiplying or dividing by a negative number.</li><li>Writing $\sqrt{b^2 - 4ac}$ as $b - 2\sqrt{ac}$. Square roots don't split over a minus.</li><li>Reading $f(x+1)$ as $f(x) + 1$. The first changes the input; the second changes the output.</li></ul></div>
+<div class="dodont"><ul><li>Try direct substitution first; only a $\frac00$, $\frac\infty\infty$ or $\infty - \infty$ needs more work.</li><li>Use log rules and substitutions to reach a standard limit.</li><li>Check that the form really is $\frac00$ or $\frac\infty\infty$ before applying L'Hôpital.</li></ul><ul><li>Applying L'Hôpital to a form that isn't indeterminate, which gives wrong answers.</li><li>Differentiating the quotient with the quotient rule. L'Hôpital differentiates top and bottom separately.</li><li>Assuming a limit equals the function's value at the point; the function may not even be defined there.</li></ul></div>
 
-<ol class="takeaways"><li>A function gives exactly one output per input; its graph shows all of them at once.</li><li>Lines, parabolas, |x|, max(0, x) and piecewise rules cover most of what GATE uses. The parabola's vertex is at x = −b/(2a).</li><li>Solving f(x) = k means finding where a horizontal line at height k meets the graph. For piecewise functions, pick the right piece first.</li></ol>
+<ol class="takeaways"><li>A limit is where f is heading near a, regardless of f(a); it exists when the left and right limits agree.</li><li>Standard limits: sin x/x → 1, (1 − cos x)/x² → ½, (eˣ − 1)/x → 1, ln(1 + x)/x → 1.</li><li>For indeterminate forms: factor, use a conjugate, substitute into a standard limit, apply L'Hôpital, or use Taylor.</li></ol>
 
-<div class="quiz" data-id="r-functions">
-<div class="q"><div class="q-text"><p>If $f(x) = 3x - 4$, what is $f(2) + f(0)$?</p></div><div class="o">2<div class="e">That's $f(2)$ alone. Don't forget to add $f(0)$.</div></div><div class="o ok">−2<div class="e">$f(2) = 2$ and $f(0) = -4$, so the sum is $-2$.</div></div><div class="o">6<div class="e">Evaluate each one separately: replace $x$ by 2, then by 0.</div></div><div class="o">−4<div class="e">That's only $f(0)$.</div></div></div>
-<div class="q"><div class="q-text"><p>The parabola $y = -2x^2 + 8x + 1$ has its vertex at</p></div><div class="o">$x = -2$, a lowest point<div class="e">Check the sign in $-b/(2a)$: $b = 8$, $a = -2$.</div></div><div class="o">$x = 2$, a lowest point<div class="e">The position is right. But what does a negative $a$ do to the U shape?</div></div><div class="o ok">$x = 2$, a highest point<div class="e">$-8/(2\cdot -2) = 2$, and $a \lt 0$ means the parabola opens downward, so the vertex is a maximum.</div></div><div class="o">$x = 4$, a highest point<div class="e">Recompute $-b/(2a)$ carefully; the 2 in the denominator matters.</div></div></div>
-<div class="q"><div class="q-text"><p>$\max(0, x)$ (ReLU) evaluated at $x = -3$ and at $x = 3$ gives</p></div><div class="o">−3 and 3<div class="e">That's just $x$. ReLU replaces negative inputs with something.</div></div><div class="o ok">0 and 3<div class="e">Negative inputs become 0; positive inputs pass through unchanged.</div></div><div class="o">3 and 3<div class="e">That would be $|x|$, the absolute value. ReLU doesn't flip negatives, it zeroes them.</div></div><div class="o">0 and 0<div class="e">For positive inputs, ReLU returns the input itself.</div></div></div>
-<div class="q"><div class="q-text"><p>The equation $x^2 + 2x + 5 = 0$ has how many real solutions?</p></div><div class="o">Two<div class="e">Compute the discriminant $b^2 - 4ac$ before deciding.</div></div><div class="o">One<div class="e">One solution needs the discriminant to be exactly zero. Is it?</div></div><div class="o ok">None<div class="e">$4 - 20 = -16 \lt 0$: the parabola sits entirely above the axis. (It has two complex roots, which is the kind of thing GATE 2024 Q13 asks about eigenvalues.)</div></div><div class="o">Infinitely many<div class="e">A non-zero quadratic can cross the axis at most twice.</div></div></div>
+<div class="quiz" data-id="ca-limits">
+<div class="q"><div class="q-text"><p>$\displaystyle\lim_{x\to0}\frac{1 - \cos x}{x^2}$ is</p></div><div class="o">0<div class="e">Both top and bottom go to 0; you need the rates.</div></div><div class="o ok">½<div class="e">A standard limit. (L'Hôpital twice: $\frac{\sin x}{2x} \to \frac12$.)</div></div><div class="o">1<div class="e">That's $\sin x / x$.</div></div><div class="o">∞<div class="e">$1 - \cos x$ shrinks like $x^2/2$, as fast as the bottom.</div></div></div>
+<div class="q"><div class="q-text"><p>$f(x) = \dfrac{|x|}{x}$. The limit as $x \to 0$</p></div><div class="o">is 1<div class="e">That's only the right-hand limit.</div></div><div class="o">is 0<div class="e">$f$ is ±1 everywhere except 0.</div></div><div class="o ok">does not exist<div class="e">The left limit is −1 and the right limit is +1; they disagree.</div></div></div>
+<div class="q"><div class="q-text"><p>L'Hôpital's rule can be applied directly to $\displaystyle\lim_{x\to0}\frac{x + 1}{x + 2}$?</p></div><div class="o">Yes<div class="e">Substitute first: it's $\frac12$, not an indeterminate form.</div></div><div class="o ok">No: it isn't 0/0 or ∞/∞; just substitute to get ½<div class="e">Using L'Hôpital here would give 1, which is wrong.</div></div></div>
 </div>
 </section>
 
-<section class="ch" id="r-explog" data-level="b" data-min="50" data-title="Exponentials and logarithms" data-src="Class 11 maths; GATE DA 2024 Q33, Q57, Q60, Q62; 2025 Q21, Q41; 2026 Q34">
-<h2>Exponentials and logarithms: growth, decay and undoing them</h2>
-<div class="opener"><p>An exponential multiplies by the same factor at every step; a logarithm undoes that, answering "how many steps does it take?"</p><p>The exponential distribution has appeared in every GATE DA paper so far, and you can't touch it without $e^{-\lambda x}$ and $\ln$. The sigmoid in logistic regression and the entropy in decision trees are built from the same pieces.</p><p>It's like a rumour: each person tells two more, so the count doubles every round. The exponential tells you how many people know after 10 rounds; the logarithm tells you how many rounds until a million people know.</p></div>
+<section class="ch" id="ca-continuity" data-level="n" data-min="50" data-title="Continuity and differentiability" data-src="Continuity and differentiability; GATE DA 2024 Q37; 2025 Q24, Q48, Q59">
+<h2>Continuity and differentiability: no gaps, no corners</h2>
+<div class="opener"><p>A function is continuous at a point if its graph has no gap or jump there, and differentiable if it also has no sharp corner: there's a single well-defined tangent.</p><p>GATE asks this every year: piecewise functions whose pieces must join smoothly (2024 Q37), whether ReLU is differentiable (2025 Q48), and which combinations of differentiable functions stay differentiable (2025 Q24).</p><p>It's like a road: continuous means no missing bridges; differentiable means no hairpin corners either, so you could drive it at speed without a sudden change of direction.</p></div>
 
 <div class="radar"><span class="label">Where it shows up in GATE DA</span>
-<p>Every paper. Most often inside exponential-distribution questions, where you solve $e^{-\lambda x} = p$ for $\lambda$ or $x$.</p>
-<div class="pyqs"><span>2025 Q21 · solve e^(−2λ) = 0.25</span><span>2024 Q57 · exponential mean/variance</span><span>2026 Q34 · memoryless property</span><span>2025 Q41 · e^(−ln 10)</span><span>2024 Q33 · sigmoid 1/(1+e^(−x))</span><span>2024 Q62 · entropy with log₂</span><span>2024 Q60 · ln limit</span></div>
-<span class="heat">Heat: <b>every year</b>, 2–6 marks</span></div>
+<p>Piecewise functions, ReLU and absolute values, and "always differentiable?" MSQs.</p>
+<div class="pyqs"><span>2024 Q37 · make a piecewise function smooth</span><span>2025 Q48 · ReLU</span><span>2025 Q24 · sums, products, compositions</span><span>2025 Q59 · |f(x) − f(y)| ≤ (x − y)²</span></div>
+<span class="heat">Heat: <b>every year</b>, 1–4 marks</span></div>
 
-<div class="prose">
-<h3>Powers first</h3>
-<p>$2^5$ means five 2s multiplied together: $2\cdot2\cdot2\cdot2\cdot2 = 32$. The small raised number is the <b>exponent</b>. Five rules cover nearly everything:</p>
-</div>
-<div class="table-wrap"><table>
-<thead><tr><th style="text-transform:none">Rule</th><th style="text-transform:none">Example</th><th style="text-transform:none">Why</th></tr></thead>
-<tbody>
-<tr><td>$a^m \cdot a^n = a^{m+n}$</td><td>$2^3\cdot 2^2 = 2^5$</td><td>3 twos then 2 more twos</td></tr>
-<tr><td>$(a^m)^n = a^{mn}$</td><td>$(2^3)^2 = 2^6$</td><td>two groups of three twos</td></tr>
-<tr><td>$a^0 = 1$</td><td>$7^0 = 1$</td><td>$a^n / a^n = a^{n-n}$</td></tr>
-<tr><td>$a^{-n} = 1/a^n$</td><td>$2^{-3} = 1/8$</td><td>dividing undoes multiplying</td></tr>
-<tr><td>$a^{1/2} = \sqrt a$</td><td>$9^{1/2} = 3$</td><td>$(a^{1/2})^2 = a^1$</td></tr>
-</tbody></table></div>
+<div class="box def" data-k="Definition" data-name="Continuity and differentiability at a"><p>$f$ is <b>continuous</b> at $a$ if $\lim_{x\to a} f(x) = f(a)$: the limit exists, $f(a)$ exists, and they agree.</p><p>$f$ is <b>differentiable</b> at $a$ if $f'(a) = \lim_{h\to0}\frac{f(a+h) - f(a)}{h}$ exists. For that, the left slope (with $h \to 0^-$) must equal the right slope ($h \to 0^+$).</p><p><b>Differentiable ⇒ continuous</b>, but not the other way round: $|x|$ and ReLU are continuous at 0 but have corners there (left slope ≠ right slope).</p></div>
 
-<div class="prose">
-<h3>The special number e</h3>
-<p>Mathematicians favour one base above all others: $e \approx 2.71828$. It's the base where the slope of $e^x$ at any point equals its height. That makes calculus with $e^x$ unusually clean (you'll see why in the derivatives chapter). On GATE, almost every exponential is written with base $e$.</p>
-<ul>
-<li><b>Growth</b> $e^{x}$: shoots up quickly as $x$ increases.</li>
-<li><b>Decay</b> $e^{-\lambda x}$ with $\lambda \gt 0$: starts at 1 when $x = 0$ and slides towards 0, never reaching it. Bigger $\lambda$ means faster decay. In GATE, $e^{-\lambda x}$ is the probability that a waiting time is longer than $x$.</li>
-</ul>
-</div>
+<div class="box trick" data-k="GATE shortcut" data-name="Making a piecewise function smooth"><p>At each boundary point, write two equations:</p><ol><li><b>Values match</b> (continuity): left piece = right piece at the boundary.</li><li><b>Slopes match</b> (differentiability): derivative of the left piece = derivative of the right piece there.</li></ol><p>Two boundaries give four equations, enough for the unknown coefficients (and to check the options).</p></div>
 
-<div class="box def" data-k="Definition" data-name="Logarithm"><p>$\log_b y$ is the exponent you put on $b$ to get $y$: $$\log_b y = x \iff b^x = y.$$ The <b>natural log</b> $\ln$ is $\log_e$. So $\ln e^3 = 3$, $e^{\ln 5} = 5$, $\log_2 32 = 5$, $\log_{10} 1000 = 3$. Logs exist only for positive $y$.</p></div>
+<div class="box plain" data-k="Key idea" data-name="Combinations that stay differentiable"><p>If $f$ and $g$ are differentiable at $c$: $f \pm g$, $fg$, and $f/g$ (when $g(c) \ne 0$) are differentiable at $c$. A composition $f(g(x))$ is differentiable at $c$ if $g$ is differentiable at $c$ <b>and</b> $f$ is differentiable at $g(c)$. Knowing $f$ only at $c$ isn't enough for $f\circ g$.</p></div>
 
-<div class="box plain" data-k="Key idea" data-name="Log rules (each is a power rule in disguise)"><ul>
-<li>$\ln(ab) = \ln a + \ln b$ (multiplying adds exponents)</li>
-<li>$\ln(a/b) = \ln a - \ln b$</li>
-<li>$\ln(a^k) = k\ln a$, so $\ln(1/4) = -\ln 4$</li>
-<li>$\ln 1 = 0$, $\ln e = 1$</li>
-<li>Change of base: $\log_2 x = \dfrac{\ln x}{\ln 2}$</li>
-</ul></div>
-
-<div class="panel try"><span class="label">Try it</span><p class="task">The curve shows $e^{-\lambda x}$. Drag the dot along the curve, or change $\lambda$. Notice the "half-life": the $x$ where the curve hits 0.5 is always $\ln 2 / \lambda$. Switch to the second view to see that $e^x$ and $\ln x$ are mirror images: one undoes the other.</p><div class="widget" data-w="r_exp"></div></div>
-
-<div class="predict"><p class="q-text">The Kalinga Kernels' bowling machine fails at random; the chance it survives more than $x$ hours is $e^{-0.5x}$. Roughly how long until that chance drops to 25%?</p><div class="o">2 hours<div class="e">At 2 hours, $e^{-1} \approx 0.37$: still above 25%.</div></div><div class="o ok">About 2.8 hours<div class="e">$e^{-0.5x} = 0.25$ ⇒ $x = 2\ln 4 \approx 2.77$.</div></div><div class="o">4 hours<div class="e">At 4 hours, $e^{-2} \approx 0.135$: you've gone past 25%.</div></div><div class="reveal"><p>Take $\ln$ of both sides: $-0.5x = \ln 0.25 = -\ln 4$, so $x = 2\ln 4 \approx 2.77$ hours. Notice the pattern: <b>to free an exponent, take the log</b>. The two half-lives ($\ln2/0.5 \approx 1.39$ each) multiply the survival chance by ½ twice: ½ · ½ = ¼.</p></div></div>
+<div class="panel try"><span class="label">Try it</span><p class="task">This is the function from GATE 2024 Q37: $-x$ on the left, $ax^2 + bx + c$ in the middle, $x$ on the right. Adjust $a, b, c$ until the pieces meet (no jumps) and the slopes agree at both joins (no corners). The readout reports each condition at $x = -2$ and $x = 2$.</p><div class="widget" data-w="ca_cont"></div></div>
 
 <div class="example"><div class="problem">
-<div class="pyq"><span class="label">GATE DA 2025 · Q21 · MCQ · 1 mark</span>
-<p>It is given that $P(X \ge 2) = 0.25$ for an exponentially distributed random variable $X$ with $E[X] = \dfrac{1}{\lambda}$, where $E[X]$ denotes the expectation of $X$. What is the value of $\lambda$? ($\ln$ denotes natural logarithm)</p>
-<ol class="abcd"><li data-l="(A)">$\ln 2$</li><li data-l="(B)">$\ln 4$</li><li data-l="(C)">$\ln 3$</li><li data-l="(D)">$\ln 0.25$</li></ol></div>
-<p>One fact from Probability, Part 4: for an exponential random variable, $P(X \ge x) = e^{-\lambda x}$. With that, this is purely an exponentials-and-logs question.</p></div>
+<div class="pyq"><span class="label">GATE DA 2024 · Q37 · MCQ · 2 marks</span>
+<p>Let $f:\R\to\R$ be a function. (Note: $\R$ denotes the set of real numbers.)</p>
+$$f(x) = \begin{cases}-x, & \text{if } x \lt -2\\ ax^2 + bx + c, & \text{if } x\in[-2, 2]\\ x, & \text{if } x \gt 2\end{cases}$$
+<p>Which ONE of the following choices gives the values of $a, b, c$ that make the function $f$ continuous and differentiable?</p>
+<ol class="abcd"><li data-l="(A)">$a = \frac14,\ b = 0,\ c = 1$</li><li data-l="(B)">$a = \frac12,\ b = 0,\ c = 0$</li><li data-l="(C)">$a = 0,\ b = 0,\ c = 0$</li><li data-l="(D)">$a = 1,\ b = 1,\ c = -4$</li></ol></div></div>
 <ol class="steps">
-<li><p>Write the given fact as an equation: $e^{-2\lambda} = 0.25$.</p><p class="why-step">Substitute $x = 2$ into $P(X \ge x) = e^{-\lambda x}$.</p></li>
-<li><p>Take $\ln$ of both sides: $-2\lambda = \ln 0.25$.</p><p class="why-step">$\ln$ undoes $e^{(\cdot)}$, which frees the exponent.</p></li>
-<li><p>$\ln 0.25 = \ln(1/4) = -\ln 4$, so $-2\lambda = -\ln 4$, i.e. $\lambda = \tfrac12\ln 4$.</p><p class="why-step">The rule $\ln(1/a) = -\ln a$.</p></li>
-<li><p>$\tfrac12\ln 4 = \ln 4^{1/2} = \ln 2$. Answer <b>(A)</b>.</p><p class="why-step">$k\ln a = \ln a^k$ with $k = \tfrac12$. Option (D) is a trap: $\ln 0.25$ is negative, and a rate $\lambda$ must be positive. Official key: (A).</p></li>
+<li><p>At $x = 2$: values $4a + 2b + c = 2$; slopes $4a + b = 1$ (the middle piece's derivative $2ax + b$ at 2 must equal the right piece's slope 1).</p><p class="why-step">Left limit = right limit = value, and left slope = right slope.</p></li>
+<li><p>At $x = -2$: values $4a - 2b + c = 2$ (the left piece gives $-(-2) = 2$); slopes $-4a + b = -1$.</p><p class="why-step">The left piece $-x$ has slope $-1$.</p></li>
+<li><p>Subtracting the two value equations gives $4b = 0$, so $b = 0$. Then $4a = 1$ gives $a = \frac14$, and $1 + c = 2$ gives $c = 1$. Answer <b>(A)</b>.</p><p class="why-step">Check: the middle piece $\frac{x^2}{4} + 1$ has value 2 and slope ±1 at ±2, matching both outer pieces. (This smooths out the corner of $|x|$.) Official key: (A).</p></li>
 </ol></div>
 
-<details class="deeper"><summary>Go deeper: where e comes from</summary><p>Invest ₹1 at 100% yearly interest, compounded $n$ times a year: you end with $(1 + 1/n)^n$. With $n = 1$ that's 2; $n = 12$ gives 2.613; $n = 365$ gives 2.7146; and as $n \to \infty$ it approaches $e = 2.71828\ldots$ The same limit, $(1 + x/n)^n \to e^x$, is behind the Poisson distribution, which you'll meet in Probability, Part 4.</p></details>
-
 <div class="practice">
-<div class="prob" data-id="r-explog-p1" data-ans="2" data-labels="value"><div class="stem"><p>Simplify $\ln\!\left(e^3 \cdot e^{-1}\right)$.</p></div><div class="hint"><p>Combine the powers of $e$ first: $e^a \cdot e^b = e^{a+b}$.</p></div><div class="sol"><p>$e^3 \cdot e^{-1} = e^{2}$, and $\ln e^2 = 2$.</p></div></div>
-<div class="prob" data-id="r-explog-p2" data-ans="2*log(4)" data-labels="x" data-tol="0.002"><div class="stem"><p>Solve $e^{-0.5x} = 0.25$ for $x$ (a decimal is fine).</p></div><div class="hint"><p>Take $\ln$ of both sides and use $\ln 0.25 = -\ln 4$.</p></div><div class="sol"><p>$-0.5x = -\ln 4$, so $x = 2\ln 4 = 4\ln 2 \approx 2.773$.</p></div></div>
-<div class="prob" data-id="r-explog-p3" data-ans="2" data-labels="value"><div class="stem"><p>Compute $\log_2 32 + \log_2 \tfrac18$.</p></div><div class="hint"><p>$32 = 2^5$ and $\tfrac18 = 2^{-3}$.</p></div><div class="sol"><p>$5 + (-3) = 2$. Or combine first: $\log_2(32/8) = \log_2 4 = 2$.</p></div></div>
-<div class="prob" data-id="r-explog-p4" data-multi="1" data-ans="A;B;D" data-choices="A|B|C|D"><div class="stem"><p>Which of these equal $\ln 8$? (Select all that apply.)</p><p>(A) $3\ln 2$ &nbsp; (B) $\ln 2 + \ln 4$ &nbsp; (C) $\ln 4 \cdot \ln 2$ &nbsp; (D) $\ln 16 - \ln 2$</p></div><div class="hint"><p>Logs turn products into sums and quotients into differences. Is there a rule that turns a product of logs into anything nice?</p></div><div class="sol"><p>(A) $3\ln2 = \ln 2^3 = \ln 8$ ✓. (B) $\ln(2\cdot4) = \ln 8$ ✓. (C) There is no rule for multiplying two logs: $\ln 4\cdot\ln 2 \approx 0.961$, but $\ln 8 \approx 2.079$ ✗. (D) $\ln(16/2) = \ln 8$ ✓.</p></div></div>
+<div class="prob" data-id="ca-continuity-p1" data-multi="1" data-ans="A;B;C" data-choices="A|B|C|D"><div class="stem"><div class="pyq"><span class="label">GATE DA 2025 · Q24 · MSQ · 1 mark</span><p>Consider two functions $f:\R\to\R$ and $g:\R\to(1, \infty)$. Both functions are differentiable at a point $c$. Which of the following functions is/are ALWAYS differentiable at $c$? The symbol $\cdot$ denotes product and the symbol $\circ$ denotes composition of functions.</p><ol class="abcd"><li data-l="(A)">$f \pm g$</li><li data-l="(B)">$f\cdot g$</li><li data-l="(C)">$\dfrac fg$</li><li data-l="(D)">$f\circ g + g\circ f$</li></ol></div></div><div class="hint"><p>Sums, products and quotients are safe if the denominator isn't zero (and $g \gt 1$). For $f(g(x))$, you need $f$ differentiable at $g(c)$, which isn't given.</p></div><div class="sol"><p>(A), (B) ✓. (C) ✓ because $g \gt 1$, so it's never zero. (D) ✗: $f\circ g$ needs $f$ to be differentiable at the point $g(c)$, and we only know about $f$ at $c$. (Similarly $g\circ f$ needs $g$ differentiable at $f(c)$.) Official key: A; B; C.</p></div></div>
+<div class="prob" data-id="ca-continuity-p2" data-multi="1" data-ans="A;C" data-choices="A|B|C|D"><div class="stem"><div class="pyq"><span class="label">GATE DA 2025 · Q48 · MSQ · 2 marks</span><p>Which of the following statements is/are correct about the rectified linear unit (ReLU) activation function defined as ReLU($x$) = max($x$, 0), where $x\in\R$?</p><ol class="abcd"><li data-l="(A)">ReLU is continuous everywhere</li><li data-l="(B)">ReLU is differentiable everywhere</li><li data-l="(C)">ReLU is not differentiable at $x = 0$</li><li data-l="(D)">ReLU($x$) = ReLU($ax$), for all $a\in\R$</li></ol></div></div><div class="hint"><p>Left slope at 0 is 0, right slope is 1. For (D), try $a = -1$ or $a = 2$.</p></div><div class="sol"><p>(A) ✓: no jumps. (B) ✗ and (C) ✓: a corner at 0 (slopes 0 and 1). (D) ✗: ReLU(1) = 1 but ReLU(−1·1) = 0. Official key: A; C.</p></div></div>
+<div class="prob" data-id="ca-continuity-p3" data-ans="0" data-labels="f(1) − f(0)"><div class="stem"><div class="pyq"><span class="label">GATE DA 2025 · Q59 · NAT · 2 marks</span><p>Let $f:\R\to\R$ be such that $|f(x) - f(y)| \le (x - y)^2$ for all $x, y\in\R$. Then $f(1) - f(0) = $ ______ (Answer in integer)</p></div></div><div class="hint"><p>Divide by $|x - y|$ and let $y \to x$. What does that say about $f'(x)$?</p></div><div class="sol"><p>$\left|\frac{f(x) - f(y)}{x - y}\right| \le |x - y| \to 0$, so $f'(x) = 0$ for every $x$: $f$ is constant. Hence $f(1) - f(0) = 0$. Official key: 0.</p></div></div>
+<div class="prob" data-id="ca-continuity-p4" data-ans="2" data-labels="k"><div class="stem"><p>$f(x) = kx + 1$ for $x \lt 1$ and $f(x) = x^2 + 2$ for $x \ge 1$. For which $k$ is $f$ continuous? Is it then differentiable at 1? (Enter $k$.)</p></div><div class="hint"><p>Match the values at 1: $k + 1 = 3$. Then compare slopes: $k$ versus $2x$ at 1.</p></div><div class="sol"><p>$k + 1 = 1 + 2$ gives $k = 2$. Slopes: left 2, right $2\cdot1 = 2$. They match, so it's differentiable too.</p></div></div>
 </div>
 
-<div class="dodont"><ul><li>To solve for something in an exponent, take $\ln$ of both sides.</li><li>Write probabilities like 0.25 as fractions (1/4) before taking logs; the answer often becomes a clean $\ln 2$ or $\ln 4$.</li><li>Sanity-check signs: a decay rate $\lambda$ and a time $x$ are positive.</li></ul><ul><li>$\ln(a + b) = \ln a + \ln b$. False: logs split products, not sums.</li><li>$(\ln a)^2 = \ln(a^2)$. False: $\ln(a^2) = 2\ln a$.</li><li>Taking the log of zero or a negative number. It isn't defined.</li></ul></div>
+<div class="dodont"><ul><li>At every join of a piecewise function, check values first, then slopes.</li><li>Remember the classic corners: $|x|$, ReLU and $\max/\min$ of functions.</li><li>For compositions, ask where the outer function is being evaluated.</li></ul><ul><li>Concluding differentiability from continuity alone.</li><li>Checking only one boundary of a piecewise function.</li><li>Assuming $f\circ g$ is differentiable at $c$ because $f$ is.</li></ul></div>
 
-<ol class="takeaways"><li>Exponent rules: multiplying adds exponents, powers multiply them, and negative exponents mean reciprocals.</li><li>A logarithm undoes an exponential: ln(eˣ) = x. Log rules are the exponent rules in disguise.</li><li>e^(−λx) starts at 1 and decays; solving e^(−λx) = p gives x = −ln(p)/λ. This is the core move in GATE's exponential questions.</li></ol>
+<ol class="takeaways"><li>Continuous at a: lim f(x) = f(a). Differentiable at a: left slope = right slope (so no corner).</li><li>Differentiable ⇒ continuous, not conversely: |x| and ReLU are continuous everywhere but not differentiable at 0.</li><li>Piecewise functions: match values and slopes at every boundary. Sums, products and quotients (non-zero denominator) preserve differentiability; compositions need care.</li></ol>
 
-<div class="quiz" data-id="r-explog">
-<div class="q"><div class="q-text"><p>$\dfrac{2^{10}}{2^{7}}$ equals</p></div><div class="o">$2^{17}$<div class="e">You added the exponents. That's for multiplication.</div></div><div class="o ok">8<div class="e">$2^{10-7} = 2^3 = 8$.</div></div><div class="o">$1^3$<div class="e">The base stays 2; only the exponents combine.</div></div><div class="o">$2^{10/7}$<div class="e">Dividing powers subtracts exponents; it doesn't divide them.</div></div></div>
-<div class="q"><div class="q-text"><p>If $e^{-\lambda \cdot 5} = 0.35$, then $e^{-\lambda \cdot 10}$ is</p></div><div class="o">0.70<div class="e">Doubling the exponent doesn't double the value. Use $e^{-10\lambda} = (e^{-5\lambda})^2$.</div></div><div class="o">0.175<div class="e">That's halving. Write $e^{-10\lambda}$ as a power of $e^{-5\lambda}$.</div></div><div class="o ok">0.1225<div class="e">$(e^{-5\lambda})^2 = 0.35^2 = 0.1225$. This exact structure is behind GATE 2026 Q34.</div></div><div class="o">0.35<div class="e">The value keeps decaying as $x$ grows from 5 to 10.</div></div></div>
-<div class="q"><div class="q-text"><p>$\log_2 x = \dfrac{\ln x}{\ln 2}$. Using $\ln 2 \approx 0.693$, $\log_2 e$ is about</p></div><div class="o">0.693<div class="e">That's $\ln 2$, which is $\log_e 2$, the other way round.</div></div><div class="o ok">1.443<div class="e">$\ln e / \ln 2 = 1/0.693 \approx 1.443$.</div></div><div class="o">2.718<div class="e">That's $e$ itself, not its base-2 log.</div></div><div class="o">0.5<div class="e">Apply the change-of-base formula with $x = e$, and remember $\ln e = 1$.</div></div></div>
-<div class="q"><div class="q-text"><p>Which statement about $f(x) = e^{-2x}$ for $x \ge 0$ is true?</p></div><div class="o">It reaches 0 at $x = 2$<div class="e">An exponential is never zero; it only gets closer and closer.</div></div><div class="o">It decays more slowly than $e^{-x}$<div class="e">A larger rate means faster decay.</div></div><div class="o ok">It halves every $\tfrac{\ln 2}{2} \approx 0.35$ units of $x$<div class="e">$e^{-2h} = \tfrac12$ ⇒ $h = \ln 2/2$. Every step of that size multiplies the value by ½.</div></div><div class="o">Its value at $x=0$ is 2<div class="e">$e^{0} = 1$, whatever the rate.</div></div></div>
+<div class="quiz" data-id="ca-continuity">
+<div class="q"><div class="q-text"><p>$|x - 3|$ is</p></div><div class="o">differentiable everywhere<div class="e">It has a corner at $x = 3$.</div></div><div class="o ok">continuous everywhere, not differentiable at 3<div class="e">Slopes −1 and +1 meet at a corner.</div></div><div class="o">discontinuous at 3<div class="e">There's no jump; the two pieces meet at 0.</div></div></div>
+<div class="q"><div class="q-text"><p>A function with a jump at $x = 1$ is</p></div><div class="o">differentiable but not continuous at 1<div class="e">Differentiable always implies continuous.</div></div><div class="o ok">neither continuous nor differentiable at 1<div class="e">No continuity means no derivative either.</div></div><div class="o">continuous but not differentiable at 1<div class="e">A jump breaks continuity.</div></div></div>
+<div class="q"><div class="q-text"><p>$f(x) = x|x|$ at $x = 0$ is</p></div><div class="o">not differentiable, because it contains |x|<div class="e">Check the slopes: $x|x|$ is $x^2$ on the right and $-x^2$ on the left.</div></div><div class="o ok">differentiable, with f′(0) = 0<div class="e">Both one-sided slopes at 0 are 0, so the corner is smoothed out.</div></div><div class="o">discontinuous<div class="e">It's 0 at 0 and close to 0 nearby.</div></div></div>
 </div>
 </section>
 
-<div class="quiz review" data-id="r1-review" data-title="Part 1 review">
-<div class="q" data-from="Ch. 1.1"><div class="q-text"><p>$f(x) = |x - 3|$. How many inputs $x$ give $f(x) = 2$?</p></div><div class="o">One<div class="e">Distance 2 from 3 can happen in two directions.</div></div><div class="o ok">Two<div class="e">$x = 1$ and $x = 5$: both are at distance 2 from 3.</div></div><div class="o">None<div class="e">$|x-3| = 2$ is certainly possible; try $x = 5$.</div></div><div class="o">Infinitely many<div class="e">A V-shaped graph meets a horizontal line at most twice.</div></div></div>
-<div class="q" data-from="Ch. 1.2"><div class="q-text"><p>Solve $e^{-3\lambda} = \tfrac18$ for $\lambda$.</p></div><div class="o">$\ln 8$<div class="e">You have $-3\lambda = -\ln 8$. Don't forget to divide by 3.</div></div><div class="o ok">$\ln 2$<div class="e">$3\lambda = \ln 8 = 3\ln 2$, so $\lambda = \ln 2$.</div></div><div class="o">$-\ln 2$<div class="e">Check the sign: $\ln(1/8)$ is negative and so is $-3\lambda$, so $\lambda$ comes out positive.</div></div><div class="o">$1/24$<div class="e">You can't divide through an exponent; take logs first.</div></div></div>
-<div class="q" data-from="Ch. 1.1 + 1.2"><div class="q-text"><p>$g(x) = \max(0, \ln x)$ for $x \gt 0$. What is $g(0.5) + g(e^2)$?</p></div><div class="o">$\ln 0.5 + 2$<div class="e">$\ln 0.5$ is negative, and $\max(0, \cdot)$ replaces negatives with 0.</div></div><div class="o ok">2<div class="e">$\ln 0.5 \lt 0 \to 0$, and $\ln e^2 = 2$.</div></div><div class="o">0<div class="e">$\ln e^2 = 2 \gt 0$, so that term survives.</div></div><div class="o">$e^2$<div class="e">$\ln$ undoes $e^{(\cdot)}$; $\ln e^2$ is just the exponent.</div></div></div>
-<div class="q" data-from="Ch. 1.1"><div class="q-text"><p>A CDF-style function is $F(x) = (x - 1)/3$ for $1 \le x \le 4$. Where does it equal 0.5?</p></div><div class="o">$x = 2$<div class="e">$F(2) = 1/3$. Solve $(x-1)/3 = 1/2$.</div></div><div class="o ok">$x = 2.5$<div class="e">$x - 1 = 1.5$, so $x = 2.5$: exactly halfway between 1 and 4.</div></div><div class="o">$x = 1.5$<div class="e">$F(1.5) = 1/6$. Multiply both sides by 3 first.</div></div><div class="o">$x = 3$<div class="e">$F(3) = 2/3$.</div></div></div>
+<div class="quiz review" data-id="ca1-review" data-title="Part 1 review (with the refreshers)">
+<div class="q" data-from="Ch. 1.1"><div class="q-text"><p>$\displaystyle\lim_{x\to0}\frac{\ln(1 + 5x)}{x}$ is</p></div><div class="o">1<div class="e">Substitute $u = 5x$; there's a factor of 5.</div></div><div class="o ok">5<div class="e">$5\cdot\frac{\ln(1 + 5x)}{5x} \to 5$.</div></div><div class="o">0<div class="e">It's a 0/0 form, not 0.</div></div><div class="o">$\ln 5$<div class="e">The limit doesn't produce a log.</div></div></div>
+<div class="q" data-from="Ch. 1.2"><div class="q-text"><p>Which is continuous at 0 but not differentiable there?</p></div><div class="o">$x^2$<div class="e">It's smooth at 0 (slope 0).</div></div><div class="o ok">$\max(0, x)$<div class="e">ReLU: continuous, with a corner at 0.</div></div><div class="o">$1/x$<div class="e">It isn't even defined at 0.</div></div></div>
+<div class="q" data-from="Refreshers 3.1 + Ch. 1.1"><div class="q-text"><p>By L'Hôpital, $\displaystyle\lim_{x\to0}\frac{\sin x - x}{x^3}$ equals</p></div><div class="o">0<div class="e">Apply L'Hôpital three times (it stays 0/0 until then).</div></div><div class="o ok">$-\frac16$<div class="e">$\frac{\cos x - 1}{3x^2} \to \frac{-\sin x}{6x} \to -\frac16$.</div></div><div class="o">$\frac16$<div class="e">Watch the sign: $\sin x \lt x$ for small positive $x$.</div></div></div>
 </div>
 </article>
 
-<article class="part" data-id="r2" data-num="2" data-title="Sums and sets" data-min="85" data-kind="prereq">
-<p class="part-lede">Two pieces of notation that probability is written in. Sums ($\Sigma$) let you add up many terms in one line, including infinitely many, which is how expected values and geometric tails are computed. Sets let you talk precisely about collections of outcomes: "this <i>or</i> that", "this <i>and</i> that", "everything <i>except</i> this".</p>
-<p class="youneed"><b>You need:</b> Part 1 (exponents in particular).</p>
+<article class="part" data-id="ca2" data-num="2" data-title="Taylor series and turning points" data-min="105">
+<p class="part-lede">Two of the syllabus's named topics. Taylor series rebuild a function from its derivatives at one point, which gives approximations, quick limits, and a trick for reading off high-order derivatives. Then maxima and minima: finding turning points with the first and second derivatives, and finding the true largest and smallest values on an interval, a type of question GATE DA has asked every year.</p>
+<p class="youneed"><b>You need:</b> Part 1, sums (<a href="../refreshers/#r-sums">Refreshers 2.1</a>) and derivatives (<a href="../refreshers/#r-deriv">Refreshers 3.1</a>).</p>
 
-<section class="ch" id="r-sums" data-level="b" data-min="40" data-title="Sums and series" data-src="Class 11 maths (AP, GP); GATE DA 2026 Q35, Q62; 2024 GA Q4, Q34">
-<h2>Sums and series: adding up many things at once</h2>
-<div class="opener"><p>$\sum$ is shorthand for "add these up", and a geometric series, where each term is a fixed fraction of the last, can add up to a finite number even with infinitely many terms.</p><p>Means, variances and expected values are all sums. Several GATE questions are really "can you sum this series?" in disguise, and in 2026 one was literally a double sum.</p><p>It's like eating half the remaining cake each day: you'll never quite finish it, but you'll never eat more than one cake in total.</p></div>
-
-<div class="radar"><span class="label">Where it shows up in GATE DA</span>
-<p>Directly in series questions, and indirectly in every mean, variance and expected-value calculation.</p>
-<div class="pyqs"><span>2026 Q35 · double geometric sum</span><span>2024 GA Q4 · infinite series</span><span>2026 Q62 · double sum of squares</span><span>2024 Q34 · updating an average</span><span>2024 Q36 · expected number of throws</span></div>
-<span class="heat">Heat: <b>every year</b>, mostly inside probability questions</span></div>
-
-<div class="prose">
-<p>Last season the Haryana Heuristics' opener scored $x_1, x_2, \ldots, x_{14}$ runs in 14 matches. The total is $x_1 + x_2 + \cdots + x_{14}$, which is tedious to write. Sigma notation compresses it:</p>
-$$\sum_{i=1}^{14} x_i = x_1 + x_2 + \cdots + x_{14}.$$
-<p>Read it as "add up $x_i$ for $i$ from 1 to 14". The letter $i$ is the <b>index</b>; it's a placeholder, so $\sum_{k=1}^{14} x_k$ means the same thing. The average is then $\bar x = \frac{1}{14}\sum_{i=1}^{14} x_i$.</p>
-</div>
-
-<div class="box plain" data-k="Key idea" data-name="Rules for sums"><ul>
-<li>Constants come out: $\sum c\,x_i = c\sum x_i$.</li>
-<li>Sums split: $\sum (x_i + y_i) = \sum x_i + \sum y_i$.</li>
-<li>Adding a constant $n$ times: $\sum_{i=1}^{n} c = nc$.</li>
-<li>Products do <b>not</b> split: $\sum x_i y_i \ne \left(\sum x_i\right)\left(\sum y_i\right)$ in general.</li>
-</ul></div>
-
-<div class="prose">
-<h3>Two patterns you should know cold</h3>
-<p><b>Arithmetic series</b> (each term adds the same amount): $1 + 2 + \cdots + n = \dfrac{n(n+1)}{2}$. The trick: pair the first and last terms, $1 + n$, then the second and second-last, $2 + (n-1)$, and so on. Every pair sums to $n+1$, and there are $n/2$ pairs.</p>
-<p><b>Geometric series</b> (each term multiplies by the same ratio $r$): $$a + ar + ar^2 + \cdots + ar^{n-1} = a\,\frac{1 - r^n}{1 - r}.$$ If $|r| \lt 1$, then $r^n \to 0$ as $n$ grows, and the infinite sum settles down to $$a + ar + ar^2 + \cdots = \frac{a}{1-r}.$$ If $|r| \ge 1$, the terms don't shrink and the sum runs off to infinity (or never settles).</p>
-</div>
-
-<div class="panel try"><span class="label">Try it</span><p class="task">Each bar is a running total of $a + ar + ar^2 + \cdots$. Slide $r$ and watch the totals creep up to the dashed line at $a/(1-r)$. Push $r$ to 1 or beyond and the line disappears: the sum no longer settles. Try a negative $r$ too.</p><div class="widget" data-w="r_gp"></div></div>
-
-<div class="example"><div class="problem">
-<div class="pyq"><span class="label">GATE DA 2026 · Q35 · NAT · 1 mark</span>
-<p>The value of $\displaystyle\sum_{i=0}^{\infty}\sum_{j=1}^{\infty} 2^{-i}\,3^{-j}$ is ______. (Answer in integer)</p></div></div>
-<ol class="steps">
-<li><p>The term $2^{-i}3^{-j}$ is a product of something that depends only on $i$ and something that depends only on $j$. So the double sum splits into two separate sums multiplied together: $$\left(\sum_{i=0}^{\infty} 2^{-i}\right)\left(\sum_{j=1}^{\infty} 3^{-j}\right).$$</p><p class="why-step">When the inner sum is over $j$, the factor $2^{-i}$ is a constant and comes out. What's left, $\sum_j 3^{-j}$, is the same number for every $i$, so it comes out of the outer sum too.</p></li>
-<li><p>First sum: $1 + \tfrac12 + \tfrac14 + \cdots$, a geometric series with $a = 1$, $r = \tfrac12$. It equals $\dfrac{1}{1 - 1/2} = 2$.</p><p class="why-step">Careful with the starting point: $i$ starts at 0, so the first term is $2^0 = 1$.</p></li>
-<li><p>Second sum: $\tfrac13 + \tfrac19 + \tfrac1{27} + \cdots$, with $a = \tfrac13$ (since $j$ starts at 1) and $r = \tfrac13$. It equals $\dfrac{1/3}{1 - 1/3} = \tfrac12$.</p><p class="why-step">The most common slip here is using $a = 1$ out of habit. Always write out the first term.</p></li>
-<li><p>Product: $2 \times \tfrac12 = $ <b>1</b>.</p><p class="why-step">Official key: 1.</p></li>
-</ol></div>
-
-<details class="deeper"><summary>Go deeper: the sum 1 + 2r + 3r² + ⋯ (used for expected values)</summary><p>For $|r| \lt 1$, $\sum_{k=1}^{\infty} k\,r^{k-1} = \dfrac{1}{(1-r)^2}$. One way to see it: write the sum as the infinite GP $1 + r + r^2 + \cdots$, plus the same GP starting at $r$, plus the same GP starting at $r^2$, and so on. Those GPs add to $\frac{1}{1-r}(1 + r + r^2 + \cdots) = \frac{1}{(1-r)^2}$. You'll use this for the mean of the geometric distribution ("how many tries until the first success?") in Probability, Part 4.</p></details>
-
-<div class="practice">
-<div class="prob" data-id="r-sums-p1" data-ans="5050" data-labels="sum"><div class="stem"><p>Compute $\displaystyle\sum_{k=1}^{100} k$.</p></div><div class="hint"><p>Use $n(n+1)/2$ with $n = 100$.</p></div><div class="sol"><p>$100 \cdot 101 / 2 = 5050$.</p></div></div>
-<div class="prob" data-id="r-sums-p2" data-ans="120" data-labels="sum"><div class="stem"><p>Compute $\displaystyle\sum_{k=1}^{10} (2k + 1)$.</p></div><div class="hint"><p>Split it: $2\sum k + \sum 1$.</p></div><div class="sol"><p>$2 \cdot \frac{10\cdot 11}{2} + 10 = 110 + 10 = 120$.</p></div></div>
-<div class="prob" data-id="r-sums-p3" data-ans="9/2" data-labels="sum"><div class="stem"><p>Find $3 + 1 + \tfrac13 + \tfrac19 + \cdots$ (forever).</p></div><div class="hint"><p>First term $a = 3$; each term is $\tfrac13$ of the previous one.</p></div><div class="sol"><p>$\dfrac{3}{1 - 1/3} = \dfrac{3}{2/3} = 4.5$.</p></div></div>
-<div class="prob" data-id="r-sums-p4" data-ans="7/2" data-choices="11/3|7/2|13/4|9/2"><div class="stem"><div class="pyq"><span class="label">GATE DA 2024 · GA Q4 · MCQ · 1 mark</span><p>The sum of the following infinite series is $$2 + \frac12 + \frac13 + \frac14 + \frac18 + \frac19 + \frac1{16} + \frac1{27} + \cdots$$</p></div></div><div class="hint"><p>Apart from the leading 2, the terms come from two interleaved geometric series: powers of ½ and powers of ⅓.</p></div><div class="sol"><p>Group the terms: $2 + \left(\tfrac12 + \tfrac14 + \tfrac18 + \cdots\right) + \left(\tfrac13 + \tfrac19 + \tfrac1{27} + \cdots\right) = 2 + 1 + \tfrac12 = \tfrac72$. (Each bracket is $a/(1-r)$ with $a = r$.) Official key: (B) 7/2.</p></div></div>
-</div>
-
-<div class="dodont"><ul><li>Write out the first two or three terms before using a formula. This tells you $a$ and $r$ for certain.</li><li>Check $|r| \lt 1$ before using $a/(1-r)$.</li><li>Split a double sum into a product when the term factors into an $i$-part times a $j$-part.</li></ul><ul><li>Using $a = 1$ when the sum starts at $j = 1$ with first term $r$.</li><li>Writing $\sum x_i^2 = \left(\sum x_i\right)^2$. Squaring doesn't pass through a sum.</li><li>Applying the infinite-sum formula with $r = 2$ and getting a negative "answer". The series has no sum.</li></ul></div>
-
-<ol class="takeaways"><li>Σ is shorthand for adding. Constants factor out and sums split over +, but sums don't split over × or squares.</li><li>1 + 2 + ⋯ + n = n(n+1)/2. A geometric series sums to a(1 − rⁿ)/(1 − r), and to a/(1 − r) forever when |r| &lt; 1.</li><li>Find the first term and the ratio by writing out terms; a double sum of a product splits into a product of sums.</li></ol>
-
-<div class="quiz" data-id="r-sums">
-<div class="q"><div class="q-text"><p>$\displaystyle\sum_{i=1}^{5} 4$ equals</p></div><div class="o">4<div class="e">The term doesn't change with $i$, but it's still added once for each $i$.</div></div><div class="o ok">20<div class="e">Five copies of 4.</div></div><div class="o">15<div class="e">That's $\sum_{i=1}^{5} i$. Here the term is the constant 4.</div></div><div class="o">60<div class="e">Count the terms: $i$ runs from 1 to 5.</div></div></div>
-<div class="q"><div class="q-text"><p>The infinite series $\tfrac15 + \tfrac1{25} + \tfrac1{125} + \cdots$ sums to</p></div><div class="o">$\tfrac54$<div class="e">That would be the sum starting from 1. Here the first term is $\tfrac15$.</div></div><div class="o ok">$\tfrac14$<div class="e">$a = r = \tfrac15$: $\frac{1/5}{4/5} = \tfrac14$.</div></div><div class="o">$\tfrac15$<div class="e">That's only the first term; the rest add a little more.</div></div><div class="o">It diverges<div class="e">$|r| = \tfrac15 \lt 1$, so it converges.</div></div></div>
-<div class="q"><div class="q-text"><p>If $\sum_{i=1}^{10} x_i = 30$, what is $\sum_{i=1}^{10} (2x_i - 1)$?</p></div><div class="o">59<div class="e">The $-1$ is added ten times, not once.</div></div><div class="o ok">50<div class="e">$2\cdot 30 - 10 = 50$.</div></div><div class="o">60<div class="e">Don't drop the $-1$ terms.</div></div><div class="o">29<div class="e">The factor 2 multiplies the whole sum of $x_i$.</div></div></div>
-<div class="q"><div class="q-text"><p>Which series has no finite sum?</p></div><div class="o">$1 - \tfrac12 + \tfrac14 - \tfrac18 + \cdots$<div class="e">Ratio $-\tfrac12$: $|r| \lt 1$, so it converges (to ⅔).</div></div><div class="o ok">$1 + 1.1 + 1.21 + 1.331 + \cdots$<div class="e">Ratio 1.1 ≥ 1: the terms grow, so the total grows without bound.</div></div><div class="o">$0.9 + 0.81 + 0.729 + \cdots$<div class="e">Ratio 0.9 is below 1, so it converges (to 9).</div></div><div class="o">$\tfrac12 + \tfrac14 + \tfrac18 + \cdots$<div class="e">The classic convergent series; it sums to 1.</div></div></div>
-</div>
-</section>
-
-<section class="ch" id="r-sets" data-level="b" data-min="45" data-title="Sets and Venn diagrams" data-src="Class 11 maths (sets); GATE DA 2024 Q12, Q26; 2025 Q47; 2026 Q19; sample paper Q47">
-<h2>Sets: the language of "and", "or" and "not"</h2>
-<div class="opener"><p>A set is a collection of distinct things, and union, intersection and complement are just "or", "and" and "not" made precise.</p><p>In probability, an event is a set of outcomes. In databases, relational algebra is set algebra. In Python, sets are a data type GATE writes code questions about. Learn this vocabulary once and you'll use it in three modules.</p><p>It's like filtering a player list: "batters <i>or</i> wicket-keepers" is a union, "batters <i>and</i> left-handed" is an intersection, "everyone <i>except</i> bowlers" is a complement.</p></div>
+<section class="ch" id="ca-taylor" data-level="n" data-min="45" data-title="Taylor series" data-src="Taylor series; GATE DA 2025 Q14; 2024 Q60">
+<h2>Taylor series: rebuilding a function from one point</h2>
+<div class="opener"><p>A Taylor series writes a function as a polynomial built from its derivatives at a single point: $f(a) + f'(a)(x-a) + \frac{f''(a)}{2!}(x-a)^2 + \cdots$.</p><p>It's named in the syllabus, it powers quick limit calculations, and GATE has used it to ask for a 10th derivative in seconds (2025 Q14). In ML, Taylor's second-order approximation is how Newton's method and many optimisers work.</p><p>It's like predicting a car's position from a single instant: where it is, how fast it's going, how fast that's changing, and so on. Each extra piece of information makes the prediction good further into the future.</p></div>
 
 <div class="radar"><span class="label">Where it shows up in GATE DA</span>
-<p>Everywhere events are combined, in relational algebra (∪, ∩, ∖), and in Python set code.</p>
-<div class="pyqs"><span>2024 Q12 · P(T ∩ S) for coin events</span><span>2024 Q26 · set difference in relational algebra</span><span>2025 Q47 · Python sets A − B, A | B</span><span>2026 Q19 · counting subsets</span><span>Sample Q47 · independent events</span></div>
-<span class="heat">Heat: <b>every year</b>, across probability, databases and Python</span></div>
+<p>Derivatives from series, approximations, and Taylor-based limits.</p>
+<div class="pyqs"><span>2025 Q14 · 10th derivative of (eˣ − e⁻ˣ)/2</span><span>2024 Q60 · ln cos x ≈ −x²/2</span></div>
+<span class="heat">Heat: <b>most years</b>, 1–2 marks</span></div>
 
-<div class="prose">
-<p>A <b>set</b> is written with curly braces: $A = \{1, 2, 3\}$. Order doesn't matter and repeats don't count, so $\{3, 1, 2, 2\}$ is the same set. We write $2 \in A$ ("2 is in A") and $5 \notin A$. The <b>empty set</b> $\varnothing$ has nothing in it. $|A|$ is the number of elements, here 3.</p>
-<p>$A \subseteq B$ ("A is a subset of B") means every element of A is also in B. We usually work inside a <b>universe</b> $U$: all the things under discussion. For a coin tossed twice, $U = \{HH, HT, TH, TT\}$.</p>
-</div>
+<div class="box def" data-k="Definition" data-name="Taylor and Maclaurin series"><p>$$f(x) = \sum_{n=0}^{\infty}\frac{f^{(n)}(a)}{n!}(x - a)^n = f(a) + f'(a)(x - a) + \frac{f''(a)}{2!}(x - a)^2 + \cdots$$ Around $a = 0$ it's called a <b>Maclaurin series</b>. Keeping terms up to $(x - a)^n$ gives the degree-$n$ <b>Taylor polynomial</b> $T_n(x)$, the best degree-$n$ polynomial approximation near $a$. $T_1$ is the tangent line.</p></div>
 
 <div class="table-wrap"><table>
-<thead><tr><th>Operation</th><th style="text-transform:none">Symbol</th><th>In words</th><th style="text-transform:none">With $A=\{1,2,3,4\}$, $B=\{3,4,5\}$, $U=\{1,\dots,6\}$</th></tr></thead>
+<thead><tr><th style="text-transform:none">Function</th><th style="text-transform:none">Maclaurin series</th></tr></thead>
 <tbody>
-<tr><td>Union</td><td>$A \cup B$</td><td>in A <b>or</b> B (or both)</td><td>$\{1,2,3,4,5\}$</td></tr>
-<tr><td>Intersection</td><td>$A \cap B$</td><td>in A <b>and</b> B</td><td>$\{3,4\}$</td></tr>
-<tr><td>Complement</td><td>$A^c$</td><td><b>not</b> in A</td><td>$\{5,6\}$</td></tr>
-<tr><td>Difference</td><td>$A \setminus B$ or $A - B$</td><td>in A but not B</td><td>$\{1,2\}$</td></tr>
-<tr><td>Disjoint</td><td>$A \cap B = \varnothing$</td><td>nothing in common</td><td>$\{1,2\}$ and $\{5,6\}$</td></tr>
+<tr><td>$e^x$</td><td>$1 + x + \frac{x^2}{2!} + \frac{x^3}{3!} + \cdots$</td></tr>
+<tr><td>$\sin x$</td><td>$x - \frac{x^3}{3!} + \frac{x^5}{5!} - \cdots$ (odd powers only)</td></tr>
+<tr><td>$\cos x$</td><td>$1 - \frac{x^2}{2!} + \frac{x^4}{4!} - \cdots$ (even powers only)</td></tr>
+<tr><td>$\ln(1 + x)$</td><td>$x - \frac{x^2}{2} + \frac{x^3}{3} - \cdots$ for $|x| \lt 1$</td></tr>
+<tr><td>$\frac{1}{1 - x}$</td><td>$1 + x + x^2 + x^3 + \cdots$ for $|x| \lt 1$ (the geometric series)</td></tr>
 </tbody></table></div>
 
-<div class="panel try"><span class="label">Try it</span><p class="task">Pick an expression and see which regions of the Venn diagram it shades. Then change the counts in each region and watch the sizes update. Check that $(A \cup B)^c$ and $A^c \cap B^c$ always shade the same region: that's De Morgan's law.</p><div class="widget" data-w="r_venn"></div></div>
+<div class="box trick" data-k="GATE shortcut" data-name="Reading derivatives off a series"><p>The coefficient of $x^n$ in the Maclaurin series is $\frac{f^{(n)}(0)}{n!}$. So $f^{(n)}(0) = n!\times(\text{coefficient of } x^n)$. If a power is missing from the series, that derivative at 0 is zero.</p></div>
 
-<div class="box thm" data-k="Rule" data-name="Counting a union (inclusion–exclusion)"><p>$$|A \cup B| = |A| + |B| - |A \cap B|.$$ Adding $|A|$ and $|B|$ counts the overlap twice, so subtract it once. For three sets: $|A\cup B\cup C| = |A|+|B|+|C| - |A\cap B| - |A\cap C| - |B\cap C| + |A\cap B\cap C|$.</p></div>
-
-<div class="box thm" data-k="Rule" data-name="De Morgan's laws"><p>$(A \cup B)^c = A^c \cap B^c$ ("not (A or B)" = "not A and not B"), and $(A \cap B)^c = A^c \cup B^c$. In logic, the same law reads $\neg(p \lor q) \equiv \neg p \land \neg q$; you'll use it in the AI module.</p></div>
-
-<div class="prose">
-<h3>Two counting facts</h3>
-<ul>
-<li>A set with $n$ elements has $2^n$ subsets (each element is either in or out: $n$ yes/no choices). Including the empty set and the set itself.</li>
-<li>The <b>Cartesian product</b> $A \times B$ is the set of all pairs $(a, b)$, and $|A \times B| = |A|\cdot|B|$. Two dice give $6 \times 6 = 36$ outcomes. A database CROSS JOIN is exactly this.</li>
-</ul>
-</div>
+<div class="panel try"><span class="label">Try it</span><p class="task">Raise the order $n$ and watch the Taylor polynomial (orange) hug the true function (teal) over a wider and wider stretch around 0. For $\ln(1 + x)$, notice it never manages beyond $x = 1$: that series only converges for $|x| \lt 1$.</p><div class="widget" data-w="ca_taylor"></div></div>
 
 <div class="example"><div class="problem">
-<div class="pyq"><span class="label">GATE DA 2024 · Q12 · MCQ · 1 mark</span>
-<p>Three fair coins are tossed independently. $T$ is the event that two or more tosses result in heads. $S$ is the event that two or more tosses result in tails. What is the probability of the event $T \cap S$?</p>
-<ol class="abcd"><li data-l="(A)">0</li><li data-l="(B)">0.5</li><li data-l="(C)">0.25</li><li data-l="(D)">1</li></ol></div></div>
+<div class="pyq"><span class="label">GATE DA 2025 · Q14 · MCQ · 1 mark</span>
+<p>Let $f(x) = \dfrac{e^x - e^{-x}}{2}$, $x\in\R$. Let $f^{(k)}(a)$ denote the $k$th derivative of $f$ evaluated at $a$. What is the value of $f^{(10)}(0)$? (Note: ! denotes factorial)</p>
+<ol class="abcd"><li data-l="(A)">0</li><li data-l="(B)">1</li><li data-l="(C)">$\frac{1}{10!}$</li><li data-l="(D)">$\frac{2}{10!}$</li></ol></div></div>
 <ol class="steps">
-<li><p>The universe has $2^3 = 8$ outcomes: HHH, HHT, HTH, THH, HTT, THT, TTH, TTT.</p><p class="why-step">Each coin has 2 results, and there are 3 coins: $2 \times 2 \times 2$.</p></li>
-<li><p>$T$ (two or more heads) $= \{HHH, HHT, HTH, THH\}$. $S$ (two or more tails) $= \{TTT, HTT, THT, TTH\}$.</p><p class="why-step">Writing events as explicit sets turns a wordy question into a mechanical one.</p></li>
-<li><p>$T \cap S$ is the set of outcomes in both lists. There are none: $T \cap S = \varnothing$.</p><p class="why-step">With only 3 tosses, "at least 2 heads" and "at least 2 tails" would need at least 4 tosses. The events are disjoint.</p></li>
-<li><p>The probability of an impossible event is 0. Answer <b>(A)</b>.</p><p class="why-step">Notice that $T \cup S$ is the whole universe, so $P(T \cup S) = 1$. Option (D) is the trap for anyone who mixes up ∩ and ∪. Official key: (A).</p></li>
+<li><p>Write both series: $e^x = 1 + x + \frac{x^2}{2!} + \frac{x^3}{3!} + \cdots$ and $e^{-x} = 1 - x + \frac{x^2}{2!} - \frac{x^3}{3!} + \cdots$.</p><p class="why-step">Replace $x$ by $-x$ to get the second: odd powers flip sign.</p></li>
+<li><p>Subtract and halve: even powers cancel, odd powers double then halve. $f(x) = x + \frac{x^3}{3!} + \frac{x^5}{5!} + \cdots$ (only odd powers). This function is $\sinh x$.</p><p class="why-step">$f$ is an odd function ($f(-x) = -f(x)$), and odd functions have only odd powers.</p></li>
+<li><p>The coefficient of $x^{10}$ is 0, so $f^{(10)}(0) = 10!\times0 = $ <b>0</b>. Answer <b>(A)</b>.</p><p class="why-step">Alternatively: $f' = \cosh$, $f'' = \sinh = f$, so even derivatives are $\sinh 0 = 0$. Options (C) and (D) confuse the coefficient with the derivative. Official key: (A).</p></li>
 </ol></div>
 
 <div class="practice">
-<div class="prob" data-id="r-sets-p1" data-ans="45" data-labels="|A ∪ B|"><div class="stem"><p>In a survey of league fans, 30 follow the Bengaluru Backprops, 25 follow the Nagpur Neural Nets, and 10 follow both. How many follow at least one of the two teams?</p></div><div class="hint"><p>$|A \cup B| = |A| + |B| - |A \cap B|$.</p></div><div class="sol"><p>$30 + 25 - 10 = 45$. The 10 who follow both were counted in both the 30 and the 25.</p></div></div>
-<div class="prob" data-id="r-sets-p2" data-ans="32" data-labels="number of subsets"><div class="stem"><p>How many subsets does $\{a, b, c, d, e\}$ have (including $\varnothing$ and the set itself)?</p></div><div class="hint"><p>Each of the 5 elements is either in or out.</p></div><div class="sol"><p>$2^5 = 32$.</p></div></div>
-<div class="prob" data-id="r-sets-p3" data-multi="1" data-ans="A;C" data-choices="A|B|C|D"><div class="stem"><p>Which of these always equal $(A \cup B)^c$? (Select all that apply.)</p><p>(A) $A^c \cap B^c$ &nbsp; (B) $A^c \cup B^c$ &nbsp; (C) $U \setminus (A \cup B)$ &nbsp; (D) $(A \cap B)^c$</p></div><div class="hint"><p>"Not (A or B)" means "not A and not B". Use the Venn widget above to test each one.</p></div><div class="sol"><p>(A) is De Morgan's law ✓. (C) is the definition of a complement ✓. (B) equals $(A \cap B)^c$ (the other De Morgan law), which is bigger in general, and (D) is the same set as (B). Both ✗.</p></div></div>
-<div class="prob" data-id="r-sets-p4" data-ans="24" data-labels="|A × B|"><div class="stem"><p>A team must pick a captain from 4 senior players and a vice-captain from 6 juniors. How many (captain, vice-captain) pairs are possible?</p></div><div class="hint"><p>This is $|A \times B|$.</p></div><div class="sol"><p>$4 \times 6 = 24$ pairs.</p></div></div>
+<div class="prob" data-id="ca-taylor-p1" data-ans="1.105" data-labels="approximation" data-tol="0.0001"><div class="stem"><p>Approximate $e^{0.1}$ using the Taylor polynomial up to $x^2$.</p></div><div class="hint"><p>$1 + x + x^2/2$ at $x = 0.1$.</p></div><div class="sol"><p>$1 + 0.1 + 0.005 = 1.105$. The true value is 1.10517…, so the error is about 0.00017 (roughly the next term, $0.1^3/6$).</p></div></div>
+<div class="prob" data-id="ca-taylor-p2" data-ans="4/3" data-labels="coefficient"><div class="stem"><p>What is the coefficient of $x^3$ in the Maclaurin series of $e^{2x}$?</p></div><div class="hint"><p>Substitute $2x$ into the series for $e^x$.</p></div><div class="sol"><p>$\frac{(2x)^3}{3!} = \frac{8x^3}{6}$, so the coefficient is $\frac43$.</p></div></div>
+<div class="prob" data-id="ca-taylor-p3" data-ans="2" data-labels="f‴(0)"><div class="stem"><p>For $f(x) = \ln(1 + x)$, find $f'''(0)$ using the series.</p></div><div class="hint"><p>The coefficient of $x^3$ is $\frac13$. Multiply by $3!$.</p></div><div class="sol"><p>$3!\times\frac13 = 2$. (Directly: $f' = (1+x)^{-1}$, $f'' = -(1+x)^{-2}$, $f''' = 2(1+x)^{-3}$, which is 2 at 0.)</p></div></div>
+<div class="prob" data-id="ca-taylor-p4" data-ans="-1/6" data-labels="limit"><div class="stem"><p>Use Taylor series to find $\displaystyle\lim_{x\to0}\frac{\sin x - x}{x^3}$.</p></div><div class="hint"><p>$\sin x - x = -\frac{x^3}{6} + \frac{x^5}{120} - \cdots$</p></div><div class="sol"><p>Dividing by $x^3$: $-\frac16 + \frac{x^2}{120} - \cdots \to -\frac16$. Much quicker than three rounds of L'Hôpital.</p></div></div>
 </div>
 
-<div class="dodont"><ul><li>Translate words into symbols first: "or" → ∪, "and" → ∩, "not" → complement, "but not" → ∖.</li><li>When outcomes are few, list them explicitly. It's fast and almost impossible to get wrong.</li><li>Draw a Venn diagram for any question with two or three overlapping groups.</li></ul><ul><li>Adding group sizes without subtracting the overlap.</li><li>Confusing <b>disjoint</b> (no overlap) with <b>independent</b> (a probability idea; Probability, Part 1 explains the difference).</li><li>Treating $\{1, 2\}$ and $\{1, 2, 2\}$ as different sets.</li></ul></div>
+<div class="dodont"><ul><li>Memorise the five standard series; most others follow by substitution.</li><li>Use parity: odd functions have only odd powers, even functions only even powers.</li><li>For limits, expand just far enough that something survives the division.</li></ul><ul><li>Confusing the coefficient $\frac{f^{(n)}(0)}{n!}$ with the derivative $f^{(n)}(0)$.</li><li>Using $\ln(1 + x)$ or $\frac1{1-x}$ outside $|x| \lt 1$.</li><li>Dropping the factorials in the denominators.</li></ul></div>
 
-<ol class="takeaways"><li>Union, intersection, complement and difference are "or", "and", "not" and "but not".</li><li>|A ∪ B| = |A| + |B| − |A ∩ B|, and De Morgan swaps ∪ and ∩ when you take a complement.</li><li>An n-element set has 2ⁿ subsets; |A × B| = |A|·|B|. Probability events, database relations and Python sets all obey these rules.</li></ol>
+<ol class="takeaways"><li>Taylor: f(x) = Σ f⁽ⁿ⁾(a)(x − a)ⁿ/n!; T₁ is the tangent line, and higher orders fit better near a.</li><li>Know eˣ, sin, cos, ln(1 + x) and 1/(1 − x); substitute to get variants.</li><li>f⁽ⁿ⁾(0) = n! × (coefficient of xⁿ); a missing power means that derivative at 0 is 0.</li></ol>
 
-<div class="quiz" data-id="r-sets">
-<div class="q"><div class="q-text"><p>$A = \{2, 4, 6, 8\}$, $B = \{1, 2, 3, 4\}$. What is $A \setminus B$?</p></div><div class="o">$\{1, 3\}$<div class="e">That's $B \setminus A$: elements of B that aren't in A.</div></div><div class="o ok">$\{6, 8\}$<div class="e">Elements of A that are not in B.</div></div><div class="o">$\{2, 4\}$<div class="e">That's the intersection.</div></div><div class="o">$\{1, 3, 6, 8\}$<div class="e">That's the symmetric difference: in exactly one of the two sets.</div></div></div>
-<div class="q"><div class="q-text"><p>If $A \cap B = \varnothing$, then $|A \cup B|$ is</p></div><div class="o">$|A| + |B| - 1$<div class="e">The overlap term is $|A \cap B|$, which here is 0.</div></div><div class="o">$|A|\cdot|B|$<div class="e">That's the size of the Cartesian product, not the union.</div></div><div class="o ok">$|A| + |B|$<div class="e">Disjoint sets have no overlap to subtract.</div></div><div class="o">$\max(|A|, |B|)$<div class="e">That would only happen if one set contained the other.</div></div></div>
-<div class="q"><div class="q-text"><p>In GATE 2024 Q26, a database check says "every name in Team appears in Defender or Forward". As sets: $\text{Team} \subseteq D \cup F$. This holds exactly when</p></div><div class="o">$(D \cup F) \setminus \text{Team} = \varnothing$<div class="e">That says every Defender or Forward is in Team: the subset relation the wrong way round.</div></div><div class="o ok">$\text{Team} \setminus (D \cup F) = \varnothing$<div class="e">Nothing in Team lies outside $D \cup F$. This is option (C) in that question, and the official answer.</div></div><div class="o">$\text{Team} \setminus (D \cap F) = \varnothing$<div class="e">That would require every name to be in both D and F, which is too strong.</div></div><div class="o">$\text{Team} \cap (D \cup F) = \varnothing$<div class="e">That says Team has nothing in common with D ∪ F: the opposite of what we want.</div></div></div>
-<div class="q"><div class="q-text"><p>By De Morgan, "not (rain and wind)" is the same as</p></div><div class="o">no rain and no wind<div class="e">That's the complement of "rain <i>or</i> wind".</div></div><div class="o ok">no rain or no wind<div class="e">$(R \cap W)^c = R^c \cup W^c$. A day with rain but no wind counts.</div></div><div class="o">rain or wind<div class="e">That's not a complement of anything here.</div></div><div class="o">neither rain nor wind<div class="e">Same as "no rain and no wind", which is too strong.</div></div></div>
+<div class="quiz" data-id="ca-taylor">
+<div class="q"><div class="q-text"><p>The degree-1 Taylor polynomial of $f$ at $a$ is</p></div><div class="o">the constant $f(a)$<div class="e">That's degree 0.</div></div><div class="o ok">the tangent line at $a$<div class="e">$f(a) + f'(a)(x - a)$.</div></div><div class="o">the secant through two points<div class="e">Taylor uses information at a single point.</div></div></div>
+<div class="q"><div class="q-text"><p>For $f(x) = \cos x$, $f^{(7)}(0)$ is</p></div><div class="o">$-\frac{1}{7!}$<div class="e">That would be a coefficient, and cos has no $x^7$ term anyway.</div></div><div class="o ok">0<div class="e">cos is even: only even powers, so odd derivatives vanish at 0.</div></div><div class="o">1<div class="e">Derivatives of cos at 0 cycle through 1, 0, −1, 0; the odd ones are 0.</div></div></div>
+<div class="q"><div class="q-text"><p>Near $x = 0$, $\ln\cos x$ is approximately</p></div><div class="o">$-x$<div class="e">$\ln\cos x$ is even, so there's no linear term.</div></div><div class="o ok">$-\frac{x^2}{2}$<div class="e">$\cos x \approx 1 - \frac{x^2}{2}$ and $\ln(1 + u) \approx u$. (That's the 2024 Q60 step.)</div></div><div class="o">$\frac{x^2}{2}$<div class="e">$\cos x \lt 1$ near 0, so its log is negative.</div></div></div>
 </div>
 </section>
 
-<div class="quiz review" data-id="r2-review" data-title="Part 2 review (with Part 1)">
-<div class="q" data-from="Ch. 2.1"><div class="q-text"><p>$\displaystyle\sum_{k=0}^{\infty} \left(\tfrac23\right)^k$ equals</p></div><div class="o">2<div class="e">The first term here (k = 0) is 1, not ⅔.</div></div><div class="o ok">3<div class="e">$\frac{1}{1 - 2/3} = 3$.</div></div><div class="o">⅔<div class="e">That's only the k = 1 term.</div></div><div class="o">It diverges<div class="e">$|r| = \tfrac23 \lt 1$.</div></div></div>
-<div class="q" data-from="Ch. 2.2"><div class="q-text"><p>Two dice are rolled. How many outcomes have the first die showing 6 <i>or</i> the second die showing 6?</p></div><div class="o">12<div class="e">The outcome (6, 6) is in both groups; it has been counted twice.</div></div><div class="o ok">11<div class="e">$6 + 6 - 1 = 11$, by inclusion–exclusion.</div></div><div class="o">36<div class="e">That's every outcome.</div></div><div class="o">1<div class="e">That's the "and" case, (6, 6).</div></div></div>
-<div class="q" data-from="Ch. 1.2 + 2.1"><div class="q-text"><p>$\displaystyle\sum_{k=1}^{\infty} e^{-k}$ equals</p></div><div class="o">$\dfrac{1}{1 - e^{-1}}$<div class="e">That's the sum starting from $k = 0$. Here the first term is $e^{-1}$.</div></div><div class="o ok">$\dfrac{1}{e - 1}$<div class="e">$a = r = e^{-1}$: $\frac{e^{-1}}{1 - e^{-1}}$; multiply top and bottom by $e$.</div></div><div class="o">$e$<div class="e">The terms are less than 1 and shrink fast; the total is well under 1.</div></div><div class="o">It diverges<div class="e">$e^{-1} \approx 0.37 \lt 1$.</div></div></div>
-<div class="q" data-from="Ch. 2.2"><div class="q-text"><p>A set has 10 elements. How many of its subsets are non-empty?</p></div><div class="o">1024<div class="e">That includes the empty set.</div></div><div class="o ok">1023<div class="e">$2^{10} - 1$. GATE 2026 Q19 uses exactly this count, with 2026 elements.</div></div><div class="o">100<div class="e">Subsets come from yes/no choices: powers of 2, not squares.</div></div><div class="o">10<div class="e">That counts single-element subsets only.</div></div></div>
+<section class="ch" id="ca-extrema" data-level="n" data-min="60" data-title="Maxima and minima" data-src="Maxima and minima; GATE DA 2024 Q15, Q50; 2025 Q49; 2026 Q27">
+<h2>Maxima and minima: finding the turning points</h2>
+<div class="opener"><p>At a smooth peak or valley the slope is zero; the second derivative tells which it is; and on an interval the true largest and smallest values come from comparing those turning points with the endpoints.</p><p>An extrema question has appeared in every GATE DA paper (2024 Q50, 2025 Q49, 2026 Q27), usually as an MSQ with subtle options about "local" vs "global" and about endpoints.</p><p>It's like hiking a ridge with a map: peaks and dips are where the path is momentarily flat, but the highest point of your hike might be where the trail starts or ends.</p></div>
+
+<div class="radar"><span class="label">Where it shows up in GATE DA</span>
+<p>Every paper: classify critical points of a polynomial and compare with endpoints.</p>
+<div class="pyqs"><span>2024 Q50 · quartic: local max/min</span><span>2025 Q49 · cubic on [−8, 0]</span><span>2026 Q27 · cubic on (−1, 3]</span><span>2024 Q15 · f′ = 0, f″ &gt; 0</span><span>2025 Q51 · f″ &gt; 0 everywhere</span></div>
+<span class="heat">Heat: <b>every year</b>, 2–4 marks</span></div>
+
+<div class="box def" data-k="Definitions" data-name="Local, global and critical"><ul>
+<li>$x^*$ is a <b>local maximum</b> if $f(x^*) \ge f(x)$ for all $x$ near $x^*$; a <b>global maximum</b> if that holds for every $x$ in the domain. Same for minimum with $\le$.</li>
+<li>A <b>critical point</b> is where $f'(x) = 0$ or $f'$ doesn't exist. Interior local extrema can only happen at critical points.</li>
+</ul></div>
+
+<div class="box thm" data-k="Tests" data-name="Classifying a critical point"><ul>
+<li><b>First derivative test:</b> $f'$ changes from + to − ⇒ local max; − to + ⇒ local min; no sign change ⇒ neither.</li>
+<li><b>Second derivative test:</b> $f'(x^*) = 0$ and $f''(x^*) \lt 0$ ⇒ local max; $f''(x^*) \gt 0$ ⇒ local min. If $f''(x^*) = 0$ the test says nothing: $x^4$ has a minimum at 0, $x^3$ has neither.</li>
+</ul></div>
+
+<div class="box alg" data-k="Method" data-name="Global extremes on a closed interval [a, b]"><ol><li>Find the critical points inside $(a, b)$.</li><li>Evaluate $f$ at those points <b>and at the endpoints</b> $a$ and $b$.</li><li>The largest value is the global max; the smallest is the global min.</li></ol><p>On an <b>open</b> or half-open interval, an extreme value may not be attained at all: the function can approach a value at an excluded endpoint without ever reaching it.</p></div>
+
+<div class="panel try"><span class="label">Try it</span><p class="task">Top: the function on its interval; bottom: its derivative. Critical points are where the derivative crosses zero; the labels say local max or min. The large markers show the global max and min on the interval, which may sit at an endpoint. Load each GATE function and check the options against the picture before reading the solutions.</p><div class="widget" data-w="ca_extrema"></div></div>
+
+<div class="example"><div class="problem">
+<div class="pyq"><span class="label">GATE DA 2024 · Q50 · MSQ · 2 marks</span>
+<p>Consider the function $f:\R\to\R$ where $\R$ is the set of all real numbers. $$f(x) = \frac{x^4}{4} - \frac{2x^3}{3} - \frac{3x^2}{2} + 1.$$ Which of the following statements is/are TRUE?</p>
+<ol class="abcd"><li data-l="(A)">$x = 0$ is a local maximum of $f$</li><li data-l="(B)">$x = 3$ is a local minimum of $f$</li><li data-l="(C)">$x = -1$ is a local maximum of $f$</li><li data-l="(D)">$x = 0$ is a local minimum of $f$</li></ol></div></div>
+<ol class="steps">
+<li><p>$f'(x) = x^3 - 2x^2 - 3x = x(x^2 - 2x - 3) = x(x - 3)(x + 1)$. Critical points: $-1, 0, 3$.</p><p class="why-step">Always factor out the common $x$ first.</p></li>
+<li><p>$f''(x) = 3x^2 - 4x - 3$. At $-1$: $3 + 4 - 3 = 4 \gt 0$ (min). At 0: $-3 \lt 0$ (max). At 3: $27 - 12 - 3 = 12 \gt 0$ (min).</p><p class="why-step">The second derivative test classifies each one.</p></li>
+<li><p>So 0 is a local max (A ✓, D ✗), 3 is a local min (B ✓), and $-1$ is a local <i>min</i>, not max (C ✗). Answer: <b>A, B</b>.</p><p class="why-step">Shape check: a quartic with positive leading coefficient goes min–max–min (a W). Official key: A; B.</p></li>
+</ol></div>
+
+<div class="practice">
+<div class="prob" data-id="ca-extrema-p1" data-multi="1" data-ans="C;D" data-choices="A|B|C|D"><div class="stem"><div class="pyq"><span class="label">GATE DA 2025 · Q49 · MSQ · 2 marks</span><p>Consider the function $f(x) = \frac{x^3}{3} + \frac72x^2 + 10x + \frac{133}{2}$, $x\in[-8, 0]$. Which of the following statements is/are correct?</p><ol class="abcd"><li data-l="(A)">The maximum value of $f$ is attained at $x = -5$</li><li data-l="(B)">The minimum value of $f$ is attained at $x = -2$</li><li data-l="(C)">The maximum value of $f$ is $\frac{133}{2}$</li><li data-l="(D)">The minimum value of the derivative of $f$ is attained at $x = -\frac72$</li></ol></div></div><div class="hint"><p>$f' = x^2 + 7x + 10 = (x + 2)(x + 5)$. Evaluate $f$ at $-8, -5, -2, 0$. For (D), $f'$ is a parabola: where is its vertex?</p></div><div class="sol"><p>Values: $f(-8) = \frac{239}{6} \approx 39.8$, $f(-5) = \frac{187}{3} \approx 62.3$ (local max), $f(-2) = \frac{347}{6} \approx 57.8$ (local min), $f(0) = \frac{133}{2} = 66.5$. Global max 66.5 at the endpoint 0: (C) ✓, (A) ✗. Global min at the endpoint $-8$: (B) ✗. $f'(x) = x^2 + 7x + 10$ has its minimum at $x = -\frac72$: (D) ✓. Official key: C; D.</p></div></div>
+<div class="prob" data-id="ca-extrema-p2" data-multi="1" data-ans="B;D" data-choices="A|B|C|D"><div class="stem"><div class="pyq"><span class="label">GATE DA 2026 · Q27 · MSQ · 1 mark</span><p>Let $f(x) = x^3 - 3x^2 + 2$ be a function defined on $(-1, 3]$. Which of the following statements is/are correct?</p><ol class="abcd"><li data-l="(A)">$f(x)$ has exactly two roots in $[-0.9, 0]$.</li><li data-l="(B)">$f(x)$ has a minimum at 2 only.</li><li data-l="(C)">$f(x)$ has maximum at 0 only.</li><li data-l="(D)">$f(x)$ has a root at 1.</li></ol></div></div><div class="hint"><p>Critical points 0 and 2. Compare $f(0)$ with $f(3)$. What about $x = -1$, where $f = -2$? Is it in the domain?</p></div><div class="sol"><p>$f(1) = 0$: (D) ✓. $f(2) = -2$ is the minimum; $f$ approaches $-2$ as $x \to -1^+$, but $-1$ is excluded, so the minimum is attained only at 2: (B) ✓. $f(0) = 2 = f(3)$, so the maximum is attained at both 0 and 3: (C) ✗. On $[-0.9, 0]$, $f$ rises from $-1.16$ to 2 and crosses zero once (at $1 - \sqrt3 \approx -0.73$): (A) ✗. Official key: B; D.</p></div></div>
+<div class="prob" data-id="ca-extrema-p3" data-ans="local minimum" data-choices="local minimum|global minimum|local maximum|global maximum"><div class="stem"><div class="pyq"><span class="label">GATE DA 2024 · Q15 · MCQ · 1 mark</span><p>For any twice differentiable function $f:\R\to\R$, if at some $x^*\in\R$, $f'(x^*) = 0$ and $f''(x^*) \gt 0$, then the function $f$ necessarily has a ______ at $x = x^*$.</p></div></div><div class="hint"><p>The second derivative test is a local test.</p></div><div class="sol"><p>A local minimum. It need not be global: $f$ could dip lower elsewhere (think of the W-shaped quartic above). Official key: (A) local minimum.</p></div></div>
+<div class="prob" data-id="ca-extrema-p4" data-ans="2;-2" data-labels="global max;global min"><div class="stem"><p>Find the global maximum and minimum values of $f(x) = x^3 - 3x$ on $[0, 2]$.</p></div><div class="hint"><p>Critical points: $3x^2 - 3 = 0$. Check $f$ at the critical point(s) inside $[0, 2]$ and at both endpoints.</p></div><div class="sol"><p>Critical point $x = 1$ (and $x = -1$, outside the interval). $f(0) = 0$, $f(1) = -2$, $f(2) = 2$. Max 2 (at the endpoint 2), min $-2$ (at 1).</p></div></div>
+</div>
+
+<div class="dodont"><ul><li>Factor $f'$ completely; list every critical point inside the interval.</li><li>Always evaluate the endpoints of a closed interval.</li><li>Read options carefully for "local" vs "global" and "only".</li></ul><ul><li>Concluding a critical point is a minimum just because $f' = 0$.</li><li>Forgetting that the second derivative test is inconclusive when $f'' = 0$.</li><li>Claiming an extreme value at an endpoint that isn't in the domain (open interval).</li></ul></div>
+
+<ol class="takeaways"><li>Interior extrema occur at critical points; classify them by the sign change of f′ or by the sign of f″.</li><li>Global extremes on [a, b]: compare f at the critical points and at both endpoints.</li><li>f″(x*) &gt; 0 with f′(x*) = 0 gives only a local minimum; on open intervals an extreme may not be attained.</li></ol>
+
+<div class="quiz" data-id="ca-extrema">
+<div class="q"><div class="q-text"><p>$f(x) = x^3$ at $x = 0$ has</p></div><div class="o">a local minimum<div class="e">$f$ is negative just left of 0.</div></div><div class="o">a local maximum<div class="e">$f$ is positive just right of 0.</div></div><div class="o ok">neither: $f'$ doesn't change sign<div class="e">$f' = 3x^2 \ge 0$ on both sides: an inflection point.</div></div></div>
+<div class="q"><div class="q-text"><p>On $[1, 4]$, $f(x) = (x - 2)^2$ has its global maximum at</p></div><div class="o">$x = 2$<div class="e">That's the minimum (the vertex).</div></div><div class="o ok">$x = 4$<div class="e">$f(1) = 1$, $f(4) = 4$: the far endpoint wins.</div></div><div class="o">$x = 1$<div class="e">Compare $f(1) = 1$ with $f(4) = 4$.</div></div></div>
+<div class="q"><div class="q-text"><p>If $f''(x) \gt 0$ for all $x$ (GATE 2025 Q51), which is always true?</p></div><div class="o">$f$ has a local minimum<div class="e">$e^x$ has $f'' \gt 0$ but no minimum at all.</div></div><div class="o ok">$f$ has at most one critical point<div class="e">$f'$ is strictly increasing, so it can be zero at most once. Official key for that MSQ: B, C, D.</div></div><div class="o">$f$ is increasing<div class="e">$x^2$ has $f'' \gt 0$ and decreases for $x \lt 0$.</div></div></div>
+</div>
+</section>
+
+<div class="quiz review" data-id="ca2-review" data-title="Part 2 review (with Part 1)">
+<div class="q" data-from="Ch. 2.1"><div class="q-text"><p>The coefficient of $x^4$ in the Maclaurin series of $f$ is $\frac{1}{8}$. Then $f^{(4)}(0)$ is</p></div><div class="o">$\frac18$<div class="e">Multiply by $4!$.</div></div><div class="o ok">3<div class="e">$24\times\frac18$.</div></div><div class="o">$\frac{1}{192}$<div class="e">Multiply by 4!, don't divide.</div></div></div>
+<div class="q" data-from="Ch. 2.2"><div class="q-text"><p>$f'(x) = (x - 1)^2(x - 3)$. At $x = 1$, $f$ has</p></div><div class="o">a local maximum<div class="e">Check the sign of $f'$ on both sides of 1.</div></div><div class="o">a local minimum<div class="e">$f' \lt 0$ on both sides of 1 (near it).</div></div><div class="o ok">neither<div class="e">$(x - 1)^2 \ge 0$ doesn't change sign, and $(x - 3) \lt 0$ near 1, so $f'$ is negative on both sides.</div></div></div>
+<div class="q" data-from="Ch. 1.2 + 2.2"><div class="q-text"><p>$f(x) = |x|$ on $[-1, 2]$. Its global minimum is at</p></div><div class="o">no point, since f isn't differentiable at 0<div class="e">Critical points include where $f'$ doesn't exist.</div></div><div class="o ok">$x = 0$<div class="e">A corner is a critical point, and $f(0) = 0$ is the smallest value.</div></div><div class="o">$x = -1$<div class="e">$f(-1) = 1 \gt f(0)$.</div></div></div>
 </div>
 </article>
 
-<article class="part" data-id="r3" data-num="3" data-title="Calculus toolkit" data-min="130" data-kind="prereq">
-<p class="part-lede">Just enough calculus to work in probability and machine learning. Derivatives measure how fast something changes. Integrals add up area, which is how continuous probabilities are computed. Gradients extend derivatives to many variables, which is how every machine-learning model is trained. The <a href="../calculus/">Calculus &amp; optimization module</a> goes deeper; this part gives you the working tools.</p>
-<p class="youneed"><b>You need:</b> Part 1 (functions, exponentials, logs) and Part 2 (sums).</p>
+<article class="part" data-id="ca3" data-num="3" data-title="Optimization" data-min="95">
+<p class="part-lede">"Optimization involving a single variable" is the last item in the calculus syllabus, and it's the bridge to machine learning. This part turns word problems into functions to maximise or minimise (including a one-parameter least-squares fit, asked in 2025), then looks at convexity: the property that makes a minimum easy to find and guarantees it's the global one.</p>
+<p class="youneed"><b>You need:</b> Part 2 (critical points and the closed-interval method) and gradients (<a href="../refreshers/#r-grad">Refreshers 3.3</a>).</p>
 
-<section class="ch" id="r-deriv" data-level="b" data-min="45" data-title="Derivatives" data-src="Class 11–12 calculus; GATE DA 2024 Q15, Q33; 2025 Q14, Q42">
-<h2>Derivatives: the slope at a single point</h2>
-<div class="opener"><p>The derivative $f'(x)$ is the slope of the curve at the point $x$: how fast the output changes when you nudge the input.</p><p>Finding maxima and minima, training neural networks with backpropagation, and the sigmoid's famous $\sigma(1-\sigma)$ all come down to derivatives. GATE asks one directly almost every year.</p><p>It's like the speedometer in a car. The odometer tells you distance (the function); the speedometer tells you how fast that distance is changing right now (the derivative).</p></div>
+<section class="ch" id="ca-optim" data-level="n" data-min="45" data-title="Optimization problems" data-src="Single-variable optimization; GATE DA 2025 Q34; 2024 sample paper Q44">
+<h2>Optimization: turning a question into a function</h2>
+<div class="opener"><p>To optimise, write the quantity you care about as a function of one variable, find where its derivative is zero, and check that the point is the max or min you want (and allowed).</p><p>GATE asks this as word problems and, in disguise, as model fitting: 2025 Q34 asked for the least-squares slope of a line through the origin, a one-variable minimisation.</p><p>It's like choosing a batting tempo: hit too slowly and you don't score; hit too fast and you get out. Somewhere in between is the best rate, and calculus finds it.</p></div>
 
 <div class="radar"><span class="label">Where it shows up in GATE DA</span>
-<p>Directly in calculus questions, and inside every optimisation and neural-network question.</p>
-<div class="pyqs"><span>2024 Q33 · sigmoid derivative</span><span>2024 Q15 · f′ = 0, f″ &gt; 0</span><span>2025 Q14 · 10th derivative</span><span>2025 Q42 · backprop ∂y/∂a</span><span>2024 Q50, 2025 Q49, 2026 Q27 · maxima/minima</span></div>
-<span class="heat">Heat: <b>every year</b>, 2–8 marks including optimisation</span></div>
+<p>Word problems and one-parameter model fitting.</p>
+<div class="pyqs"><span>2025 Q34 · least-squares fit of y = wx</span><span>Sample Q44 · cost per unit and profit</span><span>2025 Q49 · extremes on an interval</span></div>
+<span class="heat">Heat: <b>most years</b>, 1–2 marks</span></div>
 
-<div class="prose">
-<p>For a straight line the slope is easy: rise over run, the same everywhere. A curve's steepness changes from point to point. To find the slope at one point $x$, pick a second point a tiny step $h$ away, draw the line through both (a <b>secant</b>), and measure its slope:</p>
-$$\frac{f(x+h) - f(x)}{h}.$$
-<p>Now shrink $h$ towards 0. The secant swings round and settles on the <b>tangent</b> line, the line that just touches the curve at $x$. Its slope is the derivative.</p>
-</div>
-
-<div class="box def" data-k="Definition" data-name="Derivative"><p>$$f'(x) = \lim_{h\to 0}\frac{f(x+h)-f(x)}{h}.$$ Other notations: $\dfrac{df}{dx}$, $\dfrac{d}{dx}f(x)$. If $f'(x) \gt 0$ the function is rising at $x$; if $f'(x) \lt 0$ it is falling; if $f'(x) = 0$ it is momentarily flat (a candidate for a peak or valley).</p></div>
-
-<div class="panel try"><span class="label">Try it</span><p class="task">Drag the point along the curve. The orange line is a secant through $x$ and $x + h$; shrink $h$ and watch it become the tangent. Compare the secant slope with the exact derivative in the readout. Try the sigmoid and find where its slope is largest.</p><div class="widget" data-w="r_deriv"></div></div>
-
-<div class="table-wrap"><table>
-<thead><tr><th style="text-transform:none">$f(x)$</th><th style="text-transform:none">$f'(x)$</th><th>Note</th></tr></thead>
-<tbody>
-<tr><td>$c$ (constant)</td><td>$0$</td><td>flat line</td></tr>
-<tr><td>$x^n$</td><td>$n x^{n-1}$</td><td>works for any power: $\sqrt x = x^{1/2} \to \tfrac12 x^{-1/2}$</td></tr>
-<tr><td>$e^x$</td><td>$e^x$</td><td>its own slope; that's what makes $e$ special</td></tr>
-<tr><td>$e^{ax}$</td><td>$a e^{ax}$</td><td>chain rule (below)</td></tr>
-<tr><td>$\ln x$</td><td>$1/x$</td><td>for $x \gt 0$</td></tr>
-<tr><td>$\sin x$, $\cos x$</td><td>$\cos x$, $-\sin x$</td><td>$x$ in radians</td></tr>
-</tbody></table></div>
-
-<div class="box plain" data-k="Key idea" data-name="Rules for combining"><ul>
-<li><b>Sum and constant:</b> $(af + bg)' = af' + bg'$.</li>
-<li><b>Product:</b> $(fg)' = f'g + fg'$.</li>
-<li><b>Quotient:</b> $\left(\dfrac fg\right)' = \dfrac{f'g - fg'}{g^2}$.</li>
-<li><b>Chain</b> (a function inside a function): $\dfrac{d}{dx} f(g(x)) = f'(g(x))\cdot g'(x)$. Differentiate the outside, keep the inside, then multiply by the derivative of the inside. Backpropagation in neural networks is just the chain rule applied layer by layer.</li>
-</ul></div>
-
-<div class="prose">
-<h3>The second derivative</h3>
-<p>Differentiate twice and you get $f''(x)$, which measures how the slope itself is changing: the curve's <b>bend</b>. $f'' \gt 0$ means the curve bends upward like a cup (∪); $f'' \lt 0$ means it bends down like a cap (∩). So if $f'(x^*) = 0$ and $f''(x^*) \gt 0$, the curve is flat at the bottom of a cup: a <b>local minimum</b>. That is exactly GATE 2024 Q15 (answer: local minimum, not necessarily global).</p>
-</div>
-
-<div class="example"><div class="problem">
-<div class="pyq"><span class="label">GATE DA 2024 · Q33 · NAT · 1 mark</span>
-<p>Let $f:\R\to\R$ be the function $f(x) = \dfrac{1}{1+e^{-x}}$. The value of the derivative of $f$ at $x$ where $f(x) = 0.4$ is ______ (rounded off to two decimal places).</p></div>
-<p>This $f$ is the <b>sigmoid</b>, written $\sigma(x)$. It squashes any number into the range (0, 1) and is the heart of logistic regression.</p></div>
-<ol class="steps">
-<li><p>Write $f(x) = (1 + e^{-x})^{-1}$ and use the chain rule. Outside: $u^{-1} \to -u^{-2}$. Inside: $u = 1 + e^{-x}$, with $u' = -e^{-x}$. So $$f'(x) = -(1+e^{-x})^{-2}\cdot(-e^{-x}) = \frac{e^{-x}}{(1+e^{-x})^2}.$$</p><p class="why-step">Two minus signs cancel. Notice we also used $\frac{d}{dx}e^{-x} = -e^{-x}$, which is the chain rule again.</p></li>
-<li><p>Split it: $\dfrac{e^{-x}}{(1+e^{-x})^2} = \dfrac{1}{1+e^{-x}}\cdot\dfrac{e^{-x}}{1+e^{-x}} = f(x)\,\bigl(1 - f(x)\bigr).$</p><p class="why-step">Because $\frac{e^{-x}}{1+e^{-x}} = \frac{(1+e^{-x}) - 1}{1+e^{-x}} = 1 - f(x)$. This identity, $\sigma' = \sigma(1-\sigma)$, is worth memorising.</p></li>
-<li><p>We never need $x$ itself: $f'(x) = 0.4 \times (1 - 0.4) = $ <b>0.24</b>.</p><p class="why-step">The question deliberately gives $f(x)$, not $x$. Solving for $x$ first ($x = \ln(2/3)$) would work but wastes time. Official key: 0.24.</p></li>
+<div class="box alg" data-k="Method" data-name="Solving an optimisation problem"><ol>
+<li><b>Name the variable</b> you control and the <b>objective</b> to maximise or minimise.</li>
+<li>Write the objective as a function $f(x)$, using any constraint to eliminate other variables.</li>
+<li>Note the allowed range of $x$ (lengths positive, counts non-negative, …).</li>
+<li>Solve $f'(x) = 0$; check with $f''$ or the closed-interval method; compare with the endpoints.</li>
+<li>Answer the question that was asked (the optimal $x$, or the optimal value?).</li>
 </ol></div>
 
-<details class="deeper"><summary>Go deeper: why the derivative of eˣ is eˣ</summary><p>$\dfrac{e^{x+h}-e^x}{h} = e^x\cdot\dfrac{e^h - 1}{h}$. The number $e$ is exactly the base for which $\frac{e^h - 1}{h} \to 1$ as $h\to 0$. (For base 2 the limit is $\ln 2 \approx 0.693$; for base 3 it's $\ln 3 \approx 1.099$; $e$ sits in between where the limit is exactly 1.)</p></details>
-
-<div class="practice">
-<div class="prob" data-id="r-deriv-p1" data-ans="10" data-labels="f′(1)"><div class="stem"><p>$f(x) = 3x^4 - 2x + 7$. Find $f'(1)$.</p></div><div class="hint"><p>Power rule term by term: $3x^4 \to 12x^3$.</p></div><div class="sol"><p>$f'(x) = 12x^3 - 2$, so $f'(1) = 10$.</p></div></div>
-<div class="prob" data-id="r-deriv-p2" data-ans="-2" data-labels="slope at 0"><div class="stem"><p>What is the slope of $e^{-2x}$ at $x = 0$?</p></div><div class="hint"><p>$\frac{d}{dx}e^{ax} = a e^{ax}$.</p></div><div class="sol"><p>$-2e^{-2x}$ at $x = 0$ is $-2$. The curve is falling, and fast.</p></div></div>
-<div class="prob" data-id="r-deriv-p3" data-ans="1" data-labels="derivative at x = 1"><div class="stem"><p>Differentiate $\ln(x^2 + 1)$ and evaluate at $x = 1$.</p></div><div class="hint"><p>Chain rule: the outside is $\ln u \to 1/u$; the inside is $x^2+1$, with derivative $2x$.</p></div><div class="sol"><p>$\dfrac{2x}{x^2+1}$ at $x = 1$ gives $2/2 = 1$.</p></div></div>
-<div class="prob" data-id="r-deriv-p4" data-ans="1" data-labels="value"><div class="stem"><p>Using the product rule, find the derivative of $x e^x$ at $x = 0$.</p></div><div class="hint"><p>$(fg)' = f'g + fg'$ with $f = x$, $g = e^x$.</p></div><div class="sol"><p>$1\cdot e^x + x e^x$; at 0 this is $1 + 0 = 1$.</p></div></div>
-</div>
-
-<div class="dodont"><ul><li>Rewrite roots and fractions as powers before differentiating: $1/x^2 = x^{-2}$.</li><li>For nested functions, name the inside $u$ and apply the chain rule deliberately.</li><li>Look for shortcuts like $\sigma' = \sigma(1-\sigma)$ when the question gives you $f(x)$ instead of $x$.</li></ul><ul><li>Forgetting the inner derivative: $\frac{d}{dx}e^{-x} = -e^{-x}$, not $e^{-x}$.</li><li>Writing $(fg)' = f'g'$. The product rule has two terms.</li><li>Assuming $f'(x) = 0$ means a minimum. It could be a maximum or a flat inflection; check $f''$.</li></ul></div>
-
-<ol class="takeaways"><li>The derivative is the slope of the tangent: the limit of rise/run as the run shrinks to zero.</li><li>Power, exponential and log rules, combined with the sum, product, quotient and chain rules, handle everything GATE asks.</li><li>f′ = 0 marks a flat point; f″ &gt; 0 there means a local minimum, f″ &lt; 0 a local maximum.</li></ol>
-
-<div class="quiz" data-id="r-deriv">
-<div class="q"><div class="q-text"><p>The derivative of $5x^3$ is</p></div><div class="o">$5x^2$<div class="e">The power comes down as a multiplier too.</div></div><div class="o ok">$15x^2$<div class="e">$5 \cdot 3x^{2}$.</div></div><div class="o">$15x^3$<div class="e">The power drops by one.</div></div><div class="o">$\tfrac54 x^4$<div class="e">That's integration (going the other way).</div></div></div>
-<div class="q"><div class="q-text"><p>At which $x$ is the sigmoid $\sigma(x)$ steepest, and what is the slope there?</p></div><div class="o">$x = 1$, slope 1<div class="e">$\sigma(1-\sigma)$ is largest when $\sigma = \tfrac12$. Where does that happen?</div></div><div class="o ok">$x = 0$, slope 0.25<div class="e">$\sigma(0) = \tfrac12$, and $\tfrac12\cdot\tfrac12 = \tfrac14$ is the largest value of $\sigma(1-\sigma)$.</div></div><div class="o">$x = 0$, slope 0.5<div class="e">The position is right; recompute $\sigma(1-\sigma)$ at $\sigma = \tfrac12$.</div></div><div class="o">It's equally steep everywhere<div class="e">The sigmoid is flat at both ends and steep in the middle; try the widget.</div></div></div>
-<div class="q"><div class="q-text"><p>$\frac{d}{dx}\,e^{x^2}$ equals</p></div><div class="o">$e^{x^2}$<div class="e">The inside is $x^2$, not $x$; the chain rule adds a factor.</div></div><div class="o">$x^2 e^{x^2 - 1}$<div class="e">The power rule doesn't apply to $e^{(\cdot)}$.</div></div><div class="o ok">$2x\,e^{x^2}$<div class="e">The outside derivative is $e^{x^2}$; multiply by the inside derivative $2x$.</div></div><div class="o">$2e^{x}$<div class="e">Keep the inside intact in the outer derivative.</div></div></div>
-<div class="q"><div class="q-text"><p>If $f'(2) = 0$ and $f''(2) = -3$, then at $x = 2$, $f$ has</p></div><div class="o">a local minimum<div class="e">A negative second derivative means the curve bends down, like a cap.</div></div><div class="o ok">a local maximum<div class="e">Flat, and bending downward: the top of a hill.</div></div><div class="o">no turning point<div class="e">The slope is zero and the bend is not, so it's a turning point.</div></div><div class="o">a global maximum<div class="e">The test only tells you about the neighbourhood; the function might go higher elsewhere.</div></div></div>
-</div>
-</section>
-
-<section class="ch" id="r-integ" data-level="b" data-min="45" data-title="Integrals as area" data-src="Class 12 calculus; GATE DA 2024 Q56, Q57; sample paper Q33">
-<h2>Integrals: adding up area under a curve</h2>
-<div class="opener"><p>The integral $\int_a^b f(x)\,dx$ is the area under the curve of $f$ between $a$ and $b$, and you compute it by running a derivative backwards.</p><p>For continuous random variables, probability <i>is</i> area under a curve. Every exponential, normal or uniform question in GATE hides an integral, and many of them can be done with plain geometry.</p><p>It's like filling a petrol tank: the pump's flow rate changes over time, and the total fuel is the area under the flow-rate curve.</p></div>
-
-<div class="radar"><span class="label">Where it shows up in GATE DA</span>
-<p>Rarely asked as "integrate this", but needed for continuous probability: densities, means and variances.</p>
-<div class="pyqs"><span>2024 Q56 · P(X ≥ Y) for uniforms</span><span>2024 Q57 · exponential mean and variance</span><span>2025 Q39 · probabilities from a CDF</span><span>Sample Q33 · variance of a uniform</span><span>Sample Q36 · conditional density</span></div>
-<span class="heat">Heat: <b>every year</b>, inside probability questions</span></div>
-
 <div class="prose">
-<p>Slice the area under $f$ between $a$ and $b$ into thin rectangles of width $\Delta x$. Each has area about $f(x)\,\Delta x$. Add them up and you have an approximation of the area; make the slices thinner and the approximation becomes exact. The integral sign $\int$ is a stretched S for "sum":</p>
-$$\int_a^b f(x)\,dx \approx \sum f(x_i)\,\Delta x.$$
-<p>Area below the axis counts as negative.</p>
-</div>
-
-<div class="panel try"><span class="label">Try it</span><p class="task">Change the number of rectangles and watch the approximation close in on the exact area. Move the limits $a$ and $b$. For the exponential density, set $a = 0$ and push $b$ far right: the total area approaches 1, as every probability density must.</p><div class="widget" data-w="r_integ"></div></div>
-
-<div class="box thm" data-k="Theorem" data-name="Fundamental theorem of calculus"><p>If $F'(x) = f(x)$ (we call $F$ an <b>antiderivative</b> of $f$), then $$\int_a^b f(x)\,dx = F(b) - F(a),\quad\text{often written } \Big[F(x)\Big]_a^b.$$ So to integrate, ask: <i>what function has $f$ as its derivative?</i></p></div>
-
-<div class="table-wrap"><table>
-<thead><tr><th style="text-transform:none">$f(x)$</th><th style="text-transform:none">antiderivative $F(x)$</th><th>Check by differentiating</th></tr></thead>
-<tbody>
-<tr><td>$x^n$ ($n \ne -1$)</td><td>$\dfrac{x^{n+1}}{n+1}$</td><td>$\frac{(n+1)x^n}{n+1} = x^n$ ✓</td></tr>
-<tr><td>$1/x$</td><td>$\ln x$</td><td>✓ (for $x \gt 0$)</td></tr>
-<tr><td>$e^{ax}$</td><td>$\dfrac{e^{ax}}{a}$</td><td>✓</td></tr>
-<tr><td>$\lambda e^{-\lambda x}$</td><td>$-e^{-\lambda x}$</td><td>✓</td></tr>
-</tbody></table></div>
-
-<div class="prose">
-<p><b>Integrals to infinity</b> work by taking a limit: $\int_0^\infty \lambda e^{-\lambda x}dx = \Big[-e^{-\lambda x}\Big]_0^\infty = 0 - (-1) = 1$, because $e^{-\lambda x} \to 0$ as $x \to \infty$.</p>
-<p><b>Use geometry when you can.</b> If $f$ is flat or a straight line, the area is a rectangle, triangle or trapezium. For uniform distributions this is almost always faster than integrating.</p>
-<p><b>Two variables.</b> If a point is equally likely to land anywhere in a square, the probability it lands in some region is (area of region) ÷ (area of square). This is a double integral of a constant, which is just area. GATE loves this.</p>
-</div>
-
-<div class="example"><div class="problem">
-<div class="pyq"><span class="label">GATE DA 2024 · Q56 · NAT · 2 marks</span>
-<p>Let $X$ be a random variable uniformly distributed in the interval $[1, 3]$ and $Y$ be a random variable uniformly distributed in the interval $[2, 4]$. If $X$ and $Y$ are independent of each other, the probability $P(X \ge Y)$ is ______ (rounded off to three decimal places).</p></div>
-<p>"Uniformly distributed in $[1,3]$" means every value in the interval is equally likely. Independent uniforms make the pair $(X, Y)$ equally likely to be anywhere in the rectangle $[1,3]\times[2,4]$.</p></div>
-<ol class="steps">
-<li><p>The pair $(X, Y)$ lives in a 2 × 2 square: $x$ from 1 to 3, $y$ from 2 to 4. Its area is 4.</p><p class="why-step">Equally likely everywhere ⇒ probability = (favourable area)/(total area).</p></li>
-<li><p>The event $X \ge Y$ is the part of the square on or below the line $y = x$. Inside the square, that line runs from $(2, 2)$ to $(3, 3)$.</p><p class="why-step">The line enters at the bottom edge $y = 2$ (where $x = 2$) and leaves at the right edge $x = 3$ (where $y = 3$). Sketch it; it takes ten seconds.</p></li>
-<li><p>The region below the line is a right triangle with corners $(2,2)$, $(3,2)$, $(3,3)$: legs of length 1, area $\tfrac12$.</p><p class="why-step">Area of a right triangle = ½ × base × height.</p></li>
-<li><p>$P(X \ge Y) = \dfrac{1/2}{4} = \tfrac18 = $ <b>0.125</b>.</p><p class="why-step">No integration needed. Official key: 0.125.</p></li>
-</ol></div>
-
-<details class="deeper"><summary>Go deeper: the same answer by integration</summary><p>The joint density is $\tfrac14$ on the square. $P(X\ge Y) = \int_{2}^{3}\int_{y}^{3}\tfrac14\,dx\,dy = \tfrac14\int_2^3 (3 - y)\,dy = \tfrac14\Big[3y - \tfrac{y^2}{2}\Big]_2^3 = \tfrac14(4.5 - 4) = \tfrac18$. Same result; geometry was just faster.</p></details>
-
-<div class="practice">
-<div class="prob" data-id="r-integ-p1" data-ans="8" data-labels="value"><div class="stem"><p>Compute $\displaystyle\int_0^2 3x^2\,dx$.</p></div><div class="hint"><p>An antiderivative of $3x^2$ is $x^3$.</p></div><div class="sol"><p>$\big[x^3\big]_0^2 = 8 - 0 = 8$.</p></div></div>
-<div class="prob" data-id="r-integ-p2" data-ans="1/2" data-labels="value"><div class="stem"><p>Compute $\displaystyle\int_0^\infty e^{-2x}\,dx$.</p></div><div class="hint"><p>Antiderivative $-\tfrac12 e^{-2x}$; it goes to 0 at infinity.</p></div><div class="sol"><p>$0 - (-\tfrac12) = \tfrac12$.</p></div></div>
-<div class="prob" data-id="r-integ-p3" data-ans="1" data-labels="value"><div class="stem"><p>Compute $\displaystyle\int_1^{e} \frac{1}{x}\,dx$.</p></div><div class="hint"><p>Antiderivative $\ln x$.</p></div><div class="sol"><p>$\ln e - \ln 1 = 1 - 0 = 1$.</p></div></div>
-<div class="prob" data-id="r-integ-p4" data-ans="1/12" data-labels="Var(X)"><div class="stem"><p>For $X$ uniform on $[0, 1]$ (density 1 there), the mean is $\int_0^1 x\,dx$ and $E[X^2] = \int_0^1 x^2\,dx$. The variance is $E[X^2] - (\text{mean})^2$. Find it. (This is the 2024 sample paper's Q33.)</p></div><div class="hint"><p>$\int_0^1 x\,dx = \tfrac12$ and $\int_0^1 x^2\,dx = \tfrac13$.</p></div><div class="sol"><p>$\tfrac13 - \tfrac14 = \tfrac1{12} \approx 0.0833$.</p></div></div>
-</div>
-
-<div class="dodont"><ul><li>Sketch the region first. Many GATE integrals are triangles and rectangles in disguise.</li><li>Check an antiderivative by differentiating it.</li><li>For uniform pairs, compute favourable area ÷ total area.</li></ul><ul><li>Forgetting that $\big[F\big]_a^b$ means $F(b) - F(a)$, top minus bottom.</li><li>Applying $x^{n+1}/(n+1)$ with $n = -1$: the integral of $1/x$ is $\ln x$.</li><li>Forgetting the $1/a$ in $\int e^{ax}dx = e^{ax}/a$.</li></ul></div>
-
-<ol class="takeaways"><li>An integral is accumulated area: a sum of thin slices f(x)·Δx.</li><li>Integrate by running differentiation backwards: ∫ₐᵇ f = F(b) − F(a).</li><li>For flat densities, probability is area. Use geometry before calculus.</li></ol>
-
-<div class="quiz" data-id="r-integ">
-<div class="q"><div class="q-text"><p>$\displaystyle\int_0^3 2\,dx$ equals</p></div><div class="o">2<div class="e">That's the height. Area = height × width.</div></div><div class="o ok">6<div class="e">A rectangle of height 2 and width 3.</div></div><div class="o">3<div class="e">That's the width only.</div></div><div class="o">9<div class="e">Recheck: the height is 2, not 3.</div></div></div>
-<div class="q"><div class="q-text"><p>A point is chosen uniformly at random in the unit square $[0,1]\times[0,1]$. What is $P(X + Y \le 1)$?</p></div><div class="o">1<div class="e">Some of the square lies above the line $x + y = 1$.</div></div><div class="o ok">½<div class="e">The region below $x + y = 1$ is a triangle of area ½ in a square of area 1.</div></div><div class="o">¼<div class="e">The triangle's legs have length 1, not ½.</div></div><div class="o">⅓<div class="e">Sketch the line $x + y = 1$ in the square and compute the triangle's area.</div></div></div>
-<div class="q"><div class="q-text"><p>For an exponential density $\lambda e^{-\lambda x}$ ($x \ge 0$), $P(X \gt 3) = \int_3^\infty \lambda e^{-\lambda x}dx$ equals</p></div><div class="o">$1 - e^{-3\lambda}$<div class="e">That's $P(X \le 3)$, the area from 0 to 3.</div></div><div class="o ok">$e^{-3\lambda}$<div class="e">$\big[-e^{-\lambda x}\big]_3^\infty = 0 + e^{-3\lambda}$. You used this in Part 1.</div></div><div class="o">$\lambda e^{-3\lambda}$<div class="e">That's the height of the density at 3, not an area.</div></div><div class="o">$3\lambda$<div class="e">Integrate first; an area under a decaying curve can't grow like this.</div></div></div>
-<div class="q"><div class="q-text"><p>Which is an antiderivative of $4x^3 + e^{2x}$?</p></div><div class="o">$12x^2 + 2e^{2x}$<div class="e">That's the derivative, not the antiderivative.</div></div><div class="o">$x^4 + e^{2x}$<div class="e">Differentiate $e^{2x}$: you get $2e^{2x}$, which is too much.</div></div><div class="o ok">$x^4 + \tfrac12 e^{2x}$<div class="e">Differentiating gives back $4x^3 + e^{2x}$.</div></div><div class="o">$x^4 + 2e^{2x}$<div class="e">You need to divide by 2, not multiply.</div></div></div>
-</div>
-</section>
-
-<section class="ch" id="r-grad" data-level="n" data-min="40" data-title="Partial derivatives and gradients" data-src="Engineering maths; GATE DA 2026 Q29, Q55; 2025 Q42">
-<h2>Gradients: which way is downhill?</h2>
-<div class="opener"><p>For a function of several variables, each partial derivative measures the slope in one direction, and the gradient collects them into an arrow pointing uphill.</p><p>Machine learning trains models by walking downhill on a loss surface (gradient descent). GATE has asked you to perform one step of it, and to compute gradients through a neural network.</p><p>It's like standing on a foggy hillside: you can't see the valley, but you can feel which way the ground slopes under your feet, and you step that way.</p></div>
-
-<div class="radar"><span class="label">Where it shows up in GATE DA</span>
-<p>Inside machine-learning questions: gradient-descent updates, losses and backpropagation.</p>
-<div class="pyqs"><span>2026 Q29 · one SGD step</span><span>2025 Q42 · ∂y/∂a in a ReLU network</span><span>2026 Q55 · ridge loss</span><span>2025 Q22 · perceptron update</span></div>
-<span class="heat">Heat: <b>most years</b>, inside ML</span></div>
-
-<div class="prose">
-<p>A function can take two inputs: $f(x, y) = x^2 + 3y^2$. Its graph is a surface, like a landscape. To draw it on paper we use a <b>contour map</b>: curves joining points of equal height, exactly like the contour lines on a hiking map.</p>
-<p>To measure slope, freeze all inputs but one. The <b>partial derivative</b> $\dfrac{\partial f}{\partial x}$ treats $y$ as a constant and differentiates in $x$ as usual. For $f = x^2 + 3y^2$: $\dfrac{\partial f}{\partial x} = 2x$ and $\dfrac{\partial f}{\partial y} = 6y$.</p>
-</div>
-
-<div class="box def" data-k="Definition" data-name="Gradient"><p>$$\nabla f = \left(\frac{\partial f}{\partial x},\ \frac{\partial f}{\partial y}\right).$$ At each point, $\nabla f$ is an arrow pointing in the direction of <b>steepest ascent</b>, and it's perpendicular to the contour line through that point. Its length is how steep it is. So $-\nabla f$ points steepest downhill.</p></div>
-
-<div class="box alg" data-k="Algorithm" data-name="Gradient descent"><p>Start at some point $\mathbf w$. Repeat: $$\mathbf w \leftarrow \mathbf w - \eta\,\nabla f(\mathbf w),$$ where $\eta \gt 0$ (eta) is the <b>learning rate</b>, the step size. Too small and progress is slow; too large and you overshoot the valley and may bounce out of it. <b>Stochastic</b> gradient descent (SGD) uses the gradient computed on one data point at a time.</p></div>
-
-<div class="panel try"><span class="label">Try it</span><p class="task">Drag the dot anywhere on the contour map. The teal arrow is $-\nabla f$, the downhill direction; notice it always crosses the contours at right angles. Press "Step" to take gradient-descent steps. Then raise the learning rate until the path starts zig-zagging, and beyond, until it flies off.</p><div class="widget" data-w="r_grad"></div></div>
-
-<div class="example"><div class="problem">
-<div class="pyq"><span class="label">GATE DA 2026 · Q29 · NAT · 1 mark</span>
-<p>Consider that for a supervised learning task, the objective function being minimized is $f_w(x) = wx$, where $x\in\R$ is the input and $w\in\R$ is the parameter. Stochastic Gradient Descent with learning rate of 0.10 is used for parameter updates. Suppose that at the end of iteration $i$, the value of $w$ becomes 10.00. Let $x = 10.00$ be the input for iteration $(i + 1)$. The value of $w$ at the end of iteration $(i + 1)$ is ______. (Rounded off to two decimal places)</p></div></div>
-<ol class="steps">
-<li><p>We differentiate the objective with respect to the <b>parameter</b> $w$, not the input $x$: $\dfrac{\partial}{\partial w}(wx) = x$.</p><p class="why-step">During training the data $x$ is fixed and the parameter is what we adjust. This is the conceptual point the question tests.</p></li>
-<li><p>At this iteration $x = 10$, so the gradient is $10$.</p><p class="why-step">The current value of $w$ doesn't affect this gradient, because $f$ is linear in $w$.</p></li>
-<li><p>Update: $w \leftarrow 10 - 0.10 \times 10 = $ <b>9.00</b>.</p><p class="why-step">$w_{\text{new}} = w_{\text{old}} - \eta \cdot \text{gradient}$. Official answer range: 8.90 to 9.10.</p></li>
-</ol></div>
-
-<div class="practice">
-<div class="prob" data-id="r-grad-p1" data-ans="4;7" data-labels="∂f/∂x;∂f/∂y"><div class="stem"><p>$f(x, y) = x^2 y + 3y$. Find both partial derivatives at $(2, 1)$.</p></div><div class="hint"><p>For $\partial f/\partial x$, treat $y$ as a number: $x^2 y \to 2xy$ and $3y \to 0$. For $\partial f/\partial y$, treat $x$ as a number.</p></div><div class="sol"><p>$\partial f/\partial x = 2xy = 4$. $\partial f/\partial y = x^2 + 3 = 7$.</p></div></div>
-<div class="prob" data-id="r-grad-p2" data-ans="0.6" data-labels="new w"><div class="stem"><p>Minimise $L(w) = (w - 3)^2$ by gradient descent with $\eta = 0.1$, starting at $w = 0$. What is $w$ after one step?</p></div><div class="hint"><p>$L'(w) = 2(w - 3)$. Evaluate at $w = 0$, then update.</p></div><div class="sol"><p>$L'(0) = -6$. So $w \leftarrow 0 - 0.1(-6) = 0.6$, a step towards the minimum at 3.</p></div></div>
-<div class="prob" data-id="r-grad-p3" data-ans="10" data-labels="length of ∇f"><div class="stem"><p>For $f(x, y) = x^2 + y^2$, how long is the gradient arrow at $(3, 4)$?</p></div><div class="hint"><p>$\nabla f = (2x, 2y)$. Length of $(a, b)$ is $\sqrt{a^2 + b^2}$.</p></div><div class="sol"><p>$\nabla f = (6, 8)$, length $\sqrt{36 + 64} = 10$.</p></div></div>
-<div class="prob" data-id="r-grad-p4" data-ans="It overshoots and diverges" data-choices="It converges faster|It converges to a different minimum|It overshoots and diverges"><div class="stem"><p>For $L(w) = w^2$, gradient descent is $w \leftarrow w - \eta\cdot 2w = (1 - 2\eta)w$. What happens with $\eta = 1.5$?</p></div><div class="hint"><p>Compute $1 - 2\eta$ and think about what repeatedly multiplying by it does.</p></div><div class="sol"><p>$1 - 3 = -2$: every step multiplies $w$ by $-2$, so $|w|$ doubles each step while the sign flips. It overshoots further each time and diverges. (Gradient descent here converges only when $|1 - 2\eta| \lt 1$, i.e. $0 \lt \eta \lt 1$.)</p></div></div>
-</div>
-
-<div class="dodont"><ul><li>Ask "derivative with respect to what?" In ML it's almost always the parameters (weights), not the data.</li><li>Move <b>against</b> the gradient to minimise: subtract $\eta\nabla f$.</li><li>Treat every other variable as a constant when taking a partial derivative.</li></ul><ul><li>Adding the gradient instead of subtracting it, which climbs uphill.</li><li>Differentiating with respect to the input $x$ when the question updates $w$.</li><li>Assuming a bigger learning rate is always faster. Past a point it diverges.</li></ul></div>
-
-<ol class="takeaways"><li>A partial derivative is an ordinary derivative with every other variable frozen.</li><li>The gradient points uphill, perpendicular to contours; −∇f points downhill.</li><li>Gradient descent: w ← w − η∇f(w). The learning rate controls the step, and too large a rate diverges.</li></ol>
-
-<div class="quiz" data-id="r-grad">
-<div class="q"><div class="q-text"><p>For $f(x, y) = 3x + 5y^2$, $\dfrac{\partial f}{\partial y}$ is</p></div><div class="o">$3 + 10y$<div class="e">$3x$ doesn't depend on $y$, so it differentiates to 0.</div></div><div class="o ok">$10y$<div class="e">Only the $5y^2$ term changes with $y$.</div></div><div class="o">$3$<div class="e">That's $\partial f/\partial x$.</div></div><div class="o">$5y^2$<div class="e">Differentiate: the power comes down and drops by one.</div></div></div>
-<div class="q"><div class="q-text"><p>The gradient at a point is always</p></div><div class="o">parallel to the contour line there<div class="e">Moving along a contour keeps the height constant, so that direction has zero slope.</div></div><div class="o ok">perpendicular to the contour line there<div class="e">It points straight uphill, across the contours.</div></div><div class="o">pointing to the global minimum<div class="e">It only knows about the slope where you're standing; it points uphill.</div></div><div class="o">zero<div class="e">It is zero only at flat points like the bottom of a valley.</div></div></div>
-<div class="q"><div class="q-text"><p>One gradient-descent step on $L(w_1, w_2) = w_1^2 + w_2^2$ from $(1, 2)$ with $\eta = 0.25$ lands at</p></div><div class="o">$(1.5, 3)$<div class="e">That moved uphill; you added the gradient.</div></div><div class="o">$(0.75, 1.75)$<div class="e">The gradient is $(2w_1, 2w_2)$, not $(1, 1)$.</div></div><div class="o ok">$(0.5, 1)$<div class="e">$\nabla L = (2, 4)$; subtract $0.25 \times (2, 4) = (0.5, 1)$.</div></div><div class="o">$(0, 0)$<div class="e">That would need $\eta = 0.5$ here. Recompute with 0.25.</div></div></div>
-</div>
-</section>
-
-<div class="quiz review" data-id="r3-review" data-title="Part 3 review (with Parts 1–2)">
-<div class="q" data-from="Ch. 3.1"><div class="q-text"><p>If $\sigma(x) = 0.9$, then $\sigma'(x)$ is</p></div><div class="o">0.9<div class="e">Use $\sigma' = \sigma(1 - \sigma)$.</div></div><div class="o ok">0.09<div class="e">$0.9 \times 0.1$.</div></div><div class="o">0.81<div class="e">That's $\sigma^2$.</div></div><div class="o">0.1<div class="e">That's $1 - \sigma$ alone.</div></div></div>
-<div class="q" data-from="Ch. 3.2 + 2.2"><div class="q-text"><p>$X$ and $Y$ are independent and uniform on $[0, 2]$. $P(X \le 1 \text{ and } Y \le 1)$ is</p></div><div class="o">½<div class="e">That's the chance for one of them. Both must happen.</div></div><div class="o ok">¼<div class="e">The favourable region is a 1 × 1 square inside a 2 × 2 square.</div></div><div class="o">1<div class="e">Half the range is excluded for each variable.</div></div><div class="o">¾<div class="e">That's $P(X \le 1 \text{ or } Y \le 1)$.</div></div></div>
-<div class="q" data-from="Ch. 3.1 + 1.2"><div class="q-text"><p>The derivative of $\ln(e^{3x})$ is</p></div><div class="o">$3e^{3x}$<div class="e">Simplify first: $\ln(e^{3x})$ is just $3x$.</div></div><div class="o ok">3<div class="e">$\ln(e^{3x}) = 3x$, whose slope is 3.</div></div><div class="o">$1/e^{3x}$<div class="e">The chain rule gives $\frac{1}{e^{3x}}\cdot 3e^{3x} = 3$. Simplifying first is easier.</div></div><div class="o">$3x$<div class="e">That's the function after simplifying, not its derivative.</div></div></div>
-<div class="q" data-from="Ch. 3.3"><div class="q-text"><p>In gradient descent, doubling the learning rate always</p></div><div class="o">halves the number of steps needed<div class="e">Not always: it can overshoot and even diverge.</div></div><div class="o ok">doubles the step taken from the current point<div class="e">The step is $\eta\nabla f$. Whether that helps depends on the landscape.</div></div><div class="o">finds a lower minimum<div class="e">The learning rate controls step size, not which valley exists.</div></div><div class="o">changes the gradient<div class="e">The gradient depends only on the function and the point.</div></div></div>
-</div>
-</article>
-
-<article class="part" data-id="r4" data-num="4" data-title="Vectors and matrices" data-min="95" data-kind="prereq">
-<p class="part-lede">The objects linear algebra and machine learning are built from. A vector is a list of numbers that you can also picture as an arrow; a matrix is a table of numbers that you can also picture as a machine that moves arrows around. By the end you'll be able to compute dot products, lengths, distances and matrix products, and read a neural network's weights as matrices.</p>
-<p class="youneed"><b>You need:</b> Part 1 (functions) and Part 2 (sums).</p>
-
-<section class="ch" id="r-vectors" data-level="b" data-min="45" data-title="Vectors and the dot product" data-src="Class 12 vectors; GATE DA 2026 Q11, Q36; 2025 Q55; sample paper Q18, Q51">
-<h2>Vectors: lists of numbers that are also arrows</h2>
-<div class="opener"><p>A vector is an ordered list of numbers, and the dot product of two vectors measures how much they point the same way.</p><p>Every data point in machine learning is a vector. Distances between vectors drive k-means, k-NN and clustering; dot products drive SVMs, PCA and neural networks. You'll use these few operations in nearly every ML question.</p><p>It's like a player's scorecard: (runs, wickets, catches) = (412, 9, 6). One list, three numbers, and we can compare two players by comparing their lists.</p></div>
-
-<div class="radar"><span class="label">Where it shows up in GATE DA</span>
-<p>Every year, inside ML and linear-algebra questions: distances, angles and perpendicularity.</p>
-<div class="pyqs"><span>2026 Q36 · Manhattan distance in clustering</span><span>2026 Q11 · angle between principal components</span><span>2025 Q55 · distance to class means</span><span>Sample Q18 · perpendicular vectors</span><span>Sample Q51 · normalising vectors</span></div>
-<span class="heat">Heat: <b>every year</b>, 2–6 marks</span></div>
-
-<div class="prose">
-<p>A vector in $\R^n$ is a list of $n$ real numbers, written as a column: $\v = \begin{bmatrix}3\\1\end{bmatrix}$. In two dimensions you can draw it as an arrow from the origin to the point $(3, 1)$. In 3 or 100 dimensions you can't draw it, but every rule below still works.</p>
+<h3>Two results worth knowing</h3>
 <ul>
-<li><b>Add</b> entry by entry: $\begin{bmatrix}3\\1\end{bmatrix} + \begin{bmatrix}1\\2\end{bmatrix} = \begin{bmatrix}4\\3\end{bmatrix}$. As arrows: place the second at the tip of the first.</li>
-<li><b>Scale</b> by a number: $2\v = \begin{bmatrix}6\\2\end{bmatrix}$, the same direction and twice as long. A negative number flips the direction.</li>
-<li><b>Length</b> (norm): $\norm{\v} = \sqrt{v_1^2 + v_2^2 + \cdots + v_n^2}$. This is Pythagoras: $\norm{(3,4)} = 5$.</li>
-<li>A <b>unit vector</b> has length 1. Dividing any non-zero vector by its length gives a unit vector in the same direction ("normalising").</li>
+<li>The number $c$ that minimises $\sum (x_i - c)^2$ is the <b>mean</b>: setting $\frac{d}{dc} = -2\sum(x_i - c) = 0$ gives $c = \bar x$. (The $c$ minimising $\sum|x_i - c|$ is the median.)</li>
+<li>Fitting $y = wx$ by least squares means minimising $L(w) = \sum (y_i - wx_i)^2$. Then $L'(w) = -2\sum x_i(y_i - wx_i) = 0$ gives $$w^* = \frac{\sum x_iy_i}{\sum x_i^2}.$$ $L$ is a parabola opening upward, so this is the global minimum.</li>
 </ul>
 </div>
 
-<div class="box def" data-k="Definition" data-name="Dot product"><p>$$\u\cdot\v = \u\T\v = u_1v_1 + u_2v_2 + \cdots + u_nv_n = \norm{\u}\,\norm{\v}\cos\theta,$$ where $\theta$ is the angle between the arrows. Multiply matching entries and add. Positive means the vectors point broadly the same way, zero means they're <b>perpendicular</b> (orthogonal), negative means they point broadly opposite ways. Note $\v\cdot\v = \norm{\v}^2$.</p></div>
-
-<div class="panel try"><span class="label">Try it</span><p class="task">Drag the tips of $\u$ and $\v$. Watch the dot product change sign as the angle passes 90°. The dashed line shows the <b>projection</b> of $\u$ onto $\v$: the shadow $\u$ casts on the line through $\v$. Make them perpendicular and the shadow disappears.</p><div class="widget" data-w="r_vec"></div></div>
-
-<div class="prose">
-<h3>Projection and distance</h3>
-<p>The <b>projection</b> of $\u$ onto $\v$ is the part of $\u$ that points along $\v$: $\displaystyle \text{proj}_{\v}\u = \frac{\u\cdot\v}{\v\cdot\v}\,\v$. It's the foundation of least squares, PCA and projection matrices in the linear-algebra module.</p>
-<p>Two common ways to measure the <b>distance</b> between points $\x$ and $\y$:</p>
-<ul>
-<li><b>Euclidean</b> (straight line): $\norm{\x - \y} = \sqrt{\sum (x_i - y_i)^2}$.</li>
-<li><b>Manhattan</b> (city blocks): $\sum |x_i - y_i|$, as if you could only walk along streets.</li>
-</ul>
-</div>
+<div class="panel try"><span class="label">Try it</span><p class="task">These are the three data points from GATE 2025 Q34. Slide $w$ to rotate the line $y = wx$ about the origin; the vertical segments are the errors, and the lower plot shows the total squared error $L(w)$ as a function of $w$. Find the bottom of the parabola, then compare with the formula in the readout.</p><div class="widget" data-w="ca_optim"></div></div>
 
 <div class="example"><div class="problem">
-<div class="pyq"><span class="label">GATE DA 2026 · Q36 · MCQ · 2 marks</span>
-<p>Let four points in three-dimensional space be: P1: [2, 3, −1], P2: [3, 1, 1], P3: [5, −2, 3] and P4: [3, 3, 3]. Hierarchical Agglomerative Clustering is used to cluster the above points. If Manhattan Distance is used as the distance metric during clustering, which of the following options indicates the two points that will be merged first?</p>
-<ol class="abcd"><li data-l="(A)">P1, P2</li><li data-l="(B)">P2, P3</li><li data-l="(C)">P3, P4</li><li data-l="(D)">P2, P4</li></ol></div>
-<p>You'll study the clustering algorithm in the ML module. Its first step is all you need here: <b>merge the two closest points</b>.</p></div>
+<div class="pyq"><span class="label">GATE DA 2025 · Q34 · NAT · 1 mark</span>
+<p>Given data $\{(-1, 1), (2, -5), (3, 5)\}$ of the form $(x, y)$, we fit a model $y = wx$ using linear least-squares regression. The optimal value of $w$ is ______ (Round off to three decimal places)</p></div></div>
 <ol class="steps">
-<li><p>Manhattan distance adds the absolute differences in each coordinate. P1–P2: $|2-3| + |3-1| + |-1-1| = 1 + 2 + 2 = 5$.</p><p class="why-step">Subtract coordinate by coordinate, drop the signs, add.</p></li>
-<li><p>The others: P1–P3: $3 + 5 + 4 = 12$; P1–P4: $1 + 0 + 4 = 5$; P2–P3: $2 + 3 + 2 = 7$; P2–P4: $0 + 2 + 2 = 4$; P3–P4: $2 + 5 + 0 = 7$.</p><p class="why-step">With 4 points there are $\binom42 = 6$ pairs. Write them all down so you don't miss one.</p></li>
-<li><p>The smallest distance is 4, between P2 and P4. Answer <b>(D)</b>.</p><p class="why-step">Option (A) is a trap: P1–P2 is 5, which would tie with P1–P4 for the minimum if you made one slip. Official key: (D).</p></li>
+<li><p>Objective: $L(w) = (1 + w)^2 + (-5 - 2w)^2 + (5 - 3w)^2$, the sum of squared errors $y_i - wx_i$.</p><p class="why-step">"Least squares" means exactly this function of the single unknown $w$.</p></li>
+<li><p>Set $L'(w) = 0$, which gives $w^* = \dfrac{\sum x_iy_i}{\sum x_i^2}$. Here $\sum x_iy_i = (-1)(1) + (2)(-5) + (3)(5) = 4$ and $\sum x_i^2 = 1 + 4 + 9 = 14$.</p><p class="why-step">The formula comes from $L'(w) = -2\sum x_i(y_i - wx_i) = 0$.</p></li>
+<li><p>$w^* = \frac{4}{14} = \frac27 \approx$ <b>0.286</b>.</p><p class="why-step">$L''(w) = 2\sum x_i^2 = 28 \gt 0$, so it's a minimum. Official range: 0.285 to 0.287.</p></li>
 </ol></div>
 
-<details class="deeper"><summary>Go deeper: why u·v = ‖u‖‖v‖cos θ</summary><p>Apply the law of cosines to the triangle with sides $\u$, $\v$ and $\u - \v$: $\norm{\u-\v}^2 = \norm{\u}^2 + \norm{\v}^2 - 2\norm{\u}\norm{\v}\cos\theta$. Expanding the left side with dot products gives $\norm{\u}^2 + \norm{\v}^2 - 2\,\u\cdot\v$. Compare the two. The same expansion, $\norm{\x - \mu}^2 = \norm{\x}^2 - 2\,\mu\cdot\x + \norm{\mu}^2$, is the key to GATE 2025 Q55.</p></details>
-
 <div class="practice">
-<div class="prob" data-id="r-vectors-p1" data-ans="12" data-labels="u · v"><div class="stem"><p>Compute $(1, 2, 3)\cdot(4, -5, 6)$.</p></div><div class="hint"><p>Multiply matching entries, then add.</p></div><div class="sol"><p>$4 - 10 + 18 = 12$.</p></div></div>
-<div class="prob" data-id="r-vectors-p2" data-ans="1" data-labels="k"><div class="stem"><p>For which $k$ are $(2, k)$ and $(3, -6)$ perpendicular?</p></div><div class="hint"><p>Perpendicular means the dot product is zero.</p></div><div class="sol"><p>$6 - 6k = 0$, so $k = 1$.</p></div></div>
-<div class="prob" data-id="r-vectors-p3" data-ans="5;7" data-labels="Euclidean;Manhattan"><div class="stem"><p>Find the Euclidean and the Manhattan distance between $(1, 2)$ and $(4, 6)$.</p></div><div class="hint"><p>The differences are 3 and 4.</p></div><div class="sol"><p>Euclidean: $\sqrt{9 + 16} = 5$. Manhattan: $3 + 4 = 7$. Manhattan is never smaller than Euclidean.</p></div></div>
-<div class="prob" data-id="r-vectors-p4" data-ans="45" data-labels="angle in degrees"><div class="stem"><p>What is the angle between $(1, 0)$ and $(1, 1)$, in degrees?</p></div><div class="hint"><p>$\cos\theta = \dfrac{\u\cdot\v}{\norm\u\norm\v}$.</p></div><div class="sol"><p>$\cos\theta = \frac{1}{1\cdot\sqrt2}$, so $\theta = 45°$.</p></div></div>
+<div class="prob" data-id="ca-optim-p1" data-ans="100" data-labels="maximum area"><div class="stem"><p>A practice net is a rectangle with perimeter 40 m. What's the largest area it can enclose?</p></div><div class="hint"><p>Sides $x$ and $20 - x$; maximise $A(x) = x(20 - x)$.</p></div><div class="sol"><p>$A' = 20 - 2x = 0$ gives $x = 10$, a square, with area 100 m². ($A'' = -2 \lt 0$: a maximum.)</p></div></div>
+<div class="prob" data-id="ca-optim-p2" data-ans="1;exp(-1)" data-labels="x at the max;maximum value" data-tol="0.003"><div class="stem"><p>Maximise $f(x) = xe^{-x}$ for $x \ge 0$. Give the maximising $x$ and the maximum value (decimal).</p></div><div class="hint"><p>Product rule: $f' = e^{-x}(1 - x)$.</p></div><div class="sol"><p>$f' = 0$ at $x = 1$; $f'$ is positive before and negative after, so it's a maximum. $f(1) = e^{-1} \approx 0.368$. ($f(0) = 0$ and $f \to 0$ as $x \to \infty$, so it's global.)</p></div></div>
+<div class="prob" data-id="ca-optim-p3" data-ans="6" data-labels="c"><div class="stem"><p>Which $c$ minimises $(2 - c)^2 + (5 - c)^2 + (8 - c)^2 + (9 - c)^2$?</p></div><div class="hint"><p>The minimiser of a sum of squared deviations is the mean.</p></div><div class="sol"><p>$\bar x = (2 + 5 + 8 + 9)/4 = 6$.</p></div></div>
+<div class="prob" data-id="ca-optim-p4" data-ans="300;290" data-labels="P;minimum cost per unit"><div class="stem"><p>A factory's cost per unit when producing $P$ units a day is $C(P) = 230 + 0.1P + \dfrac{9000}{P}$ rupees (the setting of the 2024 sample paper's Q44). Which production level minimises the cost per unit, and what is that minimum cost?</p></div><div class="hint"><p>$C'(P) = 0.1 - 9000/P^2$.</p></div><div class="sol"><p>$0.1 = 9000/P^2$ gives $P^2 = 90000$, so $P = 300$. $C(300) = 230 + 30 + 30 = 290$. ($C'' = 18000/P^3 \gt 0$: a minimum.)</p></div></div>
 </div>
 
-<div class="dodont"><ul><li>Check perpendicularity with the dot product: it's one line of arithmetic.</li><li>List every pair when comparing distances; it's quick and avoids misses.</li><li>Normalise (divide by the length) when only direction matters.</li></ul><ul><li>Forgetting the square root in Euclidean length.</li><li>Mixing up Manhattan (sum of absolute differences) and Euclidean (root of sum of squares).</li><li>Thinking a dot product is a vector. It's a single number.</li></ul></div>
+<div class="dodont"><ul><li>Write the objective as a function of one variable before differentiating.</li><li>Respect the domain: lengths, prices and counts usually can't be negative.</li><li>Check that you've answered the question: the optimal input or the optimal value.</li></ul><ul><li>Forgetting to check that a critical point is a max (not a min) when maximising.</li><li>Ignoring endpoints when the domain is bounded.</li><li>Fitting $y = wx$ with the formula for a line with an intercept; they differ.</li></ul></div>
 
-<ol class="takeaways"><li>Vectors add entry by entry and scale by stretching; length is the square root of the sum of squares.</li><li>u·v = Σuᵢvᵢ = ‖u‖‖v‖cos θ. Zero means perpendicular.</li><li>Euclidean and Manhattan distances measure how far apart data points are; projection extracts the part of one vector along another.</li></ol>
+<ol class="takeaways"><li>Optimisation recipe: variable, objective, domain, f′ = 0, check (f″ or endpoints), answer what was asked.</li><li>Σ(xᵢ − c)² is minimised at the mean; Σ|xᵢ − c| at the median.</li><li>Least squares for y = wx: w* = Σxᵢyᵢ / Σxᵢ², the bottom of an upward parabola in w.</li></ol>
 
-<div class="quiz" data-id="r-vectors">
-<div class="q"><div class="q-text"><p>The length of $(2, -1, 2)$ is</p></div><div class="o">1<div class="e">You added the entries: $2 - 1 + 2$. Square them first.</div></div><div class="o ok">3<div class="e">$\sqrt{4 + 1 + 4} = 3$: square, add, take the root.</div></div><div class="o">9<div class="e">That's the squared length; take the root.</div></div><div class="o">5<div class="e">That's the sum of absolute values (a Manhattan-style length).</div></div></div>
-<div class="q"><div class="q-text"><p>PCA reduces 100 features to 10 principal components. GATE 2026 Q11 asks for the angle between the 1st and 10th components. Given that principal components are mutually orthogonal, the angle is</p></div><div class="o">0°<div class="e">That would mean they point the same way. Each component captures a new, independent direction.</div></div><div class="o ok">90°<div class="e">Orthogonal means a dot product of 0, which means a 90° angle. Official key: (B).</div></div><div class="o">Between 0° and 90°<div class="e">That would make their dot product positive, not zero.</div></div><div class="o">It depends on the data<div class="e">The data decides which directions, but they always come out orthogonal.</div></div></div>
-<div class="q"><div class="q-text"><p>If $\u\cdot\v \lt 0$, the angle between $\u$ and $\v$ is</p></div><div class="o">less than 90°<div class="e">That gives a positive dot product.</div></div><div class="o">exactly 90°<div class="e">That gives zero.</div></div><div class="o ok">more than 90°<div class="e">$\cos\theta \lt 0$ for angles between 90° and 180°.</div></div><div class="o">impossible to say<div class="e">The sign of the dot product is the sign of $\cos\theta$.</div></div></div>
+<div class="quiz" data-id="ca-optim">
+<div class="q"><div class="q-text"><p>Among rectangles with a fixed perimeter, the largest area belongs to</p></div><div class="o">a very long, thin rectangle<div class="e">Thin rectangles have tiny areas.</div></div><div class="o ok">a square<div class="e">$x(P/2 - x)$ peaks at $x = P/4$.</div></div><div class="o">any rectangle; the area is fixed<div class="e">The perimeter is fixed, not the area.</div></div></div>
+<div class="q"><div class="q-text"><p>For data $(1, 2), (2, 4), (3, 6)$, the least-squares $w$ in $y = wx$ is</p></div><div class="o">4<div class="e">Compute $\sum xy / \sum x^2 = 28/14$.</div></div><div class="o ok">2<div class="e">The points lie exactly on $y = 2x$.</div></div><div class="o">6<div class="e">That's a $y$ value, not the slope.</div></div></div>
+<div class="q"><div class="q-text"><p>You find $f'(x^*) = 0$ while maximising $f$ on $[0, 10]$. What else must you check?</p></div><div class="o">Nothing<div class="e">It might be a minimum, and the max might be at an endpoint.</div></div><div class="o ok">That it's a maximum, and compare with f(0) and f(10)<div class="e">The closed-interval method.</div></div><div class="o">Only that $f''(x^*) \gt 0$<div class="e">$f'' \gt 0$ means a minimum, the opposite of what you want.</div></div></div>
 </div>
 </section>
 
-<section class="ch" id="r-matrices" data-level="b" data-min="50" data-title="Matrices and multiplication" data-src="Class 12 matrices; GATE DA 2026 Q21, Q56">
-<h2>Matrices: tables that transform vectors</h2>
-<div class="opener"><p>A matrix is a rectangular table of numbers; multiplying a vector by it produces a new vector, so a matrix is a machine that transforms space.</p><p>The entire linear algebra module is about matrices. In ML, each layer of a neural network is a matrix; counting its entries is a standard GATE question.</p><p>It's like a recipe card. The table says how much of each ingredient (input) goes into each dish (output). Multiply by the quantities you have, and out come the dishes.</p></div>
+<section class="ch" id="ca-convex" data-level="d" data-min="50" data-title="Convexity" data-src="Convex functions; GATE DA 2025 Q51; 2024 sample paper Q35">
+<h2>Convexity: when a minimum is guaranteed to be the minimum</h2>
+<div class="opener"><p>A convex function curves upward everywhere ($f'' \ge 0$), so any local minimum is automatically the global minimum, and slope-following methods can't get stuck in the wrong valley.</p><p>GATE 2025 Q51 tested exactly what $f'' \gt 0$ guarantees. In ML, convex losses (squared error, logistic loss) are why linear and logistic regression always train to the same best answer.</p><p>It's like a bowl: drop a ball anywhere inside and it rolls to the single lowest point. A non-convex landscape is an egg tray, where the ball can settle in any one of many dips.</p></div>
 
 <div class="radar"><span class="label">Where it shows up in GATE DA</span>
-<p>The whole linear algebra section, plus neural-network shapes and parameter counts.</p>
-<div class="pyqs"><span>2026 Q56 · MLP parameter count</span><span>2026 Q21 · powers of a rotation matrix</span><span>2024 Q35 · determinant of M² + 12M</span><span>2025 Q13 · row sums and Bx = 0</span><span>2024 Q43 · equivalent neural networks</span></div>
-<span class="heat">Heat: <b>every year</b>, 8–14 marks across LA and ML</span></div>
+<p>Statements about functions with f″ &gt; 0, global vs local minima, and the shape of ML losses.</p>
+<div class="pyqs"><span>2025 Q51 · consequences of f″ &gt; 0</span><span>Sample Q34, Q35 · existence of global minima</span><span>2026 Q37, Q55 · ridge regression loss</span></div>
+<span class="heat">Heat: <b>occasional</b>, 1–2 marks</span></div>
 
-<div class="prose">
-<p>The league keeps a table of three players' runs and wickets in two matches. As a <b>matrix</b> with 3 rows and 2 columns (a "3 × 2 matrix"):</p>
-$$A = \begin{bmatrix} 45 & 12 \\ 8 & 30 \\ 22 & 0 \end{bmatrix}.$$
-<p>The entry in row $i$, column $j$ is written $a_{ij}$; here $a_{21} = 8$. Rows first, columns second, always.</p>
-<h3>Matrix times vector</h3>
-<p>$A\x$ takes each row of $A$, dots it with $\x$, and stacks the results:</p>
-$$\begin{bmatrix}1&2\\3&4\end{bmatrix}\begin{bmatrix}5\\6\end{bmatrix} = \begin{bmatrix}1\cdot5+2\cdot6\\3\cdot5+4\cdot6\end{bmatrix} = \begin{bmatrix}17\\39\end{bmatrix}.$$
-<p>There's a second, very useful way to read the same product: <b>$A\x$ is a combination of the columns of $A$</b>, weighted by the entries of $\x$: $5\begin{bmatrix}1\\3\end{bmatrix} + 6\begin{bmatrix}2\\4\end{bmatrix}$. You'll lean on this "column picture" throughout linear algebra.</p>
-</div>
+<div class="box def" data-k="Definition" data-name="Convex function"><p>$f$ is <b>convex</b> if every chord lies on or above the graph: $f(tx + (1-t)y) \le tf(x) + (1-t)f(y)$ for $t\in[0, 1]$. For twice-differentiable $f$: convex ⇔ $f''(x) \ge 0$ everywhere. If $f'' \gt 0$ everywhere it's <b>strictly convex</b>. Examples: $x^2$, $e^x$, $|x|$, $-\ln x$ (for $x \gt 0$). Sums of convex functions are convex.</p></div>
 
-<div class="box def" data-k="Definition" data-name="Matrix product"><p>If $A$ is $m\times n$ and $B$ is $n\times p$, then $AB$ is $m\times p$, with entry $(AB)_{ij}$ = (row $i$ of $A$) · (column $j$ of $B$). The inner sizes must match: $(m\times \mathbf{n})(\mathbf{n}\times p)$. Order matters: usually $AB \ne BA$.</p></div>
-
-<div class="box plain" data-k="Key idea" data-name="Special matrices and operations"><ul>
-<li><b>Identity</b> $I$: 1s on the diagonal, 0s elsewhere. $I\x = \x$ and $AI = IA = A$.</li>
-<li><b>Transpose</b> $A\T$: swap rows and columns. $(AB)\T = B\T A\T$ (the order reverses). $A$ is <b>symmetric</b> if $A\T = A$.</li>
-<li><b>Inverse</b> $A^{-1}$: the matrix that undoes $A$, with $AA^{-1} = I$. For 2 × 2: $\begin{bmatrix}a&b\\c&d\end{bmatrix}^{-1} = \dfrac{1}{ad-bc}\begin{bmatrix}d&-b\\-c&a\end{bmatrix}$, which exists only if $ad - bc \ne 0$. That number $ad - bc$ is the <b>determinant</b>.</li>
-<li><b>Trace</b>: the sum of the diagonal entries. It will turn out to equal the sum of the eigenvalues, a favourite GATE shortcut.</li>
+<div class="box thm" data-k="Facts" data-name="What convexity buys you"><ul>
+<li>Any local minimum of a convex function is a global minimum.</li>
+<li>If $f'' \gt 0$ everywhere, then $f'$ is strictly increasing, so $f' = 0$ at <b>at most one</b> point: at most one minimiser, and no maxima.</li>
+<li>Convexity doesn't guarantee a minimum exists: $e^x$ is convex but keeps decreasing to the left, never reaching a lowest value.</li>
 </ul></div>
 
-<div class="panel try"><span class="label">Try it</span><p class="task">A 2 × 2 matrix moves every point of the plane. Pick a preset, or set the four entries yourself, and watch the grid and the unit square transform. The first column of the matrix is where $(1,0)$ lands (teal), and the second column is where $(0,1)$ lands (orange). Find a matrix that squashes the square flat; its determinant will be 0.</p><div class="widget" data-w="r_mat"></div></div>
+<div class="box alg" data-k="Algorithms" data-name="Finding the minimum numerically"><p><b>Gradient descent</b> (1-D): $x \leftarrow x - \eta f'(x)$. <b>Newton's method</b>: $x \leftarrow x - \dfrac{f'(x)}{f''(x)}$, which jumps to the minimum of the local quadratic (second-order Taylor) approximation. On a quadratic it lands exactly on the minimum in one step.</p></div>
+
+<div class="panel try"><span class="label">Try it</span><p class="task">Drag the two chord endpoints along the curve. For a convex function the chord always stays above the graph; find a place where it dips below for the non-convex ones. Then press the step buttons to run gradient descent or Newton's method from the start point (the black dot): on $x^4 - 3x^2$, the valley you end up in depends on where you start.</p><div class="widget" data-w="ca_convex"></div></div>
 
 <div class="example"><div class="problem">
-<div class="pyq"><span class="label">GATE DA 2026 · Q56 · NAT · 2 marks</span>
-<p>Consider a fully-connected feed-forward multi-layer perceptron. It has 30 neurons in the input layer, followed by two hidden layers and an output layer. The first hidden layer has 4 neurons and the second hidden layer has 3 neurons. The output layer has only one neuron. Assume that no bias parameters are used. The number of learnable parameters in the multi-layer perceptron is ______. (Answer in integer)</p></div>
-<p>"Fully connected" means each neuron receives a weighted sum of every neuron in the previous layer. A layer that maps $n$ inputs to $m$ outputs is exactly a matrix–vector product with an $m\times n$ weight matrix.</p></div>
+<div class="pyq"><span class="label">GATE DA 2025 · Q51 · MSQ · 2 marks</span>
+<p>Let $f:\R\to\R$ be a twice-differentiable function and suppose its second derivative satisfies $f''(x) \gt 0$ for all $x\in\R$. Which of the following statements is/are ALWAYS correct?</p>
+<ol class="abcd"><li data-l="(A)">$f$ has a local minima</li><li data-l="(B)">There does not exist $x$ and $y$, $x \ne y$, such that $f'(x) = f'(y) = 0$</li><li data-l="(C)">$f$ has at most one global minimum</li><li data-l="(D)">$f$ has at most one local minimum</li></ol></div></div>
 <ol class="steps">
-<li><p>Input → hidden 1: a $4\times 30$ weight matrix, $120$ weights.</p><p class="why-step">One weight for every (input, hidden neuron) pair: $30 \times 4$.</p></li>
-<li><p>Hidden 1 → hidden 2: $3\times 4$, $12$ weights. Hidden 2 → output: $1\times 3$, $3$ weights.</p><p class="why-step">Same rule each time: (size of next layer) × (size of previous layer).</p></li>
-<li><p>Total: $120 + 12 + 3 = $ <b>135</b>.</p><p class="why-step">No biases, as stated. With biases you'd add one per non-input neuron: $4 + 3 + 1 = 8$ more (the 2024 sample paper's Q43 includes biases). Official key: 135.</p></li>
+<li><p>(A): $f(x) = e^x$ has $f'' \gt 0$ but $f' = e^x$ is never 0, so there's no minimum at all. ✗</p><p class="why-step">"ALWAYS" statements fall to a single counterexample.</p></li>
+<li><p>(B): $f'' \gt 0$ means $f'$ is strictly increasing, so it can take the value 0 at most once. ✓</p><p class="why-step">A strictly increasing function never repeats a value.</p></li>
+<li><p>(C) and (D): local minima need $f' = 0$, which happens at most once, so there's at most one local minimum, and hence at most one global minimum. ✓ Answer: <b>B, C, D</b>.</p><p class="why-step">"At most one" allows zero, which is why (C) and (D) survive the $e^x$ counterexample. Official key: B; C; D.</p></li>
 </ol></div>
 
 <div class="practice">
-<div class="prob" data-id="r-matrices-p1" data-ans="17;39" data-labels="first entry;second entry"><div class="stem"><p>Compute $\begin{bmatrix}1&2\\3&4\end{bmatrix}\begin{bmatrix}5\\6\end{bmatrix}$. (Try it yourself before scrolling up.)</p></div><div class="hint"><p>Row 1 dotted with $(5, 6)$, then row 2 dotted with $(5, 6)$.</p></div><div class="sol"><p>$5 + 12 = 17$ and $15 + 24 = 39$.</p></div></div>
-<div class="prob" data-id="r-matrices-p2" data-ans="3 × 5" data-choices="2 × 2|3 × 5|5 × 3|not defined"><div class="stem"><p>$A$ is $3\times 2$ and $B$ is $2\times 5$. What is the size of $AB$?</p></div><div class="hint"><p>$(m\times n)(n\times p)$ gives $m\times p$.</p></div><div class="sol"><p>The inner 2s match, and the outer sizes give $3\times 5$. ($BA$ would be $(2\times5)(3\times2)$: inner sizes 5 and 3 don't match, so it's not defined.)</p></div></div>
-<div class="prob" data-id="r-matrices-p3" data-ans="1;3;-5" data-labels="det;top-left of inverse;bottom-left of inverse"><div class="stem"><p>For $A = \begin{bmatrix}2&1\\5&3\end{bmatrix}$, find $\det A$ and the top-left and bottom-left entries of $A^{-1}$.</p></div><div class="hint"><p>$\det = ad - bc$. Then swap $a$ and $d$, negate $b$ and $c$, and divide by the determinant.</p></div><div class="sol"><p>$\det A = 6 - 5 = 1$. $A^{-1} = \begin{bmatrix}3&-1\\-5&2\end{bmatrix}$. Check: $\begin{bmatrix}2&1\\5&3\end{bmatrix}\begin{bmatrix}3&-1\\-5&2\end{bmatrix} = \begin{bmatrix}1&0\\0&1\end{bmatrix}$ ✓.</p></div></div>
-<div class="prob" data-id="r-matrices-p4" data-ans="80" data-labels="parameters"><div class="stem"><p>An MLP has 5 inputs, one hidden layer of 10 neurons and 3 outputs. How many parameters does it have <b>without</b> biases?</p></div><div class="hint"><p>Two weight matrices: $10\times5$ and $3\times10$.</p></div><div class="sol"><p>Input → hidden: $10 \times 5 = 50$ weights. Hidden → output: $3 \times 10 = 30$ weights. Total $80$. (With a bias on each of the 13 non-input neurons it would be 93, the answer to the 2024 sample paper's Q43.)</p></div></div>
+<div class="prob" data-id="ca-convex-p1" data-ans="No" data-choices="Yes|No"><div class="stem"><p>Is $f(x) = x^4 - 3x^2$ convex on all of $\R$?</p></div><div class="hint"><p>Check the sign of $f''(x) = 12x^2 - 6$ near 0.</p></div><div class="sol"><p>No: $f''(0) = -6 \lt 0$. It's concave for $|x| \lt 1/\sqrt2$ and has two separate minima (at $x = \pm\sqrt{1.5}$), the egg-tray picture.</p></div></div>
+<div class="prob" data-id="ca-convex-p2" data-ans="2;0.4" data-labels="after one Newton step;after one GD step (η = 0.1)"><div class="stem"><p>Minimise $f(x) = x^2 - 4x + 5$ starting from $x_0 = 0$. Where are you after one Newton step? After one gradient-descent step with $\eta = 0.1$?</p></div><div class="hint"><p>$f'(0) = -4$, $f'' = 2$.</p></div><div class="sol"><p>Newton: $0 - (-4)/2 = 2$, exactly the minimum (it's a quadratic). Gradient descent: $0 - 0.1\times(-4) = 0.4$, a small step towards 2.</p></div></div>
+<div class="prob" data-id="ca-convex-p3" data-multi="1" data-ans="A;B;D" data-choices="A|B|C|D"><div class="stem"><p>Which functions are convex on their domains? (Select all that apply.)</p><p>(A) $e^x$ &nbsp; (B) $|x|$ &nbsp; (C) $x^3$ on $\R$ &nbsp; (D) $-\ln x$ for $x \gt 0$</p></div><div class="hint"><p>Check $f''$; for $|x|$, use the chord picture.</p></div><div class="sol"><p>(A) $e^x \gt 0$ ✓. (B) every chord of the V lies above it ✓. (C) $f'' = 6x \lt 0$ for $x \lt 0$ ✗. (D) $f'' = 1/x^2 \gt 0$ ✓.</p></div></div>
 </div>
 
-<div class="dodont"><ul><li>Write the sizes under each matrix before multiplying: the inner ones must match.</li><li>Read a matrix's columns as "where the basis arrows land".</li><li>Check an inverse by multiplying back to $I$.</li></ul><ul><li>Assuming $AB = BA$. Matrix multiplication is not commutative.</li><li>Writing $(AB)\T = A\T B\T$. The order reverses.</li><li>Multiplying matrices entry by entry. That's a different operation (the Hadamard product), not the matrix product.</li></ul></div>
+<div class="dodont"><ul><li>Check convexity with $f''$ (or the chord picture for non-smooth functions).</li><li>Use counterexamples like $e^x$ for "always has a minimum" claims.</li><li>Remember: for convex functions, local = global.</li></ul><ul><li>Assuming convex implies a minimum exists.</li><li>Calling $x^3$ convex because it's "increasing"; increasing and convex are different properties.</li><li>Thinking Newton's method always beats gradient descent; it needs $f''$ and can misbehave where $f'' \le 0$.</li></ul></div>
 
-<ol class="takeaways"><li>An m × n matrix has m rows and n columns; entry aᵢⱼ is row i, column j.</li><li>Ax = row-dot-products, or equivalently a weighted combination of A's columns. AB needs matching inner sizes and is usually ≠ BA.</li><li>A matrix transforms space: its columns are where the basis vectors land, and its determinant measures how much it scales area.</li></ol>
+<ol class="takeaways"><li>Convex ⇔ chords lie above the graph ⇔ f″ ≥ 0; sums of convex functions are convex.</li><li>For convex f, any local minimum is global; with f″ &gt; 0 there's at most one critical point, but a minimum may not exist (eˣ).</li><li>Gradient descent: x ← x − ηf′(x). Newton: x ← x − f′/f″, exact in one step for quadratics.</li></ol>
 
-<div class="quiz" data-id="r-matrices">
-<div class="q"><div class="q-text"><p>$\begin{bmatrix}2&0\\0&3\end{bmatrix}$ does what to the plane?</p></div><div class="o">Rotates it by 90°<div class="e">Where does $(1,0)$ go? Read the first column.</div></div><div class="o ok">Stretches x by 2 and y by 3<div class="e">$(1,0) \to (2,0)$ and $(0,1) \to (0,3)$.</div></div><div class="o">Squashes it onto a line<div class="e">The determinant is $6 \ne 0$, so nothing is squashed.</div></div><div class="o">Reflects it<div class="e">No sign flips here.</div></div></div>
-<div class="q"><div class="q-text"><p>GATE 2026 Q21: $M$ rotates the plane by $\theta = 2\pi/5$. Which is $M^{2026}$?</p></div><div class="o">$I$<div class="e">$M^5 = I$ (five rotations of 72° make a full turn). Is 2026 a multiple of 5?</div></div><div class="o ok">$M$<div class="e">$2026 = 5\times405 + 1$, so $M^{2026} = (M^5)^{405}M = M$. Official key: (B).</div></div><div class="o">$M^2$<div class="e">Find the remainder of 2026 when divided by 5.</div></div><div class="o">$M^{-1}$<div class="e">$M^{-1} = M^4$, which would need a remainder of 4.</div></div></div>
-<div class="q"><div class="q-text"><p>If $A$ is $4\times 3$, then $A\T A$ is</p></div><div class="o">$4\times4$<div class="e">That's $AA\T$.</div></div><div class="o ok">$3\times3$<div class="e">$(3\times4)(4\times3) = 3\times3$. It's also symmetric, which matters in PCA.</div></div><div class="o">$4\times3$<div class="e">Multiply the sizes out: the outer dimensions survive.</div></div><div class="o">not defined<div class="e">The inner sizes are both 4, so it is defined.</div></div></div>
+<div class="quiz" data-id="ca-convex">
+<div class="q"><div class="q-text"><p>2024 sample paper Q35: (P) "A smooth twice differentiable function can have a global minimum." (Q) "All smooth twice differentiable functions have a global minimum." Which is right?</p></div><div class="o">Both P and Q are true<div class="e">Think of $f(x) = x$ or $e^x$.</div></div><div class="o ok">P is true and Q is false<div class="e">$x^2$ has a global minimum; $x$ has none. (Sample paper, no official key.)</div></div><div class="o">P is false and Q is true<div class="e">$x^2$ is smooth and has a global minimum at 0.</div></div><div class="o">Both are false<div class="e">P only claims possibility.</div></div></div>
+<div class="q"><div class="q-text"><p>The squared-error loss $L(w) = \sum (y_i - wx_i)^2$ is convex in $w$ because</p></div><div class="o">it's always positive<div class="e">Positivity isn't convexity; check $L''$.</div></div><div class="o ok">$L''(w) = 2\sum x_i^2 \ge 0$<div class="e">So any critical point is the global minimum.</div></div><div class="o">it has one parameter<div class="e">Plenty of one-parameter functions aren't convex.</div></div></div>
+<div class="q"><div class="q-text"><p>Gradient descent on a non-convex function</p></div><div class="o">always finds the global minimum<div class="e">It can settle in whichever valley it starts in.</div></div><div class="o ok">may converge to a local minimum that isn't global<div class="e">This is why convexity is so valued in ML.</div></div><div class="o">never converges<div class="e">With a sensible step it usually converges, just not necessarily to the best point.</div></div></div>
 </div>
 </section>
 
-<div class="quiz review" data-id="r4-review" data-title="Refreshers review (all parts)">
-<div class="q" data-from="Ch. 4.1"><div class="q-text"><p>The unit vector in the direction of $(0, 3, 4)$ is</p></div><div class="o">$(0, 3, 4)$<div class="e">Its length is 5, not 1.</div></div><div class="o ok">$(0, 0.6, 0.8)$<div class="e">Divide by the length 5.</div></div><div class="o">$(0, \tfrac13, \tfrac14)$<div class="e">Divide by the length, not entry by entry.</div></div><div class="o">$(0, 0.75, 1)$<div class="e">Dividing by the largest entry doesn't give length 1.</div></div></div>
-<div class="q" data-from="Ch. 4.2"><div class="q-text"><p>The trace of $\begin{bmatrix}4&7\\-2&1\end{bmatrix}$ is</p></div><div class="o">18<div class="e">That's the determinant.</div></div><div class="o ok">5<div class="e">$4 + 1$: the sum of the diagonal.</div></div><div class="o">10<div class="e">The trace uses only the diagonal entries.</div></div><div class="o">4<div class="e">Add both diagonal entries.</div></div></div>
-<div class="q" data-from="Ch. 3.3 + 4.1"><div class="q-text"><p>The gradient of $f(\x) = \x\cdot\x$ (for $\x\in\R^2$) at $(1, 2)$ is</p></div><div class="o">$(1, 2)$<div class="e">$f = x_1^2 + x_2^2$; each partial derivative is $2x_i$.</div></div><div class="o ok">$(2, 4)$<div class="e">$\nabla(\x\cdot\x) = 2\x$.</div></div><div class="o">5<div class="e">That's $f(1,2)$; the gradient is a vector.</div></div><div class="o">$(1, 4)$<div class="e">Differentiate each coordinate the same way.</div></div></div>
-<div class="q" data-from="Ch. 2.1 + 1.2"><div class="q-text"><p>$\displaystyle\sum_{k=0}^{\infty} \frac{\ln 2}{2^k}$ equals</p></div><div class="o">$\ln 2$<div class="e">$\ln 2$ is only the first term.</div></div><div class="o ok">$2\ln 2 = \ln 4$<div class="e">$\ln 2 \cdot \frac{1}{1 - 1/2}$.</div></div><div class="o">$\ln 2 / 2$<div class="e">The geometric sum $1 + \tfrac12 + \tfrac14 + \cdots$ is 2.</div></div><div class="o">It diverges<div class="e">Ratio ½: it converges.</div></div></div>
-<div class="q" data-from="Ch. 3.2"><div class="q-text"><p>$\displaystyle\int_0^1 (6x^2 - 2x)\,dx$ equals</p></div><div class="o">4<div class="e">That's $12x - 2$ evaluated somewhere. Integrate, don't differentiate.</div></div><div class="o ok">1<div class="e">$\big[2x^3 - x^2\big]_0^1 = 2 - 1$.</div></div><div class="o">3<div class="e">Don't forget the $-x^2$ term.</div></div><div class="o">0<div class="e">Evaluate $2x^3 - x^2$ at 1.</div></div></div>
+<div class="quiz review" data-id="ca3-review" data-title="Module review: calculus & optimization (all parts)">
+<div class="q" data-from="Ch. 1.1"><div class="q-text"><p>$\displaystyle\lim_{x\to0}\frac{\tan x}{x}$ is</p></div><div class="o">0<div class="e">Both go to 0 at the same rate.</div></div><div class="o ok">1<div class="e">$\frac{\sin x}{x}\cdot\frac{1}{\cos x} \to 1\cdot1$.</div></div><div class="o">∞<div class="e">$\tan x \approx x$ near 0.</div></div></div>
+<div class="q" data-from="Ch. 1.2"><div class="q-text"><p>Which is differentiable at 0?</p></div><div class="o">$|x|$<div class="e">A corner at 0.</div></div><div class="o">$\max(0, x)$<div class="e">A corner at 0.</div></div><div class="o ok">$x|x|$<div class="e">Both one-sided slopes are 0.</div></div></div>
+<div class="q" data-from="Ch. 2.1"><div class="q-text"><p>The $x^2$ coefficient in the Maclaurin series of $\cos 2x$ is</p></div><div class="o">$-\frac12$<div class="e">Substitute $2x$: $-\frac{(2x)^2}{2}$.</div></div><div class="o ok">$-2$<div class="e">$-\frac{4x^2}{2} = -2x^2$.</div></div><div class="o">$-4$<div class="e">Don't forget the $2!$ in the denominator.</div></div></div>
+<div class="q" data-from="Ch. 2.2"><div class="q-text"><p>$f(x) = x^2 e^{-x}$ for $x \ge 0$ has a local maximum at</p></div><div class="o">$x = 0$<div class="e">$f(0) = 0$ is the minimum.</div></div><div class="o ok">$x = 2$<div class="e">$f' = xe^{-x}(2 - x)$ changes from + to − at 2.</div></div><div class="o">$x = 1$<div class="e">That's the maximiser of $xe^{-x}$.</div></div></div>
+<div class="q" data-from="Ch. 3.2"><div class="q-text"><p>Newton's method on $f(x) = (x - 3)^2$ from any start reaches the minimum in</p></div><div class="o">many steps<div class="e">For a quadratic, Newton's local model is exact.</div></div><div class="o ok">one step<div class="e">$x - \frac{2(x-3)}{2} = 3$.</div></div><div class="o">never<div class="e">It's the ideal case for Newton.</div></div></div>
 </div>
 </article>
 
@@ -1282,7 +989,7 @@ $$\begin{bmatrix}1&2\\3&4\end{bmatrix}\begin{bmatrix}5\\6\end{bmatrix} = \begin{
 <canvas id="confetti" hidden></canvas>
 
 <script>
-window.SITE = {"name": "Simple GATE DA", "key": "gateda", "path": "gate-da", "domain": "courses.rahuldevsharma.com/gate-da", "author": "Rahul Dev Sharma", "tagline": "GATE Data Science & AI, from zero", "description": "A free, interactive course for the GATE DA (Data Science and Artificial Intelligence) exam. Starts from school maths, explains every idea visually, and works through real previous-year questions.", "certTitle": ["Simple GATE DA", "Maths foundations"], "certBody": ["answered every quiz and practice question correctly across", "Simple GATE DA's maths modules: refreshers, probability,", "statistics, linear algebra, and calculus & optimization."], "footer_html": "      <p><b>Acknowledgement.</b> Previous-year questions are quoted from the official GATE Data Science and Artificial Intelligence (DA) papers: 2024 (organised by IISc Bengaluru), 2025 (IIT Roorkee) and 2026 (IIT Guwahati), and from the 2024 DA sample paper; one LU question is quoted from GATE CS 2025 (set 2, IIT Roorkee). Each is cited by year and question number, and every answer is checked against the official answer keys. The syllabus followed is the GATE 2027 DA syllabus (IIT Madras).</p>\n      <p><b>Disclaimer.</b> An independent study resource. The Data Premier League, its teams and all their data are fictional. Not affiliated with, reviewed by or endorsed by GATE, IISc or any IIT. Solutions and explanations are the author's own; any mistakes are the author's too.</p>", "theme": {"light": {"bg": "#F6F2EC", "surface": "#FFFFFF", "ink": "#1E1B18", "muted": "#675E55", "line": "#E2DAD0", "accent": "#0E6B6B", "accent-soft": "#DDEFEC", "mint": "#2E7A3A", "mint-soft": "#E1F1E2", "warn": "#B23F22", "warn-soft": "#FBE6DE", "plum": "#7A4FB0", "plum-soft": "#EFE6F8", "gold": "#8A5E00", "gold-soft": "#FBEFD3", "coral": "#D2643C", "coral-soft": "#FBE4D9", "plot-bg": "#FFFDFA"}, "dark": {"bg": "#14110F", "surface": "#1D1916", "ink": "#EFE8E0", "muted": "#A99D91", "line": "#342D27", "accent": "#5CC6BF", "accent-soft": "#173130", "mint": "#7FCB86", "mint-soft": "#18301B", "warn": "#F28B6B", "warn-soft": "#3A2016", "plum": "#C39BEE", "plum-soft": "#2B1F38", "gold": "#E9C25B", "gold-soft": "#33290F", "coral": "#F0916B", "coral-soft": "#3A2219", "plot-bg": "#191512"}}, "modules": [{"slug": "refreshers", "title": "Maths refreshers", "short": "Refreshers", "kind": "prereq", "blurb": "School maths, rebuilt from scratch: algebra, logs, sums, sets, derivatives, integrals and vectors. Everything the later modules lean on."}, {"slug": "probability", "title": "Probability", "short": "Probability", "kind": "", "blurb": "Counting, Bayes, random variables and the distributions GATE loves. The single biggest block of marks in the paper."}, {"slug": "statistics", "title": "Statistics", "short": "Statistics", "kind": "", "blurb": "Describing data, estimators, the Central Limit Theorem, confidence intervals and hypothesis tests (z, t and \u03c7\u00b2), built on the probability module."}, {"slug": "linear-algebra", "title": "Linear algebra", "short": "Linear algebra", "kind": "", "blurb": "Vectors, subspaces, rank, eigenvalues, projections and SVD, taught as pictures and exam shortcuts."}, {"slug": "calculus", "title": "Calculus & optimization", "short": "Calculus", "kind": "", "blurb": "Limits, continuity and differentiability, Taylor series, and finding maxima and minima: the single-variable calculus GATE DA tests, plus the optimisation ML relies on."}], "manifest": {"refreshers": ["r-functions-p1", "r-functions-p2", "r-functions-p3", "r-functions-p4", "r-functions/0", "r-functions/1", "r-functions/2", "r-functions/3", "r-explog-p1", "r-explog-p2", "r-explog-p3", "r-explog-p4", "r-explog/0", "r-explog/1", "r-explog/2", "r-explog/3", "r1-review/0", "r1-review/1", "r1-review/2", "r1-review/3", "r-sums-p1", "r-sums-p2", "r-sums-p3", "r-sums-p4", "r-sums/0", "r-sums/1", "r-sums/2", "r-sums/3", "r-sets-p1", "r-sets-p2", "r-sets-p3", "r-sets-p4", "r-sets/0", "r-sets/1", "r-sets/2", "r-sets/3", "r2-review/0", "r2-review/1", "r2-review/2", "r2-review/3", "r-deriv-p1", "r-deriv-p2", "r-deriv-p3", "r-deriv-p4", "r-deriv/0", "r-deriv/1", "r-deriv/2", "r-deriv/3", "r-integ-p1", "r-integ-p2", "r-integ-p3", "r-integ-p4", "r-integ/0", "r-integ/1", "r-integ/2", "r-integ/3", "r-grad-p1", "r-grad-p2", "r-grad-p3", "r-grad-p4", "r-grad/0", "r-grad/1", "r-grad/2", "r3-review/0", "r3-review/1", "r3-review/2", "r3-review/3", "r-vectors-p1", "r-vectors-p2", "r-vectors-p3", "r-vectors-p4", "r-vectors/0", "r-vectors/1", "r-vectors/2", "r-matrices-p1", "r-matrices-p2", "r-matrices-p3", "r-matrices-p4", "r-matrices/0", "r-matrices/1", "r-matrices/2", "r4-review/0", "r4-review/1", "r4-review/2", "r4-review/3", "r4-review/4"], "probability": ["pr-counting-p1", "pr-counting-p2", "pr-counting-p3", "pr-counting-p4", "pr-counting/0", "pr-counting/1", "pr-counting/2", "pr-events-p1", "pr-events-p2", "pr-events-p3", "pr-events-p4", "pr-events/0", "pr-events/1", "pr-events/2", "pr-events/3", "pr1-review/0", "pr1-review/1", "pr1-review/2", "pr1-review/3", "pr-conditional-p1", "pr-conditional-p2", "pr-conditional-p3", "pr-conditional-p4", "pr-conditional/0", "pr-conditional/1", "pr-conditional/2", "pr-bayes-p1", "pr-bayes-p2", "pr-bayes-p3", "pr-bayes-p4", "pr-bayes/0", "pr-bayes/1", "pr-bayes/2", "pr2-review/0", "pr2-review/1", "pr2-review/2", "pr-rv-p1", "pr-rv-p2", "pr-rv-p3", "pr-rv-p4", "pr-rv/0", "pr-rv/1", "pr-rv/2", "pr-expect-p1", "pr-expect-p2", "pr-expect-p3", "pr-expect-p4", "pr-expect/0", "pr-expect/1", "pr-expect/2", "pr-expect/3", "pr3-review/0", "pr3-review/1", "pr3-review/2", "pr-discrete-p1", "pr-discrete-p2", "pr-discrete-p3", "pr-discrete-p4", "pr-discrete/0", "pr-discrete/1", "pr-discrete/2", "pr-continuous-p1", "pr-continuous-p2", "pr-continuous-p3", "pr-continuous-p4", "pr-continuous/0", "pr-continuous/1", "pr-continuous/2", "pr-continuous/3", "pr4-review/0", "pr4-review/1", "pr4-review/2", "pr-joint-p1", "pr-joint-p2", "pr-joint-p3", "pr-joint-p4", "pr-joint/0", "pr-joint/1", "pr-joint/2", "pr-condexp-p1", "pr-condexp-p2", "pr-condexp-p3", "pr-condexp/0", "pr-condexp/1", "pr-condexp/2", "pr5-review/0", "pr5-review/1", "pr5-review/2", "pr5-review/3", "pr5-review/4"], "statistics": ["st-descriptive-p1", "st-descriptive-p2", "st-descriptive-p3", "st-descriptive-p4", "st-descriptive/0", "st-descriptive/1", "st-descriptive/2", "st-correlation-p1", "st-correlation-p2", "st-correlation-p3", "st-correlation-p4", "st-correlation/0", "st-correlation/1", "st-correlation/2", "st1-review/0", "st1-review/1", "st1-review/2", "st-estimators-p1", "st-estimators-p2", "st-estimators-p3", "st-estimators-p4", "st-estimators/0", "st-estimators/1", "st-estimators/2", "st-clt-p1", "st-clt-p2", "st-clt-p3", "st-clt-p4", "st-clt/0", "st-clt/1", "st-clt/2", "st2-review/0", "st2-review/1", "st2-review/2", "st-tchi-p1", "st-tchi-p2", "st-tchi-p3", "st-tchi-p4", "st-tchi/0", "st-tchi/1", "st-tchi/2", "st-ci-p1", "st-ci-p2", "st-ci-p3", "st-ci-p4", "st-ci/0", "st-ci/1", "st-ci/2", "st3-review/0", "st3-review/1", "st3-review/2", "st-tests-p1", "st-tests-p2", "st-tests-p3", "st-tests-p4", "st-tests/0", "st-tests/1", "st-tests/2", "st-ttest-chi-p1", "st-ttest-chi-p2", "st-ttest-chi-p3", "st-ttest-chi-p4", "st-ttest-chi/0", "st-ttest-chi/1", "st-ttest-chi/2", "st4-review/0", "st4-review/1", "st4-review/2", "st4-review/3", "st4-review/4"], "linear-algebra": ["la-spaces-p1", "la-spaces-p2", "la-spaces-p3", "la-spaces/0", "la-spaces/1", "la-spaces/2", "la-independence-p1", "la-independence-p2", "la-independence-p3", "la-independence-p4", "la-independence/0", "la-independence/1", "la-independence/2", "la1-review/0", "la1-review/1", "la1-review/2", "la-systems-p1", "la-systems-p2", "la-systems-p3", "la-systems-p4", "la-systems/0", "la-systems/1", "la-systems/2", "la-rank-p1", "la-rank-p2", "la-rank-p3", "la-rank-p4", "la-rank/0", "la-rank/1", "la-rank/2", "la-det-p1", "la-det-p2", "la-det-p3", "la-det-p4", "la-det/0", "la-det/1", "la-det/2", "la2-review/0", "la2-review/1", "la2-review/2", "la-eigen-p1", "la-eigen-p2", "la-eigen-p3", "la-eigen-p4", "la-eigen/0", "la-eigen/1", "la-eigen/2", "la-special-p1", "la-special-p2", "la-special-p3", "la-special-p4", "la-special/0", "la-special/1", "la-special/2", "la-quad-p1", "la-quad-p2", "la-quad-p3", "la-quad-p4", "la-quad/0", "la-quad/1", "la-quad/2", "la3-review/0", "la3-review/1", "la3-review/2", "la-lu-p1", "la-lu-p2", "la-lu-p3", "la-lu-p4", "la-lu/0", "la-lu/1", "la-lu/2", "la-svd-p1", "la-svd-p2", "la-svd-p3", "la-svd-p4", "la-svd/0", "la-svd/1", "la-svd/2", "la4-review/0", "la4-review/1", "la4-review/2", "la4-review/3", "la4-review/4"], "calculus": ["ca-limits-p1", "ca-limits-p2", "ca-limits-p3", "ca-limits-p4", "ca-limits/0", "ca-limits/1", "ca-limits/2", "ca-continuity-p1", "ca-continuity-p2", "ca-continuity-p3", "ca-continuity-p4", "ca-continuity/0", "ca-continuity/1", "ca-continuity/2", "ca1-review/0", "ca1-review/1", "ca1-review/2", "ca-taylor-p1", "ca-taylor-p2", "ca-taylor-p3", "ca-taylor-p4", "ca-taylor/0", "ca-taylor/1", "ca-taylor/2", "ca-extrema-p1", "ca-extrema-p2", "ca-extrema-p3", "ca-extrema-p4", "ca-extrema/0", "ca-extrema/1", "ca-extrema/2", "ca2-review/0", "ca2-review/1", "ca2-review/2", "ca-optim-p1", "ca-optim-p2", "ca-optim-p3", "ca-optim-p4", "ca-optim/0", "ca-optim/1", "ca-optim/2", "ca-convex-p1", "ca-convex-p2", "ca-convex-p3", "ca-convex/0", "ca-convex/1", "ca-convex/2", "ca3-review/0", "ca3-review/1", "ca3-review/2", "ca3-review/3", "ca3-review/4"]}, "module": "refreshers", "root": "../"};
+window.SITE = {"name": "Simple GATE DA", "key": "gateda", "path": "gate-da", "domain": "courses.rahuldevsharma.com/gate-da", "author": "Rahul Dev Sharma", "tagline": "GATE Data Science & AI, from zero", "description": "A free, interactive course for the GATE DA (Data Science and Artificial Intelligence) exam. Starts from school maths, explains every idea visually, and works through real previous-year questions.", "certTitle": ["Simple GATE DA", "Maths foundations"], "certBody": ["answered every quiz and practice question correctly across", "Simple GATE DA's maths modules: refreshers, probability,", "statistics, linear algebra, and calculus & optimization."], "footer_html": "      <p><b>Acknowledgement.</b> Previous-year questions are quoted from the official GATE Data Science and Artificial Intelligence (DA) papers: 2024 (organised by IISc Bengaluru), 2025 (IIT Roorkee) and 2026 (IIT Guwahati), and from the 2024 DA sample paper; one LU question is quoted from GATE CS 2025 (set 2, IIT Roorkee). Each is cited by year and question number, and every answer is checked against the official answer keys. The syllabus followed is the GATE 2027 DA syllabus (IIT Madras).</p>\n      <p><b>Disclaimer.</b> An independent study resource. The Data Premier League, its teams and all their data are fictional. Not affiliated with, reviewed by or endorsed by GATE, IISc or any IIT. Solutions and explanations are the author's own; any mistakes are the author's too.</p>", "theme": {"light": {"bg": "#F6F2EC", "surface": "#FFFFFF", "ink": "#1E1B18", "muted": "#675E55", "line": "#E2DAD0", "accent": "#0E6B6B", "accent-soft": "#DDEFEC", "mint": "#2E7A3A", "mint-soft": "#E1F1E2", "warn": "#B23F22", "warn-soft": "#FBE6DE", "plum": "#7A4FB0", "plum-soft": "#EFE6F8", "gold": "#8A5E00", "gold-soft": "#FBEFD3", "coral": "#D2643C", "coral-soft": "#FBE4D9", "plot-bg": "#FFFDFA"}, "dark": {"bg": "#14110F", "surface": "#1D1916", "ink": "#EFE8E0", "muted": "#A99D91", "line": "#342D27", "accent": "#5CC6BF", "accent-soft": "#173130", "mint": "#7FCB86", "mint-soft": "#18301B", "warn": "#F28B6B", "warn-soft": "#3A2016", "plum": "#C39BEE", "plum-soft": "#2B1F38", "gold": "#E9C25B", "gold-soft": "#33290F", "coral": "#F0916B", "coral-soft": "#3A2219", "plot-bg": "#191512"}}, "modules": [{"slug": "refreshers", "title": "Maths refreshers", "short": "Refreshers", "kind": "prereq", "blurb": "School maths, rebuilt from scratch: algebra, logs, sums, sets, derivatives, integrals and vectors. Everything the later modules lean on."}, {"slug": "probability", "title": "Probability", "short": "Probability", "kind": "", "blurb": "Counting, Bayes, random variables and the distributions GATE loves. The single biggest block of marks in the paper."}, {"slug": "statistics", "title": "Statistics", "short": "Statistics", "kind": "", "blurb": "Describing data, estimators, the Central Limit Theorem, confidence intervals and hypothesis tests (z, t and \u03c7\u00b2), built on the probability module."}, {"slug": "linear-algebra", "title": "Linear algebra", "short": "Linear algebra", "kind": "", "blurb": "Vectors, subspaces, rank, eigenvalues, projections and SVD, taught as pictures and exam shortcuts."}, {"slug": "calculus", "title": "Calculus & optimization", "short": "Calculus", "kind": "", "blurb": "Limits, continuity and differentiability, Taylor series, and finding maxima and minima: the single-variable calculus GATE DA tests, plus the optimisation ML relies on."}], "manifest": {"refreshers": ["r-functions-p1", "r-functions-p2", "r-functions-p3", "r-functions-p4", "r-functions/0", "r-functions/1", "r-functions/2", "r-functions/3", "r-explog-p1", "r-explog-p2", "r-explog-p3", "r-explog-p4", "r-explog/0", "r-explog/1", "r-explog/2", "r-explog/3", "r1-review/0", "r1-review/1", "r1-review/2", "r1-review/3", "r-sums-p1", "r-sums-p2", "r-sums-p3", "r-sums-p4", "r-sums/0", "r-sums/1", "r-sums/2", "r-sums/3", "r-sets-p1", "r-sets-p2", "r-sets-p3", "r-sets-p4", "r-sets/0", "r-sets/1", "r-sets/2", "r-sets/3", "r2-review/0", "r2-review/1", "r2-review/2", "r2-review/3", "r-deriv-p1", "r-deriv-p2", "r-deriv-p3", "r-deriv-p4", "r-deriv/0", "r-deriv/1", "r-deriv/2", "r-deriv/3", "r-integ-p1", "r-integ-p2", "r-integ-p3", "r-integ-p4", "r-integ/0", "r-integ/1", "r-integ/2", "r-integ/3", "r-grad-p1", "r-grad-p2", "r-grad-p3", "r-grad-p4", "r-grad/0", "r-grad/1", "r-grad/2", "r3-review/0", "r3-review/1", "r3-review/2", "r3-review/3", "r-vectors-p1", "r-vectors-p2", "r-vectors-p3", "r-vectors-p4", "r-vectors/0", "r-vectors/1", "r-vectors/2", "r-matrices-p1", "r-matrices-p2", "r-matrices-p3", "r-matrices-p4", "r-matrices/0", "r-matrices/1", "r-matrices/2", "r4-review/0", "r4-review/1", "r4-review/2", "r4-review/3", "r4-review/4"], "probability": ["pr-counting-p1", "pr-counting-p2", "pr-counting-p3", "pr-counting-p4", "pr-counting/0", "pr-counting/1", "pr-counting/2", "pr-events-p1", "pr-events-p2", "pr-events-p3", "pr-events-p4", "pr-events/0", "pr-events/1", "pr-events/2", "pr-events/3", "pr1-review/0", "pr1-review/1", "pr1-review/2", "pr1-review/3", "pr-conditional-p1", "pr-conditional-p2", "pr-conditional-p3", "pr-conditional-p4", "pr-conditional/0", "pr-conditional/1", "pr-conditional/2", "pr-bayes-p1", "pr-bayes-p2", "pr-bayes-p3", "pr-bayes-p4", "pr-bayes/0", "pr-bayes/1", "pr-bayes/2", "pr2-review/0", "pr2-review/1", "pr2-review/2", "pr-rv-p1", "pr-rv-p2", "pr-rv-p3", "pr-rv-p4", "pr-rv/0", "pr-rv/1", "pr-rv/2", "pr-expect-p1", "pr-expect-p2", "pr-expect-p3", "pr-expect-p4", "pr-expect/0", "pr-expect/1", "pr-expect/2", "pr-expect/3", "pr3-review/0", "pr3-review/1", "pr3-review/2", "pr-discrete-p1", "pr-discrete-p2", "pr-discrete-p3", "pr-discrete-p4", "pr-discrete/0", "pr-discrete/1", "pr-discrete/2", "pr-continuous-p1", "pr-continuous-p2", "pr-continuous-p3", "pr-continuous-p4", "pr-continuous/0", "pr-continuous/1", "pr-continuous/2", "pr-continuous/3", "pr4-review/0", "pr4-review/1", "pr4-review/2", "pr-joint-p1", "pr-joint-p2", "pr-joint-p3", "pr-joint-p4", "pr-joint/0", "pr-joint/1", "pr-joint/2", "pr-condexp-p1", "pr-condexp-p2", "pr-condexp-p3", "pr-condexp/0", "pr-condexp/1", "pr-condexp/2", "pr5-review/0", "pr5-review/1", "pr5-review/2", "pr5-review/3", "pr5-review/4"], "statistics": ["st-descriptive-p1", "st-descriptive-p2", "st-descriptive-p3", "st-descriptive-p4", "st-descriptive/0", "st-descriptive/1", "st-descriptive/2", "st-correlation-p1", "st-correlation-p2", "st-correlation-p3", "st-correlation-p4", "st-correlation/0", "st-correlation/1", "st-correlation/2", "st1-review/0", "st1-review/1", "st1-review/2", "st-estimators-p1", "st-estimators-p2", "st-estimators-p3", "st-estimators-p4", "st-estimators/0", "st-estimators/1", "st-estimators/2", "st-clt-p1", "st-clt-p2", "st-clt-p3", "st-clt-p4", "st-clt/0", "st-clt/1", "st-clt/2", "st2-review/0", "st2-review/1", "st2-review/2", "st-tchi-p1", "st-tchi-p2", "st-tchi-p3", "st-tchi-p4", "st-tchi/0", "st-tchi/1", "st-tchi/2", "st-ci-p1", "st-ci-p2", "st-ci-p3", "st-ci-p4", "st-ci/0", "st-ci/1", "st-ci/2", "st3-review/0", "st3-review/1", "st3-review/2", "st-tests-p1", "st-tests-p2", "st-tests-p3", "st-tests-p4", "st-tests/0", "st-tests/1", "st-tests/2", "st-ttest-chi-p1", "st-ttest-chi-p2", "st-ttest-chi-p3", "st-ttest-chi-p4", "st-ttest-chi/0", "st-ttest-chi/1", "st-ttest-chi/2", "st4-review/0", "st4-review/1", "st4-review/2", "st4-review/3", "st4-review/4"], "linear-algebra": ["la-spaces-p1", "la-spaces-p2", "la-spaces-p3", "la-spaces/0", "la-spaces/1", "la-spaces/2", "la-independence-p1", "la-independence-p2", "la-independence-p3", "la-independence-p4", "la-independence/0", "la-independence/1", "la-independence/2", "la1-review/0", "la1-review/1", "la1-review/2", "la-systems-p1", "la-systems-p2", "la-systems-p3", "la-systems-p4", "la-systems/0", "la-systems/1", "la-systems/2", "la-rank-p1", "la-rank-p2", "la-rank-p3", "la-rank-p4", "la-rank/0", "la-rank/1", "la-rank/2", "la-det-p1", "la-det-p2", "la-det-p3", "la-det-p4", "la-det/0", "la-det/1", "la-det/2", "la2-review/0", "la2-review/1", "la2-review/2", "la-eigen-p1", "la-eigen-p2", "la-eigen-p3", "la-eigen-p4", "la-eigen/0", "la-eigen/1", "la-eigen/2", "la-special-p1", "la-special-p2", "la-special-p3", "la-special-p4", "la-special/0", "la-special/1", "la-special/2", "la-quad-p1", "la-quad-p2", "la-quad-p3", "la-quad-p4", "la-quad/0", "la-quad/1", "la-quad/2", "la3-review/0", "la3-review/1", "la3-review/2", "la-lu-p1", "la-lu-p2", "la-lu-p3", "la-lu-p4", "la-lu/0", "la-lu/1", "la-lu/2", "la-svd-p1", "la-svd-p2", "la-svd-p3", "la-svd-p4", "la-svd/0", "la-svd/1", "la-svd/2", "la4-review/0", "la4-review/1", "la4-review/2", "la4-review/3", "la4-review/4"], "calculus": ["ca-limits-p1", "ca-limits-p2", "ca-limits-p3", "ca-limits-p4", "ca-limits/0", "ca-limits/1", "ca-limits/2", "ca-continuity-p1", "ca-continuity-p2", "ca-continuity-p3", "ca-continuity-p4", "ca-continuity/0", "ca-continuity/1", "ca-continuity/2", "ca1-review/0", "ca1-review/1", "ca1-review/2", "ca-taylor-p1", "ca-taylor-p2", "ca-taylor-p3", "ca-taylor-p4", "ca-taylor/0", "ca-taylor/1", "ca-taylor/2", "ca-extrema-p1", "ca-extrema-p2", "ca-extrema-p3", "ca-extrema-p4", "ca-extrema/0", "ca-extrema/1", "ca-extrema/2", "ca2-review/0", "ca2-review/1", "ca2-review/2", "ca-optim-p1", "ca-optim-p2", "ca-optim-p3", "ca-optim-p4", "ca-optim/0", "ca-optim/1", "ca-optim/2", "ca-convex-p1", "ca-convex-p2", "ca-convex-p3", "ca-convex/0", "ca-convex/1", "ca-convex/2", "ca3-review/0", "ca3-review/1", "ca3-review/2", "ca3-review/3", "ca3-review/4"]}, "module": "calculus", "root": "../"};
 /* ---- expr.js ---- */
 /* Safe expression parser: no eval. Grammar (precedence low → high):
    sum := prod (('+'|'-') prod)* ; prod := unary (('*'|'/'| implicit) unary)* ; unary := '-' unary | pow ; pow := atom ('^' unary)?

@@ -408,7 +408,9 @@ kbd { font-family: var(--font-mono); font-size: 0.82em; border: 1px solid var(--
   body { font-size: 16px; }
   .shell, body.rail-collapsed .shell { display: block; min-height: 0; }
   .topbar { display: flex; align-items: center; gap: 12px; position: sticky; top: 0; z-index: 30; background: var(--surface); border-bottom: 1px solid var(--line); padding: 8px 16px 8px 12px; }
-  .topbar .brand { flex: 1; font-size: 1rem; }
+  .topbar .brand { flex: 1; font-size: 1rem; min-width: 0; }
+  .topbar .brand-name { overflow: hidden; text-overflow: ellipsis; }
+  .top-prog { flex: none; }
   .top-prog { font-family: var(--font-mono); font-size: 0.78rem; color: var(--mint); font-variant-numeric: tabular-nums; }
   .scrim { display: block; position: fixed; inset: 0; z-index: 40; background: rgba(10, 15, 20, .45); }
   .rail, body.rail-collapsed .rail { position: fixed; top: 0; bottom: 0; left: 0; z-index: 50; width: min(88vw, 350px); height: 100%; align-items: stretch; transform: translateX(-102%); transition: transform .25s ease; box-shadow: 0 0 40px rgba(0, 0, 0, .25); padding: 16px 14px 24px; overscroll-behavior: contain; visibility: hidden; }
@@ -606,11 +608,11 @@ dialog.cert::backdrop { background: rgba(10, 15, 20, .6); }
 
       <section class="hub-sec" aria-labelledby="h-modules">
         <span class="kicker">YOUR ROUTE</span>
-        <h2 id="h-modules">Four modules ready, more on the way</h2>
+        <h2 id="h-modules">Five modules ready, more on the way</h2>
         <p>Start with the refreshers if school maths feels distant. Each module has a short overview first, then parts and chapters. Your progress is saved in this browser, so you can stop anywhere and pick up later.</p>
         <div class="modplan" id="modplan"></div>
         <div class="modplan">
-          <div class="mod-card soon"><span class="mc-top"><span class="mn">·</span><b>Coming next</b></span><span class="mc-blurb">Calculus &amp; optimization, Python &amp; DSA, Databases &amp; warehousing, Machine learning, AI, and an exam lab with full past papers and timed mocks.</span></div>
+          <div class="mod-card soon"><span class="mc-top"><span class="mn">·</span><b>Coming next</b></span><span class="mc-blurb">Python &amp; DSA, Databases &amp; warehousing, Machine learning, AI, and an exam lab with full past papers and timed mocks.</span></div>
         </div>
       </section>
 
@@ -695,7 +697,7 @@ dialog.cert::backdrop { background: rgba(10, 15, 20, .6); }
 <canvas id="confetti" hidden></canvas>
 
 <script>
-window.SITE = {"name": "Simple GATE DA", "key": "gateda", "path": "gate-da", "domain": "courses.rahuldevsharma.com/gate-da", "author": "Rahul Dev Sharma", "tagline": "GATE Data Science & AI, from zero", "description": "A free, interactive course for the GATE DA (Data Science and Artificial Intelligence) exam. Starts from school maths, explains every idea visually, and works through real previous-year questions.", "certTitle": ["Simple GATE DA", "Maths foundations"], "certBody": ["answered every quiz and practice question correctly across", "Simple GATE DA's maths refreshers, probability,", "statistics and linear algebra modules."], "footer_html": "      <p><b>Acknowledgement.</b> Previous-year questions are quoted from the official GATE Data Science and Artificial Intelligence (DA) papers: 2024 (organised by IISc Bengaluru), 2025 (IIT Roorkee) and 2026 (IIT Guwahati), and from the 2024 DA sample paper; one LU question is quoted from GATE CS 2025 (set 2, IIT Roorkee). Each is cited by year and question number, and every answer is checked against the official answer keys. The syllabus followed is the GATE 2027 DA syllabus (IIT Madras).</p>\n      <p><b>Disclaimer.</b> An independent study resource. The Data Premier League, its teams and all their data are fictional. Not affiliated with, reviewed by or endorsed by GATE, IISc or any IIT. Solutions and explanations are the author's own; any mistakes are the author's too.</p>", "theme": {"light": {"bg": "#F6F2EC", "surface": "#FFFFFF", "ink": "#1E1B18", "muted": "#675E55", "line": "#E2DAD0", "accent": "#0E6B6B", "accent-soft": "#DDEFEC", "mint": "#2E7A3A", "mint-soft": "#E1F1E2", "warn": "#B23F22", "warn-soft": "#FBE6DE", "plum": "#7A4FB0", "plum-soft": "#EFE6F8", "gold": "#8A5E00", "gold-soft": "#FBEFD3", "coral": "#D2643C", "coral-soft": "#FBE4D9", "plot-bg": "#FFFDFA"}, "dark": {"bg": "#14110F", "surface": "#1D1916", "ink": "#EFE8E0", "muted": "#A99D91", "line": "#342D27", "accent": "#5CC6BF", "accent-soft": "#173130", "mint": "#7FCB86", "mint-soft": "#18301B", "warn": "#F28B6B", "warn-soft": "#3A2016", "plum": "#C39BEE", "plum-soft": "#2B1F38", "gold": "#E9C25B", "gold-soft": "#33290F", "coral": "#F0916B", "coral-soft": "#3A2219", "plot-bg": "#191512"}}, "modules": [{"slug": "refreshers", "title": "Maths refreshers", "short": "Refreshers", "kind": "prereq", "blurb": "School maths, rebuilt from scratch: algebra, logs, sums, sets, derivatives, integrals and vectors. Everything the later modules lean on."}, {"slug": "probability", "title": "Probability", "short": "Probability", "kind": "", "blurb": "Counting, Bayes, random variables and the distributions GATE loves. The single biggest block of marks in the paper."}, {"slug": "statistics", "title": "Statistics", "short": "Statistics", "kind": "", "blurb": "Describing data, estimators, the Central Limit Theorem, confidence intervals and hypothesis tests (z, t and \u03c7\u00b2), built on the probability module."}, {"slug": "linear-algebra", "title": "Linear algebra", "short": "Linear algebra", "kind": "", "blurb": "Vectors, subspaces, rank, eigenvalues, projections and SVD, taught as pictures and exam shortcuts."}], "manifest": {"refreshers": ["r-functions-p1", "r-functions-p2", "r-functions-p3", "r-functions-p4", "r-functions/0", "r-functions/1", "r-functions/2", "r-functions/3", "r-explog-p1", "r-explog-p2", "r-explog-p3", "r-explog-p4", "r-explog/0", "r-explog/1", "r-explog/2", "r-explog/3", "r1-review/0", "r1-review/1", "r1-review/2", "r1-review/3", "r-sums-p1", "r-sums-p2", "r-sums-p3", "r-sums-p4", "r-sums/0", "r-sums/1", "r-sums/2", "r-sums/3", "r-sets-p1", "r-sets-p2", "r-sets-p3", "r-sets-p4", "r-sets/0", "r-sets/1", "r-sets/2", "r-sets/3", "r2-review/0", "r2-review/1", "r2-review/2", "r2-review/3", "r-deriv-p1", "r-deriv-p2", "r-deriv-p3", "r-deriv-p4", "r-deriv/0", "r-deriv/1", "r-deriv/2", "r-deriv/3", "r-integ-p1", "r-integ-p2", "r-integ-p3", "r-integ-p4", "r-integ/0", "r-integ/1", "r-integ/2", "r-integ/3", "r-grad-p1", "r-grad-p2", "r-grad-p3", "r-grad-p4", "r-grad/0", "r-grad/1", "r-grad/2", "r3-review/0", "r3-review/1", "r3-review/2", "r3-review/3", "r-vectors-p1", "r-vectors-p2", "r-vectors-p3", "r-vectors-p4", "r-vectors/0", "r-vectors/1", "r-vectors/2", "r-matrices-p1", "r-matrices-p2", "r-matrices-p3", "r-matrices-p4", "r-matrices/0", "r-matrices/1", "r-matrices/2", "r4-review/0", "r4-review/1", "r4-review/2", "r4-review/3", "r4-review/4"], "probability": ["pr-counting-p1", "pr-counting-p2", "pr-counting-p3", "pr-counting-p4", "pr-counting/0", "pr-counting/1", "pr-counting/2", "pr-events-p1", "pr-events-p2", "pr-events-p3", "pr-events-p4", "pr-events/0", "pr-events/1", "pr-events/2", "pr-events/3", "pr1-review/0", "pr1-review/1", "pr1-review/2", "pr1-review/3", "pr-conditional-p1", "pr-conditional-p2", "pr-conditional-p3", "pr-conditional-p4", "pr-conditional/0", "pr-conditional/1", "pr-conditional/2", "pr-bayes-p1", "pr-bayes-p2", "pr-bayes-p3", "pr-bayes-p4", "pr-bayes/0", "pr-bayes/1", "pr-bayes/2", "pr2-review/0", "pr2-review/1", "pr2-review/2", "pr-rv-p1", "pr-rv-p2", "pr-rv-p3", "pr-rv-p4", "pr-rv/0", "pr-rv/1", "pr-rv/2", "pr-expect-p1", "pr-expect-p2", "pr-expect-p3", "pr-expect-p4", "pr-expect/0", "pr-expect/1", "pr-expect/2", "pr-expect/3", "pr3-review/0", "pr3-review/1", "pr3-review/2", "pr-discrete-p1", "pr-discrete-p2", "pr-discrete-p3", "pr-discrete-p4", "pr-discrete/0", "pr-discrete/1", "pr-discrete/2", "pr-continuous-p1", "pr-continuous-p2", "pr-continuous-p3", "pr-continuous-p4", "pr-continuous/0", "pr-continuous/1", "pr-continuous/2", "pr-continuous/3", "pr4-review/0", "pr4-review/1", "pr4-review/2", "pr-joint-p1", "pr-joint-p2", "pr-joint-p3", "pr-joint-p4", "pr-joint/0", "pr-joint/1", "pr-joint/2", "pr-condexp-p1", "pr-condexp-p2", "pr-condexp-p3", "pr-condexp/0", "pr-condexp/1", "pr-condexp/2", "pr5-review/0", "pr5-review/1", "pr5-review/2", "pr5-review/3", "pr5-review/4"], "statistics": ["st-descriptive-p1", "st-descriptive-p2", "st-descriptive-p3", "st-descriptive-p4", "st-descriptive/0", "st-descriptive/1", "st-descriptive/2", "st-correlation-p1", "st-correlation-p2", "st-correlation-p3", "st-correlation-p4", "st-correlation/0", "st-correlation/1", "st-correlation/2", "st1-review/0", "st1-review/1", "st1-review/2", "st-estimators-p1", "st-estimators-p2", "st-estimators-p3", "st-estimators-p4", "st-estimators/0", "st-estimators/1", "st-estimators/2", "st-clt-p1", "st-clt-p2", "st-clt-p3", "st-clt-p4", "st-clt/0", "st-clt/1", "st-clt/2", "st2-review/0", "st2-review/1", "st2-review/2", "st-tchi-p1", "st-tchi-p2", "st-tchi-p3", "st-tchi-p4", "st-tchi/0", "st-tchi/1", "st-tchi/2", "st-ci-p1", "st-ci-p2", "st-ci-p3", "st-ci-p4", "st-ci/0", "st-ci/1", "st-ci/2", "st3-review/0", "st3-review/1", "st3-review/2", "st-tests-p1", "st-tests-p2", "st-tests-p3", "st-tests-p4", "st-tests/0", "st-tests/1", "st-tests/2", "st-ttest-chi-p1", "st-ttest-chi-p2", "st-ttest-chi-p3", "st-ttest-chi-p4", "st-ttest-chi/0", "st-ttest-chi/1", "st-ttest-chi/2", "st4-review/0", "st4-review/1", "st4-review/2", "st4-review/3", "st4-review/4"], "linear-algebra": ["la-spaces-p1", "la-spaces-p2", "la-spaces-p3", "la-spaces/0", "la-spaces/1", "la-spaces/2", "la-independence-p1", "la-independence-p2", "la-independence-p3", "la-independence-p4", "la-independence/0", "la-independence/1", "la-independence/2", "la1-review/0", "la1-review/1", "la1-review/2", "la-systems-p1", "la-systems-p2", "la-systems-p3", "la-systems-p4", "la-systems/0", "la-systems/1", "la-systems/2", "la-rank-p1", "la-rank-p2", "la-rank-p3", "la-rank-p4", "la-rank/0", "la-rank/1", "la-rank/2", "la-det-p1", "la-det-p2", "la-det-p3", "la-det-p4", "la-det/0", "la-det/1", "la-det/2", "la2-review/0", "la2-review/1", "la2-review/2", "la-eigen-p1", "la-eigen-p2", "la-eigen-p3", "la-eigen-p4", "la-eigen/0", "la-eigen/1", "la-eigen/2", "la-special-p1", "la-special-p2", "la-special-p3", "la-special-p4", "la-special/0", "la-special/1", "la-special/2", "la-quad-p1", "la-quad-p2", "la-quad-p3", "la-quad-p4", "la-quad/0", "la-quad/1", "la-quad/2", "la3-review/0", "la3-review/1", "la3-review/2", "la-lu-p1", "la-lu-p2", "la-lu-p3", "la-lu-p4", "la-lu/0", "la-lu/1", "la-lu/2", "la-svd-p1", "la-svd-p2", "la-svd-p3", "la-svd-p4", "la-svd/0", "la-svd/1", "la-svd/2", "la4-review/0", "la4-review/1", "la4-review/2", "la4-review/3", "la4-review/4"]}, "module": "", "root": "./"};
+window.SITE = {"name": "Simple GATE DA", "key": "gateda", "path": "gate-da", "domain": "courses.rahuldevsharma.com/gate-da", "author": "Rahul Dev Sharma", "tagline": "GATE Data Science & AI, from zero", "description": "A free, interactive course for the GATE DA (Data Science and Artificial Intelligence) exam. Starts from school maths, explains every idea visually, and works through real previous-year questions.", "certTitle": ["Simple GATE DA", "Maths foundations"], "certBody": ["answered every quiz and practice question correctly across", "Simple GATE DA's maths modules: refreshers, probability,", "statistics, linear algebra, and calculus & optimization."], "footer_html": "      <p><b>Acknowledgement.</b> Previous-year questions are quoted from the official GATE Data Science and Artificial Intelligence (DA) papers: 2024 (organised by IISc Bengaluru), 2025 (IIT Roorkee) and 2026 (IIT Guwahati), and from the 2024 DA sample paper; one LU question is quoted from GATE CS 2025 (set 2, IIT Roorkee). Each is cited by year and question number, and every answer is checked against the official answer keys. The syllabus followed is the GATE 2027 DA syllabus (IIT Madras).</p>\n      <p><b>Disclaimer.</b> An independent study resource. The Data Premier League, its teams and all their data are fictional. Not affiliated with, reviewed by or endorsed by GATE, IISc or any IIT. Solutions and explanations are the author's own; any mistakes are the author's too.</p>", "theme": {"light": {"bg": "#F6F2EC", "surface": "#FFFFFF", "ink": "#1E1B18", "muted": "#675E55", "line": "#E2DAD0", "accent": "#0E6B6B", "accent-soft": "#DDEFEC", "mint": "#2E7A3A", "mint-soft": "#E1F1E2", "warn": "#B23F22", "warn-soft": "#FBE6DE", "plum": "#7A4FB0", "plum-soft": "#EFE6F8", "gold": "#8A5E00", "gold-soft": "#FBEFD3", "coral": "#D2643C", "coral-soft": "#FBE4D9", "plot-bg": "#FFFDFA"}, "dark": {"bg": "#14110F", "surface": "#1D1916", "ink": "#EFE8E0", "muted": "#A99D91", "line": "#342D27", "accent": "#5CC6BF", "accent-soft": "#173130", "mint": "#7FCB86", "mint-soft": "#18301B", "warn": "#F28B6B", "warn-soft": "#3A2016", "plum": "#C39BEE", "plum-soft": "#2B1F38", "gold": "#E9C25B", "gold-soft": "#33290F", "coral": "#F0916B", "coral-soft": "#3A2219", "plot-bg": "#191512"}}, "modules": [{"slug": "refreshers", "title": "Maths refreshers", "short": "Refreshers", "kind": "prereq", "blurb": "School maths, rebuilt from scratch: algebra, logs, sums, sets, derivatives, integrals and vectors. Everything the later modules lean on."}, {"slug": "probability", "title": "Probability", "short": "Probability", "kind": "", "blurb": "Counting, Bayes, random variables and the distributions GATE loves. The single biggest block of marks in the paper."}, {"slug": "statistics", "title": "Statistics", "short": "Statistics", "kind": "", "blurb": "Describing data, estimators, the Central Limit Theorem, confidence intervals and hypothesis tests (z, t and \u03c7\u00b2), built on the probability module."}, {"slug": "linear-algebra", "title": "Linear algebra", "short": "Linear algebra", "kind": "", "blurb": "Vectors, subspaces, rank, eigenvalues, projections and SVD, taught as pictures and exam shortcuts."}, {"slug": "calculus", "title": "Calculus & optimization", "short": "Calculus", "kind": "", "blurb": "Limits, continuity and differentiability, Taylor series, and finding maxima and minima: the single-variable calculus GATE DA tests, plus the optimisation ML relies on."}], "manifest": {"refreshers": ["r-functions-p1", "r-functions-p2", "r-functions-p3", "r-functions-p4", "r-functions/0", "r-functions/1", "r-functions/2", "r-functions/3", "r-explog-p1", "r-explog-p2", "r-explog-p3", "r-explog-p4", "r-explog/0", "r-explog/1", "r-explog/2", "r-explog/3", "r1-review/0", "r1-review/1", "r1-review/2", "r1-review/3", "r-sums-p1", "r-sums-p2", "r-sums-p3", "r-sums-p4", "r-sums/0", "r-sums/1", "r-sums/2", "r-sums/3", "r-sets-p1", "r-sets-p2", "r-sets-p3", "r-sets-p4", "r-sets/0", "r-sets/1", "r-sets/2", "r-sets/3", "r2-review/0", "r2-review/1", "r2-review/2", "r2-review/3", "r-deriv-p1", "r-deriv-p2", "r-deriv-p3", "r-deriv-p4", "r-deriv/0", "r-deriv/1", "r-deriv/2", "r-deriv/3", "r-integ-p1", "r-integ-p2", "r-integ-p3", "r-integ-p4", "r-integ/0", "r-integ/1", "r-integ/2", "r-integ/3", "r-grad-p1", "r-grad-p2", "r-grad-p3", "r-grad-p4", "r-grad/0", "r-grad/1", "r-grad/2", "r3-review/0", "r3-review/1", "r3-review/2", "r3-review/3", "r-vectors-p1", "r-vectors-p2", "r-vectors-p3", "r-vectors-p4", "r-vectors/0", "r-vectors/1", "r-vectors/2", "r-matrices-p1", "r-matrices-p2", "r-matrices-p3", "r-matrices-p4", "r-matrices/0", "r-matrices/1", "r-matrices/2", "r4-review/0", "r4-review/1", "r4-review/2", "r4-review/3", "r4-review/4"], "probability": ["pr-counting-p1", "pr-counting-p2", "pr-counting-p3", "pr-counting-p4", "pr-counting/0", "pr-counting/1", "pr-counting/2", "pr-events-p1", "pr-events-p2", "pr-events-p3", "pr-events-p4", "pr-events/0", "pr-events/1", "pr-events/2", "pr-events/3", "pr1-review/0", "pr1-review/1", "pr1-review/2", "pr1-review/3", "pr-conditional-p1", "pr-conditional-p2", "pr-conditional-p3", "pr-conditional-p4", "pr-conditional/0", "pr-conditional/1", "pr-conditional/2", "pr-bayes-p1", "pr-bayes-p2", "pr-bayes-p3", "pr-bayes-p4", "pr-bayes/0", "pr-bayes/1", "pr-bayes/2", "pr2-review/0", "pr2-review/1", "pr2-review/2", "pr-rv-p1", "pr-rv-p2", "pr-rv-p3", "pr-rv-p4", "pr-rv/0", "pr-rv/1", "pr-rv/2", "pr-expect-p1", "pr-expect-p2", "pr-expect-p3", "pr-expect-p4", "pr-expect/0", "pr-expect/1", "pr-expect/2", "pr-expect/3", "pr3-review/0", "pr3-review/1", "pr3-review/2", "pr-discrete-p1", "pr-discrete-p2", "pr-discrete-p3", "pr-discrete-p4", "pr-discrete/0", "pr-discrete/1", "pr-discrete/2", "pr-continuous-p1", "pr-continuous-p2", "pr-continuous-p3", "pr-continuous-p4", "pr-continuous/0", "pr-continuous/1", "pr-continuous/2", "pr-continuous/3", "pr4-review/0", "pr4-review/1", "pr4-review/2", "pr-joint-p1", "pr-joint-p2", "pr-joint-p3", "pr-joint-p4", "pr-joint/0", "pr-joint/1", "pr-joint/2", "pr-condexp-p1", "pr-condexp-p2", "pr-condexp-p3", "pr-condexp/0", "pr-condexp/1", "pr-condexp/2", "pr5-review/0", "pr5-review/1", "pr5-review/2", "pr5-review/3", "pr5-review/4"], "statistics": ["st-descriptive-p1", "st-descriptive-p2", "st-descriptive-p3", "st-descriptive-p4", "st-descriptive/0", "st-descriptive/1", "st-descriptive/2", "st-correlation-p1", "st-correlation-p2", "st-correlation-p3", "st-correlation-p4", "st-correlation/0", "st-correlation/1", "st-correlation/2", "st1-review/0", "st1-review/1", "st1-review/2", "st-estimators-p1", "st-estimators-p2", "st-estimators-p3", "st-estimators-p4", "st-estimators/0", "st-estimators/1", "st-estimators/2", "st-clt-p1", "st-clt-p2", "st-clt-p3", "st-clt-p4", "st-clt/0", "st-clt/1", "st-clt/2", "st2-review/0", "st2-review/1", "st2-review/2", "st-tchi-p1", "st-tchi-p2", "st-tchi-p3", "st-tchi-p4", "st-tchi/0", "st-tchi/1", "st-tchi/2", "st-ci-p1", "st-ci-p2", "st-ci-p3", "st-ci-p4", "st-ci/0", "st-ci/1", "st-ci/2", "st3-review/0", "st3-review/1", "st3-review/2", "st-tests-p1", "st-tests-p2", "st-tests-p3", "st-tests-p4", "st-tests/0", "st-tests/1", "st-tests/2", "st-ttest-chi-p1", "st-ttest-chi-p2", "st-ttest-chi-p3", "st-ttest-chi-p4", "st-ttest-chi/0", "st-ttest-chi/1", "st-ttest-chi/2", "st4-review/0", "st4-review/1", "st4-review/2", "st4-review/3", "st4-review/4"], "linear-algebra": ["la-spaces-p1", "la-spaces-p2", "la-spaces-p3", "la-spaces/0", "la-spaces/1", "la-spaces/2", "la-independence-p1", "la-independence-p2", "la-independence-p3", "la-independence-p4", "la-independence/0", "la-independence/1", "la-independence/2", "la1-review/0", "la1-review/1", "la1-review/2", "la-systems-p1", "la-systems-p2", "la-systems-p3", "la-systems-p4", "la-systems/0", "la-systems/1", "la-systems/2", "la-rank-p1", "la-rank-p2", "la-rank-p3", "la-rank-p4", "la-rank/0", "la-rank/1", "la-rank/2", "la-det-p1", "la-det-p2", "la-det-p3", "la-det-p4", "la-det/0", "la-det/1", "la-det/2", "la2-review/0", "la2-review/1", "la2-review/2", "la-eigen-p1", "la-eigen-p2", "la-eigen-p3", "la-eigen-p4", "la-eigen/0", "la-eigen/1", "la-eigen/2", "la-special-p1", "la-special-p2", "la-special-p3", "la-special-p4", "la-special/0", "la-special/1", "la-special/2", "la-quad-p1", "la-quad-p2", "la-quad-p3", "la-quad-p4", "la-quad/0", "la-quad/1", "la-quad/2", "la3-review/0", "la3-review/1", "la3-review/2", "la-lu-p1", "la-lu-p2", "la-lu-p3", "la-lu-p4", "la-lu/0", "la-lu/1", "la-lu/2", "la-svd-p1", "la-svd-p2", "la-svd-p3", "la-svd-p4", "la-svd/0", "la-svd/1", "la-svd/2", "la4-review/0", "la4-review/1", "la4-review/2", "la4-review/3", "la4-review/4"], "calculus": ["ca-limits-p1", "ca-limits-p2", "ca-limits-p3", "ca-limits-p4", "ca-limits/0", "ca-limits/1", "ca-limits/2", "ca-continuity-p1", "ca-continuity-p2", "ca-continuity-p3", "ca-continuity-p4", "ca-continuity/0", "ca-continuity/1", "ca-continuity/2", "ca1-review/0", "ca1-review/1", "ca1-review/2", "ca-taylor-p1", "ca-taylor-p2", "ca-taylor-p3", "ca-taylor-p4", "ca-taylor/0", "ca-taylor/1", "ca-taylor/2", "ca-extrema-p1", "ca-extrema-p2", "ca-extrema-p3", "ca-extrema-p4", "ca-extrema/0", "ca-extrema/1", "ca-extrema/2", "ca2-review/0", "ca2-review/1", "ca2-review/2", "ca-optim-p1", "ca-optim-p2", "ca-optim-p3", "ca-optim-p4", "ca-optim/0", "ca-optim/1", "ca-optim/2", "ca-convex-p1", "ca-convex-p2", "ca-convex-p3", "ca-convex/0", "ca-convex/1", "ca-convex/2", "ca3-review/0", "ca3-review/1", "ca3-review/2", "ca3-review/3", "ca3-review/4"]}, "module": "", "root": "./"};
 /* ---- expr.js ---- */
 /* Safe expression parser: no eval. Grammar (precedence low → high):
    sum := prod (('+'|'-') prod)* ; prod := unary (('*'|'/'| implicit) unary)* ; unary := '-' unary | pow ; pow := atom ('^' unary)?
@@ -1922,6 +1924,222 @@ window.SITE = {"name": "Simple GATE DA", "key": "gateda", "path": "gate-da", "do
     return out;
   };
 
+})();
+
+/* ---- w_ca.js ---- */
+/* Calculus & optimization widgets (ca_*). */
+(function () {
+  "use strict";
+  var DH = window.DH, W = DH.W, h = DH.h, col = DH.col, fmt = DH.fmt;
+  function clamp(v, a, b) { return Math.max(a, Math.min(b, v)); }
+
+  /* ---------- 1.1 zoom into a removable singularity ---------- */
+  W.ca_limit = function (el) {
+    var F = [
+      { n: "sin x / x", f: function (x) { return Math.sin(x) / x; }, a: 0, L: 1 },
+      { n: "(x² − 4)/(x − 2)", f: function (x) { return (x * x - 4) / (x - 2); }, a: 2, L: 4 },
+      { n: "(1 − cos x)/x²", f: function (x) { return (1 - Math.cos(x)) / (x * x); }, a: 0, L: 0.5 },
+      { n: "(eˣ − 1)/x", f: function (x) { return (Math.exp(x) - 1) / x; }, a: 0, L: 1 },
+      { n: "ln((x²+1)cos x)/x²", f: function (x) { return Math.log((x * x + 1) * Math.cos(x)) / (x * x); }, a: 0, L: 0.5 }];
+    var k = 0, zoom = 3;
+    var row = h("div", { class: "wrow" }); el.appendChild(row);
+    var p = new DH.Plot(row, { xmin: -3, xmax: 3, ymin: -1, ymax: 2, ratio: 0.72, label: "Zooming in on a function near a point where it is 0/0" });
+    var ctl = DH.ctrlBox(row);
+    DH.chips(ctl, F.map(function (o) { return o.n; }), function (i) { k = i; p.redraw(); }, 0);
+    DH.slider(ctl, { label: "zoom (window half-width)", min: -2, max: 0.6, step: 0.02, value: Math.log10(zoom), log: true, digits: 3 }, function (v) { zoom = v; p.redraw(); });
+    var rd = DH.readout(ctl);
+    p.draw = function (p) {
+      var o = F[k], w = zoom, hh = Math.max(0.05, Math.min(3, w * 1.2));
+      p.setRange(o.a - w, o.a + w, o.L - hh, o.L + hh);
+      p.axes({});
+      p.curve(function (x) { return Math.abs(x - o.a) < 1e-9 ? NaN : o.f(x); }, col("accent"), 2.6);
+      p.line(o.a - w, o.L, o.a + w, o.L, DH.alpha(col("coral"), 0.6), 1, [4, 4]);
+      p.ring(o.a, o.L, 6, col("coral"), 2.5);
+      var hs = [w * 0.5, w * 0.1, w * 0.01], rows = hs.map(function (d) { return "x = " + fmt(o.a - d, 4) + " → " + fmt(o.f(o.a - d), 5) + "    x = " + fmt(o.a + d, 4) + " → " + fmt(o.f(o.a + d), 5); });
+      rd.innerHTML = "<span class='k'>at x = " + o.a + "</span> the formula gives 0/0 (undefined)<br>" + rows.join("<br>") + "<br><span class='k'>limit</span> = <b>" + o.L + "</b> (the hollow dot)";
+    };
+    p.redraw();
+  };
+
+  /* ---------- 1.2 make the piecewise function of 2024 Q37 smooth ---------- */
+  W.ca_cont = function (el) {
+    var a = 0.5, b = 0, c = 0;
+    var row = h("div", { class: "wrow" }); el.appendChild(row);
+    var p = new DH.Plot(row, { xmin: -5, xmax: 5, ymin: -1, ymax: 5, ratio: 0.72, label: "Piecewise function with adjustable middle piece" });
+    var ctl = DH.ctrlBox(row);
+    var ss = [];
+    ss.push(DH.slider(ctl, { label: "$a$", min: -1, max: 1, step: 0.05, value: a, digits: 2 }, function (v) { a = v; p.redraw(); }));
+    ss.push(DH.slider(ctl, { label: "$b$", min: -1, max: 1, step: 0.05, value: b, digits: 2 }, function (v) { b = v; p.redraw(); }));
+    ss.push(DH.slider(ctl, { label: "$c$", min: -4, max: 4, step: 0.05, value: c, digits: 2 }, function (v) { c = v; p.redraw(); }));
+    var bt = h("div", { class: "btns" }); ctl.appendChild(bt);
+    [["(A)", [0.25, 0, 1]], ["(B)", [0.5, 0, 0]], ["(C)", [0, 0, 0]], ["(D)", [1, 1, -4]]].forEach(function (q) { DH.button(bt, "Option " + q[0], function () { a = q[1][0]; b = q[1][1]; c = q[1][2]; ss[0].set(a); ss[1].set(b); ss[2].set(c); p.redraw(); }, "chip"); });
+    var rd = DH.readout(ctl);
+    function mid(x) { return a * x * x + b * x + c; }
+    p.draw = function (p) {
+      p.axes({});
+      p.curve(function (x) { return -x; }, col("plum"), 2.6, { to: -2 });
+      p.curve(mid, col("accent"), 2.8, { from: -2, to: 2 });
+      p.curve(function (x) { return x; }, col("plum"), 2.6, { from: 2 });
+      var vl = mid(-2), vr = mid(2), sl = -4 * a + b, sr = 4 * a + b;
+      p.dot(-2, 2, 5, col("plum")); p.dot(2, 2, 5, col("plum")); p.ring(-2, vl, 6, col("accent"), 2); p.ring(2, vr, 6, col("accent"), 2);
+      function ok(t) { return t ? "<b style='color:var(--mint)'>✓</b>" : "<span class='bad'>✗</span>"; }
+      var c1 = Math.abs(vl - 2) < 1e-6, d1 = Math.abs(sl + 1) < 1e-6, c2 = Math.abs(vr - 2) < 1e-6, d2 = Math.abs(sr - 1) < 1e-6;
+      rd.innerHTML = "<span class='k'>at x = −2</span> value " + fmt(vl, 2) + " vs 2 " + ok(c1) + "   slope " + fmt(sl, 2) + " vs −1 " + ok(d1) +
+        "<br><span class='k'>at x = +2</span> value " + fmt(vr, 2) + " vs 2 " + ok(c2) + "   slope " + fmt(sr, 2) + " vs +1 " + ok(d2) +
+        "<br>" + (c1 && c2 && d1 && d2 ? "<b>Continuous and differentiable everywhere.</b>" : c1 && c2 ? "Continuous, but with corner(s)." : "Has jump(s): not continuous.");
+    };
+    p.redraw();
+  };
+  /* ---------- 2.1 Taylor polynomials ---------- */
+  function fact(n) { var x = 1; for (var i = 2; i <= n; i++) x *= i; return x; }
+  W.ca_taylor = function (el) {
+    var F = [
+      { n: "eˣ", f: Math.exp, c: function (k) { return 1 / fact(k); }, r: [-4, 4, -1, 8] },
+      { n: "sin x", f: Math.sin, c: function (k) { return k % 2 ? (((k - 1) / 2) % 2 ? -1 : 1) / fact(k) : 0; }, r: [-8, 8, -2.5, 2.5] },
+      { n: "cos x", f: Math.cos, c: function (k) { return k % 2 ? 0 : ((k / 2) % 2 ? -1 : 1) / fact(k); }, r: [-8, 8, -2.5, 2.5] },
+      { n: "ln(1 + x)", f: function (x) { return x > -1 ? Math.log(1 + x) : NaN; }, c: function (k) { return k === 0 ? 0 : (k % 2 ? 1 : -1) / k; }, r: [-1.2, 2.5, -3, 1.6] },
+      { n: "(eˣ − e⁻ˣ)/2", f: function (x) { return (Math.exp(x) - Math.exp(-x)) / 2; }, c: function (k) { return k % 2 ? 1 / fact(k) : 0; }, r: [-4, 4, -8, 8] }];
+    var k = 0, n = 2, x0 = 1;
+    var row = h("div", { class: "wrow" }); el.appendChild(row);
+    var p = new DH.Plot(row, { xmin: -4, xmax: 4, ymin: -1, ymax: 8, ratio: 0.72, label: "A function and its Taylor polynomial around 0" });
+    var ctl = DH.ctrlBox(row);
+    DH.chips(ctl, F.map(function (o) { return o.n; }), function (i) { k = i; var r = F[k].r; p.setRange(r[0], r[1], r[2], r[3]); x0 = Math.min(x0, r[1] * 0.8); p.redraw(); }, 0);
+    DH.slider(ctl, { label: "order $n$", min: 0, max: 12, step: 1, value: n, digits: 0 }, function (v) { n = v; p.redraw(); });
+    var rd = DH.readout(ctl);
+    DH.dragHandles(p, [{ get: function () { return [x0, F[k].f(x0)]; }, set: function (q) { x0 = clamp(q[0], p.xmin + 0.05, p.xmax - 0.05); } }], function () { p.redraw(); }, { always: true });
+    function T(x) { var o = F[k], s = 0; for (var j = 0; j <= n; j++) s += o.c(j) * Math.pow(x, j); return s; }
+    p.draw = function (p) {
+      var o = F[k];
+      p.axes({});
+      p.curve(o.f, col("accent"), 2.8); p.curve(T, col("coral"), 2.2, { dash: [6, 4] });
+      p.dot(x0, o.f(x0), 6, col("accent"), col("plot-bg")); p.dot(x0, T(x0), 5, col("coral"));
+      var terms = []; for (var j = 0; j <= n; j++) { var cj = o.c(j); if (Math.abs(cj) > 1e-12) terms.push((cj < 0 ? "− " : terms.length ? "+ " : "") + (j === 0 ? fmt(Math.abs(cj), 3) : (Math.abs(Math.abs(cj) - 1) < 1e-12 ? "" : fmt(Math.abs(cj), 4) + "·") + "x" + (j > 1 ? "^" + j : ""))); }
+      rd.innerHTML = "<span class='k'>T" + n + "(x)</span> = " + (terms.join(" ") || "0") + "<br><span class='k'>at x = " + fmt(x0, 2) + "</span> f = " + fmt(o.f(x0), 5) + ", T" + n + " = " + fmt(T(x0), 5) + ", error " + fmt(Math.abs(o.f(x0) - T(x0)), 5) + "<br><small>Drag the dot to compare at other x.</small>";
+    };
+    p.redraw();
+  };
+
+  /* ---------- 2.2 extrema: f on top, f' below ---------- */
+  W.ca_extrema = function (el) {
+    var F = [
+      { n: "2024 Q50 quartic", f: function (x) { return x * x * x * x / 4 - 2 * x * x * x / 3 - 1.5 * x * x + 1; }, d: function (x) { return x * x * x - 2 * x * x - 3 * x; }, I: [-2, 4], open: [false, false] },
+      { n: "2025 Q49 on [−8, 0]", f: function (x) { return x * x * x / 3 + 3.5 * x * x + 10 * x + 66.5; }, d: function (x) { return x * x + 7 * x + 10; }, I: [-8, 0], open: [false, false] },
+      { n: "2026 Q27 on (−1, 3]", f: function (x) { return x * x * x - 3 * x * x + 2; }, d: function (x) { return 3 * x * x - 6 * x; }, I: [-1, 3], open: [true, false] },
+      { n: "x³", f: function (x) { return x * x * x; }, d: function (x) { return 3 * x * x; }, I: [-1.5, 1.5], open: [false, false] },
+      { n: "x⁴", f: function (x) { return x * x * x * x; }, d: function (x) { return 4 * x * x * x; }, I: [-1.5, 1.5], open: [false, false] }];
+    var k = 0;
+    var row = h("div", { class: "wrow" }); el.appendChild(row);
+    var col2 = h("div", { style: "display:flex;flex-direction:column;gap:8px;min-width:0" }); row.appendChild(col2);
+    var p1 = new DH.Plot(col2, { xmin: -2, xmax: 4, ymin: -8, ymax: 8, ratio: 0.5, label: "The function on its interval" });
+    var p2 = new DH.Plot(col2, { xmin: -2, xmax: 4, ymin: -8, ymax: 8, ratio: 0.32, label: "Its derivative" });
+    var ctl = DH.ctrlBox(row);
+    DH.chips(ctl, F.map(function (o) { return o.n; }), function (i) { k = i; p1.redraw(); p2.redraw(); }, 0);
+    var rd = DH.readout(ctl);
+    function info() {
+      var o = F[k], a = o.I[0], b = o.I[1], crit = DH.roots(o.d, a + 1e-6, b - 1e-6, 2000).filter(function (c, i, arr) { return i === 0 || Math.abs(c - arr[i - 1]) > 1e-4; });
+      crit = crit.map(function (c) { return Math.abs(c) < 1e-7 ? 0 : c; }); if (k >= 3) crit = [0];
+      var cand = crit.map(function (c) { return [c, o.f(c), "critical"]; });
+      if (!o.open[0]) cand.push([a, o.f(a), "endpoint"]); if (!o.open[1]) cand.push([b, o.f(b), "endpoint"]);
+      var mx = Math.max.apply(null, cand.map(function (q) { return q[1]; })), mn = Math.min.apply(null, cand.map(function (q) { return q[1]; }));
+      var lowAtOpen = o.open[0] ? o.f(a) : Infinity;
+      return { o: o, a: a, b: b, crit: crit, cand: cand, mx: mx, mn: mn, lowAtOpen: lowAtOpen };
+    }
+    p1.draw = function (p) {
+      var I = info(), o = I.o, ys = [], x;
+      for (x = I.a; x <= I.b; x += (I.b - I.a) / 200) ys.push(o.f(x));
+      var lo = Math.min.apply(null, ys), hi = Math.max.apply(null, ys), pad = (hi - lo) * 0.18 + 0.1;
+      p.setRange(I.a - (I.b - I.a) * 0.05, I.b + (I.b - I.a) * 0.05, lo - pad, hi + pad);
+      p.axes({});
+      p.curve(o.f, col("accent"), 2.6, { from: I.a, to: I.b });
+      if (o.open[0]) p.ring(I.a, o.f(I.a), 6, col("accent"), 2); else p.dot(I.a, o.f(I.a), 4, col("accent"));
+      p.dot(I.b, o.f(I.b), 4, col("accent"));
+      I.crit.forEach(function (c) { var s = (o.d(c - 1e-3) > 0 ? 1 : -1) * (o.d(c + 1e-3) > 0 ? 1 : -1), lab = s > 0 ? "neither" : o.d(c - 1e-3) > 0 ? "local max" : "local min"; p.dot(c, o.f(c), 5, col("plum")); p.text(lab, c, o.f(c), col("plum"), { dy: lab === "local max" ? -14 : 16, align: "center", halo: true, size: 12 }); });
+      I.cand.forEach(function (q) { if (Math.abs(q[1] - I.mx) < 1e-9) p.dot(q[0], q[1], 9, DH.alpha(col("mint"), 0.7)); if (Math.abs(q[1] - I.mn) < 1e-9 && k < 3) p.dot(q[0], q[1], 9, DH.alpha(col("coral"), 0.7)); });
+      rd.innerHTML = "<span class='k'>critical points</span> " + I.crit.map(function (c) { return "x = " + fmt(c, 3) + " (f = " + fmt(o.f(c), 3) + ")"; }).join(", ") +
+        "<br><span class='k'>endpoints</span> " + (o.open[0] ? "x = " + I.a + " excluded (open)" : "f(" + I.a + ") = " + fmt(o.f(I.a), 3)) + ", f(" + I.b + ") = " + fmt(o.f(I.b), 3) +
+        "<br><span style='color:var(--mint)'>global max</span> " + fmt(I.mx, 3) + "   <span style='color:var(--coral)'>global min</span> " + (k >= 3 ? "see the endpoints" : fmt(I.mn, 3)) +
+        (o.open[0] && Math.abs(I.lowAtOpen - I.mn) < 1e-9 ? "<br>f also approaches " + fmt(I.mn, 2) + " as x → " + I.a + "⁺, but that point is excluded." : "");
+    };
+    p2.draw = function (p) {
+      var I = info(), o = I.o, ys = [], x;
+      for (x = I.a; x <= I.b; x += (I.b - I.a) / 200) ys.push(o.d(x));
+      var lo = Math.min.apply(null, ys.concat([0])), hi = Math.max.apply(null, ys.concat([0])), pad = (hi - lo) * 0.15 + 0.1;
+      p.setRange(I.a - (I.b - I.a) * 0.05, I.b + (I.b - I.a) * 0.05, lo - pad, hi + pad);
+      p.axes({ ylabel: "f′(x)" });
+      p.curve(o.d, col("gold"), 2.2, { from: I.a, to: I.b });
+      I.crit.forEach(function (c) { p.dot(c, 0, 5, col("plum")); });
+    };
+    p1.redraw(); p2.redraw();
+  };
+  /* ---------- 3.1 least squares for y = wx ---------- */
+  W.ca_optim = function (el) {
+    var D = [[-1, 1], [2, -5], [3, 5]], w = 1;
+    var row = h("div", { class: "wrow" }); el.appendChild(row);
+    var col2 = h("div", { style: "display:flex;flex-direction:column;gap:8px;min-width:0" }); row.appendChild(col2);
+    var p1 = new DH.Plot(col2, { xmin: -2.5, xmax: 4, ymin: -7, ymax: 7, ratio: 0.5, label: "Data and the line y = wx" });
+    var p2 = new DH.Plot(col2, { xmin: -1.5, xmax: 2, ymin: 0, ymax: 120, ratio: 0.36, label: "Total squared error as a function of w" });
+    var ctl = DH.ctrlBox(row);
+    var sw = DH.slider(ctl, { label: "slope $w$", min: -1.5, max: 2, step: 0.01, value: w, digits: 2 }, function (v) { w = v; p1.redraw(); p2.redraw(); });
+    DH.button(ctl, "Jump to the formula's w*", function () { w = 4 / 14; sw.set(w); p1.redraw(); p2.redraw(); }, "chip");
+    var rd = DH.readout(ctl);
+    function L(v) { return D.reduce(function (s, q) { return s + Math.pow(q[1] - v * q[0], 2); }, 0); }
+    p1.draw = function (p) {
+      p.axes({ xlabel: "x", ylabel: "y" });
+      p.curve(function (x) { return w * x; }, col("coral"), 2.2);
+      D.forEach(function (q) { p.line(q[0], q[1], q[0], w * q[0], col("muted"), 1.5, [3, 3]); p.dot(q[0], q[1], 6, col("accent"), col("plot-bg")); });
+    };
+    p2.draw = function (p) {
+      p.axes({ xlabel: "w" });
+      p.curve(L, col("accent"), 2.2);
+      p.dot(w, L(w), 6, col("coral"), col("plot-bg"));
+      p.dot(4 / 14, L(4 / 14), 4, col("mint"));
+      rd.innerHTML = "<span class='k'>L(w)</span> = Σ(yᵢ − w·xᵢ)² = <b>" + fmt(L(w), 3) + "</b>" +
+        "<br><span class='k'>L′(w)</span> = −2Σxᵢ(yᵢ − wxᵢ) = " + fmt(-2 * D.reduce(function (s, q) { return s + q[0] * (q[1] - w * q[0]); }, 0), 3) +
+        "<br><span class='k'>formula</span> w* = Σxy / Σx² = 4/14 = " + fmt(4 / 14, 4) + " (green dot), L(w*) = " + fmt(L(4 / 14), 3);
+    };
+    p1.redraw(); p2.redraw();
+  };
+
+  /* ---------- 3.2 convexity: chords, gradient descent, Newton ---------- */
+  W.ca_convex = function (el) {
+    var F = [
+      { n: "x²", f: function (x) { return x * x; }, d: function (x) { return 2 * x; }, d2: function () { return 2; }, r: [-3, 3, -1, 8] },
+      { n: "eˣ", f: Math.exp, d: Math.exp, d2: Math.exp, r: [-3, 2, -0.5, 7] },
+      { n: "x⁴ − 3x²", f: function (x) { return x * x * x * x - 3 * x * x; }, d: function (x) { return 4 * x * x * x - 6 * x; }, d2: function (x) { return 12 * x * x - 6; }, r: [-2.2, 2.2, -3, 6] },
+      { n: "x³", f: function (x) { return x * x * x; }, d: function (x) { return 3 * x * x; }, d2: function (x) { return 6 * x; }, r: [-2, 2, -6, 6] }];
+    var k = 2, A = -1.6, B = 0.9, x0 = 0.3, path = [], eta = 0.05;
+    var row = h("div", { class: "wrow" }); el.appendChild(row);
+    var p = new DH.Plot(row, { xmin: -2.2, xmax: 2.2, ymin: -3, ymax: 6, ratio: 0.72, label: "Function with a draggable chord and optimisation steps" });
+    var ctl = DH.ctrlBox(row);
+    DH.chips(ctl, F.map(function (o) { return o.n; }), function (i) { k = i; var r = F[k].r; p.setRange(r[0], r[1], r[2], r[3]); A = r[0] * 0.7; B = r[1] * 0.4; path = []; p.redraw(); }, k);
+    DH.slider(ctl, { label: "GD step size $\\eta$", min: 0.01, max: 0.3, step: 0.01, value: eta, digits: 2 }, function (v) { eta = v; }); 
+    var bt = h("div", { class: "btns" }); ctl.appendChild(bt);
+    function last() { return path.length ? path[path.length - 1] : x0; }
+    DH.button(bt, "Gradient step", function () { var x = last(); path.push(clamp(x - eta * F[k].d(x), p.xmin, p.xmax)); p.redraw(); });
+    DH.button(bt, "Newton step", function () { var x = last(), d2 = F[k].d2(x); if (Math.abs(d2) > 1e-9) path.push(clamp(x - F[k].d(x) / d2, p.xmin, p.xmax)); p.redraw(); }, "chip");
+    DH.button(bt, "Reset", function () { path = []; p.redraw(); }, "ghost");
+    var rd = DH.readout(ctl);
+    DH.dragHandles(p, [
+      { get: function () { return [A, F[k].f(A)]; }, set: function (q) { A = clamp(q[0], p.xmin, p.xmax); } },
+      { get: function () { return [B, F[k].f(B)]; }, set: function (q) { B = clamp(q[0], p.xmin, p.xmax); } },
+      { get: function () { return [x0, F[k].f(x0)]; }, set: function (q) { x0 = clamp(q[0], p.xmin, p.xmax); path = []; } }], function () { p.redraw(); });
+    p.draw = function (p) {
+      var o = F[k], lo = Math.min(A, B), hi = Math.max(A, B), below = false;
+      for (var i = 1; i < 60; i++) { var t = lo + (hi - lo) * i / 60, ch = o.f(lo) + (o.f(hi) - o.f(lo)) * (t - lo) / (hi - lo || 1); if (ch < o.f(t) - 1e-9) below = true; }
+      p.axes({});
+      p.curve(o.f, col("accent"), 2.6);
+      p.line(A, o.f(A), B, o.f(B), below ? col("warn") : col("mint"), 2.2);
+      p.dot(A, o.f(A), 6, col("plum"), col("plot-bg")); p.dot(B, o.f(B), 6, col("plum"), col("plot-bg"));
+      var pts = [x0].concat(path).map(function (x) { return [x, o.f(x)]; });
+      if (pts.length > 1) p.poly(pts, col("coral"), 1.6, { dots: true });
+      p.dot(x0, o.f(x0), 6, col("ink"), col("plot-bg"));
+      var x = last();
+      rd.innerHTML = "<span class='k'>chord</span> " + (below ? "<span class='bad'>dips below the graph: not convex here</span>" : "stays above the graph") +
+        "<br><span class='k'>f″</span> at the chord ends: " + fmt(o.d2(A), 2) + ", " + fmt(o.d2(B), 2) +
+        "<br><span class='k'>current x</span> " + fmt(x, 4) + ", f′(x) = " + fmt(o.d(x), 4) + " (" + path.length + " steps)" + (k === 1 ? "<br>eˣ is convex but has no minimum: the steps keep heading left." : "");
+    };
+    p.redraw();
+  };
 })();
 
 /* ---- w_la.js ---- */
