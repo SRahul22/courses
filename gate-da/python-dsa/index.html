@@ -615,7 +615,7 @@ pre.pyout { min-height: 2.2em; font-size: 0.8rem; }
         <span>Every Python PYQ run for real</span>
         <span>Algorithms you can watch</span>
       </div>
-      <p class="stack"><b>Status:</b> Part 1 (Python for GATE) is ready. Complexity, data structures, searching and sorting, and graphs are being written.</p>
+      <p class="stack"><b>You need:</b> basic programming familiarity, plus logs and sums from the <a href="../refreshers/">maths refreshers</a> for the complexity chapter.</p>
       <div class="howto">
         <div><b>Trace, don't guess</b><span>Each code question is stepped through line by line, with the variables and call stack shown.</span></div>
         <div><b>Real questions</b><span>Actual GATE DA code questions, verified by running them.</span></div>
@@ -803,6 +803,479 @@ print(count(child_dict,0))</pre><p>Which ONE of the following is the output of t
 </div>
 </article>
 
+<article class="part" data-id="py2" data-num="2" data-title="Complexity, searching and sorting" data-min="140">
+<p class="part-lede">How fast is an algorithm, and how do you count its steps exactly? This part covers Big-O and recurrences, binary search (with exact comparison counts), the three simple sorts GATE loves to trace pass by pass, and the two divide-and-conquer sorts. Sorting and searching questions appear in every DA paper, usually as "how many swaps / comparisons / passes".</p>
+<p class="youneed"><b>You need:</b> Part 1 (tracing code), and logs and sums (<a href="../refreshers/#part-r1">Refreshers Parts 1–2</a>).</p>
+
+<section class="ch" id="ds-complexity" data-level="b" data-min="45" data-title="Complexity and binary search" data-src="Asymptotic complexity, recurrences, binary search; GATE DA 2024 Q40; 2025 Q27; 2026 Q31">
+<h2>Complexity and binary search: counting steps that matter</h2>
+<div class="opener"><p>Big-O describes how an algorithm's work grows with the input size, and binary search shows the power of halving: about $\log_2 n$ steps instead of $n$.</p><p>Binary search has appeared in every DA paper (2024 Q40, 2025 Q27, 2026 Q31), and recurrence questions accompany the sorting algorithms.</p><p>It's like finding a name in a printed phone book: open the middle, decide which half, repeat. A thousand pages take only about ten looks.</p></div>
+
+<div class="radar"><span class="label">Where it shows up in GATE DA</span>
+<p>Binary search counts and recurrences every year; complexity facts in sorting questions.</p>
+<div class="pyqs"><span>2026 Q31 · max comparisons, n = 1000</span><span>2024 Q40 · binary search recurrence</span><span>2025 Q27 · when is binary search O(log n)?</span><span>2026 Q15 · quicksort recurrence</span></div>
+<span class="heat">Heat: <b>every year</b>, 1–2 marks</span></div>
+
+<div class="box def" data-k="Definition" data-name="Big-O, Big-Θ"><p>$f(n) = O(g(n))$ means $f$ grows no faster than a constant multiple of $g$ for large $n$ (an upper bound). $\Theta(g(n))$ means it grows at exactly that rate (upper and lower bound). Constants and lower-order terms are dropped: $3n^2 + 10n + 7 = \Theta(n^2)$. Growth order: $1 \lt \log n \lt n \lt n\log n \lt n^2 \lt n^3 \lt 2^n \lt n!$.</p></div>
+
+<div class="table-wrap"><table>
+<thead><tr><th>Recurrence</th><th>Solution</th><th>Typical algorithm</th></tr></thead>
+<tbody>
+<tr><td>$T(n) = T(n/2) + c$</td><td>$\Theta(\log n)$</td><td>binary search</td></tr>
+<tr><td>$T(n) = 2T(n/2) + cn$</td><td>$\Theta(n\log n)$</td><td>merge sort, balanced quicksort</td></tr>
+<tr><td>$T(n) = T(n-1) + cn$</td><td>$\Theta(n^2)$</td><td>quicksort worst case, selection sort</td></tr>
+<tr><td>$T(n) = T(n-1) + c$</td><td>$\Theta(n)$</td><td>linear recursion over a list</td></tr>
+<tr><td>$T(n) = 2T(n-1) + c$</td><td>$\Theta(2^n)$</td><td>naive branching recursion</td></tr>
+</tbody></table></div>
+
+<div class="box alg" data-k="Algorithm" data-name="Binary search (on a sorted array)"><p>Compare $y$ with the middle element. If equal, done; if smaller, search the left half; if larger, the right half. Each comparison removes about half. <b>Needs</b>: sorted data <b>and</b> constant-time access to the middle (an array, not a linked list).</p><p>Worst case: $F(n) = F(\lfloor n/2\rfloor) + 1$ comparisons, which gives $\lfloor\log_2 n\rfloor + 1$ (counting each 3-way comparison once).</p></div>
+
+<div class="panel try"><span class="label">Try it</span><p class="task">Choose the array size and a target (including a value not in the array). Step through binary search: the shaded window is what's still possible, and each step halves it. Compare the comparison count with $\lfloor\log_2 n\rfloor + 1$.</p><div class="widget" data-w="ds_bsearch"></div></div>
+
+<div class="example"><div class="problem">
+<div class="pyq"><span class="label">GATE DA 2026 · Q31 · NAT · 1 mark</span>
+<p>Let A be a sorted array containing 1000 distinct integers. You perform a recursive binary search on A to find an element y. Suppose each comparison checks whether the middle element computed during the current recursive step is equal to, less than, or greater than y. The maximum number of comparisons that may have to be performed if y is not an element of A is ______. (Answer in integer)</p></div></div>
+<ol class="steps">
+<li><p>Each step does one (3-way) comparison and leaves at most $\lfloor n/2\rfloor$ elements: $1000 \to 500 \to 250 \to 125 \to 62 \to 31 \to 15 \to 7 \to 3 \to 1 \to 0$.</p><p class="why-step">After comparing with the middle, the larger remaining half has $\lfloor n/2\rfloor$ elements.</p></li>
+<li><p>Count the steps that had a non-empty array to compare: 1000, 500, 250, 125, 62, 31, 15, 7, 3, 1, so <b>10</b> comparisons.</p><p class="why-step">This equals $\lfloor\log_2 1000\rfloor + 1 = 9 + 1 = 10$ (since $2^9 = 512 \le 1000 \lt 1024$).</p></li>
+<li><p>A failed search always goes all the way down, so this worst case is reached.</p><p class="why-step">Official key: 10.</p></li>
+</ol></div>
+
+<div class="practice">
+<div class="prob" data-id="ds-complexity-p1" data-ans="A" data-choices="A|B|C|D"><div class="stem"><div class="pyq"><span class="label">GATE DA 2024 · Q40 · MCQ · 2 marks</span><p>Let $F(n)$ denote the maximum number of comparisons made while searching for an entry in a sorted array of size $n$ using binary search. Which ONE of the following options is TRUE?</p><ol class="abcd"><li data-l="(A)">$F(n) = F(\lfloor n/2\rfloor) + 1$</li><li data-l="(B)">$F(n) = F(\lfloor n/2\rfloor) + F(\lceil n/2\rceil)$</li><li data-l="(C)">$F(n) = F(\lfloor n/2\rfloor)$</li><li data-l="(D)">$F(n) = F(n - 1) + 1$</li></ol></div></div><div class="hint"><p>One comparison, then you continue in only one half.</p></div><div class="sol"><p>One comparison plus the worst case of the remaining half: (A). (B) searches both halves; (D) is linear search. Official key: (A).</p></div></div>
+<div class="prob" data-id="ds-complexity-p2" data-multi="1" data-ans="C" data-choices="A|B|C|D"><div class="stem"><div class="pyq"><span class="label">GATE DA 2025 · Q27 · MSQ · 1 mark</span><p>For which of the following inputs does binary search take time $O(\log n)$ in the worst case?</p><ol class="abcd"><li data-l="(A)">An array of $n$ integers in any order</li><li data-l="(B)">A linked list of $n$ integers in any order</li><li data-l="(C)">An array of $n$ integers in increasing order</li><li data-l="(D)">A linked list of $n$ integers in increasing order</li></ol></div></div><div class="hint"><p>Two requirements: sorted, and jumping to the middle in O(1).</p></div><div class="sol"><p>Only (C). Unsorted data breaks the halving logic; a linked list needs O(n) just to reach the middle. Official key: C.</p></div></div>
+<div class="prob" data-id="ds-complexity-p3" data-ans="45" data-labels="times the inner line runs"><div class="stem"><p>How many times does the inner line run?</p><pre class="code">n = 10
+for i in range(n):
+    for j in range(i):
+        work()</pre></div><div class="hint"><p>For each i the inner loop runs i times: 0 + 1 + … + 9.</p></div><div class="sol"><p>$0 + 1 + \cdots + 9 = 45 = n(n-1)/2$: $\Theta(n^2)$.</p></div></div>
+<div class="prob" data-id="ds-complexity-p4" data-ans="Θ(n log n)" data-choices="Θ(log n)|Θ(n)|Θ(n log n)|Θ(n²)"><div class="stem"><p>Solve $T(n) = 2T(n/2) + n$.</p></div><div class="hint"><p>About $\log_2 n$ levels of recursion, each doing $n$ total work.</p></div><div class="sol"><p>$\Theta(n\log n)$, the merge sort recurrence.</p></div></div>
+</div>
+
+<div class="dodont"><ul><li>Count the dominant operation (comparisons, swaps) exactly when asked; use Big-O otherwise.</li><li>For binary search worst case, repeatedly halve with floor and count the non-empty steps.</li><li>Match recurrences to the table instead of re-deriving them.</li></ul><ul><li>Using binary search on unsorted data or linked lists and expecting O(log n).</li><li>Off-by-one errors: for n = 1000 it's 10 comparisons, not 9.</li><li>Keeping constants in Big-O: O(2n) is O(n).</li></ul></div>
+
+<ol class="takeaways"><li>Big-O ignores constants and lower-order terms; know the growth order up to 2ⁿ and n!.</li><li>Recurrences: T(n/2) + c → log n; 2T(n/2) + n → n log n; T(n−1) + n → n²; 2T(n−1) + c → 2ⁿ.</li><li>Binary search needs a sorted array; worst case F(n) = F(⌊n/2⌋) + 1 = ⌊log₂ n⌋ + 1 comparisons.</li></ol>
+
+<div class="quiz" data-id="ds-complexity">
+<div class="q"><div class="q-text"><p>Which grows fastest?</p></div><div class="o">$n^3$<div class="e">Polynomials lose to exponentials eventually.</div></div><div class="o ok">$2^n$<div class="e">Exponential beats any polynomial.</div></div><div class="o">$n\log n$<div class="e">Between n and n².</div></div></div>
+<div class="q"><div class="q-text"><p>Binary search on a sorted array of 1 million elements needs at most about</p></div><div class="o">1000 comparisons<div class="e">That's √n. Binary search is logarithmic.</div></div><div class="o ok">20 comparisons<div class="e">$2^{20} \approx 10^6$.</div></div><div class="o">500,000 comparisons<div class="e">That's half the array, like linear search.</div></div></div>
+<div class="q"><div class="q-text"><p>$5n^2 + 100n\log n + 3$ is</p></div><div class="o">$\Theta(n\log n)$<div class="e">For large n, the n² term dominates.</div></div><div class="o ok">$\Theta(n^2)$<div class="e">Keep the fastest-growing term, drop its constant.</div></div><div class="o">$\Theta(5n^2)$<div class="e">Constants are dropped.</div></div></div>
+</div>
+</section>
+
+<section class="ch" id="ds-sorting" data-level="b" data-min="50" data-title="Bubble, selection, insertion" data-src="Basic sorting; GATE DA 2024 Q45; 2025 Q29; 2026 Q49, Q58">
+<h2>Bubble, selection and insertion sort: counting passes, swaps and comparisons</h2>
+<div class="opener"><p>The three simple sorts differ in what one pass guarantees: bubble sort floats the largest to the end, selection sort brings the smallest to the front, insertion sort grows a sorted prefix by one.</p><p>GATE asks for exact passes, swaps or comparisons every year (2024 Q45, 2025 Q29, 2026 Q49 and Q58). Knowing each sort's invariant answers them in seconds.</p><p>It's like arranging batters by average: bubble swaps neighbours who are out of order; selection picks the best remaining batter for the next slot; insertion takes each new batter and slots them into the already-ordered list.</p></div>
+
+<div class="radar"><span class="label">Where it shows up in GATE DA</span>
+<p>Pass-by-pass traces, swap counts and comparison counts every year.</p>
+<div class="pyqs"><span>2024 Q45 · sorted after two passes?</span><span>2025 Q29 · insertion sort with two swaps</span><span>2026 Q49 · comparisons: bubble vs insertion</span><span>2026 Q58 · bubble passes in Python</span><span>Sample Q21 · worst-case times</span></div>
+<span class="heat">Heat: <b>every year</b>, 2–4 marks</span></div>
+
+<div class="table-wrap"><table>
+<thead><tr><th>Sort</th><th>One pass guarantees</th><th>Swaps</th><th>Comparisons</th><th>Best / worst</th></tr></thead>
+<tbody>
+<tr><td>Bubble</td><td>the largest remaining element reaches the end</td><td>= number of inversions</td><td>$n(n-1)/2$ (plain version)</td><td>$O(n)$ with early exit / $O(n^2)$</td></tr>
+<tr><td>Selection</td><td>the smallest remaining element is placed at the front</td><td>at most $n - 1$</td><td>always $n(n-1)/2$</td><td>$O(n^2)$ / $O(n^2)$</td></tr>
+<tr><td>Insertion</td><td>the first $k+1$ elements are sorted (among themselves)</td><td>= number of inversions</td><td>inversions + (up to) $n - 1$</td><td>$O(n)$ / $O(n^2)$</td></tr>
+</tbody></table></div>
+
+<div class="box trick" data-k="GATE shortcut" data-name="Swaps = inversions"><p>An <b>inversion</b> is a pair of positions $i \lt j$ with $a_i \gt a_j$. Every adjacent swap in bubble or insertion sort fixes exactly one inversion, so <b>both make exactly as many swaps as there are inversions</b>. For [5, 3, 4, 1, 2]: 5 beats 4 later elements, 3 beats 2, 4 beats 2, 1 beats 0, so 8 inversions and 8 swaps (2026 Q58).</p></div>
+
+<div class="panel try"><span class="label">Try it</span><p class="task">Pick a sort and an array, then step one pass at a time (or one comparison at a time). Watch the invariant: bubble sort's sorted tail grows from the right, selection's sorted head from the left, insertion's sorted prefix absorbs one new element per pass. The counters track comparisons and swaps; compare swaps with the inversion count.</p><div class="widget" data-w="ds_sort"></div></div>
+
+<div class="example"><div class="problem">
+<div class="pyq"><span class="label">GATE DA 2024 · Q45 · MCQ · 2 marks</span>
+<p>Consider the following sorting algorithms: (i) Bubble sort (ii) Insertion sort (iii) Selection sort. Which ONE among the following choices of sorting algorithms sorts the numbers in the array [4, 3, 2, 1, 5] in increasing order after exactly two passes over the array?</p>
+<ol class="abcd"><li data-l="(A)">(i) only</li><li data-l="(B)">(iii) only</li><li data-l="(C)">(i) and (iii) only</li><li data-l="(D)">(ii) and (iii) only</li></ol></div></div>
+<ol class="steps">
+<li><p>Bubble: pass 1 → [3, 2, 1, 4, 5]; pass 2 → [2, 1, 3, 4, 5]. Not sorted.</p><p class="why-step">Each pass only guarantees the next-largest element reaches its place.</p></li>
+<li><p>Insertion: after inserting 3 → [3, 4, 2, 1, 5]; after inserting 2 → [2, 3, 4, 1, 5]. Not sorted.</p><p class="why-step">Two passes only sort the first three elements.</p></li>
+<li><p>Selection: pass 1 swaps 1 to the front → [1, 3, 2, 4, 5]; pass 2 swaps 2 into place → [1, 2, 3, 4, 5]. Sorted. Answer <b>(B)</b>.</p><p class="why-step">This array happens to need only two "minimum to the front" moves. Official key: (B).</p></li>
+</ol></div>
+
+<div class="practice">
+<div class="prob" data-id="ds-sorting-p1" data-multi="1" data-ans="A;C" data-choices="A|B|C|D"><div class="stem"><div class="pyq"><span class="label">GATE DA 2025 · Q29 · MSQ · 1 mark</span><p>Suppose that insertion sort is applied to the array [1, 3, 5, 7, 9, 11, x, 15, 13] and it takes exactly two swaps to sort the array. Select all possible values of x.</p><ol class="abcd"><li data-l="(A)">10</li><li data-l="(B)">12</li><li data-l="(C)">14</li><li data-l="(D)">16</li></ol></div></div><div class="hint"><p>Swaps = inversions. The pair (15, 13) is always one inversion. So x must create exactly one more.</p></div><div class="sol"><p>x = 10: inversion with 11 (+1) → total 2 ✓. x = 12: no inversions with earlier elements, none with later ones (12 &lt; 13, 15) → total 1 ✗. x = 14: inversion with 13 (+1) → 2 ✓. x = 16: inversions with 15 and 13 (+2) → 3 ✗. Official key: A; C.</p></div></div>
+<div class="prob" data-id="ds-sorting-p2" data-multi="1" data-ans="B;C;D" data-choices="A|B|C|D"><div class="stem"><div class="pyq"><span class="label">GATE DA 2026 · Q49 · MSQ · 2 marks</span><p>Consider the problem of sorting the given array in ascending order: P = [1, 2, 3, 5, 4]. Consider two sorting algorithms Bubble Sort (BS) and Insertion Sort (IS). Let N1 be the total number of comparisons done by BS on the elements of P and N2 be the total number of comparisons done by IS on the elements of P. Which of the following options is/are correct?</p><ol class="abcd"><li data-l="(A)">N1 = 10, N2 = 4</li><li data-l="(B)">N1 &gt; N2</li><li data-l="(C)">IS on P will perform only one swap</li><li data-l="(D)">Both BS and IS on P will make at least one unnecessary comparison (i.e., comparing elements that are already in correct order)</li></ol></div></div><div class="hint"><p>One inversion (5, 4). Insertion sort compares each new element with its left neighbour(s): count carefully for inserting 4.</p></div><div class="sol"><p>Insertion: inserting 2, 3, 5 takes 1 comparison each (already in place); inserting 4 compares with 5 (swap) then with 3 (stop): 2 comparisons. N2 = 5, so (A) ✗. Bubble makes 10 comparisons (7 even with an early-exit check), so N1 &gt; N2 (B) ✓. One inversion, one swap (C) ✓. Both compare already-ordered pairs like (1, 2) (D) ✓. Official key: B; C; D.</p></div></div>
+<div class="prob" data-id="ds-sorting-p3" data-ans="8" data-labels="printed count"><div class="stem"><div class="pyq"><span class="label">GATE DA 2026 · Q58 · NAT · 2 marks</span><p>Consider the given Python program.</p><pre class="code">def fun(L, i=0):
+    if i &gt;= len(L)-1:
+        return 0
+    if L[i] &gt; L[i+1]:
+        L[i+1], L[i] = L[i], L[i+1]
+        return 1+fun(L, i+1)
+    else:
+        return fun(L, i+1)
+data = [5, 3, 4, 1, 2]
+count = 0
+for _ in range(len(data)):
+    count += fun(data)
+print(count)</pre><p>The output of the program is ______. (Answer in integer)</p></div></div><div class="hint"><p><code>fun</code> is one bubble-sort pass that returns its swap count. Five passes fully sort the list. Total swaps = ?</p></div><div class="sol"><p>Bubble sort's total swaps equal the inversions of [5, 3, 4, 1, 2]: 4 + 2 + 2 + 0 = 8. Official key: 8.</p></div></div>
+<div class="prob" data-id="ds-sorting-p4" data-ans="10" data-labels="comparisons"><div class="stem"><p>How many comparisons does selection sort make on any array of 5 elements?</p></div><div class="hint"><p>Pass 1 compares 4 times, pass 2 three times, …</p></div><div class="sol"><p>$4 + 3 + 2 + 1 = 10$, regardless of the input order.</p></div></div>
+</div>
+
+<div class="dodont"><ul><li>Count inversions for swap questions about bubble and insertion sort.</li><li>Use each sort's pass invariant to predict the array after k passes.</li><li>Clarify whether a comparison count includes the extra "stop" comparison in insertion sort.</li></ul><ul><li>Assuming selection sort's swap count depends on inversions. It's at most n − 1.</li><li>Forgetting that plain bubble sort keeps comparing even when the array is already sorted.</li><li>Confusing "pass" across the three sorts; define it as the algorithm does.</li></ul></div>
+
+<ol class="takeaways"><li>Bubble: largest to the end each pass. Selection: smallest to the front. Insertion: sorted prefix grows by one.</li><li>Bubble and insertion sort make exactly (number of inversions) swaps; selection makes at most n − 1.</li><li>Selection always does n(n−1)/2 comparisons; insertion is O(n) on sorted input and O(n²) in the worst case.</li></ol>
+
+<div class="quiz" data-id="ds-sorting">
+<div class="q"><div class="q-text"><p>How many inversions does [3, 1, 2] have?</p></div><div class="o">1<div class="e">3 is bigger than both later elements.</div></div><div class="o ok">2<div class="e">(3, 1) and (3, 2).</div></div><div class="o">3<div class="e">(1, 2) is in order.</div></div></div>
+<div class="q"><div class="q-text"><p>Which sort is fastest on an already-sorted array?</p></div><div class="o">Selection sort<div class="e">It always scans for the minimum: n(n−1)/2 comparisons.</div></div><div class="o ok">Insertion sort<div class="e">Each element needs one comparison: O(n).</div></div><div class="o">Plain bubble sort<div class="e">Without an early-exit flag, it does all n(n−1)/2 comparisons.</div></div></div>
+<div class="q"><div class="q-text"><p>After k passes of bubble sort (ascending), which is guaranteed?</p></div><div class="o">The first k elements are the smallest, in order<div class="e">That's selection sort's guarantee.</div></div><div class="o ok">The last k elements are the k largest, in order<div class="e">Each pass bubbles the largest remaining element to the end.</div></div><div class="o">The whole array is sorted<div class="e">That needs up to n − 1 passes.</div></div></div>
+</div>
+</section>
+
+<section class="ch" id="ds-dc" data-level="n" data-min="45" data-title="Merge sort and quicksort" data-src="Divide and conquer: mergesort, quicksort; GATE DA 2024 Q30; 2026 Q15; sample paper Q21">
+<h2>Merge sort and quicksort: divide and conquer</h2>
+<div class="opener"><p>Divide and conquer splits a problem into halves, solves each recursively, and combines the answers. Merge sort does the work when combining; quicksort does it when splitting.</p><p>Both are named in the syllabus; GATE has asked for quicksort's swap count on a sorted array (2024 Q30) and its expected-time recurrence (2026 Q15).</p><p>It's like sorting a stack of scorecards with friends: split the pile, each sorts half, then merge the two sorted piles by repeatedly taking the smaller top card.</p></div>
+
+<div class="radar"><span class="label">Where it shows up in GATE DA</span>
+<p>Recurrences, best/worst cases and partition behaviour.</p>
+<div class="pyqs"><span>2026 Q15 · expected-time recurrence of quicksort</span><span>2024 Q30 · quicksort swaps on a sorted array</span><span>Sample Q21 · worst-case running times</span></div>
+<span class="heat">Heat: <b>every year</b>, 1–2 marks</span></div>
+
+<div class="box alg" data-k="Algorithm" data-name="Merge sort"><p>Split the array in half, sort each half recursively, then <b>merge</b>: repeatedly take the smaller front element of the two sorted halves. Merging lists of sizes $m$ and $k$ takes at most $m + k - 1$ comparisons. $T(n) = 2T(n/2) + \Theta(n) = \Theta(n\log n)$ in <b>every</b> case. Needs $O(n)$ extra space; stable.</p></div>
+
+<div class="box alg" data-k="Algorithm" data-name="Quicksort"><p>Pick a <b>pivot</b>, <b>partition</b> so smaller elements go left and larger go right (the pivot lands in its final place), then recurse on both sides. Balanced splits give $\Theta(n\log n)$; the average over random inputs is also $\Theta(n\log n)$. If the pivot is always the smallest or largest (e.g. last-element pivot on sorted input), splits are $0$ and $n - 1$: $T(n) = T(n-1) + \Theta(n) = \Theta(n^2)$. In place, not stable.</p></div>
+
+<div class="panel try"><span class="label">Try it</span><p class="task">Watch quicksort's partition step (last element as pivot, the Lomuto scheme): the pointer scans left to right, swapping smaller elements into the growing "less than pivot" zone, then the pivot drops into place. Try an already-sorted array and see how lopsided the splits become, and how few real swaps happen.</p><div class="widget" data-w="ds_quick"></div></div>
+
+<div class="example"><div class="problem">
+<div class="pyq"><span class="label">GATE DA 2026 · Q15 · MCQ · 1 mark</span>
+<p>Consider that the quick sort algorithm is used to sort an array of $n$ distinct randomly ordered elements. In every call, the pivot is chosen as the first element of the current subarray. Let $T(n)$ denote the expected time to sort the array. Assume that the time to partition is linear in the size of the current subarray. Which of the following recurrence relations correctly represents $T(n)$ in this scenario?</p>
+<ol class="abcd"><li data-l="(A)">$T(n) = T(1) + T(n-1) + O(n)$</li><li data-l="(B)">$T(n) = T(\frac n4) + T(\frac{3n}{4}) + O(n)$</li><li data-l="(C)">$T(n) = 2T(\frac n2) + O(n)$</li><li data-l="(D)">$T(n) = \frac1n\sum_{k=0}^{n-1}\left[T(k) + T(n-k-1)\right] + O(n)$</li></ol></div></div>
+<ol class="steps">
+<li><p>With randomly ordered input, the first element is equally likely to be the smallest, 2nd smallest, …, largest: rank $k + 1$ with probability $\frac1n$ for $k = 0, \ldots, n-1$.</p><p class="why-step">"Expected time" means averaging over these equally likely cases.</p></li>
+<li><p>If the pivot has rank $k + 1$, the recursive calls are on $k$ and $n - k - 1$ elements, after linear partitioning: cost $T(k) + T(n-k-1) + O(n)$.</p><p class="why-step">The pivot itself is excluded from both sides.</p></li>
+<li><p>Average over $k$: $T(n) = \frac1n\sum_{k=0}^{n-1}[T(k) + T(n-k-1)] + O(n)$. Answer <b>(D)</b>.</p><p class="why-step">(A) is the worst case, (C) the best case, and (B) one particular split. This recurrence solves to $\Theta(n\log n)$. Official key: (D).</p></li>
+</ol></div>
+
+<div class="practice">
+<div class="prob" data-id="ds-dc-p1" data-ans="0" data-labels="minimum swaps"><div class="stem"><div class="pyq"><span class="label">GATE DA 2024 · Q30 · NAT · 1 mark</span><p>Consider sorting the following array of integers in ascending order using an in-place Quicksort algorithm that uses the last element as the pivot. <code>60 70 80 90 100</code>. The minimum number of swaps performed during this Quicksort is ______.</p></div></div><div class="hint"><p>Each pivot is the largest element of its subarray, so every other element already sits on the correct side. Does anything need to move?</p></div><div class="sol"><p>At every level the pivot (100, then 90, …) is already in its final place and all others are smaller and to its left. An implementation that skips swapping an element with itself performs no swaps at all: 0. (The time is still Θ(n²) because of the lopsided splits.) Official key: 0.</p></div></div>
+<div class="prob" data-id="ds-dc-p2" data-ans="8" data-labels="max comparisons"><div class="stem"><p>What's the maximum number of comparisons to merge two sorted lists of lengths 4 and 5?</p></div><div class="hint"><p>Each comparison outputs one element; the last element needs no comparison.</p></div><div class="sol"><p>$4 + 5 - 1 = 8$.</p></div></div>
+<div class="prob" data-id="ds-dc-p3" data-ans="T(n) = T(n−1) + O(n)" data-choices="T(n) = 2T(n/2) + O(n)|T(n) = T(n−1) + O(n)|T(n) = T(n/2) + O(1)"><div class="stem"><p>Quicksort with the last element as pivot runs on an array sorted in descending order. Which recurrence describes its running time?</p></div><div class="hint"><p>The pivot is always the smallest element of its subarray.</p></div><div class="sol"><p>Every split is 0 and n − 1: $T(n) = T(n-1) + O(n) = \Theta(n^2)$, the worst case.</p></div></div>
+<div class="prob" data-id="ds-dc-p4" data-multi="1" data-ans="A;C" data-choices="A|B|C|D"><div class="stem"><p>Which are true? (A) Merge sort is $\Theta(n\log n)$ on every input. (B) Quicksort is $\Theta(n\log n)$ on every input. (C) Insertion sort's worst case is $O(n^2)$. (D) Merge sort sorts in place with $O(1)$ extra memory.</p></div><div class="hint"><p>Which sort has an input-dependent worst case, and which needs a buffer?</p></div><div class="sol"><p>(A) ✓. (B) ✗: worst case Θ(n²). (C) ✓. (D) ✗: standard merge sort needs O(n) extra space. (The 2024 sample paper's Q21 asks this kind of question.)</p></div></div>
+</div>
+
+<div class="dodont"><ul><li>Write the recurrence from the split sizes: balanced halves → n log n, one-sided → n².</li><li>Check how the pivot relates to the data (sorted input + end pivot = worst case).</li><li>Remember merge sort's guarantees: always n log n, stable, extra space.</li></ul><ul><li>Saying quicksort is always n log n.</li><li>Forgetting that partitioning places the pivot in its final position.</li><li>Counting a swap of an element with itself when the question asks for the minimum swaps.</li></ul></div>
+
+<ol class="takeaways"><li>Merge sort: split, sort the halves, merge (at most m + k − 1 comparisons); Θ(n log n) always, stable, O(n) extra space.</li><li>Quicksort: partition around a pivot, then recurse; Θ(n log n) on average, Θ(n²) when pivots are extreme.</li><li>Expected quicksort: T(n) = (1/n)Σ[T(k) + T(n−k−1)] + O(n), averaging over the pivot's rank.</li></ol>
+
+<div class="quiz" data-id="ds-dc">
+<div class="q"><div class="q-text"><p>Merge sort's recursion tree has about how many levels for n elements?</p></div><div class="o">n<div class="e">Each level halves the size.</div></div><div class="o ok">log₂ n<div class="e">Halving until size 1 takes log₂ n levels, each doing Θ(n) merging.</div></div><div class="o">√n<div class="e">Halving gives a logarithm, not a square root.</div></div></div>
+<div class="q"><div class="q-text"><p>After one partition step of quicksort, the pivot is</p></div><div class="o">at index 0<div class="e">Only if it was the smallest element.</div></div><div class="o ok">in its final sorted position<div class="e">Everything left is smaller, everything right is larger.</div></div><div class="o">still where it started<div class="e">It moves to its final place.</div></div></div>
+<div class="q"><div class="q-text"><p>Which choice of pivot makes quicksort's worst case unlikely on any input?</p></div><div class="o">Always the first element<div class="e">Sorted input then gives Θ(n²).</div></div><div class="o ok">A uniformly random element<div class="e">Expected Θ(n log n) on every input.</div></div><div class="o">Always the last element<div class="e">Sorted input then gives Θ(n²).</div></div></div>
+</div>
+</section>
+
+<div class="quiz review" data-id="py2-review" data-title="Part 2 review (with Part 1)">
+<div class="q" data-from="Ch. 2.1"><div class="q-text"><p>Max comparisons for an unsuccessful binary search in a sorted array of 100 elements</p></div><div class="o">6<div class="e">$2^6 = 64 \le 100$, so add 1.</div></div><div class="o ok">7<div class="e">$\lfloor\log_2 100\rfloor + 1 = 6 + 1$.</div></div><div class="o">100<div class="e">That's linear search.</div></div></div>
+<div class="q" data-from="Ch. 2.2"><div class="q-text"><p>Insertion sort on [2, 1, 4, 3] makes how many swaps?</p></div><div class="o">1<div class="e">Count inversions: (2, 1) and (4, 3).</div></div><div class="o ok">2<div class="e">Two inversions, two swaps.</div></div><div class="o">4<div class="e">Only out-of-order pairs cost a swap.</div></div></div>
+<div class="q" data-from="Ch. 2.3"><div class="q-text"><p>Which sort's running time does not depend on the input order?</p></div><div class="o">Quicksort<div class="e">It depends heavily on the pivots.</div></div><div class="o ok">Merge sort<div class="e">Always Θ(n log n).</div></div><div class="o">Insertion sort<div class="e">O(n) sorted, O(n²) reversed.</div></div></div>
+</div>
+</article>
+
+<article class="part" data-id="py3" data-num="3" data-title="Stacks, queues, hashing and trees" data-min="140">
+<p class="part-lede">The data structures named in the syllabus: stacks, queues and linked lists for ordered access, hash tables for instant lookup, and trees for hierarchy and ordered search. GATE asks you to simulate them (what's on the stack now? which slot does key 15 land in?) and to reason about their properties (traversals, node counts).</p>
+<p class="youneed"><b>You need:</b> Parts 1–2.</p>
+
+<section class="ch" id="ds-linear" data-level="b" data-min="45" data-title="Stacks, queues and linked lists" data-src="Stacks, queues, deques, linked lists; GATE DA 2024 Q16, Q32; 2025 Q64; sample paper Q50">
+<h2>Stacks, queues and linked lists: order of access</h2>
+<div class="opener"><p>A stack gives back the most recent item first (LIFO), a queue the oldest first (FIFO), a deque lets you add and remove at both ends, and a linked list chains items with pointers so insertions are cheap but random access isn't.</p><p>GATE simulates these every year: a deque sequence (2024 Q32), a stack loop (2025 Q64), FIFO/LIFO matching (2024 Q16), building a stack from two queues (sample paper).</p><p>It's like plates and a ticket queue: you take the top plate off a stack (the last one put there), but the person at the front of the queue (who arrived first) gets served first.</p></div>
+
+<div class="radar"><span class="label">Where it shows up in GATE DA</span>
+<p>Simulation questions most years; properties in matching questions.</p>
+<div class="pyqs"><span>2025 Q64 · stack pseudocode</span><span>2024 Q32 · deque operations</span><span>2024 Q16 · FIFO / lookup / LIFO</span><span>Sample Q50 · stack from two queues</span><span>2026 Q39 · the call stack</span></div>
+<span class="heat">Heat: <b>every year</b>, 1–2 marks</span></div>
+
+<div class="table-wrap"><table>
+<thead><tr><th>Structure</th><th>Operations</th><th>Order</th><th>Typical use</th></tr></thead>
+<tbody>
+<tr><td>Stack</td><td>push, pop, top: all $O(1)$</td><td>LIFO</td><td>function calls, undo, DFS, matching brackets</td></tr>
+<tr><td>Queue</td><td>enqueue (back), dequeue (front): $O(1)$</td><td>FIFO</td><td>BFS, scheduling, buffers</td></tr>
+<tr><td>Deque</td><td>insert/remove at both ends: $O(1)$</td><td>either</td><td>sliding windows</td></tr>
+<tr><td>Linked list</td><td>insert/delete at a known node $O(1)$; search $O(n)$; no indexing</td><td>chain of nodes</td><td>stacks and queues, when sizes change often</td></tr>
+</tbody></table></div>
+
+<div class="panel try"><span class="label">Try it</span><p class="task">A deque you can drive with buttons: insert or remove at the front or back. Use "Replay 2024 Q32" to watch that exact sequence of operations and see what <code>a</code> holds after each step. Then try making it behave as a stack (use one end only) and as a queue (insert at one end, remove at the other).</p><div class="widget" data-w="ds_deque"></div></div>
+
+<div class="example"><div class="problem">
+<div class="pyq"><span class="label">GATE DA 2025 · Q64 · NAT · 2 marks</span>
+<p>Consider the following pseudocode.</p>
+<pre class="code">Create empty stack S
+Set x=0, flag=0, sum=0
+Push x onto S
+while (S is not empty){
+    if (flag equals 0){
+        Set x = x+1
+        Push x onto S}
+    if (x equals 8):
+        Set flag=1
+    if (flag equals 1){
+        x = Pop(S)
+        if (x is odd):
+            Pop(S)
+        Set sum = sum + x}
+}
+Output sum</pre>
+<p>The value of sum output by a program executing the above pseudocode is ______ (Answer in integer)</p></div></div>
+<ol class="steps">
+<li><p>Phase 1 (flag = 0): each loop pushes the next x. Once 8 is pushed, flag becomes 1 in the same iteration. The stack is now 0, 1, …, 8 (8 on top).</p><p class="why-step">The push happens before the check, so 8 does get pushed.</p></li>
+<li><p>Phase 2 (flag = 1, no more pushes): pop 8 (even), so sum = 8. Pop 7 (odd), pop and discard 6, sum = 15.</p><p class="why-step">Odd values trigger an extra pop that throws away the next value.</p></li>
+<li><p>Continue: pop 5 (discard 4), sum = 20; pop 3 (discard 2), sum = 23; pop 1 (discard 0), sum = 24. The stack is empty, so the loop ends. Output <b>24</b>.</p><p class="why-step">8 + 7 + 5 + 3 + 1 = 24. Official key: 24.</p></li>
+</ol></div>
+
+<div class="practice">
+<div class="prob" data-id="ds-linear-p1" data-ans="17" data-labels="a"><div class="stem"><div class="pyq"><span class="label">GATE DA 2024 · Q32 · NAT · 1 mark</span><p>The fundamental operations in a double-ended queue D are: insertFirst(e), insertLast(e), removeFirst() and removeLast(). In an empty double-ended queue, the following operations are performed: <code>insertFirst(10)</code>, <code>insertLast(32)</code>, <code>a ← removeFirst()</code>, <code>insertLast(28)</code>, <code>insertLast(17)</code>, <code>a ← removeFirst()</code>, <code>a ← removeLast()</code>. The value of a is ______.</p></div></div><div class="hint"><p>Write the deque after each operation, front on the left.</p></div><div class="sol"><p>[10] → [10, 32] → remove 10 → [32] → [32, 28] → [32, 28, 17] → remove 32 → [28, 17] → remove 17. So a = 17. Official key: 17.</p></div></div>
+<div class="prob" data-id="ds-linear-p2" data-ans="A" data-choices="A|B|C|D"><div class="stem"><div class="pyq"><span class="label">GATE DA 2024 · Q16 · MCQ · 1 mark</span><p>Match the items in Column 1 with the items in Column 2: (p) First In First Out, (q) Lookup Operation, (r) Last In First Out; with (i) Stacks, (ii) Queues, (iii) Hash Tables.</p><ol class="abcd"><li data-l="(A)">(p) − (ii), (q) − (iii), (r) − (i)</li><li data-l="(B)">(p) − (ii), (q) − (i), (r) − (iii)</li><li data-l="(C)">(p) − (i), (q) − (ii), (r) − (iii)</li><li data-l="(D)">(p) − (i), (q) − (iii), (r) − (ii)</li></ol></div></div><div class="hint"><p>FIFO is a queue, LIFO is a stack, and fast lookup is a hash table.</p></div><div class="sol"><p>(A). Official key: (A).</p></div></div>
+<div class="prob" data-id="ds-linear-p3" data-ans="A" data-choices="A|B|C|D"><div class="stem"><div class="pyq"><span class="label">GATE DA 2024 sample paper · Q50 · MCQ · 2 marks</span><p>Assume that S is a stack and Q1 and Q2 are two Queues which support the Enqueue and Dequeue operations. Consider the following pseudo code for implementing the Pop and Push operation on S. [Note: Swap(x,y) exchanges the two queues x and y.]</p><pre class="code">Push(S,x)
+    A(Q2,x)
+    while(Q1 not empty)
+        B(Q2, C(Q1));
+    Swap(Q1, Q2)
+Pop(S)
+    return(D(Q1))</pre><p>Which of the following options for the functions A, B, C, and D correspond to correctly implementing the Push and Pop operations on the stack S?</p><ol class="abcd"><li data-l="(A)">A,B - Enqueue; C,D - Dequeue</li><li data-l="(B)">A,C - Enqueue; B,D - Dequeue</li><li data-l="(C)">A,C - Dequeue; B,D - Enqueue</li><li data-l="(D)">A,D - Enqueue; B,C - Dequeue</li></ol></div></div><div class="hint"><p>Push puts x into the empty Q2 first, then moves everything from Q1 behind it, so x ends up at the front. Which operations put in, and which take out?</p></div><div class="sol"><p>A adds x to Q2 (Enqueue). C takes from Q1 (Dequeue) and B adds that to Q2 (Enqueue). After the swap, the newest element is at Q1's front, so Pop is a Dequeue (D). Answer (A). (Sample paper, no official key.)</p></div></div>
+<div class="prob" data-id="ds-linear-p4" data-ans="3" data-labels="popped value"><div class="stem"><p>Starting from an empty stack: push 1, push 2, pop, push 3, push 4, pop, pop. What did the last pop return?</p></div><div class="hint"><p>Track the stack after each operation (top on the right).</p></div><div class="sol"><p>[1] → [1, 2] → pop 2 → [1] → [1, 3] → [1, 3, 4] → pop 4 → pop 3. Answer 3.</p></div></div>
+</div>
+
+<div class="dodont"><ul><li>Write the structure's contents after every operation; mark which end is the front or top.</li><li>Read pseudocode conditions in order within each loop iteration.</li><li>Match stack ↔ LIFO ↔ DFS/recursion, and queue ↔ FIFO ↔ BFS.</li></ul><ul><li>Forgetting that a pop also removes the item, not just reads it.</li><li>Mixing up the ends of a deque.</li><li>Assuming linked lists allow O(1) indexing.</li></ul></div>
+
+<ol class="takeaways"><li>Stack = LIFO (push/pop at the top); queue = FIFO (enqueue at the back, dequeue at the front); deque = both ends.</li><li>All core operations are O(1); linked lists trade O(n) search for O(1) insertion at a known node.</li><li>Simulate carefully: one state per operation, with the order of checks inside loops respected.</li></ol>
+
+<div class="quiz" data-id="ds-linear">
+<div class="q"><div class="q-text"><p>Which structure does BFS use?</p></div><div class="o">Stack<div class="e">A stack gives DFS's "go deep first" behaviour.</div></div><div class="o ok">Queue<div class="e">FIFO visits vertices level by level.</div></div><div class="o">Hash table<div class="e">BFS may use one to mark visited vertices, but its ordering comes from a queue.</div></div></div>
+<div class="q"><div class="q-text"><p>Push 5, 6, 7 onto a stack, then pop twice. What's on top?</p></div><div class="o">7<div class="e">7 was popped first.</div></div><div class="o ok">5<div class="e">7 and 6 are removed; 5 remains.</div></div><div class="o">6<div class="e">6 was the second pop.</div></div></div>
+<div class="q"><div class="q-text"><p>Accessing the k-th element of a singly linked list takes</p></div><div class="o">O(1)<div class="e">There's no index; you follow pointers from the head.</div></div><div class="o ok">O(k)<div class="e">Walk k links from the head.</div></div><div class="o">O(log k)<div class="e">Linked lists don't support halving.</div></div></div>
+</div>
+</section>
+
+<section class="ch" id="ds-hashing" data-level="n" data-min="45" data-title="Hash tables" data-src="Hash tables, open addressing; GATE DA 2024 Q21; 2025 Q18">
+<h2>Hash tables: lookup in (expected) constant time</h2>
+<div class="opener"><p>A hash table uses a hash function to turn each key into a slot number, so finding a key takes about one step, unless two keys want the same slot (a collision), which chaining or probing resolves.</p><p>GATE asks you to insert keys with linear probing (2025 Q18) and to know the expected number of probes (2024 Q21). Python's <code>dict</code> and <code>set</code> are hash tables.</p><p>It's like a stadium with numbered seats printed on each ticket: you walk straight to your seat. If someone is already sitting there, linear probing says "try the next seat along".</p></div>
+
+<div class="radar"><span class="label">Where it shows up in GATE DA</span>
+<p>Insertion simulations and expected-probe formulas.</p>
+<div class="pyqs"><span>2025 Q18 · linear probing with h(x) = 3x mod 10</span><span>2024 Q21 · expected probes for insertion</span><span>2024 Q16 · lookup ↔ hash table</span></div>
+<span class="heat">Heat: <b>every year</b>, 1 mark</span></div>
+
+<div class="box def" data-k="Definitions" data-name="Hashing"><ul>
+<li>A <b>hash function</b> $h$ maps a key to a slot in $\{0, 1, \ldots, m-1\}$, e.g. $h(x) = x \bmod m$.</li>
+<li><b>Load factor</b> $\alpha = n/m$ ($n$ keys, $m$ slots).</li>
+<li><b>Chaining</b>: each slot holds a list of keys; the expected chain length is $\alpha$.</li>
+<li><b>Open addressing</b>: every key sits in the table itself; on a collision, <b>probe</b> other slots. <b>Linear probing</b> tries $h(x), h(x)+1, h(x)+2, \ldots$ (wrapping around). It's simple but causes <b>clustering</b>: long runs of filled slots.</li>
+</ul></div>
+
+<div class="box thm" data-k="Facts" data-name="Expected probes with open addressing (uniform hashing, α &lt; 1)"><ul>
+<li>Unsuccessful search: at most $\dfrac{1}{1-\alpha}$ probes.</li>
+<li><b>Insertion</b> = an unsuccessful search for the key followed by placing it in the empty slot found: also at most $\dfrac{1}{1-\alpha}$.</li>
+<li>Successful search: at most $\dfrac1\alpha\ln\dfrac{1}{1-\alpha}$.</li>
+</ul></div>
+
+<div class="panel try"><span class="label">Try it</span><p class="task">Insert keys into a 10-slot table with linear probing. The hash function is $h(x) = (a\cdot x) \bmod 10$; set $a = 3$ and use "Replay 2025 Q18" to watch keys 14 and 15 bump along to their slots. The readout counts probes for each insertion, and the clusters of filled slots show why linear probing slows down as the table fills.</p><div class="widget" data-w="ds_hash"></div></div>
+
+<div class="example"><div class="problem">
+<div class="pyq"><span class="label">GATE DA 2025 · Q18 · MCQ · 1 mark</span>
+<p>Consider a hash table of size 10 with indices $\{0, 1, \ldots, 9\}$, with the hash function $h(x) = 3x \pmod{10}$, where linear probing is used to handle collisions. The hash table is initially empty and then the following sequence of keys is inserted into the hash table: 1, 4, 5, 6, 14, 15. The indices where the keys 14 and 15 are stored are, respectively</p>
+<ol class="abcd"><li data-l="(A)">2 and 5</li><li data-l="(B)">2 and 6</li><li data-l="(C)">4 and 5</li><li data-l="(D)">4 and 6</li></ol></div></div>
+<ol class="steps">
+<li><p>Home slots: 1 → 3, 4 → 12 mod 10 = 2, 5 → 5, 6 → 18 mod 10 = 8. All free, so the table holds 4 at slot 2, 1 at 3, 5 at 5 and 6 at 8.</p><p class="why-step">Compute 3x mod 10 for each key in order.</p></li>
+<li><p>14 → 42 mod 10 = 2: occupied (by 4). Probe 3: occupied (by 1). Probe 4: free, so 14 goes to slot 4.</p><p class="why-step">Linear probing steps one slot at a time.</p></li>
+<li><p>15 → 45 mod 10 = 5: occupied. Probe 6: free, so 15 goes to slot 6. Answer <b>(D) 4 and 6</b>.</p><p class="why-step">Options (A) and (C) list the home slots, forgetting the collisions. Official key: (D).</p></li>
+</ol></div>
+
+<div class="practice">
+<div class="prob" data-id="ds-hashing-p1" data-ans="B" data-choices="A|B|C|D"><div class="stem"><div class="pyq"><span class="label">GATE DA 2024 · Q21 · MCQ · 1 mark</span><p>Consider performing uniform hashing on an open address hash table with load factor $\alpha = \frac nm \lt 1$, where $n$ elements are stored in the table with $m$ slots. The expected number of probes in an unsuccessful search is at most $\frac{1}{1-\alpha}$. Inserting an element in this hash table requires at most ______ probes, on average.</p><ol class="abcd"><li data-l="(A)">$\ln\left(\frac{1}{1-\alpha}\right)$</li><li data-l="(B)">$\frac{1}{1-\alpha}$</li><li data-l="(C)">$1 + \frac\alpha2$</li><li data-l="(D)">$\frac{1}{1+\alpha}$</li></ol></div></div><div class="hint"><p>To insert, you search until you find an empty slot. What kind of search is that?</p></div><div class="sol"><p>Insertion probes exactly like an unsuccessful search, then fills the empty slot: at most $\frac{1}{1-\alpha}$. Official key: (B).</p></div></div>
+<div class="prob" data-id="ds-hashing-p2" data-ans="4" data-labels="slot of 32"><div class="stem"><p>With $h(x) = x \bmod 10$ and linear probing, keys 12, 22, 32 are inserted into an empty table. In which slot does 32 land?</p></div><div class="hint"><p>All three hash to slot 2.</p></div><div class="sol"><p>12 → 2, 22 → 3 (after one collision), 32 → 4 (after two collisions).</p></div></div>
+<div class="prob" data-id="ds-hashing-p3" data-ans="10" data-labels="expected probes"><div class="stem"><p>An open-addressing table is 90% full ($\alpha = 0.9$). What's the bound on the expected number of probes to insert a new key?</p></div><div class="hint"><p>$1/(1-\alpha)$.</p></div><div class="sol"><p>$1/0.1 = 10$. (At α = 0.5 it would be only 2, which is why tables are resized before they get too full.)</p></div></div>
+<div class="prob" data-id="ds-hashing-p4" data-ans="2.5" data-labels="average chain length"><div class="stem"><p>A chained hash table has 20 slots and holds 50 keys. What is the expected length of a chain?</p></div><div class="hint"><p>The load factor α = n/m.</p></div><div class="sol"><p>$50/20 = 2.5$.</p></div></div>
+</div>
+
+<div class="dodont"><ul><li>Compute every home slot first, then resolve collisions in insertion order.</li><li>Remember insertion costs the same as an unsuccessful search.</li><li>Keep α well below 1 for open addressing.</li></ul><ul><li>Forgetting to wrap around from slot m − 1 to slot 0.</li><li>Inserting keys out of the given order (later keys depend on earlier ones).</li><li>Confusing chaining (α can exceed 1) with open addressing (α &lt; 1 always).</li></ul></div>
+
+<ol class="takeaways"><li>A hash function maps keys to slots; collisions are resolved by chaining or by probing (open addressing).</li><li>Linear probing tries h(x), h(x)+1, … with wrap-around, which causes clustering.</li><li>With load factor α: unsuccessful search and insertion take ≤ 1/(1−α) probes on average; chains average α keys.</li></ol>
+
+<div class="quiz" data-id="ds-hashing">
+<div class="q"><div class="q-text"><p>Python's <code>dict</code> lookup is, on average,</p></div><div class="o">O(log n)<div class="e">That's a balanced search tree.</div></div><div class="o ok">O(1)<div class="e">It's a hash table.</div></div><div class="o">O(n)<div class="e">Only in pathological collision cases.</div></div></div>
+<div class="q"><div class="q-text"><p>Primary clustering is a problem of</p></div><div class="o">chaining<div class="e">Chaining stores collisions in lists, not neighbouring slots.</div></div><div class="o ok">linear probing<div class="e">Filled runs grow, and every key hashing into a run lengthens it.</div></div><div class="o">binary search<div class="e">Unrelated.</div></div></div>
+<div class="q"><div class="q-text"><p>As α → 1 with open addressing, the expected insertion cost</p></div><div class="o">approaches 1<div class="e">$1/(1-\alpha)$ grows as α approaches 1.</div></div><div class="o ok">blows up<div class="e">$1/(1-\alpha) \to \infty$: almost every slot is taken.</div></div><div class="o">stays constant<div class="e">It depends strongly on α.</div></div></div>
+</div>
+</section>
+
+<section class="ch" id="ds-trees" data-level="n" data-min="50" data-title="Binary trees and traversals" data-src="Trees, traversals, BSTs; GATE DA 2024 Q28, Q52; 2026 Q25">
+<h2>Binary trees: traversals, counting and search trees</h2>
+<div class="opener"><p>A binary tree gives each node up to two children; visiting nodes in pre-, in- or post-order gives three different listings, and two of them together pin the tree down.</p><p>GATE asks traversal-reconstruction questions (2024 Q28, 2026 Q25) and counting facts about heights and leaves (2024 Q52). Binary search trees power ordered lookup.</p><p>It's like a tournament bracket read three ways: announce each match before its sub-matches (pre-order), between them (in-order), or after them (post-order).</p></div>
+
+<div class="radar"><span class="label">Where it shows up in GATE DA</span>
+<p>Traversals and reconstruction most years; counting bounds; tree recursion in code.</p>
+<div class="pyqs"><span>2026 Q25 · rebuild from pre-order + in-order</span><span>2024 Q28 · which pairs determine a full binary tree</span><span>2024 Q52 · bounds on H, I, L, N</span><span>2024 Q38 · counting subtree nodes</span></div>
+<span class="heat">Heat: <b>every year</b>, 1–4 marks</span></div>
+
+<div class="box def" data-k="Definitions" data-name="Binary trees"><ul>
+<li><b>Root</b>, <b>leaf</b> (no children), <b>internal node</b> (at least one child). <b>Height</b> H = the number of edges on the longest root-to-leaf path (a single node has height 0).</li>
+<li><b>Full</b> binary tree: every internal node has exactly 2 children. Then $L = I + 1$. In any binary tree, $L \le I + 1$.</li>
+<li>Node count: $H + 1 \le N \le 2^{H+1} - 1$ (a path at one extreme, a perfect tree at the other).</li>
+<li><b>Binary search tree (BST)</b>: everything in a node's left subtree is smaller, everything in its right subtree larger. Search, insert and delete take $O(h)$; in-order traversal lists the keys in sorted order.</li>
+</ul></div>
+
+<div class="box alg" data-k="Traversals" data-name="Visiting every node"><ul>
+<li><b>Pre-order</b>: node, left subtree, right subtree. (The root comes first.)</li>
+<li><b>In-order</b>: left, node, right. (The root splits left from right.)</li>
+<li><b>Post-order</b>: left, right, node. (The root comes last.)</li>
+<li><b>Level-order</b>: by depth, left to right (BFS with a queue).</li>
+</ul><p><b>Reconstruction:</b> in-order + pre-order (or in-order + post-order) determines any binary tree with distinct labels. Pre-order + post-order alone is ambiguous in general, but determines a <i>full</i> binary tree.</p></div>
+
+<div class="panel try"><span class="label">Try it</span><p class="task">Build a binary search tree by inserting keys (or load a preset), then run each traversal and watch the order in which nodes light up. Check that the in-order traversal of a BST always comes out sorted. Load "2026 Q25" to see the tree that question describes.</p><div class="widget" data-w="ds_tree"></div></div>
+
+<div class="example"><div class="problem">
+<div class="pyq"><span class="label">GATE DA 2026 · Q25 · MSQ · 1 mark</span>
+<p>You are given the following Pre-order and In-order traversals of a Binary Tree T with nodes E, F, G, P, Q, R, S. Pre-order: P Q S E R F G. In-order: S Q E P F R G. Which of the following statements is/are true about the Binary Tree T?</p>
+<ol class="abcd"><li data-l="(A)">Node P is the root of T</li><li data-l="(B)">The Post-order traversal of T is: S E Q F G R P</li><li data-l="(C)">Node Q has only one child</li><li data-l="(D)">The left subtree of node R contains the node G</li></ol></div></div>
+<ol class="steps">
+<li><p>Pre-order starts with the root: P. In the in-order list, P splits the rest: left subtree {S, Q, E}, right subtree {F, R, G}.</p><p class="why-step">Pre-order gives the root; in-order tells you who's on which side.</p></li>
+<li><p>Left part: pre-order order is Q, S, E, so Q is the left subtree's root; in-order S Q E puts S on Q's left and E on its right. Right part: pre-order R, F, G gives root R; in-order F R G puts F left and G right.</p><p class="why-step">Apply the same rule recursively.</p></li>
+<li><p>Post-order (left, right, root): S E Q, then F G R, then P, which gives S E Q F G R P. So (A) ✓, (B) ✓; Q has two children (C ✗); G is in R's right subtree (D ✗). Answer: <b>A, B</b>.</p><p class="why-step">Official key: A; B.</p></li>
+</ol></div>
+
+<div class="practice">
+<div class="prob" data-id="ds-trees-p1" data-multi="1" data-ans="A;B;C" data-choices="A|B|C|D"><div class="stem"><div class="pyq"><span class="label">GATE DA 2024 · Q28 · MSQ · 1 mark</span><p>Consider the following tree traversals on a full binary tree: (i) Preorder (ii) Inorder (iii) Postorder. Which of the following traversal options is/are sufficient to uniquely reconstruct the full binary tree?</p><ol class="abcd"><li data-l="(A)">(i) and (ii)</li><li data-l="(B)">(ii) and (iii)</li><li data-l="(C)">(i) and (iii)</li><li data-l="(D)">(ii) only</li></ol></div></div><div class="hint"><p>In-order plus either other traversal always works. Pre + post works when every internal node has exactly two children. One traversal alone is never enough.</p></div><div class="sol"><p>(A), (B) ✓ always. (C) ✓ because the tree is full: after the root, the next pre-order element must be the left child, and post-order tells where its subtree ends. (D) ✗: many trees share an in-order. Official key: A; B; C.</p></div></div>
+<div class="prob" data-id="ds-trees-p2" data-multi="1" data-ans="A;B;C" data-choices="A|B|C|D"><div class="stem"><div class="pyq"><span class="label">GATE DA 2024 · Q52 · MSQ · 2 marks</span><p>Let H, I, L, and N represent height, number of internal nodes, number of leaf nodes, and the total number of nodes respectively in a rooted binary tree. Which of the following statements is/are always TRUE?</p><ol class="abcd"><li data-l="(A)">$L \le I + 1$</li><li data-l="(B)">$H + 1 \le N \le 2^{H+1} - 1$</li><li data-l="(C)">$H \le I \le 2^H - 1$</li><li data-l="(D)">$H \le L \le 2^{H-1}$</li></ol></div></div><div class="hint"><p>Test each bound on two extremes: a path (every node has one child) and a perfect tree.</p></div><div class="sol"><p>(A) ✓ (equality for full trees; fewer leaves otherwise). (B) ✓ (path: H + 1 nodes; perfect: $2^{H+1} - 1$). (C) ✓ (a path has H internal nodes; a perfect tree has $2^H - 1$). (D) ✗: a path of height H has only 1 leaf, which is less than H when H &gt; 1. Official key: A; B; C.</p></div></div>
+<div class="prob" data-id="ds-trees-p3" data-ans="9" data-labels="total nodes"><div class="stem"><p>A full binary tree has 5 leaves. How many nodes does it have in total?</p></div><div class="hint"><p>In a full binary tree, L = I + 1.</p></div><div class="sol"><p>I = 4, so N = 4 + 5 = 9.</p></div></div>
+<div class="prob" data-id="ds-trees-p4" data-ans="20 35 40 30 60 80 70 50" data-choices="50 30 20 40 35 70 60 80|20 30 35 40 50 60 70 80|20 35 40 30 60 80 70 50"><div class="stem"><p>Insert 50, 30, 70, 20, 40, 60, 80, 35 (in that order) into an empty BST. What is its post-order traversal?</p></div><div class="hint"><p>Draw the tree. 35 goes left of 40. Post-order lists children before parents.</p></div><div class="sol"><p>Left subtree of 50: 30 with children 20 and 40 (and 35 under 40). Right subtree: 70 with 60, 80. Post-order: 20 35 40 30 60 80 70 50. (The first option is pre-order; the second, sorted, is in-order.)</p></div></div>
+</div>
+
+<div class="dodont"><ul><li>Use pre-order for the root, then in-order to split left and right; recurse.</li><li>Test "always true" bounds on a path and on a perfect tree.</li><li>Use in-order = sorted as a quick BST check.</li></ul><ul><li>Counting height in nodes instead of edges (or vice versa). Check the question's convention.</li><li>Claiming pre-order + post-order reconstructs every binary tree.</li><li>Assuming BST operations are O(log n) without balance; a skewed BST is O(n).</li></ul></div>
+
+<ol class="takeaways"><li>Pre-order: root first; in-order: root in the middle; post-order: root last; level-order uses a queue.</li><li>In-order + (pre or post) determines a binary tree; pre + post works for full binary trees.</li><li>L ≤ I + 1 (equality when full), H + 1 ≤ N ≤ 2^(H+1) − 1; BSTs give O(h) search and a sorted in-order.</li></ol>
+
+<div class="quiz" data-id="ds-trees">
+<div class="q"><div class="q-text"><p>The in-order traversal of a BST with keys {5, 2, 8, 1} is</p></div><div class="o">5 2 1 8<div class="e">That's pre-order (if 5 is the root).</div></div><div class="o ok">1 2 5 8<div class="e">In-order of a BST is always sorted.</div></div><div class="o">1 2 8 5<div class="e">That's post-order.</div></div></div>
+<div class="q"><div class="q-text"><p>A perfect binary tree of height 3 has how many nodes?</p></div><div class="o">8<div class="e">That's the number of leaves.</div></div><div class="o ok">15<div class="e">$2^{3+1} - 1$.</div></div><div class="o">7<div class="e">That's height 2.</div></div></div>
+<div class="q"><div class="q-text"><p>The last node in a post-order traversal is always</p></div><div class="o">a leaf<div class="e">Post-order lists children before their parent.</div></div><div class="o ok">the root<div class="e">The root is listed after both subtrees.</div></div><div class="o">the smallest key<div class="e">That's the first in-order node of a BST.</div></div></div>
+</div>
+</section>
+
+<div class="quiz review" data-id="py3-review" data-title="Part 3 review (with Parts 1–2)">
+<div class="q" data-from="Ch. 3.1"><div class="q-text"><p>Enqueue 1, 2, 3 into a queue, dequeue once, then enqueue 4. The front is</p></div><div class="o">1<div class="e">1 was dequeued.</div></div><div class="o ok">2<div class="e">FIFO: after removing 1, 2 is next.</div></div><div class="o">4<div class="e">4 joined at the back.</div></div></div>
+<div class="q" data-from="Ch. 3.2"><div class="q-text"><p>With $h(x) = x \bmod 7$ and linear probing, inserting 3, 10, 17 places 17 in slot</p></div><div class="o">3<div class="e">Slot 3 holds 3.</div></div><div class="o">4<div class="e">10 took slot 4.</div></div><div class="o ok">5<div class="e">All hash to 3; they fill 3, 4, 5.</div></div></div>
+<div class="q" data-from="Ch. 3.3 + 2.1"><div class="q-text"><p>Searching a BST built by inserting 1, 2, 3, …, n in order takes, in the worst case,</p></div><div class="o">O(log n)<div class="e">Sorted insertions make a chain, not a balanced tree.</div></div><div class="o ok">O(n)<div class="e">The tree is a path of height n − 1.</div></div><div class="o">O(1)<div class="e">You may need to walk the whole chain.</div></div></div>
+</div>
+</article>
+
+<article class="part" data-id="py4" data-num="4" data-title="Graphs" data-min="110">
+<p class="part-lede">Graphs model anything with connections: cities and roads, web pages and links, tasks and prerequisites. The syllabus asks for an introduction to graph theory, traversals (BFS and DFS) and shortest paths. GATE asks which vertices a traversal visits and in what order, what kind of edge DFS creates, which orderings are valid topological sorts, and what shortest-path facts imply.</p>
+<p class="youneed"><b>You need:</b> Part 3 (stacks and queues).</p>
+
+<section class="ch" id="ds-graphs" data-level="n" data-min="55" data-title="BFS, DFS and topological sort" data-src="Graph traversals; GATE DA 2024 Q14, Q44, Q51; 2025 Q65; 2026 Q40">
+<h2>Graph traversals: BFS, DFS and topological sort</h2>
+<div class="opener"><p>BFS explores a graph in rings of increasing distance using a queue; DFS dives as deep as possible before backtracking, using a stack (or recursion); a topological sort lines up a DAG's vertices so every edge points forward.</p><p>A traversal question appears in every DA paper: DFS edge types (2024 Q14), BFS vs DFS expansions (2024 Q44), topological orders (2024 Q51), DFS discovery order (2025 Q65), reachability in reversed graphs (2026 Q40).</p><p>It's like exploring a new city: BFS visits every place one stop away, then two stops away; DFS follows one road as far as it goes before backtracking to the last junction.</p></div>
+
+<div class="radar"><span class="label">Where it shows up in GATE DA</span>
+<p>Every year, often two questions; the AI module's search algorithms build on the same ideas.</p>
+<div class="pyqs"><span>2024 Q51 · valid topological orders</span><span>2024 Q14 · DFS edge types</span><span>2024 Q44 · BFS vs DFS expansions</span><span>2025 Q65 · DFS discovery order</span><span>2026 Q40 · reachability in Gᴿ</span></div>
+<span class="heat">Heat: <b>every year</b>, 2–4 marks</span></div>
+
+<div class="box def" data-k="Definitions" data-name="Graphs"><ul>
+<li>A graph has <b>vertices</b> and <b>edges</b>, either undirected or directed. The <b>degree</b> of a vertex is its number of edges (in-degree and out-degree for directed graphs).</li>
+<li><b>Adjacency list</b>: each vertex stores its neighbours; $O(V + E)$ space, best for sparse graphs. <b>Adjacency matrix</b>: $V\times V$ table; $O(V^2)$ space, $O(1)$ edge lookup.</li>
+<li>A <b>DAG</b> is a directed acyclic graph: directed, with no cycles.</li>
+</ul></div>
+
+<div class="box alg" data-k="Algorithms" data-name="BFS and DFS"><p><b>BFS</b>: put the start in a queue; repeatedly dequeue a vertex and enqueue its unvisited neighbours. Vertices come out in order of distance (number of edges) from the start, so BFS finds shortest paths in unweighted graphs.</p><p><b>DFS</b>: visit a vertex, then recursively visit each unvisited neighbour in turn (the order of the adjacency list matters). Both run in $O(V + E)$ and visit exactly the vertices reachable from the start.</p><p><b>DFS edge types</b>: tree edges (to a newly discovered vertex), back edges (to an ancestor still being explored, which signals a cycle), forward and cross edges (directed graphs only). In an undirected DFS, every edge is a tree edge or a back edge.</p></div>
+
+<div class="box alg" data-k="Algorithm" data-name="Topological sort (DAGs only)"><p>An ordering in which every edge $u \to v$ has $u$ before $v$. <b>Kahn's method</b>: repeatedly output a vertex with in-degree 0 and delete its outgoing edges. When several vertices have in-degree 0, any of them may go next, so a DAG can have many valid orders. (Equivalently: list vertices in decreasing DFS finishing time.)</p></div>
+
+<div class="panel try"><span class="label">Try it</span><p class="task">Choose a graph and a start vertex, then step BFS or DFS: the readout shows the queue or stack and the visiting order. On the 2024 Q51 DAG, run the topological sort and note the moments when more than one vertex is available: each choice gives a different valid order.</p><div class="widget" data-w="ds_graph"></div></div>
+
+<div class="example"><div class="problem">
+<div class="pyq"><span class="label">GATE DA 2024 · Q51 · MSQ · 2 marks</span>
+<p>Consider the directed acyclic graph (DAG) below:</p>
+<p><small>The figure shows edges P → Q, R → Q, Q → S, Q → V, S → U and V → T.</small></p>
+<p>Which of the following is/are valid vertex orderings that can be obtained from a topological sort of the DAG?</p>
+<ol class="abcd"><li data-l="(A)">P Q R S T U V</li><li data-l="(B)">P R Q V S U T</li><li data-l="(C)">P Q R S V U T</li><li data-l="(D)">P R Q S V T U</li></ol></div></div>
+<ol class="steps">
+<li><p>List the constraints: P and R before Q; Q before S and V; S before U; V before T.</p><p class="why-step">Every edge u → v requires u to come first.</p></li>
+<li><p>(A) and (C) put Q before R, but R → Q requires R first. ✗ (A also has T before V.)</p><p class="why-step">One violated edge is enough to reject an order.</p></li>
+<li><p>(B) P R Q V S U T: P, R before Q ✓; V, S after Q ✓; U after S ✓; T after V ✓. (D) P R Q S V T U: likewise ✓. Answer: <b>B, D</b>.</p><p class="why-step">After Q, both S and V are available, which is why there are several valid orders. Official key: B; D.</p></li>
+</ol></div>
+
+<div class="practice">
+<div class="prob" data-id="ds-graphs-p1" data-ans="A" data-choices="A|B|C|D"><div class="stem"><div class="pyq"><span class="label">GATE DA 2024 · Q14 · MCQ · 1 mark</span><p>Consider performing depth-first search (DFS) on an undirected and unweighted graph G starting at vertex $s$. For any vertex $u$ in G, $d[u]$ is the length of the shortest path from $s$ to $u$. Let $(u, v)$ be an edge in G such that $d[u] \lt d[v]$. If the edge $(u, v)$ is explored first in the direction from $u$ to $v$ during the above DFS, then $(u, v)$ becomes a ______ edge.</p><ol class="abcd"><li data-l="(A)">tree</li><li data-l="(B)">cross</li><li data-l="(C)">back</li><li data-l="(D)">gray</li></ol></div></div><div class="hint"><p>Undirected DFS only has tree and back edges. If the edge is explored from u to v first, has v been discovered yet?</p></div><div class="sol"><p>If the edge is first explored from u, v hasn't been discovered (otherwise the edge would have been explored from v's side). So u discovers v: a <b>tree</b> edge. Undirected DFS has no cross edges, and "gray" is a vertex colour, not an edge type. Official key: (A).</p></div></div>
+<div class="prob" data-id="ds-graphs-p2" data-ans="C" data-choices="A|B|C|D"><div class="stem"><div class="pyq"><span class="label">GATE DA 2024 · Q44 · MCQ · 2 marks</span><p>Consider a state space where the start state is number 1. The successor function for the state numbered n returns two states numbered n+1 and n+2. Assume that the states in the unexpanded state list are expanded in the ascending order of numbers and the previously expanded states are not added to the unexpanded state list. Which ONE of the following statements about breadth-first search (BFS) and depth-first search (DFS) is true, when reaching the goal state number 6?</p><ol class="abcd"><li data-l="(A)">BFS expands more states than DFS.</li><li data-l="(B)">DFS expands more states than BFS.</li><li data-l="(C)">Both BFS and DFS expand equal number of states.</li><li data-l="(D)">Both BFS and DFS do not reach the goal state number 6.</li></ol></div></div><div class="hint"><p>Simulate both. In DFS, the smaller number (n + 1) is expanded first.</p></div><div class="sol"><p>BFS expands 1, 2, 3, 4, 5 before reaching 6. DFS expands 1, 2, 3, 4, 5 (always taking n + 1 first) and then reaches 6. Both expand 5 states. Official key: (C).</p></div></div>
+<div class="prob" data-id="ds-graphs-p3" data-ans="75" data-labels="vertices discovered after 50"><div class="stem"><div class="pyq"><span class="label">GATE DA 2025 · Q65 · NAT · 2 marks</span><p>Consider a directed graph G = (V, E), where V = {0, 1, 2, …, 100} and E = {(i, j) : 0 &lt; j − i ≤ 2, for all i, j ∈ V}. Suppose the adjacency list of each vertex is in decreasing order of vertex number, and depth-first search (DFS) is performed at vertex 0. The number of vertices that will be discovered after vertex 50 is ______ (Answer in integer)</p></div></div><div class="hint"><p>Each vertex i has edges to i + 2 and i + 1, tried in that order. DFS from 0 races ahead through the even numbers first. When does it backtrack and pick up the odd ones?</p></div><div class="sol"><p>DFS goes 0 → 2 → 4 → … → 100 (always taking i + 2 first). At 100 there's nowhere to go, so it backtracks to 98 and tries 99; then back to 96, tries 97; and so on down to 0, which tries 1. So the discovery order is all 51 even numbers 0, 2, …, 100, then the odds 99, 97, …, 1. After 50 come the 25 evens 52, …, 100 and all 50 odds: 25 + 50 = 75. Official key: 75.</p></div></div>
+<div class="prob" data-id="ds-graphs-p4" data-ans="D" data-choices="A|B|C|D"><div class="stem"><div class="pyq"><span class="label">GATE DA 2026 · Q40 · MCQ · 2 marks</span><p>Consider a directed graph G = (V, E), where V is the finite set of vertices and E is the set of directed edges between the vertices. G may contain cycles but there is no self-loop. Further, G may not be strongly connected. Let $G^R$ be the graph obtained by reversing the directions of all the edges in G without changing the set of vertices. Assume that Breadth First Search (BFS) or Depth First Search (DFS) from any given vertex $v$ of a graph visits only the reachable vertices from $v$ in that graph. Which of the following statements must always be true, regardless of the structure of G?</p><ol class="abcd"><li data-l="(A)">If $u$ is a reachable vertex in the BFS of $G^R$ from $v$, then $u$ is also a reachable vertex in the DFS of G from $v$.</li><li data-l="(B)">In $G^R$, the BFS traversal from $v$ will visit exactly the same set of vertices as the DFS from $v$ in G.</li><li data-l="(C)">The order of vertices visited in the BFS of $G^R$ from $v$ is the reverse of the order of vertices visited in the DFS of G from $v$.</li><li data-l="(D)">If $u$ is a reachable vertex in the DFS of G from $v$, then $v$ is also a reachable vertex in the BFS of $G^R$ from $u$.</li></ol></div></div><div class="hint"><p>A path v → … → u in G becomes a path u → … → v in Gᴿ. Which option states exactly this?</p></div><div class="sol"><p>Reversing every edge reverses every path: u reachable from v in G ⇔ v reachable from u in Gᴿ. That's (D). (A) and (B) confuse "reachable from v in Gᴿ" with "reachable from v in G"; a one-way edge v → u breaks them. (C) makes a claim about order that has no basis. Official key: (D).</p></div></div>
+</div>
+
+<div class="dodont"><ul><li>Follow the adjacency-list order exactly when simulating DFS; it decides the discovery order.</li><li>Check a topological order edge by edge.</li><li>Remember: BFS gives shortest paths only when edges are unweighted.</li></ul><ul><li>Expecting cross edges in an undirected DFS.</li><li>Assuming a DAG has a unique topological order.</li><li>Confusing "reachable from v" with "can reach v".</li></ul></div>
+
+<ol class="takeaways"><li>BFS (queue) visits by distance and gives unweighted shortest paths; DFS (stack or recursion) dives deep first. Both are O(V + E).</li><li>Undirected DFS has only tree and back edges; a back edge means a cycle.</li><li>A topological order puts every edge u → v with u first; it exists only for DAGs and is usually not unique.</li></ol>
+
+<div class="quiz" data-id="ds-graphs">
+<div class="q"><div class="q-text"><p>Which traversal finds the fewest-edges path from s to every vertex?</p></div><div class="o">DFS<div class="e">DFS can wander far before reaching nearby vertices.</div></div><div class="o ok">BFS<div class="e">It visits vertices in increasing distance.</div></div><div class="o">Either, always<div class="e">Only BFS guarantees it.</div></div></div>
+<div class="q"><div class="q-text"><p>A directed graph has a topological order if and only if</p></div><div class="o">it is connected<div class="e">Disconnected DAGs have topological orders too.</div></div><div class="o ok">it has no directed cycle<div class="e">A cycle would force a vertex to come before itself.</div></div><div class="o">every vertex has in-degree 1<div class="e">Unrelated.</div></div></div>
+<div class="q"><div class="q-text"><p>An adjacency matrix for a graph with V vertices uses</p></div><div class="o">O(V + E) space<div class="e">That's an adjacency list.</div></div><div class="o ok">O(V²) space<div class="e">A V × V table regardless of how many edges exist.</div></div><div class="o">O(E) space<div class="e">The matrix has a cell for every pair of vertices.</div></div></div>
+</div>
+</section>
+
+<section class="ch" id="ds-shortest" data-level="n" data-min="55" data-title="Shortest paths" data-src="Shortest paths: BFS, Dijkstra; GATE DA 2025 Q58">
+<h2>Shortest paths: BFS for hops, Dijkstra for weights</h2>
+<div class="opener"><p>For unweighted graphs BFS already gives shortest paths; with non-negative edge weights, Dijkstra's algorithm repeatedly settles the closest unsettled vertex and relaxes its edges.</p><p>The syllabus names "shortest path". GATE has asked you to reason about what shortest-path facts imply about a graph's edges (2025 Q58), and Dijkstra is a standard simulation question in GATE CS.</p><p>It's like planning the cheapest trip between the league's five home cities: from your city, keep extending the cheapest route you've found so far until you've reached everywhere.</p></div>
+
+<div class="radar"><span class="label">Where it shows up in GATE DA</span>
+<p>Shortest-path reasoning; Dijkstra simulation is likely in future papers (it's standard in GATE CS).</p>
+<div class="pyqs"><span>2025 Q58 · which edges can't exist</span><span>2024 Q14 · d[u] in DFS questions</span><span>AI module · uniform-cost and A* search</span></div>
+<span class="heat">Heat: <b>most years</b>, 1–2 marks</span></div>
+
+<div class="box alg" data-k="Algorithm" data-name="Dijkstra's algorithm (non-negative weights)"><ol>
+<li>Set $d[s] = 0$ and $d[v] = \infty$ for every other vertex. Everything starts unsettled.</li>
+<li>Repeatedly pick the unsettled vertex $u$ with the smallest $d[u]$ and <b>settle</b> it (its distance is now final).</li>
+<li><b>Relax</b> each edge $u \to v$ with weight $w$: if $d[u] + w \lt d[v]$, set $d[v] = d[u] + w$ and remember $u$ as $v$'s predecessor.</li>
+</ol><p>With a priority queue it runs in $O((V + E)\log V)$. A <b>negative</b> edge weight can break it: a vertex settled early might later be reachable more cheaply. (Bellman–Ford handles negative weights in $O(VE)$.)</p></div>
+
+<div class="box plain" data-k="Key idea" data-name="Facts about shortest paths"><ul>
+<li>Any part of a shortest path is itself a shortest path between its endpoints.</li>
+<li><b>Triangle inequality</b>: $d(s, v) \le d(s, u) + w(u, v)$ for every edge $(u, v)$.</li>
+<li>In an unweighted graph, an edge between $x$ and $y$ means $|d(s, x) - d(s, y)| \le 1$ for every source $s$. That's the key to 2025 Q58.</li>
+</ul></div>
+
+<div class="panel try"><span class="label">Try it</span><p class="task">The five home cities of the Data Premier League, with travel costs on the roads. Pick a starting city and step Dijkstra's algorithm: the next city settled is always the closest unsettled one, and each step may lower the tentative distances of its neighbours. Notice that Gurugram's cheapest route to Bengaluru isn't the direct road.</p><div class="widget" data-w="ds_dijkstra"></div></div>
+
+<div class="example"><div class="problem">
+<div class="pyq"><span class="label">GATE DA 2025 · Q58 · MSQ · 2 marks</span>
+<p>Let G be a simple, unweighted, and undirected graph. A subset of the vertices and edges of G are shown below.</p>
+<p><small>The figure shows vertices a, b, c, d (top row) and e, f, g, h (bottom row), with edges a–b, b–c, c–d, e–f, f–g, g–h, a–f, f–c and c–h.</small></p>
+<p>It is given that a − b − c − d is a shortest path between a and d; e − f − g − h is a shortest path between e and h; a − f − c − h is a shortest path between a and h. Which of the following is/are NOT the edges of G?</p>
+<ol class="abcd"><li data-l="(A)">(b, d)</li><li data-l="(B)">(b, g)</li><li data-l="(C)">(b, h)</li><li data-l="(D)">(e, g)</li></ol></div></div>
+<ol class="steps">
+<li><p>The given shortest paths fix three distances: $d(a, d) = 3$, $d(e, h) = 3$, $d(a, h) = 3$.</p><p class="why-step">A shortest path with 3 edges means no path with fewer exists.</p></li>
+<li><p>(b, d) would give the path a − b − d of length 2, contradicting $d(a, d) = 3$. Similarly (b, h) gives a − b − h of length 2, contradicting $d(a, h) = 3$; and (e, g) gives e − g − h of length 2, contradicting $d(e, h) = 3$. So none of (A), (C), (D) can be an edge.</p><p class="why-step">An extra edge can only shorten paths, never lengthen them.</p></li>
+<li><p>(b, g) creates no shortcut for the three given pairs (for example a − b − g − h still has length 3). It might or might not be an edge, so it isn't "NOT an edge". Answer: <b>A, C, D</b>.</p><p class="why-step">Official key: A; C; D.</p></li>
+</ol></div>
+
+<div class="practice">
+<div class="prob" data-id="ds-shortest-p1" data-ans="21" data-labels="d(Gurugram, Bengaluru)"><div class="stem"><p>Using the widget's road map (Gurugram–Nagpur 10, Gurugram–Bengaluru 23, Nagpur–Hyderabad 5, Nagpur–Bhubaneswar 7, Nagpur–Bengaluru 11, Hyderabad–Bengaluru 6, Hyderabad–Bhubaneswar 9), what is the shortest distance from Gurugram to Bengaluru?</p></div><div class="hint"><p>Compare the direct road with routes through Nagpur, and through Nagpur then Hyderabad.</p></div><div class="sol"><p>Direct: 23. Via Nagpur: 10 + 11 = 21. Via Nagpur and Hyderabad: 10 + 5 + 6 = 21. Shortest: 21 (two routes tie).</p></div></div>
+<div class="prob" data-id="ds-shortest-p2" data-ans="Gurugram, Nagpur, Hyderabad, Bhubaneswar, Bengaluru" data-choices="Gurugram, Nagpur, Bhubaneswar, Hyderabad, Bengaluru|Gurugram, Nagpur, Hyderabad, Bhubaneswar, Bengaluru|Gurugram, Bengaluru, Nagpur, Hyderabad, Bhubaneswar"><div class="stem"><p>In what order does Dijkstra's algorithm, started at Gurugram, settle the cities?</p></div><div class="hint"><p>Settled in increasing order of final distance: Nagpur 10, Hyderabad 15, Bhubaneswar 17, Bengaluru 21.</p></div><div class="sol"><p>Gurugram (0), Nagpur (10), Hyderabad (15), Bhubaneswar (17), Bengaluru (21). Dijkstra always settles vertices in non-decreasing order of distance.</p></div></div>
+<div class="prob" data-id="ds-shortest-p3" data-ans="3" data-labels="BFS distance"><div class="stem"><p>In the 2025 Q58 graph (just the edges shown), what is the BFS distance from e to d?</p></div><div class="hint"><p>e − f − c − d.</p></div><div class="sol"><p>e is adjacent only to f; f is adjacent to c; c to d. So 3.</p></div></div>
+<div class="prob" data-id="ds-shortest-p4" data-ans="It may give wrong distances" data-choices="It still works|It may give wrong distances|It never terminates"><div class="stem"><p>What can happen if Dijkstra's algorithm runs on a graph with a negative edge weight?</p></div><div class="hint"><p>Dijkstra assumes a settled distance can never improve later.</p></div><div class="sol"><p>A vertex settled early might later become reachable more cheaply through a negative edge, so Dijkstra may report wrong distances. Use Bellman–Ford instead.</p></div></div>
+</div>
+
+<div class="dodont"><ul><li>Use BFS for unweighted graphs and Dijkstra for non-negative weights.</li><li>Keep a table of tentative distances and update it after each settle.</li><li>To rule out an edge, show it would create a path shorter than a stated shortest path.</li></ul><ul><li>Running Dijkstra with negative weights.</li><li>Changing a distance after its vertex is settled.</li><li>Assuming the direct edge is always the shortest route.</li></ul></div>
+
+<ol class="takeaways"><li>BFS gives fewest-edge paths; Dijkstra gives minimum-weight paths when all weights are non-negative.</li><li>Dijkstra: settle the closest unsettled vertex, relax its edges, repeat; O((V + E) log V) with a heap.</li><li>Shortest-path facts constrain the graph: an extra edge can only shorten paths.</li></ol>
+
+<div class="quiz" data-id="ds-shortest">
+<div class="q"><div class="q-text"><p>Dijkstra settles vertices in order of</p></div><div class="o">their labels<div class="e">Labels are irrelevant.</div></div><div class="o ok">non-decreasing distance from the source<div class="e">That's the greedy step.</div></div><div class="o">their degree<div class="e">Degree doesn't matter.</div></div></div>
+<div class="q"><div class="q-text"><p>In an unweighted graph, d(s, x) = 2 and d(s, y) = 5. Can there be an edge x–y?</p></div><div class="o">Yes<div class="e">That edge would give a path to y of length 3.</div></div><div class="o ok">No<div class="e">Adjacent vertices' distances differ by at most 1.</div></div></div>
+<div class="q"><div class="q-text"><p>Which algorithm is simplest for shortest paths when all edges have weight 1?</p></div><div class="o ok">BFS<div class="e">Weight 1 everywhere means fewest edges = least weight.</div></div><div class="o">DFS<div class="e">DFS doesn't find shortest paths.</div></div><div class="o">Bellman–Ford<div class="e">It works but is slower and unnecessary.</div></div></div>
+</div>
+</section>
+
+<div class="quiz review" data-id="py4-review" data-title="Module review: Python &amp; DSA (all parts)">
+<div class="q" data-from="Ch. 1.2"><div class="q-text"><p>Calling a function with a default <code>lst=[]</code> twice without arguments (each call appends one item) leaves the default list with</p></div><div class="o">1 item<div class="e">The default is shared across calls.</div></div><div class="o ok">2 items<div class="e">Mutable defaults accumulate.</div></div></div>
+<div class="q" data-from="Ch. 2.2"><div class="q-text"><p>Bubble sort on [3, 1, 2] makes how many swaps?</p></div><div class="o">1<div class="e">Count inversions: (3, 1), (3, 2).</div></div><div class="o ok">2<div class="e">Two inversions.</div></div><div class="o">3<div class="e">(1, 2) is already in order.</div></div></div>
+<div class="q" data-from="Ch. 3.3"><div class="q-text"><p>Pre-order A B D E C, in-order D B E A C. The root's right child is</p></div><div class="o">B<div class="e">B is on the left of A in the in-order.</div></div><div class="o ok">C<div class="e">Only C lies right of A in the in-order list.</div></div><div class="o">E<div class="e">E is in A's left subtree.</div></div></div>
+<div class="q" data-from="Ch. 4.1"><div class="q-text"><p>A DFS of a directed graph finds a back edge. The graph</p></div><div class="o ok">has a cycle<div class="e">A back edge points to an ancestor on the current path, closing a cycle.</div></div><div class="o">is a DAG<div class="e">DAGs have no back edges.</div></div><div class="o">is disconnected<div class="e">Back edges say nothing about connectivity.</div></div></div>
+<div class="q" data-from="Ch. 3.2"><div class="q-text"><p>An open-addressing table at load factor 0.75 needs at most how many probes on average to insert?</p></div><div class="o">1.33<div class="e">That's 1/0.75. Use 1/(1 − α).</div></div><div class="o ok">4<div class="e">1/(1 − 0.75).</div></div><div class="o">0.75<div class="e">That's α itself.</div></div></div>
+</div>
+</article>
+
     </div>
     <nav class="pager" id="pager" aria-label="Part navigation"></nav>
     <footer class="foot" id="about">
@@ -830,7 +1303,7 @@ print(count(child_dict,0))</pre><p>Which ONE of the following is the output of t
 <canvas id="confetti" hidden></canvas>
 
 <script>
-window.SITE = {"name": "Simple GATE DA", "key": "gateda", "path": "gate-da", "domain": "courses.rahuldevsharma.com/gate-da", "author": "Rahul Dev Sharma", "tagline": "GATE Data Science & AI, from zero", "description": "A free, interactive course for the GATE DA (Data Science and Artificial Intelligence) exam. Starts from school maths, explains every idea visually, and works through real previous-year questions.", "certTitle": ["Simple GATE DA", "Maths foundations"], "certBody": ["answered every quiz and practice question correctly across", "Simple GATE DA's maths modules: refreshers, probability,", "statistics, linear algebra, and calculus & optimization."], "footer_html": "      <p><b>Acknowledgement.</b> Previous-year questions are quoted from the official GATE Data Science and Artificial Intelligence (DA) papers: 2024 (organised by IISc Bengaluru), 2025 (IIT Roorkee) and 2026 (IIT Guwahati), and from the 2024 DA sample paper; one LU question is quoted from GATE CS 2025 (set 2, IIT Roorkee). Each is cited by year and question number, and every answer is checked against the official answer keys. The syllabus followed is the GATE 2027 DA syllabus (IIT Madras).</p>\n      <p><b>Disclaimer.</b> An independent study resource. The Data Premier League, its teams and all their data are fictional. Not affiliated with, reviewed by or endorsed by GATE, IISc or any IIT. Solutions and explanations are the author's own; any mistakes are the author's too.</p>", "theme": {"light": {"bg": "#F6F2EC", "surface": "#FFFFFF", "ink": "#1E1B18", "muted": "#675E55", "line": "#E2DAD0", "accent": "#0E6B6B", "accent-soft": "#DDEFEC", "mint": "#2E7A3A", "mint-soft": "#E1F1E2", "warn": "#B23F22", "warn-soft": "#FBE6DE", "plum": "#7A4FB0", "plum-soft": "#EFE6F8", "gold": "#8A5E00", "gold-soft": "#FBEFD3", "coral": "#D2643C", "coral-soft": "#FBE4D9", "plot-bg": "#FFFDFA"}, "dark": {"bg": "#14110F", "surface": "#1D1916", "ink": "#EFE8E0", "muted": "#A99D91", "line": "#342D27", "accent": "#5CC6BF", "accent-soft": "#173130", "mint": "#7FCB86", "mint-soft": "#18301B", "warn": "#F28B6B", "warn-soft": "#3A2016", "plum": "#C39BEE", "plum-soft": "#2B1F38", "gold": "#E9C25B", "gold-soft": "#33290F", "coral": "#F0916B", "coral-soft": "#3A2219", "plot-bg": "#191512"}}, "modules": [{"slug": "refreshers", "title": "Maths refreshers", "short": "Refreshers", "kind": "prereq", "blurb": "School maths, rebuilt from scratch: algebra, logs, sums, sets, derivatives, integrals and vectors. Everything the later modules lean on."}, {"slug": "probability", "title": "Probability", "short": "Probability", "kind": "", "blurb": "Counting, Bayes, random variables and the distributions GATE loves. The single biggest block of marks in the paper."}, {"slug": "statistics", "title": "Statistics", "short": "Statistics", "kind": "", "blurb": "Describing data, estimators, the Central Limit Theorem, confidence intervals and hypothesis tests (z, t and \u03c7\u00b2), built on the probability module."}, {"slug": "linear-algebra", "title": "Linear algebra", "short": "Linear algebra", "kind": "", "blurb": "Vectors, subspaces, rank, eigenvalues, projections and SVD, taught as pictures and exam shortcuts."}, {"slug": "calculus", "title": "Calculus & optimization", "short": "Calculus", "kind": "", "blurb": "Limits, continuity and differentiability, Taylor series, and finding maxima and minima: the single-variable calculus GATE DA tests, plus the optimisation ML relies on."}, {"slug": "python-dsa", "title": "Python & DSA", "short": "Python & DSA", "kind": "", "blurb": "The Python that GATE's code-tracing questions test, then stacks, queues, hashing, trees, searching, sorting and graph algorithms. (Being built: Part 1 is ready.)"}], "manifest": {"refreshers": ["r-functions-p1", "r-functions-p2", "r-functions-p3", "r-functions-p4", "r-functions/0", "r-functions/1", "r-functions/2", "r-functions/3", "r-explog-p1", "r-explog-p2", "r-explog-p3", "r-explog-p4", "r-explog/0", "r-explog/1", "r-explog/2", "r-explog/3", "r1-review/0", "r1-review/1", "r1-review/2", "r1-review/3", "r-sums-p1", "r-sums-p2", "r-sums-p3", "r-sums-p4", "r-sums/0", "r-sums/1", "r-sums/2", "r-sums/3", "r-sets-p1", "r-sets-p2", "r-sets-p3", "r-sets-p4", "r-sets/0", "r-sets/1", "r-sets/2", "r-sets/3", "r2-review/0", "r2-review/1", "r2-review/2", "r2-review/3", "r-deriv-p1", "r-deriv-p2", "r-deriv-p3", "r-deriv-p4", "r-deriv/0", "r-deriv/1", "r-deriv/2", "r-deriv/3", "r-integ-p1", "r-integ-p2", "r-integ-p3", "r-integ-p4", "r-integ/0", "r-integ/1", "r-integ/2", "r-integ/3", "r-grad-p1", "r-grad-p2", "r-grad-p3", "r-grad-p4", "r-grad/0", "r-grad/1", "r-grad/2", "r3-review/0", "r3-review/1", "r3-review/2", "r3-review/3", "r-vectors-p1", "r-vectors-p2", "r-vectors-p3", "r-vectors-p4", "r-vectors/0", "r-vectors/1", "r-vectors/2", "r-matrices-p1", "r-matrices-p2", "r-matrices-p3", "r-matrices-p4", "r-matrices/0", "r-matrices/1", "r-matrices/2", "r4-review/0", "r4-review/1", "r4-review/2", "r4-review/3", "r4-review/4"], "probability": ["pr-counting-p1", "pr-counting-p2", "pr-counting-p3", "pr-counting-p4", "pr-counting/0", "pr-counting/1", "pr-counting/2", "pr-events-p1", "pr-events-p2", "pr-events-p3", "pr-events-p4", "pr-events/0", "pr-events/1", "pr-events/2", "pr-events/3", "pr1-review/0", "pr1-review/1", "pr1-review/2", "pr1-review/3", "pr-conditional-p1", "pr-conditional-p2", "pr-conditional-p3", "pr-conditional-p4", "pr-conditional/0", "pr-conditional/1", "pr-conditional/2", "pr-bayes-p1", "pr-bayes-p2", "pr-bayes-p3", "pr-bayes-p4", "pr-bayes/0", "pr-bayes/1", "pr-bayes/2", "pr2-review/0", "pr2-review/1", "pr2-review/2", "pr-rv-p1", "pr-rv-p2", "pr-rv-p3", "pr-rv-p4", "pr-rv/0", "pr-rv/1", "pr-rv/2", "pr-expect-p1", "pr-expect-p2", "pr-expect-p3", "pr-expect-p4", "pr-expect/0", "pr-expect/1", "pr-expect/2", "pr-expect/3", "pr3-review/0", "pr3-review/1", "pr3-review/2", "pr-discrete-p1", "pr-discrete-p2", "pr-discrete-p3", "pr-discrete-p4", "pr-discrete/0", "pr-discrete/1", "pr-discrete/2", "pr-continuous-p1", "pr-continuous-p2", "pr-continuous-p3", "pr-continuous-p4", "pr-continuous/0", "pr-continuous/1", "pr-continuous/2", "pr-continuous/3", "pr4-review/0", "pr4-review/1", "pr4-review/2", "pr-joint-p1", "pr-joint-p2", "pr-joint-p3", "pr-joint-p4", "pr-joint/0", "pr-joint/1", "pr-joint/2", "pr-condexp-p1", "pr-condexp-p2", "pr-condexp-p3", "pr-condexp/0", "pr-condexp/1", "pr-condexp/2", "pr5-review/0", "pr5-review/1", "pr5-review/2", "pr5-review/3", "pr5-review/4"], "statistics": ["st-descriptive-p1", "st-descriptive-p2", "st-descriptive-p3", "st-descriptive-p4", "st-descriptive/0", "st-descriptive/1", "st-descriptive/2", "st-correlation-p1", "st-correlation-p2", "st-correlation-p3", "st-correlation-p4", "st-correlation/0", "st-correlation/1", "st-correlation/2", "st1-review/0", "st1-review/1", "st1-review/2", "st-estimators-p1", "st-estimators-p2", "st-estimators-p3", "st-estimators-p4", "st-estimators/0", "st-estimators/1", "st-estimators/2", "st-clt-p1", "st-clt-p2", "st-clt-p3", "st-clt-p4", "st-clt/0", "st-clt/1", "st-clt/2", "st2-review/0", "st2-review/1", "st2-review/2", "st-tchi-p1", "st-tchi-p2", "st-tchi-p3", "st-tchi-p4", "st-tchi/0", "st-tchi/1", "st-tchi/2", "st-ci-p1", "st-ci-p2", "st-ci-p3", "st-ci-p4", "st-ci/0", "st-ci/1", "st-ci/2", "st3-review/0", "st3-review/1", "st3-review/2", "st-tests-p1", "st-tests-p2", "st-tests-p3", "st-tests-p4", "st-tests/0", "st-tests/1", "st-tests/2", "st-ttest-chi-p1", "st-ttest-chi-p2", "st-ttest-chi-p3", "st-ttest-chi-p4", "st-ttest-chi/0", "st-ttest-chi/1", "st-ttest-chi/2", "st4-review/0", "st4-review/1", "st4-review/2", "st4-review/3", "st4-review/4"], "linear-algebra": ["la-spaces-p1", "la-spaces-p2", "la-spaces-p3", "la-spaces/0", "la-spaces/1", "la-spaces/2", "la-independence-p1", "la-independence-p2", "la-independence-p3", "la-independence-p4", "la-independence/0", "la-independence/1", "la-independence/2", "la1-review/0", "la1-review/1", "la1-review/2", "la-systems-p1", "la-systems-p2", "la-systems-p3", "la-systems-p4", "la-systems/0", "la-systems/1", "la-systems/2", "la-rank-p1", "la-rank-p2", "la-rank-p3", "la-rank-p4", "la-rank/0", "la-rank/1", "la-rank/2", "la-det-p1", "la-det-p2", "la-det-p3", "la-det-p4", "la-det/0", "la-det/1", "la-det/2", "la2-review/0", "la2-review/1", "la2-review/2", "la-eigen-p1", "la-eigen-p2", "la-eigen-p3", "la-eigen-p4", "la-eigen/0", "la-eigen/1", "la-eigen/2", "la-special-p1", "la-special-p2", "la-special-p3", "la-special-p4", "la-special/0", "la-special/1", "la-special/2", "la-quad-p1", "la-quad-p2", "la-quad-p3", "la-quad-p4", "la-quad/0", "la-quad/1", "la-quad/2", "la3-review/0", "la3-review/1", "la3-review/2", "la-lu-p1", "la-lu-p2", "la-lu-p3", "la-lu-p4", "la-lu/0", "la-lu/1", "la-lu/2", "la-svd-p1", "la-svd-p2", "la-svd-p3", "la-svd-p4", "la-svd/0", "la-svd/1", "la-svd/2", "la4-review/0", "la4-review/1", "la4-review/2", "la4-review/3", "la4-review/4"], "calculus": ["ca-limits-p1", "ca-limits-p2", "ca-limits-p3", "ca-limits-p4", "ca-limits/0", "ca-limits/1", "ca-limits/2", "ca-continuity-p1", "ca-continuity-p2", "ca-continuity-p3", "ca-continuity-p4", "ca-continuity/0", "ca-continuity/1", "ca-continuity/2", "ca1-review/0", "ca1-review/1", "ca1-review/2", "ca-taylor-p1", "ca-taylor-p2", "ca-taylor-p3", "ca-taylor-p4", "ca-taylor/0", "ca-taylor/1", "ca-taylor/2", "ca-extrema-p1", "ca-extrema-p2", "ca-extrema-p3", "ca-extrema-p4", "ca-extrema/0", "ca-extrema/1", "ca-extrema/2", "ca2-review/0", "ca2-review/1", "ca2-review/2", "ca-optim-p1", "ca-optim-p2", "ca-optim-p3", "ca-optim-p4", "ca-optim/0", "ca-optim/1", "ca-optim/2", "ca-convex-p1", "ca-convex-p2", "ca-convex-p3", "ca-convex/0", "ca-convex/1", "ca-convex/2", "ca3-review/0", "ca3-review/1", "ca3-review/2", "ca3-review/3", "ca3-review/4"], "python-dsa": ["py-basics-p1", "py-basics-p2", "py-basics-p3", "py-basics-p4", "py-basics/0", "py-basics/1", "py-basics/2", "py-functions-p1", "py-functions-p2", "py-functions-p3", "py-functions-p4", "py-functions/0", "py-functions/1", "py-functions/2", "py1-review/0", "py1-review/1", "py1-review/2"]}, "module": "python-dsa", "root": "../"};
+window.SITE = {"name": "Simple GATE DA", "key": "gateda", "path": "gate-da", "domain": "courses.rahuldevsharma.com/gate-da", "author": "Rahul Dev Sharma", "tagline": "GATE Data Science & AI, from zero", "description": "A free, interactive course for the GATE DA (Data Science and Artificial Intelligence) exam. Starts from school maths, explains every idea visually, and works through real previous-year questions.", "certTitle": ["Simple GATE DA", "Maths foundations"], "certBody": ["answered every quiz and practice question correctly across", "Simple GATE DA's maths modules: refreshers, probability,", "statistics, linear algebra, and calculus & optimization."], "footer_html": "      <p><b>Acknowledgement.</b> Previous-year questions are quoted from the official GATE Data Science and Artificial Intelligence (DA) papers: 2024 (organised by IISc Bengaluru), 2025 (IIT Roorkee) and 2026 (IIT Guwahati), and from the 2024 DA sample paper; one LU question is quoted from GATE CS 2025 (set 2, IIT Roorkee). Each is cited by year and question number, and every answer is checked against the official answer keys. The syllabus followed is the GATE 2027 DA syllabus (IIT Madras).</p>\n      <p><b>Disclaimer.</b> An independent study resource. The Data Premier League, its teams and all their data are fictional. Not affiliated with, reviewed by or endorsed by GATE, IISc or any IIT. Solutions and explanations are the author's own; any mistakes are the author's too.</p>", "theme": {"light": {"bg": "#F6F2EC", "surface": "#FFFFFF", "ink": "#1E1B18", "muted": "#675E55", "line": "#E2DAD0", "accent": "#0E6B6B", "accent-soft": "#DDEFEC", "mint": "#2E7A3A", "mint-soft": "#E1F1E2", "warn": "#B23F22", "warn-soft": "#FBE6DE", "plum": "#7A4FB0", "plum-soft": "#EFE6F8", "gold": "#8A5E00", "gold-soft": "#FBEFD3", "coral": "#D2643C", "coral-soft": "#FBE4D9", "plot-bg": "#FFFDFA"}, "dark": {"bg": "#14110F", "surface": "#1D1916", "ink": "#EFE8E0", "muted": "#A99D91", "line": "#342D27", "accent": "#5CC6BF", "accent-soft": "#173130", "mint": "#7FCB86", "mint-soft": "#18301B", "warn": "#F28B6B", "warn-soft": "#3A2016", "plum": "#C39BEE", "plum-soft": "#2B1F38", "gold": "#E9C25B", "gold-soft": "#33290F", "coral": "#F0916B", "coral-soft": "#3A2219", "plot-bg": "#191512"}}, "modules": [{"slug": "refreshers", "title": "Maths refreshers", "short": "Refreshers", "kind": "prereq", "blurb": "School maths, rebuilt from scratch: algebra, logs, sums, sets, derivatives, integrals and vectors. Everything the later modules lean on."}, {"slug": "probability", "title": "Probability", "short": "Probability", "kind": "", "blurb": "Counting, Bayes, random variables and the distributions GATE loves. The single biggest block of marks in the paper."}, {"slug": "statistics", "title": "Statistics", "short": "Statistics", "kind": "", "blurb": "Describing data, estimators, the Central Limit Theorem, confidence intervals and hypothesis tests (z, t and \u03c7\u00b2), built on the probability module."}, {"slug": "linear-algebra", "title": "Linear algebra", "short": "Linear algebra", "kind": "", "blurb": "Vectors, subspaces, rank, eigenvalues, projections and SVD, taught as pictures and exam shortcuts."}, {"slug": "calculus", "title": "Calculus & optimization", "short": "Calculus", "kind": "", "blurb": "Limits, continuity and differentiability, Taylor series, and finding maxima and minima: the single-variable calculus GATE DA tests, plus the optimisation ML relies on."}, {"slug": "python-dsa", "title": "Python & DSA", "short": "Python & DSA", "kind": "", "blurb": "The Python that GATE's code-tracing questions test, then complexity, searching and sorting, stacks, queues, hashing, trees and graph algorithms."}], "manifest": {"refreshers": ["r-functions-p1", "r-functions-p2", "r-functions-p3", "r-functions-p4", "r-functions/0", "r-functions/1", "r-functions/2", "r-functions/3", "r-explog-p1", "r-explog-p2", "r-explog-p3", "r-explog-p4", "r-explog/0", "r-explog/1", "r-explog/2", "r-explog/3", "r1-review/0", "r1-review/1", "r1-review/2", "r1-review/3", "r-sums-p1", "r-sums-p2", "r-sums-p3", "r-sums-p4", "r-sums/0", "r-sums/1", "r-sums/2", "r-sums/3", "r-sets-p1", "r-sets-p2", "r-sets-p3", "r-sets-p4", "r-sets/0", "r-sets/1", "r-sets/2", "r-sets/3", "r2-review/0", "r2-review/1", "r2-review/2", "r2-review/3", "r-deriv-p1", "r-deriv-p2", "r-deriv-p3", "r-deriv-p4", "r-deriv/0", "r-deriv/1", "r-deriv/2", "r-deriv/3", "r-integ-p1", "r-integ-p2", "r-integ-p3", "r-integ-p4", "r-integ/0", "r-integ/1", "r-integ/2", "r-integ/3", "r-grad-p1", "r-grad-p2", "r-grad-p3", "r-grad-p4", "r-grad/0", "r-grad/1", "r-grad/2", "r3-review/0", "r3-review/1", "r3-review/2", "r3-review/3", "r-vectors-p1", "r-vectors-p2", "r-vectors-p3", "r-vectors-p4", "r-vectors/0", "r-vectors/1", "r-vectors/2", "r-matrices-p1", "r-matrices-p2", "r-matrices-p3", "r-matrices-p4", "r-matrices/0", "r-matrices/1", "r-matrices/2", "r4-review/0", "r4-review/1", "r4-review/2", "r4-review/3", "r4-review/4"], "probability": ["pr-counting-p1", "pr-counting-p2", "pr-counting-p3", "pr-counting-p4", "pr-counting/0", "pr-counting/1", "pr-counting/2", "pr-events-p1", "pr-events-p2", "pr-events-p3", "pr-events-p4", "pr-events/0", "pr-events/1", "pr-events/2", "pr-events/3", "pr1-review/0", "pr1-review/1", "pr1-review/2", "pr1-review/3", "pr-conditional-p1", "pr-conditional-p2", "pr-conditional-p3", "pr-conditional-p4", "pr-conditional/0", "pr-conditional/1", "pr-conditional/2", "pr-bayes-p1", "pr-bayes-p2", "pr-bayes-p3", "pr-bayes-p4", "pr-bayes/0", "pr-bayes/1", "pr-bayes/2", "pr2-review/0", "pr2-review/1", "pr2-review/2", "pr-rv-p1", "pr-rv-p2", "pr-rv-p3", "pr-rv-p4", "pr-rv/0", "pr-rv/1", "pr-rv/2", "pr-expect-p1", "pr-expect-p2", "pr-expect-p3", "pr-expect-p4", "pr-expect/0", "pr-expect/1", "pr-expect/2", "pr-expect/3", "pr3-review/0", "pr3-review/1", "pr3-review/2", "pr-discrete-p1", "pr-discrete-p2", "pr-discrete-p3", "pr-discrete-p4", "pr-discrete/0", "pr-discrete/1", "pr-discrete/2", "pr-continuous-p1", "pr-continuous-p2", "pr-continuous-p3", "pr-continuous-p4", "pr-continuous/0", "pr-continuous/1", "pr-continuous/2", "pr-continuous/3", "pr4-review/0", "pr4-review/1", "pr4-review/2", "pr-joint-p1", "pr-joint-p2", "pr-joint-p3", "pr-joint-p4", "pr-joint/0", "pr-joint/1", "pr-joint/2", "pr-condexp-p1", "pr-condexp-p2", "pr-condexp-p3", "pr-condexp/0", "pr-condexp/1", "pr-condexp/2", "pr5-review/0", "pr5-review/1", "pr5-review/2", "pr5-review/3", "pr5-review/4"], "statistics": ["st-descriptive-p1", "st-descriptive-p2", "st-descriptive-p3", "st-descriptive-p4", "st-descriptive/0", "st-descriptive/1", "st-descriptive/2", "st-correlation-p1", "st-correlation-p2", "st-correlation-p3", "st-correlation-p4", "st-correlation/0", "st-correlation/1", "st-correlation/2", "st1-review/0", "st1-review/1", "st1-review/2", "st-estimators-p1", "st-estimators-p2", "st-estimators-p3", "st-estimators-p4", "st-estimators/0", "st-estimators/1", "st-estimators/2", "st-clt-p1", "st-clt-p2", "st-clt-p3", "st-clt-p4", "st-clt/0", "st-clt/1", "st-clt/2", "st2-review/0", "st2-review/1", "st2-review/2", "st-tchi-p1", "st-tchi-p2", "st-tchi-p3", "st-tchi-p4", "st-tchi/0", "st-tchi/1", "st-tchi/2", "st-ci-p1", "st-ci-p2", "st-ci-p3", "st-ci-p4", "st-ci/0", "st-ci/1", "st-ci/2", "st3-review/0", "st3-review/1", "st3-review/2", "st-tests-p1", "st-tests-p2", "st-tests-p3", "st-tests-p4", "st-tests/0", "st-tests/1", "st-tests/2", "st-ttest-chi-p1", "st-ttest-chi-p2", "st-ttest-chi-p3", "st-ttest-chi-p4", "st-ttest-chi/0", "st-ttest-chi/1", "st-ttest-chi/2", "st4-review/0", "st4-review/1", "st4-review/2", "st4-review/3", "st4-review/4"], "linear-algebra": ["la-spaces-p1", "la-spaces-p2", "la-spaces-p3", "la-spaces/0", "la-spaces/1", "la-spaces/2", "la-independence-p1", "la-independence-p2", "la-independence-p3", "la-independence-p4", "la-independence/0", "la-independence/1", "la-independence/2", "la1-review/0", "la1-review/1", "la1-review/2", "la-systems-p1", "la-systems-p2", "la-systems-p3", "la-systems-p4", "la-systems/0", "la-systems/1", "la-systems/2", "la-rank-p1", "la-rank-p2", "la-rank-p3", "la-rank-p4", "la-rank/0", "la-rank/1", "la-rank/2", "la-det-p1", "la-det-p2", "la-det-p3", "la-det-p4", "la-det/0", "la-det/1", "la-det/2", "la2-review/0", "la2-review/1", "la2-review/2", "la-eigen-p1", "la-eigen-p2", "la-eigen-p3", "la-eigen-p4", "la-eigen/0", "la-eigen/1", "la-eigen/2", "la-special-p1", "la-special-p2", "la-special-p3", "la-special-p4", "la-special/0", "la-special/1", "la-special/2", "la-quad-p1", "la-quad-p2", "la-quad-p3", "la-quad-p4", "la-quad/0", "la-quad/1", "la-quad/2", "la3-review/0", "la3-review/1", "la3-review/2", "la-lu-p1", "la-lu-p2", "la-lu-p3", "la-lu-p4", "la-lu/0", "la-lu/1", "la-lu/2", "la-svd-p1", "la-svd-p2", "la-svd-p3", "la-svd-p4", "la-svd/0", "la-svd/1", "la-svd/2", "la4-review/0", "la4-review/1", "la4-review/2", "la4-review/3", "la4-review/4"], "calculus": ["ca-limits-p1", "ca-limits-p2", "ca-limits-p3", "ca-limits-p4", "ca-limits/0", "ca-limits/1", "ca-limits/2", "ca-continuity-p1", "ca-continuity-p2", "ca-continuity-p3", "ca-continuity-p4", "ca-continuity/0", "ca-continuity/1", "ca-continuity/2", "ca1-review/0", "ca1-review/1", "ca1-review/2", "ca-taylor-p1", "ca-taylor-p2", "ca-taylor-p3", "ca-taylor-p4", "ca-taylor/0", "ca-taylor/1", "ca-taylor/2", "ca-extrema-p1", "ca-extrema-p2", "ca-extrema-p3", "ca-extrema-p4", "ca-extrema/0", "ca-extrema/1", "ca-extrema/2", "ca2-review/0", "ca2-review/1", "ca2-review/2", "ca-optim-p1", "ca-optim-p2", "ca-optim-p3", "ca-optim-p4", "ca-optim/0", "ca-optim/1", "ca-optim/2", "ca-convex-p1", "ca-convex-p2", "ca-convex-p3", "ca-convex/0", "ca-convex/1", "ca-convex/2", "ca3-review/0", "ca3-review/1", "ca3-review/2", "ca3-review/3", "ca3-review/4"], "python-dsa": ["py-basics-p1", "py-basics-p2", "py-basics-p3", "py-basics-p4", "py-basics/0", "py-basics/1", "py-basics/2", "py-functions-p1", "py-functions-p2", "py-functions-p3", "py-functions-p4", "py-functions/0", "py-functions/1", "py-functions/2", "py1-review/0", "py1-review/1", "py1-review/2", "ds-complexity-p1", "ds-complexity-p2", "ds-complexity-p3", "ds-complexity-p4", "ds-complexity/0", "ds-complexity/1", "ds-complexity/2", "ds-sorting-p1", "ds-sorting-p2", "ds-sorting-p3", "ds-sorting-p4", "ds-sorting/0", "ds-sorting/1", "ds-sorting/2", "ds-dc-p1", "ds-dc-p2", "ds-dc-p3", "ds-dc-p4", "ds-dc/0", "ds-dc/1", "ds-dc/2", "py2-review/0", "py2-review/1", "py2-review/2", "ds-linear-p1", "ds-linear-p2", "ds-linear-p3", "ds-linear-p4", "ds-linear/0", "ds-linear/1", "ds-linear/2", "ds-hashing-p1", "ds-hashing-p2", "ds-hashing-p3", "ds-hashing-p4", "ds-hashing/0", "ds-hashing/1", "ds-hashing/2", "ds-trees-p1", "ds-trees-p2", "ds-trees-p3", "ds-trees-p4", "ds-trees/0", "ds-trees/1", "ds-trees/2", "py3-review/0", "py3-review/1", "py3-review/2", "ds-graphs-p1", "ds-graphs-p2", "ds-graphs-p3", "ds-graphs-p4", "ds-graphs/0", "ds-graphs/1", "ds-graphs/2", "ds-shortest-p1", "ds-shortest-p2", "ds-shortest-p3", "ds-shortest-p4", "ds-shortest/0", "ds-shortest/1", "ds-shortest/2", "py4-review/0", "py4-review/1", "py4-review/2", "py4-review/3", "py4-review/4"]}, "module": "python-dsa", "root": "../"};
 /* ---- expr.js ---- */
 /* Safe expression parser: no eval. Grammar (precedence low → high):
    sum := prod (('+'|'-') prod)* ; prod := unary (('*'|'/'| implicit) unary)* ; unary := '-' unary | pow ; pow := atom ('^' unary)?
@@ -2272,6 +2745,330 @@ window.SITE = {"name": "Simple GATE DA", "key": "gateda", "path": "gate-da", "do
         "<br><span class='k'>current x</span> " + fmt(x, 4) + ", f′(x) = " + fmt(o.d(x), 4) + " (" + path.length + " steps)" + (k === 1 ? "<br>eˣ is convex but has no minimum: the steps keep heading left." : "");
     };
     p.redraw();
+  };
+})();
+
+/* ---- w_ds.js ---- */
+/* Data structures & algorithms widgets (ds_*). */
+(function () {
+  "use strict";
+  var DH = window.DH, W = DH.W, h = DH.h, col = DH.col, fmt = DH.fmt;
+  function clamp(v, a, b) { return Math.max(a, Math.min(b, v)); }
+
+  /* draw an array of boxes; marks: {i: colourName}; window [lo, hi] shaded */
+  function drawArray(p, arr, opt) {
+    opt = opt || {};
+    var n = arr.length, g = p.g, w = Math.min(56, (p.W - 20) / n), x0 = (p.W - w * n) / 2, y = opt.y || p.H / 2 - w / 2;
+    arr.forEach(function (v, i) {
+      var c = opt.marks && opt.marks[i], dim = opt.lo != null && (i < opt.lo || i > opt.hi);
+      g.fillStyle = c ? DH.alpha(col(c), 0.85) : dim ? DH.alpha(col("muted"), 0.08) : DH.alpha(col("accent"), 0.16);
+      g.fillRect(x0 + i * w + 2, y, w - 4, w);
+      g.strokeStyle = dim ? DH.alpha(col("muted"), 0.3) : col("line"); g.lineWidth = 1; g.strokeRect(x0 + i * w + 2, y, w - 4, w);
+      g.fillStyle = c ? col("surface") : dim ? col("muted") : col("ink"); g.font = "600 " + Math.min(15, w * 0.38) + "px " + col("font-mono"); g.textAlign = "center"; g.textBaseline = "middle";
+      g.fillText(String(v), x0 + i * w + w / 2, y + w / 2);
+      if (opt.idx) { g.fillStyle = col("muted"); g.font = "10px " + col("font-mono"); g.fillText(String(i), x0 + i * w + w / 2, y + w + 10); }
+    });
+    return { x0: x0, w: w, y: y };
+  }
+  DH.drawArray = drawArray;
+
+  /* ---------- binary search ---------- */
+  W.ds_bsearch = function (el) {
+    var n = 15, target = 23, arr = [], steps = [], at = 0;
+    var row = h("div", { class: "wrow" }); el.appendChild(row);
+    var p = new DH.Plot(row, { xmin: 0, xmax: 1, ymin: 0, ymax: 1, ratio: 0.32, label: "Binary search on a sorted array" });
+    var ctl = DH.ctrlBox(row);
+    DH.slider(ctl, { label: "array size $n$", min: 3, max: 31, step: 1, value: n, digits: 0 }, function (v) { n = v; plan(); });
+    DH.slider(ctl, { label: "target value", min: 0, max: 64, step: 1, value: target, digits: 0 }, function (v) { target = v; plan(); });
+    var bt = h("div", { class: "btns" }); ctl.appendChild(bt);
+    var nx = DH.button(bt, "Next comparison", function () { if (at < steps.length - 1) at++; p.redraw(); });
+    DH.button(bt, "Restart", function () { at = 0; p.redraw(); }, "ghost");
+    var rd = DH.readout(ctl);
+    function plan() {
+      arr = []; for (var i = 0; i < n; i++) arr.push(2 * i + 1);
+      steps = [{ lo: 0, hi: n - 1, mid: null, c: 0, msg: "Start: the whole array is possible." }];
+      var lo = 0, hi = n - 1, c = 0;
+      while (lo <= hi) {
+        var mid = Math.floor((lo + hi) / 2); c++;
+        if (arr[mid] === target) { steps.push({ lo: lo, hi: hi, mid: mid, c: c, found: true, msg: "A[" + mid + "] = " + arr[mid] + " equals the target: found." }); break; }
+        if (arr[mid] < target) { steps.push({ lo: lo, hi: hi, mid: mid, c: c, msg: "A[" + mid + "] = " + arr[mid] + " < " + target + ": keep the right part." }); lo = mid + 1; }
+        else { steps.push({ lo: lo, hi: hi, mid: mid, c: c, msg: "A[" + mid + "] = " + arr[mid] + " > " + target + ": keep the left part." }); hi = mid - 1; }
+        if (lo > hi) steps.push({ lo: lo, hi: hi, mid: null, c: c, notfound: true, msg: "Nothing left: " + target + " is not in the array." });
+      }
+      at = 0; p.redraw();
+    }
+    p.draw = function (p) {
+      var s = steps[at], marks = {}; if (s.mid != null) marks[s.mid] = s.found ? "mint" : "coral";
+      drawArray(p, arr, { lo: s.lo, hi: s.hi, marks: marks, idx: true });
+      rd.innerHTML = "<span class='k'>comparisons</span> " + s.c + "<br>" + s.msg + "<br><span class='k'>⌊log₂ n⌋ + 1</span> = " + (Math.floor(Math.log2(n)) + 1) + " (the worst case)";
+      nx.disabled = at >= steps.length - 1;
+    };
+    plan();
+  };
+
+  /* ---------- simple sorts, pass by pass ---------- */
+  W.ds_sort = function (el) {
+    var ARR = [[4, 3, 2, 1, 5], [5, 3, 4, 1, 2], [1, 2, 3, 5, 4], [9, 7, 5, 3, 1, 2, 4, 6]];
+    var algo = 0, ai = 0, ev = [], at = 0;
+    var row = h("div", { class: "wrow" }); el.appendChild(row);
+    var p = new DH.Plot(row, { xmin: 0, xmax: 1, ymin: 0, ymax: 1, ratio: 0.3, label: "Sorting visualiser" });
+    var ctl = DH.ctrlBox(row);
+    DH.chips(ctl, ["Bubble", "Selection", "Insertion"], function (i) { algo = i; plan(); }, 0);
+    DH.chips(ctl, ARR.map(function (a) { return "[" + a.join(",") + "]"; }), function (i) { ai = i; plan(); }, 0);
+    var bt = h("div", { class: "btns" }); ctl.appendChild(bt);
+    var b1 = DH.button(bt, "Next comparison", function () { if (at < ev.length - 1) at++; p.redraw(); });
+    DH.button(bt, "Next pass", function () { var ps = ev[at].pass; while (at < ev.length - 1 && ev[at].pass === ps) at++; p.redraw(); }, "chip");
+    DH.button(bt, "Restart", function () { at = 0; p.redraw(); }, "ghost");
+    var rd = DH.readout(ctl);
+    function inv(a) { var c = 0; for (var i = 0; i < a.length; i++) for (var j = i + 1; j < a.length; j++) if (a[i] > a[j]) c++; return c; }
+    function plan() {
+      var a = ARR[ai].slice(), n = a.length, cmp = 0, sw = 0; ev = [{ a: a.slice(), pass: 0, cmp: 0, sw: 0, marks: {}, msg: "Start.", sorted: [] }];
+      function push(pass, marks, msg, sorted) { ev.push({ a: a.slice(), pass: pass, cmp: cmp, sw: sw, marks: marks, msg: msg, sorted: sorted }); }
+      var i, j, t;
+      if (algo === 0) {
+        for (i = 0; i < n - 1; i++) { for (j = 0; j < n - 1 - i; j++) { cmp++; var m = {}; m[j] = "gold"; m[j + 1] = "gold"; if (a[j] > a[j + 1]) { t = a[j]; a[j] = a[j + 1]; a[j + 1] = t; sw++; push(i + 1, m, "Pass " + (i + 1) + ": " + a[j + 1] + " > " + a[j] + ", swap.", range(n - i, n)); } else push(i + 1, m, "Pass " + (i + 1) + ": in order, no swap.", range(n - i, n)); } ev[ev.length - 1].sorted = range(n - 1 - i, n); }
+      } else if (algo === 1) {
+        for (i = 0; i < n - 1; i++) { var mi = i; for (j = i + 1; j < n; j++) { cmp++; if (a[j] < a[mi]) mi = j; var m2 = {}; m2[j] = "gold"; m2[mi] = "plum"; push(i + 1, m2, "Pass " + (i + 1) + ": smallest so far is " + a[mi] + ".", range(0, i)); } if (mi !== i) { t = a[i]; a[i] = a[mi]; a[mi] = t; sw++; } var m3 = {}; m3[i] = "mint"; push(i + 1, m3, "Pass " + (i + 1) + ": put " + a[i] + " at index " + i + (mi !== i ? " (swap)." : " (already there)."), range(0, i + 1)); }
+      } else {
+        for (i = 1; i < n; i++) { j = i; while (j > 0) { cmp++; var m4 = {}; m4[j] = "gold"; m4[j - 1] = "gold"; if (a[j - 1] > a[j]) { t = a[j]; a[j] = a[j - 1]; a[j - 1] = t; sw++; push(i, m4, "Pass " + i + ": shift " + a[j - 1] + " left (swap).", range(0, i + 1)); j--; } else { push(i, m4, "Pass " + i + ": in place, stop.", range(0, i + 1)); break; } } if (j === 0) ev[ev.length - 1].msg += " Reached the front."; }
+      }
+      ev.push({ a: a.slice(), pass: 99, cmp: cmp, sw: sw, marks: {}, msg: "Sorted.", sorted: range(0, n) });
+      ev.inv = inv(ARR[ai]); at = 0; p.redraw();
+    }
+    function range(a, b) { var r = []; for (var k = a; k < b; k++) r.push(k); return r; }
+    p.draw = function (p) {
+      var e = ev[at], marks = {}; e.sorted.forEach(function (k) { marks[k] = "mint"; }); Object.keys(e.marks).forEach(function (k) { marks[k] = e.marks[k]; });
+      drawArray(p, e.a, { marks: marks, idx: true });
+      rd.innerHTML = "<span class='k'>comparisons</span> " + e.cmp + "   <span class='k'>swaps</span> " + e.sw + "   <span class='k'>inversions in the input</span> " + ev.inv +
+        "<br>" + e.msg + "<br><small>Green = guaranteed in final place (or the sorted prefix, for insertion sort); gold = being compared; purple = current minimum.</small>";
+      b1.disabled = at >= ev.length - 1;
+    };
+    plan();
+  };
+
+  /* ---------- quicksort partition (Lomuto, last element pivot) ---------- */
+  W.ds_quick = function (el) {
+    var ARR = [[7, 2, 9, 4, 3, 8, 5], [60, 70, 80, 90, 100], [5, 4, 3, 2, 1]];
+    var ai = 0, ev = [], at = 0;
+    var row = h("div", { class: "wrow" }); el.appendChild(row);
+    var p = new DH.Plot(row, { xmin: 0, xmax: 1, ymin: 0, ymax: 1, ratio: 0.32, label: "Quicksort partition steps" });
+    var ctl = DH.ctrlBox(row);
+    DH.chips(ctl, ["[7,2,9,4,3,8,5]", "sorted [60…100]", "reversed [5…1]"], function (i) { ai = i; plan(); }, 0);
+    var bt = h("div", { class: "btns" }); ctl.appendChild(bt);
+    var nx = DH.button(bt, "Next step", function () { if (at < ev.length - 1) at++; p.redraw(); });
+    DH.button(bt, "Run to end", function () { at = ev.length - 1; p.redraw(); }, "chip");
+    DH.button(bt, "Restart", function () { at = 0; p.redraw(); }, "ghost");
+    var rd = DH.readout(ctl);
+    function plan() {
+      var a = ARR[ai].slice(), real = 0, depth = 0, maxd = 0, fixed = {}; ev = [{ a: a.slice(), marks: {}, msg: "Start.", real: 0, fixed: {} }];
+      function snap(m, msg) { ev.push({ a: a.slice(), marks: m, msg: msg, real: real, fixed: JSON.parse(JSON.stringify(fixed)), depth: maxd }); }
+      (function qs(lo, hi, d) {
+        if (lo > hi) return; maxd = Math.max(maxd, d);
+        if (lo === hi) { fixed[lo] = 1; return; }
+        var piv = a[hi], i = lo - 1;
+        snap((function () { var m = {}; m[hi] = "plum"; return m; })(), "Partition indices " + lo + "–" + hi + " around pivot " + piv + ".");
+        for (var j = lo; j < hi; j++) {
+          var m = {}; m[hi] = "plum"; m[j] = "gold";
+          if (a[j] < piv) { i++; if (i !== j) { var t = a[i]; a[i] = a[j]; a[j] = t; real++; snap(m, a[i] + " < " + piv + ": swap it into the small zone."); } else snap(m, a[j] + " < " + piv + ": already in the small zone (no swap needed)."); }
+          else snap(m, a[j] + " ≥ " + piv + ": leave it.");
+        }
+        if (i + 1 !== hi) { var t2 = a[i + 1]; a[i + 1] = a[hi]; a[hi] = t2; real++; }
+        fixed[i + 1] = 1;
+        var m5 = {}; m5[i + 1] = "mint"; snap(m5, "Pivot " + piv + " is now in its final place (index " + (i + 1) + "). Left part: " + (i + 1 - lo) + " elements, right part: " + (hi - i - 1) + ".");
+        qs(lo, i, d + 1); qs(i + 2, hi, d + 1);
+      })(0, a.length - 1, 1);
+      Object.keys(a).forEach(function (k) { fixed[k] = 1; });
+      snap({}, "Sorted. Real swaps (excluding self-swaps): " + real + ". Recursion depth: " + maxd + ".");
+      at = 0; p.redraw();
+    }
+    p.draw = function (p) {
+      var e = ev[at], marks = {}; Object.keys(e.fixed).forEach(function (k) { marks[k] = "mint"; }); Object.keys(e.marks).forEach(function (k) { marks[k] = e.marks[k]; });
+      drawArray(p, e.a, { marks: marks, idx: true });
+      rd.innerHTML = "<span class='k'>real swaps so far</span> " + e.real + "<br>" + e.msg + "<br><small>Purple = pivot, gold = being compared, green = in final place.</small>";
+      nx.disabled = at >= ev.length - 1;
+    };
+    plan();
+  };
+  /* ---------- deque ---------- */
+  W.ds_deque = function (el) {
+    var D = [], log = [], a = null, val = 10;
+    var row = h("div", { class: "wrow" }); el.appendChild(row);
+    var p = new DH.Plot(row, { xmin: 0, xmax: 1, ymin: 0, ymax: 1, ratio: 0.3, label: "Double-ended queue contents" });
+    var ctl = DH.ctrlBox(row);
+    var vs = DH.slider(ctl, { label: "value to insert", min: 1, max: 99, step: 1, value: val, digits: 0 }, function (v) { val = v; });
+    var b1 = h("div", { class: "btns" }); ctl.appendChild(b1);
+    function op(name, f) { DH.button(b1, name, function () { f(); p.redraw(); }, "chip"); }
+    op("insertFirst", function () { D.unshift(val); log.unshift("insertFirst(" + val + ")"); });
+    op("insertLast", function () { D.push(val); log.unshift("insertLast(" + val + ")"); });
+    op("removeFirst", function () { if (D.length) { a = D.shift(); log.unshift("a ← removeFirst() = " + a); } });
+    op("removeLast", function () { if (D.length) { a = D.pop(); log.unshift("a ← removeLast() = " + a); } });
+    var b2 = h("div", { class: "btns" }); ctl.appendChild(b2);
+    var seq = [["F", 10], ["L", 32], ["RF"], ["L", 28], ["L", 17], ["RF"], ["RL"]], si = 0;
+    DH.button(b2, "Replay 2024 Q32 (step)", function () {
+      if (si === 0) { D = []; log = []; a = null; }
+      var s = seq[si];
+      if (s[0] === "F") { D.unshift(s[1]); log.unshift("insertFirst(" + s[1] + ")"); } else if (s[0] === "L") { D.push(s[1]); log.unshift("insertLast(" + s[1] + ")"); } else if (s[0] === "RF") { a = D.shift(); log.unshift("a ← removeFirst() = " + a); } else { a = D.pop(); log.unshift("a ← removeLast() = " + a); }
+      si = (si + 1) % seq.length; p.redraw();
+    });
+    DH.button(b2, "Clear", function () { D = []; log = []; a = null; si = 0; p.redraw(); }, "ghost");
+    var rd = DH.readout(ctl);
+    p.draw = function (p) {
+      if (D.length) drawArray(p, D, {}); else p.text("(empty)", 0.5, 0.5, col("muted"), { align: "center", size: 14 });
+      p.text("front", 0.04, 0.12, col("muted"), { size: 12 }); p.text("back", 0.96, 0.12, col("muted"), { size: 12, align: "right" });
+      rd.innerHTML = "<span class='k'>a</span> = " + (a === null ? "—" : "<b>" + a + "</b>") + "<br>" + (log.slice(0, 7).join("<br>") || "Use the buttons.");
+    };
+    p.redraw();
+  };
+
+  /* ---------- hash table with linear probing ---------- */
+  W.ds_hash = function (el) {
+    var m = 10, mult = 1, T = new Array(10).fill(null), log = [], key = 12;
+    var row = h("div", { class: "wrow" }); el.appendChild(row);
+    var p = new DH.Plot(row, { xmin: 0, xmax: 1, ymin: 0, ymax: 1, ratio: 0.3, label: "Hash table with linear probing" });
+    var ctl = DH.ctrlBox(row);
+    var ms = DH.slider(ctl, { label: "multiplier $a$ in $h(x) = a x \\bmod 10$", min: 1, max: 9, step: 1, value: mult, digits: 0 }, function (v) { mult = v; T.fill(null); log = []; p.redraw(); });
+    DH.slider(ctl, { label: "key to insert", min: 0, max: 99, step: 1, value: key, digits: 0 }, function (v) { key = v; });
+    var bt = h("div", { class: "btns" }); ctl.appendChild(bt);
+    var last = null;
+    function insert(k) { if (T.every(function (x) { return x !== null; })) { log.unshift("table full"); return; } var i = (mult * k) % m, probes = 1, home = i; while (T[i] !== null) { i = (i + 1) % m; probes++; } T[i] = k; last = i; log.unshift("insert " + k + ": home " + home + (i !== home ? ", probed to " + i : "") + " (" + probes + " probe" + (probes > 1 ? "s" : "") + ")"); }
+    DH.button(bt, "Insert", function () { insert(key); p.redraw(); });
+    DH.button(bt, "Replay 2025 Q18", function () { mult = 3; ms.set(3); T.fill(null); log = []; [1, 4, 5, 6, 14, 15].forEach(insert); p.redraw(); }, "chip");
+    DH.button(bt, "Clear", function () { T.fill(null); log = []; last = null; p.redraw(); }, "ghost");
+    var rd = DH.readout(ctl);
+    p.draw = function (p) {
+      var marks = {}; if (last !== null) marks[last] = "coral";
+      drawArray(p, T.map(function (x) { return x === null ? "·" : x; }), { marks: marks, idx: true });
+      var n = T.filter(function (x) { return x !== null; }).length;
+      rd.innerHTML = "<span class='k'>h(x)</span> = " + mult + "x mod 10   <span class='k'>load factor</span> α = " + n + "/10 = " + fmt(n / 10, 1) + (n < 10 ? "   <span class='k'>1/(1−α)</span> = " + fmt(1 / (1 - n / 10), 2) : "") + "<br>" + (log.slice(0, 6).join("<br>") || "Insert some keys.");
+    };
+    p.redraw();
+  };
+
+  /* ---------- binary trees and traversals ---------- */
+  W.ds_tree = function (el) {
+    var root = null, seq = [], at = 0, kind = "";
+    function node(v, l, r) { return { v: v, l: l || null, r: r || null }; }
+    function ins(t, v) { if (!t) return node(v); if (v < t.v) t.l = ins(t.l, v); else if (v > t.v) t.r = ins(t.r, v); return t; }
+    var presets = {
+      "BST 50…": function () { var t = null; [50, 30, 70, 20, 40, 60, 80, 35].forEach(function (v) { t = ins(t, v); }); return t; },
+      "2026 Q25": function () { return node("P", node("Q", node("S"), node("E")), node("R", node("F"), node("G"))); },
+      "Skewed 1…5": function () { var t = null; [1, 2, 3, 4, 5].forEach(function (v) { t = ins(t, v); }); return t; } };
+    var key = 45;
+    var row = h("div", { class: "wrow" }); el.appendChild(row);
+    var p = new DH.Plot(row, { xmin: 0, xmax: 1, ymin: 0, ymax: 1, ratio: 0.62, label: "Binary tree with traversal highlighting" });
+    var ctl = DH.ctrlBox(row);
+    DH.chips(ctl, Object.keys(presets), function (i) { root = presets[Object.keys(presets)[i]](); seq = []; p.redraw(); }, 0);
+    DH.slider(ctl, { label: "number key to insert (BST)", min: 1, max: 99, step: 1, value: key, digits: 0 }, function (v) { key = v; });
+    var b0 = h("div", { class: "btns" }); ctl.appendChild(b0);
+    DH.button(b0, "Insert key", function () { if (root && typeof root.v === "number") { root = ins(root, key); seq = []; p.redraw(); } }, "chip");
+    var b1 = h("div", { class: "btns" }); ctl.appendChild(b1);
+    function trav(k) {
+      var out = [];
+      if (k === "Level") { var q = root ? [root] : []; while (q.length) { var x = q.shift(); out.push(x); if (x.l) q.push(x.l); if (x.r) q.push(x.r); } }
+      else (function go(t) { if (!t) return; if (k === "Pre") out.push(t); go(t.l); if (k === "In") out.push(t); go(t.r); if (k === "Post") out.push(t); })(root);
+      return out;
+    }
+    ["Pre", "In", "Post", "Level"].forEach(function (k) { DH.button(b1, k + "-order", function () { kind = k; seq = trav(k); at = 0; p.redraw(); }, "chip"); });
+    var b2 = h("div", { class: "btns" }); ctl.appendChild(b2);
+    DH.button(b2, "Next node", function () { if (at < seq.length) at++; p.redraw(); });
+    DH.button(b2, "Show all", function () { at = seq.length; p.redraw(); }, "ghost");
+    var rd = DH.readout(ctl);
+    root = presets["BST 50…"]();
+    p.draw = function (p) {
+      if (!root) return;
+      var order = [], depthMax = 0;
+      (function lay(t, d) { if (!t) return; lay(t.l, d + 1); t.ix = order.length; order.push(t); t.d = d; depthMax = Math.max(depthMax, d); lay(t.r, d + 1); })(root, 0);
+      var n = order.length;
+      function X(t) { return (t.ix + 0.5) / n; } function Y(t) { return 1 - (t.d + 0.6) / (depthMax + 1.2); }
+      (function edges(t) { if (!t) return; [t.l, t.r].forEach(function (c) { if (c) { p.line(X(t), Y(t), X(c), Y(c), DH.alpha(col("muted"), 0.6), 1.4); edges(c); } }); })(root);
+      var vis = seq.slice(0, at);
+      order.forEach(function (t) { var k = vis.indexOf(t); p.dot(X(t), Y(t), 15, k >= 0 ? col("coral") : col("accent"), col("plot-bg")); p.text(String(t.v), X(t), Y(t), col("surface"), { align: "center", bold: true, size: 12 }); if (k >= 0) p.text(String(k + 1), X(t), Y(t), col("coral"), { dx: 16, dy: -12, bold: true, size: 11, halo: true }); });
+      var h2 = depthMax;
+      rd.innerHTML = (kind ? "<span class='k'>" + kind + "-order</span> " + vis.map(function (t) { return t.v; }).join(" ") + (at < seq.length ? " …" : "") : "Choose a traversal.") +
+        "<br><span class='k'>nodes</span> " + n + "   <span class='k'>height</span> " + h2 + "   <span class='k'>leaves</span> " + order.filter(function (t) { return !t.l && !t.r; }).length;
+    };
+    p.redraw();
+  };
+  function drawGraph(p, G, opt) {
+    opt = opt || {};
+    G.E.forEach(function (e) {
+      var a = G.V[e[0]], b = G.V[e[1]], hi = opt.hiEdges && opt.hiEdges[e[0] + "-" + e[1]];
+      if (G.directed) { var dx = b[0] - a[0], dy = b[1] - a[1], L = Math.hypot(dx, dy), r = 0.06; p.arrow(a[0] + dx * r / L, a[1] + dy * r / L, b[0] - dx * r / L, b[1] - dy * r / L, hi ? col("coral") : DH.alpha(col("muted"), 0.8), hi ? 3 : 1.8); }
+      else p.line(a[0], a[1], b[0], b[1], hi ? col("coral") : DH.alpha(col("muted"), 0.7), hi ? 3 : 1.6);
+      if (e[2] != null) p.text(String(e[2]), (a[0] + b[0]) / 2, (a[1] + b[1]) / 2, col("ink"), { align: "center", halo: true, size: 12, bold: true, mono: true });
+    });
+    Object.keys(G.V).forEach(function (k) {
+      var v = G.V[k], c = opt.colour ? opt.colour(k) : col("accent");
+      p.dot(v[0], v[1], 15, c, col("plot-bg"));
+      p.text(G.label ? G.label(k) : k, v[0], v[1], col("surface"), { align: "center", bold: true, size: 12 });
+      if (opt.note && opt.note(k) != null) p.text(String(opt.note(k)), v[0], v[1], col("ink"), { dx: 18, dy: -14, bold: true, size: 11, halo: true });
+    });
+  }
+
+  /* ---------- BFS / DFS / topological sort ---------- */
+  W.ds_graph = function (el) {
+    var GS = {
+      "2024 Q51 DAG": { directed: true, V: { P: [0.3, 0.88], R: [0.7, 0.88], Q: [0.5, 0.62], S: [0.33, 0.38], V: [0.67, 0.38], U: [0.33, 0.12], T: [0.67, 0.12] }, E: [["P", "Q"], ["R", "Q"], ["Q", "S"], ["Q", "V"], ["S", "U"], ["V", "T"]] },
+      "2025 Q58 graph": { directed: false, V: { a: [0.12, 0.75], b: [0.37, 0.75], c: [0.62, 0.75], d: [0.87, 0.75], e: [0.12, 0.25], f: [0.37, 0.25], g: [0.62, 0.25], h: [0.87, 0.25] }, E: [["a", "b"], ["b", "c"], ["c", "d"], ["e", "f"], ["f", "g"], ["g", "h"], ["a", "f"], ["f", "c"], ["c", "h"]] },
+      "Small cycle graph": { directed: false, V: { "1": [0.15, 0.5], "2": [0.4, 0.82], "3": [0.4, 0.18], "4": [0.65, 0.5], "5": [0.9, 0.82], "6": [0.9, 0.18] }, E: [["1", "2"], ["1", "3"], ["2", "4"], ["3", "4"], ["4", "5"], ["4", "6"], ["5", "6"]] } };
+    var gname = "2024 Q51 DAG", start = null, ev = [], at = 0, mode = "";
+    var row = h("div", { class: "wrow" }); el.appendChild(row);
+    var p = new DH.Plot(row, { xmin: 0, xmax: 1, ymin: 0, ymax: 1, ratio: 0.68, label: "Graph traversal" });
+    var ctl = DH.ctrlBox(row);
+    DH.chips(ctl, Object.keys(GS), function (i) { gname = Object.keys(GS)[i]; start = null; ev = []; mode = ""; p.redraw(); }, 0);
+    var b1 = h("div", { class: "btns" }); ctl.appendChild(b1);
+    function nbrs(G, u) { var out = []; G.E.forEach(function (e) { if (e[0] === u) out.push(e[1]); else if (!G.directed && e[1] === u) out.push(e[0]); }); return out.sort(); }
+    function first(G) { return start || Object.keys(G.V)[0]; }
+    DH.button(b1, "BFS", function () { var G = GS[gname], s = first(G), q = [s], seen = {}; seen[s] = 1; ev = [{ vis: [], ds: [s], msg: "Start BFS at " + s + "." }]; var vis = []; while (q.length) { var u = q.shift(); vis.push(u); nbrs(G, u).forEach(function (v) { if (!seen[v]) { seen[v] = 1; q.push(v); } }); ev.push({ vis: vis.slice(), ds: q.slice(), msg: "Dequeue " + u + ", enqueue its unvisited neighbours." }); } mode = "BFS (queue)"; at = 0; p.redraw(); }, "chip");
+    DH.button(b1, "DFS", function () { var G = GS[gname], s = first(G), seen = {}, vis = [], stack = []; ev = [{ vis: [], ds: [], msg: "Start DFS at " + s + "." }]; (function go(u) { seen[u] = 1; vis.push(u); stack.push(u); ev.push({ vis: vis.slice(), ds: stack.slice(), msg: "Visit " + u + "." }); nbrs(G, u).forEach(function (v) { if (!seen[v]) go(v); }); stack.pop(); ev.push({ vis: vis.slice(), ds: stack.slice(), msg: "Finished " + u + ", backtrack." }); })(s); mode = "DFS (call stack)"; at = 0; p.redraw(); }, "chip");
+    DH.button(b1, "Topological sort", function () { var G = GS[gname]; if (!G.directed) { ev = [{ vis: [], ds: [], msg: "Topological sort needs a directed acyclic graph." }]; at = 0; mode = ""; p.redraw(); return; } var indeg = {}; Object.keys(G.V).forEach(function (k) { indeg[k] = 0; }); G.E.forEach(function (e) { indeg[e[1]]++; }); var out = [], avail; ev = [{ vis: [], ds: Object.keys(indeg).filter(function (k) { return !indeg[k]; }).sort(), msg: "In-degree 0: these may come first." }]; while ((avail = Object.keys(indeg).filter(function (k) { return indeg[k] === 0 && out.indexOf(k) < 0; }).sort()).length) { var u = avail[0]; out.push(u); G.E.forEach(function (e) { if (e[0] === u) indeg[e[1]]--; }); var nxt = Object.keys(indeg).filter(function (k) { return indeg[k] === 0 && out.indexOf(k) < 0; }).sort(); ev.push({ vis: out.slice(), ds: nxt, msg: "Output " + u + (avail.length > 1 ? " (chose it from " + avail.join(", ") + ": any choice is valid)" : "") + "." }); } mode = "Topological order (available set)"; at = 0; p.redraw(); }, "chip");
+    var b2 = h("div", { class: "btns" }); ctl.appendChild(b2);
+    DH.button(b2, "Next step", function () { if (at < ev.length - 1) at++; p.redraw(); });
+    DH.button(b2, "Show all", function () { at = ev.length - 1; p.redraw(); }, "ghost");
+    var rd = DH.readout(ctl);
+    p.on("down", function (x, y) { var G = GS[gname], best = null, bd = 0.08; Object.keys(G.V).forEach(function (k) { var d = Math.hypot(G.V[k][0] - x, G.V[k][1] - y); if (d < bd) { bd = d; best = k; } }); if (best) { start = best; ev = []; mode = ""; p.redraw(); } });
+    p.draw = function (p) {
+      var G = GS[gname], e = ev[at] || { vis: [], ds: [], msg: "" };
+      drawGraph(p, G, { colour: function (k) { return e.vis.indexOf(k) >= 0 ? col("coral") : k === first(G) ? col("plum") : col("accent"); }, note: function (k) { var i = e.vis.indexOf(k); return i >= 0 ? i + 1 : null; } });
+      rd.innerHTML = "<span class='k'>start</span> " + first(G) + " (click a vertex to change)" + (mode ? "<br><span class='k'>order</span> " + e.vis.join(" ") + "<br><span class='k'>" + mode + "</span> [" + e.ds.join(", ") + "]<br>" + e.msg : "<br>Choose BFS, DFS or Topological sort. Neighbours are taken in alphabetical/numeric order.");
+    };
+    p.redraw();
+  };
+
+  /* ---------- Dijkstra on the league's home cities ---------- */
+  W.ds_dijkstra = function (el) {
+    var G = { directed: false, V: { G: [0.22, 0.9], N: [0.5, 0.6], B: [1.02, 0.66], H: [0.68, 0.3], K: [0.22, 0.1] }, E: [["G", "N", 10], ["G", "K", 23], ["N", "H", 5], ["N", "B", 7], ["N", "K", 11], ["H", "K", 6], ["H", "B", 9]] };
+    var names = { G: "Gurugram", N: "Nagpur", B: "Bhubaneswar", H: "Hyderabad", K: "Bengaluru" };
+    G.label = function (k) { return k; };
+    var src = "G", ev = [], at = 0;
+    var row = h("div", { class: "wrow" }); el.appendChild(row);
+    var p = new DH.Plot(row, { xmin: 0, xmax: 1.2, ymin: 0, ymax: 1, ratio: 0.72, label: "Dijkstra's algorithm on a weighted graph of cities" });
+    var ctl = DH.ctrlBox(row);
+    DH.chips(ctl, Object.keys(names).map(function (k) { return names[k]; }), function (i) { src = Object.keys(names)[i]; plan(); }, 0);
+    var b = h("div", { class: "btns" }); ctl.appendChild(b);
+    var nx = DH.button(b, "Settle next city", function () { if (at < ev.length - 1) at++; p.redraw(); });
+    DH.button(b, "Restart", function () { at = 0; p.redraw(); }, "ghost");
+    var rd = DH.readout(ctl);
+    function plan() {
+      var d = {}, pred = {}, done = {}; Object.keys(G.V).forEach(function (k) { d[k] = Infinity; }); d[src] = 0;
+      ev = [{ d: Object.assign({}, d), done: {}, pred: {}, msg: "Start: d(" + names[src] + ") = 0, all others ∞." }];
+      for (;;) {
+        var u = null; Object.keys(d).forEach(function (k) { if (!done[k] && d[k] < Infinity && (u === null || d[k] < d[u])) u = k; }); if (u === null) break;
+        done[u] = 1; var rel = [];
+        G.E.forEach(function (e) { var v = e[0] === u ? e[1] : e[1] === u ? e[0] : null; if (v && !done[v] && d[u] + e[2] < d[v]) { d[v] = d[u] + e[2]; pred[v] = u; rel.push(names[v] + " → " + d[v]); } });
+        ev.push({ d: Object.assign({}, d), done: Object.assign({}, done), pred: Object.assign({}, pred), u: u, msg: "Settle " + names[u] + " at distance " + d[u] + "." + (rel.length ? " Relax: " + rel.join(", ") + "." : " No improvements.") });
+      }
+      at = 0; p.redraw();
+    }
+    p.draw = function (p) {
+      var e = ev[at], hi = {};
+      Object.keys(e.pred).forEach(function (v) { hi[e.pred[v] + "-" + v] = 1; hi[v + "-" + e.pred[v]] = 1; });
+      drawGraph(p, G, { hiEdges: hi, colour: function (k) { return e.done[k] ? col("mint") : k === e.u ? col("coral") : col("accent"); }, note: function (k) { return e.d[k] === Infinity ? "∞" : e.d[k]; } });
+      Object.keys(G.V).forEach(function (k) { p.text(names[k], G.V[k][0], G.V[k][1], col("muted"), { dx: -18, dy: 22, size: 11, halo: true, align: "left" }); });
+      rd.innerHTML = e.msg + "<br><span class='k'>tentative distances</span> " + Object.keys(e.d).map(function (k) { return names[k] + " " + (e.d[k] === Infinity ? "∞" : e.d[k]) + (e.done[k] ? "✓" : ""); }).join(", ") + "<br><small>Green = settled (final). Orange edges = current best routes.</small>";
+      nx.disabled = at >= ev.length - 1;
+    };
+    plan();
   };
 })();
 
