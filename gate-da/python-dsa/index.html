@@ -562,6 +562,35 @@ pre.pycode { padding: 10px 0; font-size: 0.82rem; line-height: 1.55; }
 .pyfn { display: block; font-weight: 700; margin-bottom: 2px; }
 .pydim { color: var(--muted); }
 pre.pyout { min-height: 2.2em; font-size: 0.8rem; }
+/* database widgets (w_db.js) */
+.dbwrap { display: flex; flex-wrap: wrap; gap: 12px 18px; align-items: flex-start; min-width: 0; }
+.dbwrap > * { max-width: 100%; }
+.dbscroll { overflow-x: auto; max-width: 100%; }
+.dbscroll.tall { max-height: 300px; overflow-y: auto; }
+.dbt { border-collapse: collapse; font-family: var(--font-mono); font-size: 0.78rem; font-variant-numeric: tabular-nums; }
+.dbt caption { caption-side: top; text-align: left; font-family: var(--font-body); font-weight: 700; font-size: 0.86rem; padding-bottom: 4px; white-space: nowrap; }
+.dbt caption .dbn { font-weight: 400; color: var(--muted); font-family: var(--font-mono); font-size: 0.76rem; }
+.dbt th, .dbt td { border: 1px solid var(--line); padding: 3px 8px; text-align: left; white-space: nowrap; }
+.dbt th { text-transform: none; letter-spacing: 0; background: var(--bg); font-weight: 600; font-size: 0.78rem; }
+.dbt th.pk { text-decoration: underline; text-underline-offset: 3px; }
+.dbt th.xh, .dbt td.xv { background: var(--plum-soft); }
+.dbt td.null { color: var(--muted); font-style: italic; }
+.dbt tr.hit td { background: var(--mint-soft); }
+.dbt tr.miss td { color: var(--muted); text-decoration: line-through; }
+.dbt tr.new td { background: var(--accent-soft); }
+.dbt tr.bad td { background: var(--warn-soft); }
+.dbt tr.cur td { background: var(--gold-soft); font-weight: 600; }
+.dbt tr.g0 td { background: var(--accent-soft); } .dbt tr.g1 td { background: var(--gold-soft); } .dbt tr.g2 td { background: var(--plum-soft); } .dbt tr.g3 td { background: var(--coral-soft); } .dbt tr.g4 td { background: var(--mint-soft); }
+.dbstep { font-family: var(--font-mono); font-size: 0.84rem; background: var(--bg); border-radius: 8px; padding: 8px 12px; overflow-x: auto; line-height: 1.6; }
+.dbstep .k { color: var(--muted); font-family: var(--font-body); }
+pre.dbsql { margin: 0; font-size: 0.8rem; }
+.dbschema ul { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+.dbschema li { font-family: var(--font-mono); font-size: 0.86rem; background: var(--bg); border-radius: 8px; padding: 6px 10px; overflow-wrap: anywhere; }
+.dbschema li .why { display: block; font-family: var(--font-body); font-size: 0.8rem; color: var(--muted); }
+.dbcube { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+@media (max-width: 760px) { .dbcube { grid-template-columns: minmax(0, 1fr); } }
+.dbnum { font-family: var(--font-mono); font-size: 0.92rem; padding: 7px 10px; border: 1px solid var(--line); border-radius: 8px; background: var(--bg); color: var(--ink); width: 7ch; }
+.dbfig { font-family: var(--font-mono); font-size: 0.82rem; }
 
 /* site theme */
 :root { --bg: #F6F2EC; --surface: #FFFFFF; --ink: #1E1B18; --muted: #675E55; --line: #E2DAD0; --accent: #0E6B6B; --accent-soft: #DDEFEC; --mint: #2E7A3A; --mint-soft: #E1F1E2; --warn: #B23F22; --warn-soft: #FBE6DE; --plum: #7A4FB0; --plum-soft: #EFE6F8; --gold: #8A5E00; --gold-soft: #FBEFD3; --coral: #D2643C; --coral-soft: #FBE4D9; --plot-bg: #FFFDFA; }
@@ -1303,7 +1332,7 @@ Pop(S)
 <canvas id="confetti" hidden></canvas>
 
 <script>
-window.SITE = {"name": "GATE DA", "key": "gateda", "path": "gate-da", "domain": "courses.rahuldevsharma.com/gate-da", "author": "Rahul Dev Sharma", "tagline": "GATE Data Science & AI, from zero", "description": "A free, interactive course for the GATE DA (Data Science and Artificial Intelligence) exam. Starts from school maths, explains every idea visually, and works through real previous-year questions.", "certTitle": ["GATE DA", "Maths, Python & DSA"], "certBody": ["answered every quiz and practice question correctly across", "GATE DA's refreshers, probability, statistics, linear algebra,", "calculus & optimization, and Python & DSA modules."], "footer_html": "      <p><b>Acknowledgement.</b> Previous-year questions are quoted from the official GATE Data Science and Artificial Intelligence (DA) papers: 2024 (organised by IISc Bengaluru), 2025 (IIT Roorkee) and 2026 (IIT Guwahati), and from the 2024 DA sample paper; one LU question is quoted from GATE CS 2025 (set 2, IIT Roorkee). Each is cited by year and question number, and every answer is checked against the official answer keys. The syllabus followed is the GATE 2027 DA syllabus (IIT Madras).</p>\n      <p><b>Disclaimer.</b> An independent study resource. The Data Premier League, its teams and all their data are fictional. Not affiliated with, reviewed by or endorsed by GATE, IISc or any IIT. Solutions and explanations are the author's own; any mistakes are the author's too.</p>", "theme": {"light": {"bg": "#F6F2EC", "surface": "#FFFFFF", "ink": "#1E1B18", "muted": "#675E55", "line": "#E2DAD0", "accent": "#0E6B6B", "accent-soft": "#DDEFEC", "mint": "#2E7A3A", "mint-soft": "#E1F1E2", "warn": "#B23F22", "warn-soft": "#FBE6DE", "plum": "#7A4FB0", "plum-soft": "#EFE6F8", "gold": "#8A5E00", "gold-soft": "#FBEFD3", "coral": "#D2643C", "coral-soft": "#FBE4D9", "plot-bg": "#FFFDFA"}, "dark": {"bg": "#14110F", "surface": "#1D1916", "ink": "#EFE8E0", "muted": "#A99D91", "line": "#342D27", "accent": "#5CC6BF", "accent-soft": "#173130", "mint": "#7FCB86", "mint-soft": "#18301B", "warn": "#F28B6B", "warn-soft": "#3A2016", "plum": "#C39BEE", "plum-soft": "#2B1F38", "gold": "#E9C25B", "gold-soft": "#33290F", "coral": "#F0916B", "coral-soft": "#3A2219", "plot-bg": "#191512"}}, "modules": [{"slug": "refreshers", "title": "Maths refreshers", "short": "Refreshers", "kind": "prereq", "blurb": "School maths, rebuilt from scratch: algebra, logs, sums, sets, derivatives, integrals and vectors. Everything the later modules lean on."}, {"slug": "probability", "title": "Probability", "short": "Probability", "kind": "", "blurb": "Counting, Bayes, random variables and the distributions GATE loves. The single biggest block of marks in the paper."}, {"slug": "statistics", "title": "Statistics", "short": "Statistics", "kind": "", "blurb": "Describing data, estimators, the Central Limit Theorem, confidence intervals and hypothesis tests (z, t and \u03c7\u00b2), built on the probability module."}, {"slug": "linear-algebra", "title": "Linear algebra", "short": "Linear algebra", "kind": "", "blurb": "Vectors, subspaces, rank, eigenvalues, projections and SVD, taught as pictures and exam shortcuts."}, {"slug": "calculus", "title": "Calculus & optimization", "short": "Calculus", "kind": "", "blurb": "Limits, continuity and differentiability, Taylor series, and finding maxima and minima: the single-variable calculus GATE DA tests, plus the optimisation ML relies on."}, {"slug": "python-dsa", "title": "Python & DSA", "short": "Python & DSA", "kind": "", "blurb": "The Python that GATE's code-tracing questions test, then complexity, searching and sorting, stacks, queues, hashing, trees and graph algorithms."}], "manifest": {"refreshers": ["r-functions-p1", "r-functions-p2", "r-functions-p3", "r-functions-p4", "r-functions/0", "r-functions/1", "r-functions/2", "r-functions/3", "r-explog-p1", "r-explog-p2", "r-explog-p3", "r-explog-p4", "r-explog/0", "r-explog/1", "r-explog/2", "r-explog/3", "r1-review/0", "r1-review/1", "r1-review/2", "r1-review/3", "r-sums-p1", "r-sums-p2", "r-sums-p3", "r-sums-p4", "r-sums/0", "r-sums/1", "r-sums/2", "r-sums/3", "r-sets-p1", "r-sets-p2", "r-sets-p3", "r-sets-p4", "r-sets/0", "r-sets/1", "r-sets/2", "r-sets/3", "r2-review/0", "r2-review/1", "r2-review/2", "r2-review/3", "r-deriv-p1", "r-deriv-p2", "r-deriv-p3", "r-deriv-p4", "r-deriv/0", "r-deriv/1", "r-deriv/2", "r-deriv/3", "r-integ-p1", "r-integ-p2", "r-integ-p3", "r-integ-p4", "r-integ/0", "r-integ/1", "r-integ/2", "r-integ/3", "r-grad-p1", "r-grad-p2", "r-grad-p3", "r-grad-p4", "r-grad/0", "r-grad/1", "r-grad/2", "r3-review/0", "r3-review/1", "r3-review/2", "r3-review/3", "r-vectors-p1", "r-vectors-p2", "r-vectors-p3", "r-vectors-p4", "r-vectors/0", "r-vectors/1", "r-vectors/2", "r-matrices-p1", "r-matrices-p2", "r-matrices-p3", "r-matrices-p4", "r-matrices/0", "r-matrices/1", "r-matrices/2", "r4-review/0", "r4-review/1", "r4-review/2", "r4-review/3", "r4-review/4"], "probability": ["pr-counting-p1", "pr-counting-p2", "pr-counting-p3", "pr-counting-p4", "pr-counting/0", "pr-counting/1", "pr-counting/2", "pr-events-p1", "pr-events-p2", "pr-events-p3", "pr-events-p4", "pr-events/0", "pr-events/1", "pr-events/2", "pr-events/3", "pr1-review/0", "pr1-review/1", "pr1-review/2", "pr1-review/3", "pr-conditional-p1", "pr-conditional-p2", "pr-conditional-p3", "pr-conditional-p4", "pr-conditional/0", "pr-conditional/1", "pr-conditional/2", "pr-bayes-p1", "pr-bayes-p2", "pr-bayes-p3", "pr-bayes-p4", "pr-bayes/0", "pr-bayes/1", "pr-bayes/2", "pr2-review/0", "pr2-review/1", "pr2-review/2", "pr-rv-p1", "pr-rv-p2", "pr-rv-p3", "pr-rv-p4", "pr-rv/0", "pr-rv/1", "pr-rv/2", "pr-expect-p1", "pr-expect-p2", "pr-expect-p3", "pr-expect-p4", "pr-expect/0", "pr-expect/1", "pr-expect/2", "pr-expect/3", "pr3-review/0", "pr3-review/1", "pr3-review/2", "pr-discrete-p1", "pr-discrete-p2", "pr-discrete-p3", "pr-discrete-p4", "pr-discrete/0", "pr-discrete/1", "pr-discrete/2", "pr-continuous-p1", "pr-continuous-p2", "pr-continuous-p3", "pr-continuous-p4", "pr-continuous/0", "pr-continuous/1", "pr-continuous/2", "pr-continuous/3", "pr4-review/0", "pr4-review/1", "pr4-review/2", "pr-joint-p1", "pr-joint-p2", "pr-joint-p3", "pr-joint-p4", "pr-joint/0", "pr-joint/1", "pr-joint/2", "pr-condexp-p1", "pr-condexp-p2", "pr-condexp-p3", "pr-condexp/0", "pr-condexp/1", "pr-condexp/2", "pr5-review/0", "pr5-review/1", "pr5-review/2", "pr5-review/3", "pr5-review/4"], "statistics": ["st-descriptive-p1", "st-descriptive-p2", "st-descriptive-p3", "st-descriptive-p4", "st-descriptive/0", "st-descriptive/1", "st-descriptive/2", "st-correlation-p1", "st-correlation-p2", "st-correlation-p3", "st-correlation-p4", "st-correlation/0", "st-correlation/1", "st-correlation/2", "st1-review/0", "st1-review/1", "st1-review/2", "st-estimators-p1", "st-estimators-p2", "st-estimators-p3", "st-estimators-p4", "st-estimators/0", "st-estimators/1", "st-estimators/2", "st-clt-p1", "st-clt-p2", "st-clt-p3", "st-clt-p4", "st-clt/0", "st-clt/1", "st-clt/2", "st2-review/0", "st2-review/1", "st2-review/2", "st-tchi-p1", "st-tchi-p2", "st-tchi-p3", "st-tchi-p4", "st-tchi/0", "st-tchi/1", "st-tchi/2", "st-ci-p1", "st-ci-p2", "st-ci-p3", "st-ci-p4", "st-ci/0", "st-ci/1", "st-ci/2", "st3-review/0", "st3-review/1", "st3-review/2", "st-tests-p1", "st-tests-p2", "st-tests-p3", "st-tests-p4", "st-tests/0", "st-tests/1", "st-tests/2", "st-ttest-chi-p1", "st-ttest-chi-p2", "st-ttest-chi-p3", "st-ttest-chi-p4", "st-ttest-chi/0", "st-ttest-chi/1", "st-ttest-chi/2", "st4-review/0", "st4-review/1", "st4-review/2", "st4-review/3", "st4-review/4"], "linear-algebra": ["la-spaces-p1", "la-spaces-p2", "la-spaces-p3", "la-spaces/0", "la-spaces/1", "la-spaces/2", "la-independence-p1", "la-independence-p2", "la-independence-p3", "la-independence-p4", "la-independence/0", "la-independence/1", "la-independence/2", "la1-review/0", "la1-review/1", "la1-review/2", "la-systems-p1", "la-systems-p2", "la-systems-p3", "la-systems-p4", "la-systems/0", "la-systems/1", "la-systems/2", "la-rank-p1", "la-rank-p2", "la-rank-p3", "la-rank-p4", "la-rank/0", "la-rank/1", "la-rank/2", "la-det-p1", "la-det-p2", "la-det-p3", "la-det-p4", "la-det/0", "la-det/1", "la-det/2", "la2-review/0", "la2-review/1", "la2-review/2", "la-eigen-p1", "la-eigen-p2", "la-eigen-p3", "la-eigen-p4", "la-eigen/0", "la-eigen/1", "la-eigen/2", "la-special-p1", "la-special-p2", "la-special-p3", "la-special-p4", "la-special/0", "la-special/1", "la-special/2", "la-quad-p1", "la-quad-p2", "la-quad-p3", "la-quad-p4", "la-quad/0", "la-quad/1", "la-quad/2", "la3-review/0", "la3-review/1", "la3-review/2", "la-lu-p1", "la-lu-p2", "la-lu-p3", "la-lu-p4", "la-lu/0", "la-lu/1", "la-lu/2", "la-svd-p1", "la-svd-p2", "la-svd-p3", "la-svd-p4", "la-svd/0", "la-svd/1", "la-svd/2", "la4-review/0", "la4-review/1", "la4-review/2", "la4-review/3", "la4-review/4"], "calculus": ["ca-limits-p1", "ca-limits-p2", "ca-limits-p3", "ca-limits-p4", "ca-limits/0", "ca-limits/1", "ca-limits/2", "ca-continuity-p1", "ca-continuity-p2", "ca-continuity-p3", "ca-continuity-p4", "ca-continuity/0", "ca-continuity/1", "ca-continuity/2", "ca1-review/0", "ca1-review/1", "ca1-review/2", "ca-taylor-p1", "ca-taylor-p2", "ca-taylor-p3", "ca-taylor-p4", "ca-taylor/0", "ca-taylor/1", "ca-taylor/2", "ca-extrema-p1", "ca-extrema-p2", "ca-extrema-p3", "ca-extrema-p4", "ca-extrema/0", "ca-extrema/1", "ca-extrema/2", "ca2-review/0", "ca2-review/1", "ca2-review/2", "ca-optim-p1", "ca-optim-p2", "ca-optim-p3", "ca-optim-p4", "ca-optim/0", "ca-optim/1", "ca-optim/2", "ca-convex-p1", "ca-convex-p2", "ca-convex-p3", "ca-convex/0", "ca-convex/1", "ca-convex/2", "ca3-review/0", "ca3-review/1", "ca3-review/2", "ca3-review/3", "ca3-review/4"], "python-dsa": ["py-basics-p1", "py-basics-p2", "py-basics-p3", "py-basics-p4", "py-basics/0", "py-basics/1", "py-basics/2", "py-functions-p1", "py-functions-p2", "py-functions-p3", "py-functions-p4", "py-functions/0", "py-functions/1", "py-functions/2", "py1-review/0", "py1-review/1", "py1-review/2", "ds-complexity-p1", "ds-complexity-p2", "ds-complexity-p3", "ds-complexity-p4", "ds-complexity/0", "ds-complexity/1", "ds-complexity/2", "ds-sorting-p1", "ds-sorting-p2", "ds-sorting-p3", "ds-sorting-p4", "ds-sorting/0", "ds-sorting/1", "ds-sorting/2", "ds-dc-p1", "ds-dc-p2", "ds-dc-p3", "ds-dc-p4", "ds-dc/0", "ds-dc/1", "ds-dc/2", "py2-review/0", "py2-review/1", "py2-review/2", "ds-linear-p1", "ds-linear-p2", "ds-linear-p3", "ds-linear-p4", "ds-linear/0", "ds-linear/1", "ds-linear/2", "ds-hashing-p1", "ds-hashing-p2", "ds-hashing-p3", "ds-hashing-p4", "ds-hashing/0", "ds-hashing/1", "ds-hashing/2", "ds-trees-p1", "ds-trees-p2", "ds-trees-p3", "ds-trees-p4", "ds-trees/0", "ds-trees/1", "ds-trees/2", "py3-review/0", "py3-review/1", "py3-review/2", "ds-graphs-p1", "ds-graphs-p2", "ds-graphs-p3", "ds-graphs-p4", "ds-graphs/0", "ds-graphs/1", "ds-graphs/2", "ds-shortest-p1", "ds-shortest-p2", "ds-shortest-p3", "ds-shortest-p4", "ds-shortest/0", "ds-shortest/1", "ds-shortest/2", "py4-review/0", "py4-review/1", "py4-review/2", "py4-review/3", "py4-review/4"]}, "module": "python-dsa", "root": "../"};
+window.SITE = {"name": "GATE DA", "key": "gateda", "path": "gate-da", "domain": "courses.rahuldevsharma.com/gate-da", "author": "Rahul Dev Sharma", "tagline": "GATE Data Science & AI, from zero", "description": "A free, interactive course for the GATE DA (Data Science and Artificial Intelligence) exam. Starts from school maths, explains every idea visually, and works through real previous-year questions.", "certTitle": ["GATE DA", "Maths, Python, DSA & databases"], "certBody": ["answered every quiz and practice question correctly across", "GATE DA's refreshers, probability, statistics, linear algebra,", "calculus & optimization, Python & DSA, and databases modules."], "footer_html": "      <p><b>Acknowledgement.</b> Previous-year questions are quoted from the official GATE Data Science and Artificial Intelligence (DA) papers: 2024 (organised by IISc Bengaluru), 2025 (IIT Roorkee) and 2026 (IIT Guwahati), and from the 2024 DA sample paper; one LU question is quoted from GATE CS 2025 (set 2, IIT Roorkee). Each is cited by year and question number, and every answer is checked against the official answer keys. The syllabus followed is the GATE 2027 DA syllabus (IIT Madras).</p>\n      <p><b>Disclaimer.</b> An independent study resource. The Data Premier League, its teams and all their data are fictional. Not affiliated with, reviewed by or endorsed by GATE, IISc or any IIT. Solutions and explanations are the author's own; any mistakes are the author's too.</p>", "theme": {"light": {"bg": "#F6F2EC", "surface": "#FFFFFF", "ink": "#1E1B18", "muted": "#675E55", "line": "#E2DAD0", "accent": "#0E6B6B", "accent-soft": "#DDEFEC", "mint": "#2E7A3A", "mint-soft": "#E1F1E2", "warn": "#B23F22", "warn-soft": "#FBE6DE", "plum": "#7A4FB0", "plum-soft": "#EFE6F8", "gold": "#8A5E00", "gold-soft": "#FBEFD3", "coral": "#D2643C", "coral-soft": "#FBE4D9", "plot-bg": "#FFFDFA"}, "dark": {"bg": "#14110F", "surface": "#1D1916", "ink": "#EFE8E0", "muted": "#A99D91", "line": "#342D27", "accent": "#5CC6BF", "accent-soft": "#173130", "mint": "#7FCB86", "mint-soft": "#18301B", "warn": "#F28B6B", "warn-soft": "#3A2016", "plum": "#C39BEE", "plum-soft": "#2B1F38", "gold": "#E9C25B", "gold-soft": "#33290F", "coral": "#F0916B", "coral-soft": "#3A2219", "plot-bg": "#191512"}}, "modules": [{"slug": "refreshers", "title": "Maths refreshers", "short": "Refreshers", "kind": "prereq", "blurb": "School maths, rebuilt from scratch: algebra, logs, sums, sets, derivatives, integrals and vectors. Everything the later modules lean on."}, {"slug": "probability", "title": "Probability", "short": "Probability", "kind": "", "blurb": "Counting, Bayes, random variables and the distributions GATE loves. The single biggest block of marks in the paper."}, {"slug": "statistics", "title": "Statistics", "short": "Statistics", "kind": "", "blurb": "Describing data, estimators, the Central Limit Theorem, confidence intervals and hypothesis tests (z, t and \u03c7\u00b2), built on the probability module."}, {"slug": "linear-algebra", "title": "Linear algebra", "short": "Linear algebra", "kind": "", "blurb": "Vectors, subspaces, rank, eigenvalues, projections and SVD, taught as pictures and exam shortcuts."}, {"slug": "calculus", "title": "Calculus & optimization", "short": "Calculus", "kind": "", "blurb": "Limits, continuity and differentiability, Taylor series, and finding maxima and minima: the single-variable calculus GATE DA tests, plus the optimisation ML relies on."}, {"slug": "python-dsa", "title": "Python & DSA", "short": "Python & DSA", "kind": "", "blurb": "The Python that GATE's code-tracing questions test, then complexity, searching and sorting, stacks, queues, hashing, trees and graph algorithms."}, {"slug": "dbms", "title": "Databases & warehousing", "short": "Databases", "kind": "", "blurb": "ER design, relational algebra, tuple calculus, SQL, functional dependencies and normal forms, B+ tree indexes, data transformation and OLAP cubes, all on the league's own tables."}], "manifest": {"refreshers": ["r-functions-p1", "r-functions-p2", "r-functions-p3", "r-functions-p4", "r-functions/0", "r-functions/1", "r-functions/2", "r-functions/3", "r-explog-p1", "r-explog-p2", "r-explog-p3", "r-explog-p4", "r-explog/0", "r-explog/1", "r-explog/2", "r-explog/3", "r1-review/0", "r1-review/1", "r1-review/2", "r1-review/3", "r-sums-p1", "r-sums-p2", "r-sums-p3", "r-sums-p4", "r-sums/0", "r-sums/1", "r-sums/2", "r-sums/3", "r-sets-p1", "r-sets-p2", "r-sets-p3", "r-sets-p4", "r-sets/0", "r-sets/1", "r-sets/2", "r-sets/3", "r2-review/0", "r2-review/1", "r2-review/2", "r2-review/3", "r-deriv-p1", "r-deriv-p2", "r-deriv-p3", "r-deriv-p4", "r-deriv/0", "r-deriv/1", "r-deriv/2", "r-deriv/3", "r-integ-p1", "r-integ-p2", "r-integ-p3", "r-integ-p4", "r-integ/0", "r-integ/1", "r-integ/2", "r-integ/3", "r-grad-p1", "r-grad-p2", "r-grad-p3", "r-grad-p4", "r-grad/0", "r-grad/1", "r-grad/2", "r3-review/0", "r3-review/1", "r3-review/2", "r3-review/3", "r-vectors-p1", "r-vectors-p2", "r-vectors-p3", "r-vectors-p4", "r-vectors/0", "r-vectors/1", "r-vectors/2", "r-matrices-p1", "r-matrices-p2", "r-matrices-p3", "r-matrices-p4", "r-matrices/0", "r-matrices/1", "r-matrices/2", "r4-review/0", "r4-review/1", "r4-review/2", "r4-review/3", "r4-review/4"], "probability": ["pr-counting-p1", "pr-counting-p2", "pr-counting-p3", "pr-counting-p4", "pr-counting/0", "pr-counting/1", "pr-counting/2", "pr-events-p1", "pr-events-p2", "pr-events-p3", "pr-events-p4", "pr-events/0", "pr-events/1", "pr-events/2", "pr-events/3", "pr1-review/0", "pr1-review/1", "pr1-review/2", "pr1-review/3", "pr-conditional-p1", "pr-conditional-p2", "pr-conditional-p3", "pr-conditional-p4", "pr-conditional/0", "pr-conditional/1", "pr-conditional/2", "pr-bayes-p1", "pr-bayes-p2", "pr-bayes-p3", "pr-bayes-p4", "pr-bayes/0", "pr-bayes/1", "pr-bayes/2", "pr2-review/0", "pr2-review/1", "pr2-review/2", "pr-rv-p1", "pr-rv-p2", "pr-rv-p3", "pr-rv-p4", "pr-rv/0", "pr-rv/1", "pr-rv/2", "pr-expect-p1", "pr-expect-p2", "pr-expect-p3", "pr-expect-p4", "pr-expect/0", "pr-expect/1", "pr-expect/2", "pr-expect/3", "pr3-review/0", "pr3-review/1", "pr3-review/2", "pr-discrete-p1", "pr-discrete-p2", "pr-discrete-p3", "pr-discrete-p4", "pr-discrete/0", "pr-discrete/1", "pr-discrete/2", "pr-continuous-p1", "pr-continuous-p2", "pr-continuous-p3", "pr-continuous-p4", "pr-continuous/0", "pr-continuous/1", "pr-continuous/2", "pr-continuous/3", "pr4-review/0", "pr4-review/1", "pr4-review/2", "pr-joint-p1", "pr-joint-p2", "pr-joint-p3", "pr-joint-p4", "pr-joint/0", "pr-joint/1", "pr-joint/2", "pr-condexp-p1", "pr-condexp-p2", "pr-condexp-p3", "pr-condexp/0", "pr-condexp/1", "pr-condexp/2", "pr5-review/0", "pr5-review/1", "pr5-review/2", "pr5-review/3", "pr5-review/4"], "statistics": ["st-descriptive-p1", "st-descriptive-p2", "st-descriptive-p3", "st-descriptive-p4", "st-descriptive/0", "st-descriptive/1", "st-descriptive/2", "st-correlation-p1", "st-correlation-p2", "st-correlation-p3", "st-correlation-p4", "st-correlation/0", "st-correlation/1", "st-correlation/2", "st1-review/0", "st1-review/1", "st1-review/2", "st-estimators-p1", "st-estimators-p2", "st-estimators-p3", "st-estimators-p4", "st-estimators/0", "st-estimators/1", "st-estimators/2", "st-clt-p1", "st-clt-p2", "st-clt-p3", "st-clt-p4", "st-clt/0", "st-clt/1", "st-clt/2", "st2-review/0", "st2-review/1", "st2-review/2", "st-tchi-p1", "st-tchi-p2", "st-tchi-p3", "st-tchi-p4", "st-tchi/0", "st-tchi/1", "st-tchi/2", "st-ci-p1", "st-ci-p2", "st-ci-p3", "st-ci-p4", "st-ci/0", "st-ci/1", "st-ci/2", "st3-review/0", "st3-review/1", "st3-review/2", "st-tests-p1", "st-tests-p2", "st-tests-p3", "st-tests-p4", "st-tests/0", "st-tests/1", "st-tests/2", "st-ttest-chi-p1", "st-ttest-chi-p2", "st-ttest-chi-p3", "st-ttest-chi-p4", "st-ttest-chi/0", "st-ttest-chi/1", "st-ttest-chi/2", "st4-review/0", "st4-review/1", "st4-review/2", "st4-review/3", "st4-review/4"], "linear-algebra": ["la-spaces-p1", "la-spaces-p2", "la-spaces-p3", "la-spaces/0", "la-spaces/1", "la-spaces/2", "la-independence-p1", "la-independence-p2", "la-independence-p3", "la-independence-p4", "la-independence/0", "la-independence/1", "la-independence/2", "la1-review/0", "la1-review/1", "la1-review/2", "la-systems-p1", "la-systems-p2", "la-systems-p3", "la-systems-p4", "la-systems/0", "la-systems/1", "la-systems/2", "la-rank-p1", "la-rank-p2", "la-rank-p3", "la-rank-p4", "la-rank/0", "la-rank/1", "la-rank/2", "la-det-p1", "la-det-p2", "la-det-p3", "la-det-p4", "la-det/0", "la-det/1", "la-det/2", "la2-review/0", "la2-review/1", "la2-review/2", "la-eigen-p1", "la-eigen-p2", "la-eigen-p3", "la-eigen-p4", "la-eigen/0", "la-eigen/1", "la-eigen/2", "la-special-p1", "la-special-p2", "la-special-p3", "la-special-p4", "la-special/0", "la-special/1", "la-special/2", "la-quad-p1", "la-quad-p2", "la-quad-p3", "la-quad-p4", "la-quad/0", "la-quad/1", "la-quad/2", "la3-review/0", "la3-review/1", "la3-review/2", "la-lu-p1", "la-lu-p2", "la-lu-p3", "la-lu-p4", "la-lu/0", "la-lu/1", "la-lu/2", "la-svd-p1", "la-svd-p2", "la-svd-p3", "la-svd-p4", "la-svd/0", "la-svd/1", "la-svd/2", "la4-review/0", "la4-review/1", "la4-review/2", "la4-review/3", "la4-review/4"], "calculus": ["ca-limits-p1", "ca-limits-p2", "ca-limits-p3", "ca-limits-p4", "ca-limits/0", "ca-limits/1", "ca-limits/2", "ca-continuity-p1", "ca-continuity-p2", "ca-continuity-p3", "ca-continuity-p4", "ca-continuity/0", "ca-continuity/1", "ca-continuity/2", "ca1-review/0", "ca1-review/1", "ca1-review/2", "ca-taylor-p1", "ca-taylor-p2", "ca-taylor-p3", "ca-taylor-p4", "ca-taylor/0", "ca-taylor/1", "ca-taylor/2", "ca-extrema-p1", "ca-extrema-p2", "ca-extrema-p3", "ca-extrema-p4", "ca-extrema/0", "ca-extrema/1", "ca-extrema/2", "ca2-review/0", "ca2-review/1", "ca2-review/2", "ca-optim-p1", "ca-optim-p2", "ca-optim-p3", "ca-optim-p4", "ca-optim/0", "ca-optim/1", "ca-optim/2", "ca-convex-p1", "ca-convex-p2", "ca-convex-p3", "ca-convex/0", "ca-convex/1", "ca-convex/2", "ca3-review/0", "ca3-review/1", "ca3-review/2", "ca3-review/3", "ca3-review/4"], "python-dsa": ["py-basics-p1", "py-basics-p2", "py-basics-p3", "py-basics-p4", "py-basics/0", "py-basics/1", "py-basics/2", "py-functions-p1", "py-functions-p2", "py-functions-p3", "py-functions-p4", "py-functions/0", "py-functions/1", "py-functions/2", "py1-review/0", "py1-review/1", "py1-review/2", "ds-complexity-p1", "ds-complexity-p2", "ds-complexity-p3", "ds-complexity-p4", "ds-complexity/0", "ds-complexity/1", "ds-complexity/2", "ds-sorting-p1", "ds-sorting-p2", "ds-sorting-p3", "ds-sorting-p4", "ds-sorting/0", "ds-sorting/1", "ds-sorting/2", "ds-dc-p1", "ds-dc-p2", "ds-dc-p3", "ds-dc-p4", "ds-dc/0", "ds-dc/1", "ds-dc/2", "py2-review/0", "py2-review/1", "py2-review/2", "ds-linear-p1", "ds-linear-p2", "ds-linear-p3", "ds-linear-p4", "ds-linear/0", "ds-linear/1", "ds-linear/2", "ds-hashing-p1", "ds-hashing-p2", "ds-hashing-p3", "ds-hashing-p4", "ds-hashing/0", "ds-hashing/1", "ds-hashing/2", "ds-trees-p1", "ds-trees-p2", "ds-trees-p3", "ds-trees-p4", "ds-trees/0", "ds-trees/1", "ds-trees/2", "py3-review/0", "py3-review/1", "py3-review/2", "ds-graphs-p1", "ds-graphs-p2", "ds-graphs-p3", "ds-graphs-p4", "ds-graphs/0", "ds-graphs/1", "ds-graphs/2", "ds-shortest-p1", "ds-shortest-p2", "ds-shortest-p3", "ds-shortest-p4", "ds-shortest/0", "ds-shortest/1", "ds-shortest/2", "py4-review/0", "py4-review/1", "py4-review/2", "py4-review/3", "py4-review/4"], "dbms": ["db-relational-p1", "db-relational-p2", "db-relational-p3", "db-relational-p4", "db-relational/0", "db-relational/1", "db-relational/2", "db-er-p1", "db-er-p2", "db-er-p3", "db-er-p4", "db-er/0", "db-er/1", "db-er/2", "db1-review/0", "db1-review/1", "db1-review/2", "db1-review/3", "db-algebra-p1", "db-algebra-p2", "db-algebra-p3", "db-algebra-p4", "db-algebra-p5", "db-algebra/0", "db-algebra/1", "db-algebra/2", "db-trc-p1", "db-trc-p2", "db-trc-p3", "db-trc-p4", "db2-review/0", "db2-review/1", "db2-review/2", "db2-review/3", "db-sql-p1", "db-sql-p2", "db-sql-p3", "db-sql-p4", "db-sql/0", "db-sql/1", "db-sql/2", "db-subq-p1", "db-subq-p2", "db-subq-p3", "db-subq-p4", "db-subq/0", "db-subq/1", "db-subq/2", "db3-review/0", "db3-review/1", "db3-review/2", "db3-review/3", "db-fd-p1", "db-fd-p2", "db-fd-p3", "db-fd-p4", "db-fd/0", "db-fd/1", "db-fd/2", "db-nf-p1", "db-nf-p2", "db-nf-p3", "db-nf-p4", "db-nf/0", "db-nf/1", "db-nf/2", "db4-review/0", "db4-review/1", "db4-review/2", "db4-review/3", "db-index-p1", "db-index-p2", "db-index-p3", "db-index-p4", "db-index/0", "db-index/1", "db-index/2", "db-transform-p1", "db-transform-p2", "db-transform-p3", "db-transform-p4", "db-transform/0", "db-transform/1", "db-transform/2", "db-olap-p1", "db-olap-p2", "db-olap-p3", "db-olap-p4", "db-olap/0", "db-olap/1", "db-olap/2", "db5-review/0", "db5-review/1", "db5-review/2", "db5-review/3"]}, "module": "python-dsa", "root": "../"};
 /* ---- expr.js ---- */
 /* Safe expression parser: no eval. Grammar (precedence low → high):
    sum := prod (('+'|'-') prod)* ; prod := unary (('*'|'/'| implicit) unary)* ; unary := '-' unary | pow ; pow := atom ('^' unary)?
@@ -2745,6 +2774,641 @@ window.SITE = {"name": "GATE DA", "key": "gateda", "path": "gate-da", "domain": 
         "<br><span class='k'>current x</span> " + fmt(x, 4) + ", f′(x) = " + fmt(o.d(x), 4) + " (" + path.length + " steps)" + (k === 1 ? "<br>eˣ is convex but has no minimum: the steps keep heading left." : "");
     };
     p.redraw();
+  };
+})();
+
+/* ---- w_db.js ---- */
+/* Databases & warehousing widgets (db_*). Tables are plain HTML (class .dbt); trees and number lines use DH.Plot. */
+(function () {
+  "use strict";
+  var DH = window.DH, W = DH.W, h = DH.h, col = DH.col;
+
+  function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); }
+  function cell(v) { return v === null || v === undefined ? "<td class='null'>NULL</td>" : "<td>" + esc(v) + "</td>"; }
+  /* rel = {name, cols, rows (arrays), pk: [col indexes]}; opt.cls(i) → row class; opt.extra = [{head, val(i)}] */
+  function tbl(rel, opt) {
+    opt = opt || {};
+    var s = "<div class='dbscroll" + (opt.tall ? " tall" : "") + "'><table class='dbt'>";
+    if (rel.name) s += "<caption>" + esc(rel.name) + (opt.count === false ? "" : " <span class='dbn'>(" + rel.rows.length + " row" + (rel.rows.length === 1 ? "" : "s") + ")</span>") + "</caption>";
+    s += "<thead><tr>" + rel.cols.map(function (c, j) { return "<th" + (rel.pk && rel.pk.indexOf(j) >= 0 ? " class='pk'" : "") + ">" + esc(c) + "</th>"; }).join("");
+    (opt.extra || []).forEach(function (x) { s += "<th class='xh'>" + esc(x.head) + "</th>"; });
+    s += "</tr></thead><tbody>";
+    rel.rows.forEach(function (r, i) {
+      var c = opt.cls ? opt.cls(i, r) : "";
+      s += "<tr" + (c ? " class='" + c + "'" : "") + ">" + r.map(cell).join("");
+      (opt.extra || []).forEach(function (x) { s += "<td class='xv'>" + x.val(i, r) + "</td>"; });
+      s += "</tr>";
+    });
+    if (!rel.rows.length) s += "<tr><td class='null' colspan='" + (rel.cols.length + (opt.extra || []).length) + "'>(empty)</td></tr>";
+    return s + "</tbody></table></div>";
+  }
+  function same(a, b) { return a.length === b.length && a.every(function (x, i) { return x === b[i]; }); }
+  function dedupe(rows) { var seen = {}, out = []; rows.forEach(function (r) { var k = JSON.stringify(r); if (!seen[k]) { seen[k] = 1; out.push(r); } }); return out; }
+  function nav(parent, onPrev, onNext, onReset) {
+    var b = h("div", { class: "btns" }); parent.appendChild(b);
+    return { prev: DH.button(b, "Back", onPrev, "chip"), next: DH.button(b, "Next step", onNext), reset: DH.button(b, "Restart", onReset, "ghost") };
+  }
+
+  /* ---------- relational algebra kernel ---------- */
+  var RA = {
+    select: function (r, f, name) { return { name: name, cols: r.cols, rows: r.rows.filter(function (row) { return f(rowObj(r, row)); }) }; },
+    project: function (r, cs, name) { var ix = cs.map(function (c) { return r.cols.indexOf(c); }); return { name: name, cols: cs, rows: dedupe(r.rows.map(function (row) { return ix.map(function (i) { return row[i]; }); })) }; },
+    product: function (r, s, name) {
+      var cols = r.cols.map(function (c) { return s.cols.indexOf(c) >= 0 ? r.short + "." + c : c; }).concat(s.cols.map(function (c) { return r.cols.indexOf(c) >= 0 ? s.short + "." + c : c; }));
+      var rows = []; r.rows.forEach(function (a) { s.rows.forEach(function (b) { rows.push(a.concat(b)); }); });
+      return { name: name, cols: cols, rows: rows };
+    },
+    njoin: function (r, s, name) {
+      var com = r.cols.filter(function (c) { return s.cols.indexOf(c) >= 0; });
+      var extra = s.cols.filter(function (c) { return com.indexOf(c) < 0; });
+      var rows = [];
+      r.rows.forEach(function (a) { s.rows.forEach(function (b) {
+        if (com.every(function (c) { var x = a[r.cols.indexOf(c)], y = b[s.cols.indexOf(c)]; return x !== null && x === y; }))
+          rows.push(a.concat(extra.map(function (c) { return b[s.cols.indexOf(c)]; })));
+      }); });
+      return { name: name, cols: r.cols.concat(extra), rows: rows };
+    },
+    minus: function (r, s, name) { var k = {}; s.rows.forEach(function (x) { k[JSON.stringify(x)] = 1; }); return { name: name, cols: r.cols, rows: r.rows.filter(function (x) { return !k[JSON.stringify(x)]; }) }; }
+  };
+  function rowObj(r, row) { var o = {}; r.cols.forEach(function (c, i) { o[c] = row[i]; }); return o; }
+
+  /* DPL sample tables shared by several widgets */
+  var PLAYER = { name: "Player", short: "Player", cols: ["pid", "name", "team"], pk: [0], rows: [["P1", "Aarav", "KK"], ["P2", "Diya", "KK"], ["P3", "Kabir", "HH"], ["P4", "Meera", "BB"], ["P5", "Rohan", "NN"], ["P6", "Sana", "BB"]] };
+  var TEAM = { name: "Team", short: "Team", cols: ["team", "city"], pk: [0], rows: [["KK", "Bhubaneswar"], ["HH", "Gurugram"], ["BB", "Bengaluru"], ["NN", "Nagpur"], ["HY", "Hyderabad"]] };
+  var PLAYS = { name: "Plays", short: "Plays", cols: ["pid", "ground"], pk: [0, 1], rows: [["P1", "North Oval"], ["P1", "River Park"], ["P1", "Hill Top"], ["P3", "North Oval"], ["P3", "Hill Top"], ["P4", "North Oval"], ["P4", "River Park"], ["P4", "Hill Top"], ["P5", "River Park"]] };
+  var GROUND = { name: "Ground", short: "Ground", cols: ["ground"], pk: [0], rows: [["North Oval"], ["River Park"], ["Hill Top"]] };
+  var TEAMNOTE = "<p class='whint'>Team codes: KK Kalinga Kernels, HH Haryana Heuristics, BB Bengaluru Backprops, NN Nagpur Neural Nets, HY Hyderabad Hyperplanes.</p>";
+
+  /* ---------- 1.1 integrity constraints ---------- */
+  W.db_keys = function (el) {
+    var teams, players, policy = 0, mark = null;
+    var PEOPLE = [["P1", "Aarav", "Kalinga Kernels"], ["P2", "Diya", "Kalinga Kernels"], ["P3", "Kabir", "Haryana Heuristics"], ["P4", "Meera", "Bengaluru Backprops"], ["P5", "Rohan", "Nagpur Neural Nets"], ["P6", "Sana", "Nagpur Neural Nets"]];
+    function reset() {
+      teams = [["Kalinga Kernels", "Bhubaneswar"], ["Haryana Heuristics", "Gurugram"], ["Bengaluru Backprops", "Bengaluru"], ["Nagpur Neural Nets", "Nagpur"], ["Hyderabad Hyperplanes", "Hyderabad"]];
+      players = PEOPLE.map(function (r) { return r.slice(); }); mark = null; msg("Pick an operation. Each one is checked against the three constraints before it is applied.", "");
+    }
+    DH.chips(el, ["ON DELETE RESTRICT", "ON DELETE CASCADE", "ON DELETE SET NULL"], function (i) { policy = i; draw(); }, 0);
+    var OPS = [
+      ["Insert Player (P7, Isha, Bengaluru Backprops)", function () { insP(["P7", "Isha", "Bengaluru Backprops"]); }],
+      ["Insert Player (P8, Vikram, Chennai Classifiers)", function () { insP(["P8", "Vikram", "Chennai Classifiers"]); }],
+      ["Insert Team (Chennai Classifiers, Chennai)", function () { insT(["Chennai Classifiers", "Chennai"]); }],
+      ["Insert Player (P1, Kiran, Kalinga Kernels)", function () { insP(["P1", "Kiran", "Kalinga Kernels"]); }],
+      ["Insert Player (NULL, Tara, Haryana Heuristics)", function () { insP([null, "Tara", "Haryana Heuristics"]); }],
+      ["Delete Player P6", function () { delP("P6"); }],
+      ["Delete Team Nagpur Neural Nets", function () { delT("Nagpur Neural Nets"); }],
+      ["Delete Team Hyderabad Hyperplanes", function () { delT("Hyderabad Hyperplanes"); }]
+    ];
+    var sel = h("select", { "aria-label": "Operation" }); OPS.forEach(function (o, i) { sel.appendChild(h("option", { value: i }, esc(o[0]))); });
+    var f = h("label", { class: "wfield" }, "<span>Operation</span>"); f.appendChild(sel); el.appendChild(f);
+    var bt = h("div", { class: "btns" }); el.appendChild(bt);
+    DH.button(bt, "Apply", function () { OPS[+sel.value][1](); draw(); });
+    DH.button(bt, "Reset tables", function () { reset(); draw(); }, "ghost");
+    var rd = DH.readout(el), box = h("div", { class: "dbwrap" }); el.appendChild(box);
+    var note = "";
+    function msg(t, cls) { note = cls ? "<span class='" + cls + "'>" + t + "</span>" : t; }
+    function insP(r) {
+      if (r[0] === null) { mark = null; return msg("Rejected (entity integrity): the primary key pid cannot be NULL.", "bad"); }
+      if (players.some(function (p) { return p[0] === r[0]; })) { mark = { t: "P", k: r[0], c: "bad" }; return msg("Rejected (key constraint): pid " + r[0] + " already exists, and a primary key must be unique.", "bad"); }
+      if (r[2] !== null && !teams.some(function (t) { return t[0] === r[2]; })) { mark = null; return msg("Rejected (referential integrity): Player.team references Team, and there is no team '" + r[2] + "'. Insert the team first.", "bad"); }
+      players.push(r); mark = { t: "P", k: r[0], c: "new" }; msg("Accepted: new pid, and the team it references exists.", "good");
+    }
+    function insT(r) {
+      if (teams.some(function (t) { return t[0] === r[0]; })) { mark = { t: "T", k: r[0], c: "bad" }; return msg("Rejected (key constraint): that team already exists.", "bad"); }
+      teams.push(r); mark = { t: "T", k: r[0], c: "new" }; msg("Accepted. Inserting into the referenced table can never break a foreign key: nothing points to the new row yet.", "good");
+    }
+    function delP(k) {
+      if (!players.some(function (p) { return p[0] === k; })) { mark = null; return msg("Nothing to delete: " + k + " is not in Player.", ""); }
+      players = players.filter(function (p) { return p[0] !== k; }); mark = null; msg("Accepted. Deleting from the referencing table can never break a foreign key: you only remove pointers.", "good");
+    }
+    function delT(k) {
+      if (!teams.some(function (t) { return t[0] === k; })) { mark = null; return msg("Nothing to delete: that team is not in Team.", ""); }
+      var refs = players.filter(function (p) { return p[2] === k; });
+      if (!refs.length) { teams = teams.filter(function (t) { return t[0] !== k; }); mark = null; return msg("Accepted: no player references " + k + ".", "good"); }
+      var ids = refs.map(function (p) { return p[0]; }).join(", ");
+      if (policy === 0) { mark = { t: "T", k: k, c: "bad" }; return msg("Rejected (referential integrity, RESTRICT): " + ids + " still reference this team.", "bad"); }
+      teams = teams.filter(function (t) { return t[0] !== k; });
+      if (policy === 1) { players = players.filter(function (p) { return p[2] !== k; }); mark = null; return msg("Accepted with CASCADE: the team and the players referencing it (" + ids + ") were deleted.", "good"); }
+      players.forEach(function (p) { if (p[2] === k) p[2] = null; }); mark = { t: "P", k: refs[0][0], c: "new" }; msg("Accepted with SET NULL: " + ids + " now have team = NULL (allowed only if the column is nullable).", "good");
+    }
+    function draw() {
+      var T = { name: "Team", cols: ["team", "city"], pk: [0], rows: teams }, P = { name: "Player", cols: ["pid", "name", "team → Team"], pk: [0], rows: players };
+      box.innerHTML = tbl(T, { cls: function (i, r) { return mark && mark.t === "T" && mark.k === r[0] ? mark.c : ""; } }) + tbl(P, { cls: function (i, r) { return mark && mark.t === "P" && (mark.k === r[0] || (mark.c === "new" && r[2] === null && note.indexOf("SET NULL") >= 0)) ? mark.c : ""; } });
+      rd.innerHTML = note;
+    }
+    reset(); draw();
+  };
+
+  /* ---------- 1.2 ER → relations ---------- */
+  W.db_er = function (el) {
+    var card = 2, totP = true, totS = true, multi = true, attr = false;
+    el.appendChild(h("p", { class: "whint" }, "Entities: <b>Player</b>(<u>pid</u>, name, role) and <b>Sponsor</b>(<u>sid</u>, sname, phone). Relationship: <b>Endorses</b>."));
+    var c1 = h("div", { class: "wfield" }, "<span>Cardinality of Endorses (Player : Sponsor)</span>"); el.appendChild(c1);
+    DH.chips(c1, ["1 : 1", "N : 1 (many players, one sponsor each)", "M : N"], function (i) { card = i; draw(); }, 2);
+    var c2 = h("div", { class: "wfield" }, "<span>Participation</span>"); el.appendChild(c2);
+    var b2 = h("div", { class: "btns" }); c2.appendChild(b2);
+    var tp = DH.button(b2, "", function () { totP = !totP; draw(); }, "chip"), ts = DH.button(b2, "", function () { totS = !totS; draw(); }, "chip");
+    var c3 = h("div", { class: "wfield" }, "<span>Attributes</span>"); el.appendChild(c3);
+    var b3 = h("div", { class: "btns" }); c3.appendChild(b3);
+    var tm = DH.button(b3, "", function () { multi = !multi; draw(); }, "chip"), ta = DH.button(b3, "", function () { attr = !attr; draw(); }, "chip");
+    var out = h("div", { class: "dbschema" }); el.appendChild(out); var rd = DH.readout(el);
+    function rel(n, a, why) { return "<li><b>" + n + "</b>(" + a + ")<span class='why'>" + why + "</span></li>"; }
+    function draw() {
+      tp.textContent = "Player: " + (totP ? "total" : "partial"); tp.classList.toggle("on", totP);
+      ts.textContent = "Sponsor: " + (totS ? "total" : "partial"); ts.classList.toggle("on", totS);
+      tm.textContent = "phone is multivalued: " + (multi ? "yes" : "no"); tm.classList.toggle("on", multi);
+      ta.textContent = "Endorses has attribute fee: " + (attr ? "yes" : "no"); ta.classList.toggle("on", attr);
+      var L = [], fee = attr ? ", fee" : "", notes = [];
+      var sp = multi ? "<u>sid</u>, sname" : "<u>sid</u>, sname, phone";
+      var phone = multi ? rel("SponsorPhone", "<u>sid</u>, <u>phone</u>", "a multivalued attribute gets its own relation; key = owner's key + the value") : "";
+      if (card === 2) {
+        L.push(rel("Player", "<u>pid</u>, name, role", "strong entity"), rel("Sponsor", sp, "strong entity"));
+        if (phone) L.push(phone);
+        L.push(rel("Endorses", "<u>pid</u>, <u>sid</u>" + fee, "M : N always needs its own relation; key = both keys"));
+        notes.push("Total participation does not remove the Endorses relation for M : N; it only means every pid (or sid) must appear in it.");
+      } else if (card === 1) {
+        L.push(rel("Player", "<u>pid</u>, name, role, sid" + fee, "N side absorbs the relationship: sid is a foreign key" + (totP ? " (NOT NULL, since participation is total)" : " (nullable, since participation is partial)")), rel("Sponsor", sp, "strong entity"));
+        if (phone) L.push(phone);
+        notes.push("Each player has at most one sponsor, so the relationship is a column on Player: no separate table needed.");
+      } else {
+        if (totP && totS) {
+          L.push(rel("PlayerSponsor", "<u>pid</u>, name, role, sid, sname" + (multi ? "" : ", phone") + fee, "1 : 1 with total participation on both sides: merge into one relation (sid is also a candidate key)"));
+          if (phone) L.push(phone);
+          notes.push("Every player has exactly one sponsor and vice versa, so the two entities can share one table.");
+        } else {
+          var onP = totP || !totS;
+          L.push(rel("Player", "<u>pid</u>, name, role" + (onP ? ", sid (UNIQUE)" + fee : ""), onP ? "foreign key placed on the side with total participation" : "strong entity"), rel("Sponsor", sp + (!onP ? ", pid (UNIQUE)" + fee : ""), !onP ? "foreign key placed on the side with total participation" : "strong entity"));
+          if (phone) L.push(phone);
+          notes.push("1 : 1: put a UNIQUE foreign key on one side (preferably the total side, so it is never NULL).");
+        }
+      }
+      out.innerHTML = "<ul>" + L.join("") + "</ul>";
+      rd.innerHTML = "<span class='k'>relations needed</span> <b>" + L.length + "</b><br>" + notes.join("<br>");
+    }
+    draw();
+  };
+
+  /* ---------- 2.1 relational algebra stepper ---------- */
+  W.db_ra = function (el) {
+    var P = PLAYER, T = TEAM, PL = PLAYS, G = GROUND;
+    function steps(k) {
+      if (k === 0) {
+        var r = RA.select(P, function (o) { return o.team === "KK"; }, "σ team='KK' (Player)");
+        return [{ e: "Player", rel: P, cls: function (i, row) { return row[2] === "KK" ? "hit" : "miss"; }, n: "σ keeps the rows that satisfy the condition (highlighted) and drops the rest. Columns are untouched." }, { e: r.name, rel: r, n: "Selection never increases the row count: 0 ≤ |σ(R)| ≤ |R|." }];
+      }
+      if (k === 1) {
+        var pr = RA.project(P, ["team"], "π team (Player)");
+        return [{ e: "Player", rel: P, n: "π keeps only the listed columns. Six rows have only four distinct team values." }, { e: pr.name, rel: pr, n: "Relations are sets, so π removes duplicates: 6 rows in, " + pr.rows.length + " rows out. (SQL's SELECT keeps duplicates unless you write DISTINCT.)" }];
+      }
+      if (k === 2) {
+        var x = RA.product(P, T, "Player × Team"), s = RA.select(x, function (o) { return o["Player.team"] === o["Team.team"]; }, "σ Player.team = Team.team (Player × Team)"), j = RA.njoin(P, T, "Player ⋈ Team");
+        return [{ e: x.name, rel: x, tall: true, cls: function (i, row) { return row[2] === row[3] ? "hit" : ""; }, n: "The Cartesian product pairs every Player row with every Team row: 6 × 5 = 30 rows, 3 + 2 = 5 columns. Only the highlighted pairs match." },
+          { e: s.name, rel: s, n: "Selecting the matching pairs leaves 6 rows (each player meets their own team). HY has no players, so it disappears." },
+          { e: j.name, rel: j, n: "A natural join does both steps at once and keeps a single copy of the common column team: 4 columns." }];
+      }
+      if (k === 3) {
+        var st = RA.select(T, function (o) { return o.city === "Bengaluru"; }, "σ city='Bengaluru' (Team)"), jj = RA.njoin(P, st, "Player ⋈ σ city='Bengaluru' (Team)"), pp = RA.project(jj, ["name"], "π name (Player ⋈ σ city='Bengaluru' (Team))");
+        return [{ e: st.name, rel: st, n: "Filter early: only one team plays in Bengaluru." }, { e: jj.name, rel: jj, n: "Join the players to that one team." }, { e: pp.name, rel: pp, n: "Project the names: Meera and Sana." }];
+      }
+      if (k === 4) {
+        var a = RA.project(P, ["pid"], "π pid (Player)"), b = RA.project(RA.select(PL, function (o) { return o.ground === "Hill Top"; }), ["pid"], "π pid (σ ground='Hill Top' (Plays))"), d = RA.minus(a, b, "π pid (Player) − π pid (σ ground='Hill Top' (Plays))");
+        return [{ e: a.name, rel: a, n: "All player ids." }, { e: b.name, rel: b, n: "Ids that have played at Hill Top." }, { e: d.name, rel: d, n: "Set difference: players who have never played at Hill Top. Both sides must have the same columns (union-compatible)." }];
+      }
+      var A = RA.project(PL, ["pid"], "A = π pid (Plays)");
+      var AG = RA.product(A, G, "A × Ground"); AG.cols = ["pid", "ground"];
+      var miss = RA.minus(AG, PL, "(A × Ground) − Plays");
+      var bad = RA.project(miss, ["pid"], "π pid ((A × Ground) − Plays)");
+      var res = RA.minus(A, bad, "Plays ÷ Ground = A − π pid ((A × Ground) − Plays)");
+      return [{ e: "Plays and Ground", rel: PL, n: "Question: which players have played at every ground? That's Plays ÷ Ground. The Ground table lists North Oval, River Park and Hill Top." },
+        { e: A.name, rel: A, n: "Candidates: every pid that appears in Plays." },
+        { e: AG.name, rel: AG, tall: true, n: "Every (candidate, ground) pair that would be needed if each candidate had played everywhere: " + A.rows.length + " × 3 = " + AG.rows.length + " pairs." },
+        { e: miss.name, rel: miss, n: "The needed pairs that are missing from Plays." },
+        { e: bad.name, rel: bad, n: "Candidates with at least one missing ground are disqualified." },
+        { e: res.name, rel: res, n: "What remains: P1 and P4 played at all three grounds. |R ÷ S| can never exceed the number of distinct x-values in R." }];
+    }
+    var k = 0, at = 0, S = steps(0);
+    DH.chips(el, ["σ select", "π project", "× and ⋈", "join + project", "− difference", "÷ division"], function (i) { k = i; at = 0; S = steps(k); draw(); }, 0);
+    el.insertAdjacentHTML("beforeend", TEAMNOTE);
+    var nv = nav(el, function () { if (at > 0) at--; draw(); }, function () { if (at < S.length - 1) at++; draw(); }, function () { at = 0; draw(); });
+    var rd = DH.readout(el), box = h("div", { class: "dbwrap" }); el.appendChild(box);
+    function draw() {
+      var s = S[at];
+      var extra = k === 5 && at === 0 ? tbl(G) : k === 2 && at === 0 ? "" : "";
+      box.innerHTML = tbl(s.rel, { cls: s.cls, tall: s.tall }) + extra;
+      rd.innerHTML = "<span class='k'>step " + (at + 1) + " of " + S.length + "</span> <b>" + esc(s.e) + "</b><br>" + s.n;
+      nv.prev.disabled = at === 0; nv.next.disabled = at >= S.length - 1;
+    }
+    draw();
+  };
+
+  /* ---------- 2.2 tuple relational calculus ---------- */
+  W.db_trc = function (el) {
+    var SC = { name: "Score", cols: ["pid", "match", "runs"], pk: [0, 1], rows: [["P1", "m1", 72], ["P1", "m2", 8], ["P2", "m1", 15], ["P3", "m1", 51], ["P3", "m2", 49], ["P4", "m2", 3], ["P5", "m1", 0]] };
+    var Q = [
+      { q: "{ t | t ∈ Player ∧ ∃s ∈ Score ( s[pid] = t[pid] ∧ s[runs] > 50 ) }", kind: "E", test: function (s) { return s[2] > 50; }, d: "∃: keep t if at least one matching Score row has runs > 50." },
+      { q: "{ t | t ∈ Player ∧ ∀s ∈ Score ( s[pid] = t[pid] ⇒ s[runs] ≥ 10 ) }", kind: "A", test: function (s) { return s[2] >= 10; }, d: "∀ with ⇒: keep t if every Score row that belongs to t has runs ≥ 10. A player with no Score rows passes vacuously." },
+      { q: "{ t | t ∈ Player ∧ ¬∃s ∈ Score ( s[pid] = t[pid] ) }", kind: "N", test: function () { return true; }, d: "¬∃: keep t if no Score row belongs to t." }
+    ];
+    var qi = 0, at = -1;
+    DH.chips(el, ["∃ (exists)", "∀ (for all)", "¬∃ (not exists)"], function (i) { qi = i; at = -1; draw(); }, 0);
+    var qq = h("div", { class: "dbstep" }); el.appendChild(qq);
+    var nv = nav(el, function () { if (at > -1) at--; draw(); }, function () { if (at < PLAYER.rows.length) at++; draw(); }, function () { at = -1; draw(); });
+    nv.next.textContent = "Next tuple";
+    var rd = DH.readout(el), box = h("div", { class: "dbwrap" }); el.appendChild(box);
+    function verdict(t) {
+      var mine = SC.rows.filter(function (s) { return s[0] === t[0]; }), q = Q[qi];
+      if (q.kind === "E") return { ok: mine.some(q.test), mine: mine };
+      if (q.kind === "A") return { ok: mine.every(q.test), mine: mine };
+      return { ok: mine.length === 0, mine: mine };
+    }
+    function draw() {
+      var q = Q[qi]; qq.innerHTML = esc(q.q) + "<br><span class='k'>" + q.d + "</span>";
+      var done = at >= PLAYER.rows.length, cur = at >= 0 && !done ? PLAYER.rows[at] : null;
+      var v = cur ? verdict(cur) : null;
+      box.innerHTML = tbl(PLAYER, { cls: function (i) { if (i === at) return "cur"; if (i < at || done) return verdict(PLAYER.rows[i]).ok ? "hit" : "miss"; return ""; } }) +
+        tbl(SC, { cls: function (i, s) { if (!cur || s[0] !== cur[0]) return ""; return qi === 2 ? "bad" : q.test(s) ? "hit" : "bad"; } });
+      if (at < 0) rd.innerHTML = "Press <b>Next tuple</b> to test each Player tuple t in turn.";
+      else if (done) {
+        var res = PLAYER.rows.filter(function (t) { return verdict(t).ok; });
+        rd.innerHTML = "<span class='k'>result</span> <b>" + res.length + " tuple" + (res.length === 1 ? "" : "s") + "</b>: " + res.map(function (t) { return t[0] + " " + t[1]; }).join(", ");
+      } else {
+        var m = v.mine.length ? v.mine.map(function (s) { return s[1] + ": " + s[2]; }).join(", ") : "none";
+        rd.innerHTML = "<span class='k'>t =</span> " + cur.join(", ") + "<br><span class='k'>Score rows with s[pid] = " + cur[0] + "</span> " + m + "<br>" + (v.ok ? "<span class='good'>condition true: t is in the result</span>" : "<span class='bad'>condition false: t is left out</span>") + (qi === 1 && !v.mine.length ? " (vacuously true: there is no row to fail)" : "");
+      }
+      nv.prev.disabled = at < 0; nv.next.disabled = done;
+    }
+    draw();
+  };
+
+  /* ---------- 3.1 SQL GROUP BY pipeline ---------- */
+  var SQUAD = { name: "Player", cols: ["pid", "name", "team", "role", "runs"], pk: [0], rows: [["P1", "Aarav", "KK", "Batter", 412], ["P2", "Diya", "KK", "Bowler", 88], ["P3", "Kabir", "HH", "Batter", 365], ["P4", "Meera", "BB", "All-rounder", 240], ["P5", "Rohan", "NN", "Batter", 455], ["P6", "Sana", "BB", "Bowler", null], ["P7", "Isha", "HH", "Bowler", 45], ["P8", "Vikram", "KK", "All-rounder", 301]] };
+  W.db_group = function (el) {
+    function cnt(g) { return g.length; }
+    function cntR(g) { return g.filter(function (r) { return r[4] !== null; }).length; }
+    function avg(g) { var v = g.filter(function (r) { return r[4] !== null; }).map(function (r) { return r[4]; }); return v.length ? Math.round(v.reduce(function (a, b) { return a + b; }, 0) / v.length * 10) / 10 : null; }
+    function mx(g) { var v = g.filter(function (r) { return r[4] !== null; }).map(function (r) { return r[4]; }); return v.length ? Math.max.apply(null, v) : null; }
+    var Q = [
+      { sql: "SELECT team, COUNT(*) AS n\nFROM Player\nGROUP BY team;", where: null, having: null, out: ["team", "n"], agg: function (g) { return [cnt(g)]; } },
+      { sql: "SELECT team, COUNT(*) AS n\nFROM Player\nGROUP BY team\nHAVING COUNT(*) >= 2;", where: null, having: function (g) { return cnt(g) >= 2; }, hd: "COUNT(*) >= 2", out: ["team", "n"], agg: function (g) { return [cnt(g)]; } },
+      { sql: "SELECT team, COUNT(*), COUNT(runs), AVG(runs)\nFROM Player\nGROUP BY team;", where: null, having: null, out: ["team", "COUNT(*)", "COUNT(runs)", "AVG(runs)"], agg: function (g) { return [cnt(g), cntR(g), avg(g)]; } },
+      { sql: "SELECT team, MAX(runs)\nFROM Player\nWHERE role <> 'Bowler'\nGROUP BY team\nHAVING MAX(runs) > 300;", where: function (r) { return r[3] !== "Bowler"; }, wd: "role <> 'Bowler'", having: function (g) { return mx(g) > 300; }, hd: "MAX(runs) > 300", out: ["team", "MAX(runs)"], agg: function (g) { return [mx(g)]; } }
+    ];
+    var qi = 0, at = 0;
+    DH.chips(el, ["COUNT per team", "+ HAVING", "NULLs in aggregates", "WHERE + HAVING"], function (i) { qi = i; at = 0; draw(); }, 0);
+    var code = h("pre", { class: "code dbsql" }); el.appendChild(code);
+    var nv = nav(el, function () { if (at > 0) at--; draw(); }, function () { if (at < 4) at++; draw(); }, function () { at = 0; draw(); });
+    var rd = DH.readout(el), box = h("div", { class: "dbwrap" }); el.appendChild(box);
+    var STAGES = ["FROM", "WHERE", "GROUP BY", "HAVING", "SELECT"];
+    function draw() {
+      var q = Q[qi]; code.textContent = q.sql;
+      var rows = SQUAD.rows.filter(function (r) { return !q.where || q.where(r); });
+      var groups = {}, order = []; rows.forEach(function (r) { if (!groups[r[2]]) { groups[r[2]] = []; order.push(r[2]); } groups[r[2]].push(r); });
+      var gidx = {}; order.forEach(function (t, i) { gidx[t] = i; });
+      var html = "", note = "";
+      if (at === 0) { html = tbl(SQUAD); note = "FROM: start with every row of Player. (Sana's runs are NULL: unknown.)"; }
+      else if (at === 1) {
+        html = tbl(SQUAD, { cls: function (i, r) { return !q.where ? "" : q.where(r) ? "hit" : "miss"; } });
+        note = q.where ? "WHERE " + esc(q.wd) + " filters individual rows before any grouping: " + rows.length + " of " + SQUAD.rows.length + " survive." : "No WHERE clause: all " + rows.length + " rows go on.";
+      } else if (at === 2) {
+        var sorted = { name: "rows grouped by team", cols: SQUAD.cols, rows: [] }; order.forEach(function (t) { sorted.rows = sorted.rows.concat(groups[t]); });
+        html = tbl(sorted, { cls: function (i, r) { return "g" + (gidx[r[2]] % 5); } });
+        note = "GROUP BY team: rows with the same team form one group. " + order.length + " groups; from here on, each group becomes one output row.";
+      } else {
+        var summ = { name: at === 3 ? "one row per group" : "result", cols: ["team"].concat(q.out.slice(1)), rows: [] }, keep = [];
+        order.forEach(function (t) { var ok = !q.having || q.having(groups[t]); if (at === 3 || ok) { summ.rows.push([t].concat(q.agg(groups[t]))); keep.push(ok); } });
+        html = tbl(summ, { cls: function (i) { return at === 3 && q.having ? (keep[i] ? "hit" : "miss") : ""; } });
+        note = at === 3 ? (q.having ? "HAVING " + esc(q.hd) + " filters whole groups (it may use aggregates; WHERE may not)." : "No HAVING clause: every group is kept.") : "SELECT computes the listed columns for each surviving group: <b>" + summ.rows.length + " row" + (summ.rows.length === 1 ? "" : "s") + "</b>.";
+        if (qi === 2 && at === 4) note += "<br>For BB, COUNT(*) = 2 counts rows, but COUNT(runs) = 1 and AVG(runs) = 240 skip the NULL.";
+      }
+      box.innerHTML = html;
+      rd.innerHTML = "<span class='k'>stage " + (at + 1) + " of 5</span> <b>" + STAGES[at] + "</b><br>" + note;
+      nv.prev.disabled = at === 0; nv.next.disabled = at >= 4;
+    }
+    draw();
+  };
+
+  /* ---------- 3.2 correlated subqueries ---------- */
+  W.db_corr = function (el) {
+    var ACC = { name: "Account A", cols: ["AccNo", "Balance"], pk: [0], rows: [["A1", 5000], ["A2", 5000], ["A3", 10000], ["A4", 15000], ["A5", 18000]] };
+    var LOAN = { name: "Loan L1", cols: ["loan_no", "branch", "amount"], pk: [0], rows: [["L11", "Banjara Hills", 90000], ["L14", "Kondapur", 50000], ["L15", "SR Nagar", 40000], ["L22", "SR Nagar", 25000], ["L23", "Balanagar", 80000], ["L25", "Kondapur", 70000], ["L19", "SR Nagar", 65000]] };
+    var TM = { name: "Team T", cols: ["team", "city"], pk: [0], rows: TEAM.rows };
+    var SQ = { name: "Player P", cols: SQUAD.cols, pk: [0], rows: SQUAD.rows };
+    var P = [
+      { t: ACC, sql: "SELECT AccNo FROM Account AS A\nWHERE (SELECT COUNT(*) FROM Account AS B WHERE A.Balance < B.Balance)\n   >= (SELECT COUNT(*) FROM Account AS C WHERE A.Balance > C.Balance);", heads: ["# richer", "# poorer"],
+        ev: function (r) { var g = ACC.rows.filter(function (x) { return r[1] < x[1]; }).length, l = ACC.rows.filter(function (x) { return r[1] > x[1]; }).length; return { v: [g, l], ok: g >= l, why: g + " ≥ " + l + "?" }; }, kind: "correlated: both subqueries mention A, so they are re-run for every outer row." },
+      { t: LOAN, sql: "SELECT L1.loan_number FROM Loan L1\nWHERE L1.amount > (SELECT MAX(L2.amount) FROM Loan L2\n                   WHERE L2.branch_name = 'SR Nagar');", heads: ["inner value"],
+        ev: function (r) { return { v: [65000], ok: r[2] > 65000, why: r[2] + " > 65000?" }; }, kind: "not correlated: the subquery never mentions L1, so it is computed once (MAX over SR Nagar = 65000) and reused." },
+      { t: SQ, sql: "SELECT name FROM Player P\nWHERE runs > (SELECT AVG(runs) FROM Player Q\n              WHERE Q.team = P.team);", heads: ["team avg"],
+        ev: function (r) { var v = SQUAD.rows.filter(function (x) { return x[2] === r[2] && x[4] !== null; }).map(function (x) { return x[4]; }); var a = v.reduce(function (s, x) { return s + x; }, 0) / v.length; a = Math.round(a * 10) / 10; if (r[4] === null) return { v: [a], ok: null, why: "NULL > " + a + " is UNKNOWN" }; return { v: [a], ok: r[4] > a, why: r[4] + " > " + a + "?" }; }, kind: "correlated: the average is recomputed for each player's own team (Q.team = P.team). AVG ignores NULLs." },
+      { t: TM, sql: "SELECT team FROM Team T\nWHERE NOT EXISTS (SELECT * FROM Player P\n                  WHERE P.team = T.team);", heads: ["players found"],
+        ev: function (r) { var n = SQUAD.rows.filter(function (x) { return x[2] === r[0]; }).length; return { v: [n], ok: n === 0, why: n ? "subquery returns " + n + " row" + (n > 1 ? "s" : "") + ", so NOT EXISTS is false" : "subquery is empty, so NOT EXISTS is true" }; }, kind: "correlated EXISTS: for each team, look for at least one player; keep the team when none is found." }
+    ];
+    var pi = 0, at = -1;
+    DH.chips(el, ["2026 Q60 (counts)", "2025 Q33 (MAX)", "above team average", "NOT EXISTS"], function (i) { pi = i; at = -1; draw(); }, 0);
+    var code = h("pre", { class: "code dbsql" }); el.appendChild(code);
+    var nv = nav(el, function () { if (at > -1) at--; draw(); }, function () { if (at < P[pi].t.rows.length) at++; draw(); }, function () { at = -1; draw(); });
+    nv.next.textContent = "Next outer row";
+    var rd = DH.readout(el), box = h("div", { class: "dbwrap" }); el.appendChild(box);
+    function draw() {
+      var p = P[pi], n = p.t.rows.length, done = at >= n; code.textContent = p.sql;
+      var extra = p.heads.map(function (hd, j) { return { head: hd, val: function (i, r) { return i <= at || done ? esc(p.ev(r).v[j]) : ""; } }; });
+      extra.push({ head: "kept?", val: function (i, r) { if (!(i <= at || done)) return ""; var o = p.ev(r).ok; return o === null ? "unknown" : o ? "yes" : "no"; } });
+      box.innerHTML = tbl(p.t, { extra: extra, cls: function (i, r) { if (i === at && !done) return "cur"; if (i < at || done) return p.ev(r).ok ? "hit" : "miss"; return ""; } });
+      if (at < 0) rd.innerHTML = "This subquery is " + p.kind + "<br>Press <b>Next outer row</b>.";
+      else if (done) { var k = p.t.rows.filter(function (r) { return p.ev(r).ok; }).length; rd.innerHTML = "<span class='k'>rows returned</span> <b>" + k + "</b>"; }
+      else { var e = p.ev(p.t.rows[at]); rd.innerHTML = "<span class='k'>outer row</span> " + esc(p.t.rows[at].join(", ")) + "<br>" + esc(e.why) + " " + (e.ok === null ? "<span class='bad'>UNKNOWN, treated as not true: dropped</span>" : e.ok ? "<span class='good'>yes: kept</span>" : "<span class='bad'>no: dropped</span>"); }
+      nv.prev.disabled = at < 0; nv.next.disabled = done;
+    }
+    draw();
+  };
+
+  /* ---------- FD toolkit (shared by 4.1 and 4.2) ---------- */
+  function parseFDs(txt) {
+    var out = [], bad = [];
+    String(txt).split(/[,;\n]+/).forEach(function (p) {
+      p = p.trim(); if (!p) return;
+      var m = /^([A-Za-z]+)\s*(?:->|→|=>)\s*([A-Za-z]+)$/.exec(p.replace(/\s+/g, ""));
+      if (!m) bad.push(p); else out.push([m[1].toUpperCase().split(""), m[2].toUpperCase().split("")]);
+    });
+    return { fds: out, bad: bad };
+  }
+  function uniq(a) { return a.filter(function (x, i) { return a.indexOf(x) === i; }); }
+  function closure(X, F, trace) {
+    var c = uniq(X.slice()), ch = true;
+    while (ch) {
+      ch = false;
+      F.forEach(function (fd) {
+        if (fd[0].every(function (a) { return c.indexOf(a) >= 0; })) {
+          var add = fd[1].filter(function (a) { return c.indexOf(a) < 0; });
+          if (add.length) { c = c.concat(add); ch = true; if (trace) trace.push(fd[0].join("") + " → " + fd[1].join("") + " fires (" + fd[0].join("") + " ⊆ closure): add " + add.join(", ")); }
+        }
+      });
+    }
+    return c;
+  }
+  function subsets(U) { var out = []; for (var m = 1; m < (1 << U.length); m++) { var s = []; for (var i = 0; i < U.length; i++) if (m & (1 << i)) s.push(U[i]); out.push(s); } return out.sort(function (a, b) { return a.length - b.length; }); }
+  function isSuper(X, U, F) { var c = closure(X, F); return U.every(function (a) { return c.indexOf(a) >= 0; }); }
+  function cKeys(U, F) {
+    var keys = [];
+    subsets(U).forEach(function (s) { if (keys.some(function (k) { return k.every(function (a) { return s.indexOf(a) >= 0; }); })) return; if (isSuper(s, U, F)) keys.push(s); });
+    return keys;
+  }
+  function sortU(s, U) { return s.slice().sort(function (a, b) { return U.indexOf(a) - U.indexOf(b); }); }
+  function fdInputs(el, presets, onChange) {
+    var fa = h("label", { class: "wfield" }, "<span>Attributes of R (single letters)</span>"), ia = h("input", { type: "text", spellcheck: "false", autocomplete: "off" }); fa.appendChild(ia);
+    var ff = h("label", { class: "wfield" }, "<span>Functional dependencies (e.g. A->BC, CD->E)</span>"), iff = h("input", { type: "text", spellcheck: "false", autocomplete: "off" }); ff.appendChild(iff);
+    var err = h("span", { class: "err" }); ff.appendChild(err);
+    DH.chips(el, presets.map(function (p) { return p.n; }), function (i) { ia.value = presets[i].U; iff.value = presets[i].F; onChange(i); }, 0);
+    el.appendChild(fa); el.appendChild(ff);
+    ia.value = presets[0].U; iff.value = presets[0].F;
+    ia.addEventListener("input", function () { onChange(-1); }); iff.addEventListener("input", function () { onChange(-1); });
+    return {
+      read: function () {
+        var U = uniq(ia.value.toUpperCase().replace(/[^A-Z]/g, "").split("")).filter(Boolean), p = parseFDs(iff.value);
+        var stray = []; p.fds.forEach(function (fd) { fd[0].concat(fd[1]).forEach(function (a) { if (U.indexOf(a) < 0 && stray.indexOf(a) < 0) stray.push(a); }); });
+        err.textContent = p.bad.length ? "Couldn't read: " + p.bad.join("  ") : stray.length ? "Not in R: " + stray.join(", ") : U.length > 10 ? "Use at most 10 attributes." : "";
+        return { U: U.slice(0, 10), F: p.fds, ok: !err.textContent && U.length > 0 };
+      }
+    };
+  }
+
+  /* ---------- 4.1 closure and candidate keys ---------- */
+  W.db_fd = function (el) {
+    var PRE = [{ n: "2026 Q17", U: "ABCDE", F: "A->BC, CD->E, E->A", X: "AD" }, { n: "2025 Q57", U: "ABCDEFG", F: "A->BCEF, E->DG, BC->A", X: "BC" }, { n: "2024 Q46", U: "UVWXYZ", F: "U->V, U->W, WX->Y, WX->Z, V->X", X: "VW" }, { n: "Sample Q41", U: "ABCDEF", F: "A->B, C->D, E->F", X: "ACE" }];
+    var fx = h("label", { class: "wfield" }, "<span>Attribute set X to close</span>"), ix = h("input", { type: "text", spellcheck: "false", autocomplete: "off", value: PRE[0].X }); fx.appendChild(ix);
+    var inp = fdInputs(el, PRE, function (i) { if (i >= 0) ix.value = PRE[i].X; draw(); });
+    el.appendChild(fx); ix.addEventListener("input", draw);
+    var rd = DH.readout(el);
+    function draw() {
+      var d = inp.read(); if (!d.ok) { rd.innerHTML = "<span class='bad'>Fix the input above.</span>"; return; }
+      var X = uniq(ix.value.toUpperCase().replace(/[^A-Z]/g, "").split("")).filter(function (a) { return d.U.indexOf(a) >= 0; });
+      var tr = [], c = closure(X, d.F, tr), sup = d.U.every(function (a) { return c.indexOf(a) >= 0; });
+      var keys = cKeys(d.U, d.F);
+      var rhs = []; d.F.forEach(function (fd) { rhs = rhs.concat(fd[1].filter(function (a) { return fd[0].indexOf(a) < 0; })); });
+      var never = d.U.filter(function (a) { return rhs.indexOf(a) < 0; });
+      var nSuper = subsets(d.U).filter(function (s) { return isSuper(s, d.U, d.F); }).length;
+      var prime = uniq([].concat.apply([], keys));
+      rd.innerHTML = "<span class='k'>start</span> {" + X.join(", ") + "}<br>" + (tr.length ? tr.map(function (t) { return "• " + t; }).join("<br>") : "• no FD fires") +
+        "<br><span class='k'>closure</span> <b>{" + sortU(c, d.U).join(", ") + "}</b> " + (sup ? "<span class='good'>= all of R: X is a superkey</span>" : "<span class='bad'>≠ R: not a superkey</span>") +
+        "<br><span class='k'>never on a right-hand side (in every key)</span> " + (never.length ? never.join(", ") : "none") +
+        "<br><span class='k'>candidate keys</span> <b>" + keys.map(function (k) { return sortU(k, d.U).join(""); }).join(", ") + "</b>" +
+        "<br><span class='k'>prime attributes</span> " + sortU(prime, d.U).join(", ") + "<br><span class='k'>number of superkeys</span> " + nSuper + " of the " + (Math.pow(2, d.U.length) - 1) + " non-empty subsets";
+    }
+    draw();
+  };
+
+  /* ---------- 4.2 normal forms and BCNF decomposition ---------- */
+  W.db_nf = function (el) {
+    var PRE = [{ n: "Transitive", U: "ABC", F: "A->B, B->C" }, { n: "Partial", U: "ABCD", F: "AB->C, B->D" }, { n: "3NF, not BCNF", U: "ABC", F: "AB->C, C->B" }, { n: "2025 Q57", U: "ABCDEFG", F: "A->BCEF, E->DG, BC->A" }];
+    var inp = fdInputs(el, PRE, function () { dec = false; draw(); });
+    var bt = h("div", { class: "btns" }); el.appendChild(bt); var dec = false;
+    DH.button(bt, "Decompose into BCNF", function () { dec = true; draw(); });
+    var rd = DH.readout(el);
+    function proj(Ri, F) { var out = []; subsets(Ri).forEach(function (X) { var c = closure(X, F).filter(function (a) { return Ri.indexOf(a) >= 0 && X.indexOf(a) < 0; }); if (c.length) out.push([X, c]); }); return out; }
+    function violation(Ri, F) {
+      var found = null;
+      subsets(Ri).some(function (X) { if (X.length === Ri.length) return false; var c = closure(X, F).filter(function (a) { return Ri.indexOf(a) >= 0; }); if (c.length > X.length && c.length < Ri.length) { found = [X, c.filter(function (a) { return X.indexOf(a) < 0; })]; return true; } return false; });
+      return found;
+    }
+    function preserved(fd, parts, F) {
+      var res = fd[0].slice(), ch = true;
+      while (ch) { ch = false; parts.forEach(function (Ri) { var t = closure(res.filter(function (a) { return Ri.indexOf(a) >= 0; }), F).filter(function (a) { return Ri.indexOf(a) >= 0 && res.indexOf(a) < 0; }); if (t.length) { res = res.concat(t); ch = true; } }); }
+      return fd[1].every(function (a) { return res.indexOf(a) >= 0; });
+    }
+    function draw() {
+      var d = inp.read(); if (!d.ok) { rd.innerHTML = "<span class='bad'>Fix the input above.</span>"; return; }
+      var U = d.U, F = d.F, keys = cKeys(U, F), prime = uniq([].concat.apply([], keys));
+      var lines = [], worst = 4;
+      F.forEach(function (fd) {
+        fd[1].forEach(function (a) {
+          if (fd[0].indexOf(a) >= 0) return;
+          var X = fd[0], name = X.join("") + " → " + a, v;
+          if (isSuper(X, U, F)) v = "<span class='good'>LHS is a superkey: fine for BCNF</span>";
+          else if (prime.indexOf(a) >= 0) { v = "<span class='bad'>LHS not a superkey, but " + a + " is prime: violates BCNF only (3NF allows it)</span>"; worst = Math.min(worst, 3); }
+          else if (keys.some(function (k) { return X.length < k.length && X.every(function (x) { return k.indexOf(x) >= 0; }); })) { v = "<span class='bad'>part of a key → non-prime " + a + ": partial dependency, violates 2NF</span>"; worst = Math.min(worst, 1); }
+          else { v = "<span class='bad'>non-key → non-prime " + a + ": transitive dependency, violates 3NF</span>"; worst = Math.min(worst, 2); }
+          lines.push("• " + name + ": " + v);
+        });
+      });
+      var NF = ["1NF", "1NF (not 2NF)", "2NF (not 3NF)", "3NF (not BCNF)", "BCNF"][worst];
+      var s = "<span class='k'>candidate keys</span> " + keys.map(function (k) { return sortU(k, U).join(""); }).join(", ") + " · <span class='k'>prime</span> " + sortU(prime, U).join(", ") + "<br>" + lines.join("<br>") + "<br><span class='k'>highest normal form</span> <b>" + NF + "</b>";
+      if (dec) {
+        var parts = [U.slice()], log = [], guard = 0, i = 0;
+        while (i < parts.length && guard++ < 40) {
+          var v = violation(parts[i], F);
+          if (!v) { i++; continue; }
+          var XC = sortU(uniq(v[0].concat(v[1])), U), rest = sortU(parts[i].filter(function (a) { return v[1].indexOf(a) < 0; }), U);
+          log.push("• in {" + sortU(parts[i], U).join("") + "}, " + sortU(v[0], U).join("") + " → " + sortU(v[1], U).join("") + " breaks BCNF: split into {" + XC.join("") + "} and {" + rest.join("") + "}");
+          parts.splice(i, 1, XC, rest);
+        }
+        var lost = []; F.forEach(function (fd) { if (!preserved(fd, parts, F)) lost.push(fd[0].join("") + " → " + fd[1].join("")); });
+        s += "<br><br><span class='k'>BCNF decomposition</span><br>" + (log.length ? log.join("<br>") : "• already in BCNF: nothing to split") + "<br><span class='k'>result</span> <b>" + parts.map(function (p) { return "{" + sortU(p, U).join("") + "}"; }).join(", ") + "</b> (lossless: each split shares a key of one side)" +
+          "<br><span class='k'>dependency preserving?</span> " + (lost.length ? "<span class='bad'>no: " + lost.join(", ") + " can only be checked by joining the pieces back</span>" : "<span class='good'>yes</span>");
+      }
+      rd.innerHTML = s;
+    }
+    draw();
+  };
+
+  /* ---------- 5.1 B+ tree insertion ---------- */
+  W.db_bptree = function (el) {
+    var maxK = 2, maxP = 3, conv = 0, root, log = [], hi = [];
+    function leaf(keys) { return { leaf: true, keys: keys }; }
+    function q41() { maxK = 2; maxP = 3; conv = 0; root = { leaf: false, keys: [5, 8], kids: [leaf([1, 5]), leaf([7, 8]), leaf([9, 12])] }; log = ["Loaded the tree from GATE DA 2026 Q41 (leaf ≤ 2 keys, internal ≤ 3 pointers). Now insert 3."]; hi = []; sync(); }
+    function empty() { root = leaf([]); log = ["Empty tree: the root is a single leaf."]; hi = []; }
+    function child(n, k) { for (var i = 0; i < n.keys.length; i++) if (conv === 0 ? k <= n.keys[i] : k < n.keys[i]) return i; return n.keys.length; }
+    function has(k) { var n = root; while (!n.leaf) n = n.kids[child(n, k)]; return n.keys.indexOf(k) >= 0; }
+    function insert(k) {
+      log = []; hi = [];
+      if (has(k)) { log.push(k + " is already in the tree (keys here are unique)."); return; }
+      var path = [], n = root; while (!n.leaf) { path.push(n); n = n.kids[child(n, k)]; }
+      n.keys.push(k); n.keys.sort(function (a, b) { return a - b; }); hi.push(n);
+      log.push("Insert " + k + " into leaf [" + n.keys.join(", ") + "]" + (n.keys.length <= maxK ? ": it fits." : ": too many keys (max " + maxK + ")."));
+      var up = null;
+      if (n.keys.length > maxK) {
+        var m = Math.ceil(n.keys.length / 2), L = leaf(n.keys.slice(0, m)), R = leaf(n.keys.slice(m)), sep = conv === 0 ? L.keys[L.keys.length - 1] : R.keys[0];
+        log.push("Split the leaf into [" + L.keys.join(", ") + "] and [" + R.keys.join(", ") + "]; copy " + sep + " up to the parent (it stays in a leaf too)."); hi = [L, R];
+        up = { L: L, R: R, sep: sep, old: n };
+      }
+      while (up) {
+        var p = path.pop();
+        if (!p) { root = { leaf: false, keys: [up.sep], kids: [up.L, up.R] }; hi.push(root); log.push("There was no parent, so a new root [" + up.sep + "] is created: the tree grows one level taller."); break; }
+        var i = p.kids.indexOf(up.old); p.kids.splice(i, 1, up.L, up.R); p.keys.splice(i, 0, up.sep);
+        if (p.kids.length <= maxP) { hi.push(p); log.push("Parent becomes [" + p.keys.join(", ") + "] with " + p.kids.length + " pointers: it fits (max " + maxP + ")."); up = null; break; }
+        var lk = Math.ceil(p.kids.length / 2), A = { leaf: false, keys: p.keys.slice(0, lk - 1), kids: p.kids.slice(0, lk) }, B = { leaf: false, keys: p.keys.slice(lk), kids: p.kids.slice(lk) }, mid = p.keys[lk - 1];
+        log.push("Parent [" + p.keys.join(", ") + "] now needs " + p.kids.length + " pointers (max " + maxP + "): split into [" + A.keys.join(", ") + "] and [" + B.keys.join(", ") + "], and move " + mid + " up (internal splits move the middle key, they don't copy it).");
+        hi.push(A, B); up = { L: A, R: B, sep: mid, old: p };
+      }
+      sync();
+    }
+    var cfg = h("div", { class: "btns" }); el.appendChild(cfg);
+    var sK = DH.slider(el, { label: "max keys per leaf", min: 2, max: 4, step: 1, value: maxK, digits: 0 }, function (v) { maxK = v; empty(); sync(); });
+    var sP = DH.slider(el, { label: "max pointers per internal node", min: 3, max: 5, step: 1, value: maxP, digits: 0 }, function (v) { maxP = v; empty(); sync(); });
+    var cv = DH.chips(el, ["key = separator goes left (GATE 2026 Q41)", "key = separator goes right"], function (i) { conv = i; empty(); sync(); }, 0);
+    var row = h("div", { class: "btns" }); el.appendChild(row);
+    var ki = h("input", { type: "number", value: "3", "aria-label": "Key to insert", class: "dbnum" }); row.appendChild(ki);
+    DH.button(row, "Insert", function () { var v = parseInt(ki.value, 10); if (isFinite(v)) { insert(v); p.redraw(); } });
+    DH.button(row, "Insert 1–10 in order", function () { empty(); var L = []; for (var v = 1; v <= 10; v++) { insert(v); L.push(v); } log = ["Inserted " + L.join(", ") + " in increasing order. Notice the half-empty left leaves: sorted inserts always split the rightmost leaf."]; hi = []; p.redraw(); }, "chip");
+    DH.button(row, "Load 2026 Q41", function () { q41(); p.redraw(); }, "chip");
+    DH.button(row, "Clear", function () { empty(); p.redraw(); }, "ghost");
+    var p = new DH.Plot(el, { xmin: 0, xmax: 1, ymin: 0, ymax: 1, ratio: 0.3, maxH: 260, label: "B+ tree diagram" });
+    var rd = DH.readout(el);
+    function sync() { sK.set(maxK); sP.set(maxP); cv.forEach(function (b, i) { b.classList.toggle("on", i === conv); b.setAttribute("aria-pressed", i === conv ? "true" : "false"); }); }
+    function levels() { var L = [[root]]; while (!L[L.length - 1][0].leaf) { var nx = []; L[L.length - 1].forEach(function (n) { nx = nx.concat(n.kids); }); L.push(nx); } return L; }
+    p.draw = function (p) {
+      var g = p.g, L = levels(), leaves = L[L.length - 1], slots = Math.max(maxK, maxP - 1);
+      var gap = 10, nodeW = Math.min(36 * slots, (p.W - 20 - gap * (leaves.length - 1)) / leaves.length), sw = nodeW / slots, nh = Math.min(28, Math.max(18, sw * 0.9));
+      var rowH = Math.min(70, (p.H - 20) / Math.max(1, L.length)), pos = new Map();
+      var total = leaves.length * nodeW + (leaves.length - 1) * gap, x0 = (p.W - total) / 2;
+      leaves.forEach(function (n, i) { pos.set(n, { x: x0 + i * (nodeW + gap), y: 10 + (L.length - 1) * rowH }); });
+      for (var d = L.length - 2; d >= 0; d--) L[d].forEach(function (n) { var a = pos.get(n.kids[0]), b = pos.get(n.kids[n.kids.length - 1]); pos.set(n, { x: (a.x + b.x) / 2, y: 10 + d * rowH }); });
+      g.lineWidth = 1.2;
+      L.forEach(function (lv) { lv.forEach(function (n) { if (n.leaf) return; var a = pos.get(n); n.kids.forEach(function (k, i) { var b = pos.get(k); g.strokeStyle = DH.alpha(col("muted"), 0.7); g.beginPath(); g.moveTo(a.x + i * sw, a.y + nh); g.lineTo(b.x + nodeW / 2, b.y); g.stroke(); }); }); });
+      for (var i = 0; i < leaves.length - 1; i++) { var a = pos.get(leaves[i]), b = pos.get(leaves[i + 1]); g.strokeStyle = col("accent"); g.beginPath(); g.moveTo(a.x + nodeW, a.y + nh / 2); g.lineTo(b.x, b.y + nh / 2); g.stroke(); }
+      L.forEach(function (lv) { lv.forEach(function (n) {
+        var a = pos.get(n), on = hi.indexOf(n) >= 0;
+        for (var s = 0; s < slots; s++) {
+          g.fillStyle = on ? DH.alpha(col("coral"), 0.22) : n.leaf ? DH.alpha(col("accent"), 0.10) : DH.alpha(col("gold"), 0.12);
+          g.fillRect(a.x + s * sw, a.y, sw, nh); g.strokeStyle = on ? col("coral") : col("line"); g.strokeRect(a.x + s * sw, a.y, sw, nh);
+          if (s < n.keys.length) { g.fillStyle = col("ink"); g.font = "600 " + Math.min(13, sw * 0.42) + "px " + col("font-mono"); g.textAlign = "center"; g.textBaseline = "middle"; g.fillText(String(n.keys[s]), a.x + s * sw + sw / 2, a.y + nh / 2); }
+        }
+      }); });
+      var cnt = 0; L.forEach(function (lv) { cnt += lv.length; });
+      rd.innerHTML = log.map(esc).join("<br>") + "<br><span class='k'>height (levels)</span> " + L.length + " · <span class='k'>nodes</span> " + cnt + " · <span class='k'>root keys</span> <b>" + (root.keys.length ? root.keys.join(", ") : "none") + "</b>";
+    };
+    q41(); p.redraw();
+  };
+
+  /* ---------- 5.2 discretisation and normalisation ---------- */
+  W.db_bin = function (el) {
+    var DATA = [4, 8, 15, 21, 21, 24, 25, 28, 34, 45, 62, 90];
+    var mode = 0, how = 0, k = 3, sm = 0, nm = 0;
+    DH.chips(el, ["Discretise (binning)", "Normalise"], function (i) { mode = i; ui(); draw(); }, 0);
+    var g1 = h("div", { class: "wctrl" }); el.appendChild(g1);
+    DH.chips(g1, ["Equal width", "Equal frequency"], function (i) { how = i; draw(); }, 0);
+    DH.slider(g1, { label: "bins", min: 2, max: 4, step: 1, value: k, digits: 0 }, function (v) { k = v; draw(); });
+    DH.chips(g1, ["no smoothing", "smooth by bin means", "smooth by bin boundaries"], function (i) { sm = i; draw(); }, 0);
+    var g2 = h("div", { class: "wctrl" }); el.appendChild(g2);
+    DH.chips(g2, ["Min–max to [0, 1]", "z-score", "Decimal scaling"], function (i) { nm = i; draw(); }, 0);
+    var p = new DH.Plot(el, { xmin: 0, xmax: 1, ymin: 0, ymax: 1, ratio: 0.42, maxH: 240, label: "Number line of the data" });
+    var rd = DH.readout(el);
+    function ui() { g1.style.display = mode === 0 ? "" : "none"; g2.style.display = mode === 1 ? "" : "none"; }
+    function bins() {
+      var B = [];
+      if (how === 0) { var lo = Math.min.apply(null, DATA), hiV = Math.max.apply(null, DATA), w = (hiV - lo) / k; for (var i = 0; i < k; i++) B.push({ a: lo + i * w, b: lo + (i + 1) * w, v: [] }); DATA.forEach(function (x) { var j = Math.min(k - 1, Math.floor((x - lo) / w)); B[j].v.push(x); }); }
+      else { var per = DATA.length / k; for (var j = 0; j < k; j++) { var v = DATA.slice(Math.round(j * per), Math.round((j + 1) * per)); B.push({ a: v[0], b: v[v.length - 1], v: v }); } }
+      B.forEach(function (b) { var m = b.v.length ? b.v.reduce(function (s, x) { return s + x; }, 0) / b.v.length : 0; b.mean = m; b.sm = b.v.map(function (x) { if (sm === 1) return Math.round(m * 100) / 100; if (sm === 2) { var lo2 = b.v[0], hi2 = b.v[b.v.length - 1]; return x - lo2 <= hi2 - x ? lo2 : hi2; } return x; }); });
+      return B;
+    }
+    function norm() {
+      var n = DATA.length, mn = Math.min.apply(null, DATA), mxV = Math.max.apply(null, DATA), mu = DATA.reduce(function (s, x) { return s + x; }, 0) / n;
+      var sd = Math.sqrt(DATA.reduce(function (s, x) { return s + (x - mu) * (x - mu); }, 0) / n), j = 0; while (mxV / Math.pow(10, j) >= 1) j++;
+      if (nm === 0) return { f: function (x) { return (x - mn) / (mxV - mn); }, lo: 0, hi: 1, d: "x' = (x − min)/(max − min) = (x − " + mn + ")/" + (mxV - mn) };
+      if (nm === 1) return { f: function (x) { return (x - mu) / sd; }, lo: -1.5, hi: 3, d: "x' = (x − mean)/SD, mean = " + DH.fmt(mu, 2) + ", SD = " + DH.fmt(sd, 2) + " (population SD)" };
+      return { f: function (x) { return x / Math.pow(10, j); }, lo: 0, hi: 1, d: "x' = x / 10^j with the smallest j making every |x'| < 1: j = " + j };
+    }
+    function draw() { p.redraw(); }
+    p.draw = function (p) {
+      var g = p.g, L = 20, R = p.W - 20, X = function (x) { return L + (x - 0) / 100 * (R - L); };
+      function axis(y, lo, hi, lab) { g.strokeStyle = col("muted"); g.lineWidth = 1; g.beginPath(); g.moveTo(L, y); g.lineTo(R, y); g.stroke(); g.fillStyle = col("muted"); g.font = "11px " + col("font-mono"); g.textAlign = "left"; g.fillText(lab, L, y - 26); g.textAlign = "center"; [lo, (lo + hi) / 2, hi].forEach(function (t) { var x = L + (t - lo) / (hi - lo) * (R - L); g.fillText(DH.fmt(t, Math.abs(hi - lo) < 10 ? 2 : 0), x, y + 14); }); }
+      function dot(x, y, c) { g.fillStyle = c; g.beginPath(); g.arc(x, y, 4.5, 0, 7); g.fill(); }
+      var y1 = p.H * 0.4, y2 = p.H * 0.86;
+      if (mode === 0) {
+        var B = bins(), cols = ["accent", "coral", "plum", "gold"];
+        axis(y1, 0, 100, "original runs"); axis(y2, 0, 100, sm ? "smoothed" : "bins");
+        B.forEach(function (b, i) {
+          var c = col(cols[i]); g.fillStyle = DH.alpha(c, 0.12); g.fillRect(X(b.a), y1 - 18, Math.max(2, X(b.b) - X(b.a)), 26);
+          var seen = {}; b.v.forEach(function (x, j) { var off = (seen[x] = (seen[x] || 0) + 1) - 1; dot(X(x), y1 - 6 - off * 8, c); var s = b.sm[j], o2 = (seen["s" + s] = (seen["s" + s] || 0) + 1) - 1; dot(X(s), y2 - 6 - o2 * 8, c); });
+        });
+        rd.innerHTML = B.map(function (b, i) { return "<span class='k'>bin " + (i + 1) + "</span> " + (how === 0 ? "[" + DH.fmt(b.a, 1) + ", " + DH.fmt(b.b, 1) + (i === B.length - 1 ? "]" : ")") : "") + " {" + b.v.join(", ") + "}" + (sm ? " → {" + b.sm.map(function (x) { return DH.fmt(x, sm === 1 ? 2 : 0); }).join(", ") + "}" : "") + " · " + b.v.length + " value" + (b.v.length === 1 ? "" : "s"); }).join("<br>") +
+          "<br>" + (how === 0 ? "Equal width: each bin spans (max − min)/k = " + DH.fmt((90 - 4) / k, 2) + ". The outliers 62 and 90 leave bins nearly empty." : "Equal frequency (equal depth): each bin holds n/k = " + (12 % k ? DH.fmt(12 / k, 1) : 12 / k) + " values, whatever their spread.");
+      } else {
+        var N = norm(); axis(y1, 0, 100, "original runs"); axis(y2, N.lo, N.hi, "normalised");
+        DATA.forEach(function (x, i) { var c = col(i % 2 ? "accent" : "coral"), xn = L + (N.f(x) - N.lo) / (N.hi - N.lo) * (R - L); g.strokeStyle = DH.alpha(col("muted"), 0.3); g.beginPath(); g.moveTo(X(x), y1); g.lineTo(xn, y2); g.stroke(); dot(X(x), y1 - 6, c); dot(xn, y2 - 6, c); });
+        rd.innerHTML = N.d + "<br>" + DATA.map(function (x) { return x + " → " + DH.fmt(N.f(x), 3); }).join(" · ");
+      }
+    };
+    ui(); draw();
+  };
+
+  /* ---------- 5.3 OLAP cube ---------- */
+  W.db_cube = function (el) {
+    var TEAMS = ["KK", "HH", "BB", "NN", "HY"], ZONE = { KK: "East", HH: "North", BB: "South", NN: "Central", HY: "South" };
+    var MONTHS = ["2025-Apr", "2025-May", "2026-Apr", "2026-May"], SEATS = ["Gallery", "Pavilion", "Box"];
+    var FACT = []; TEAMS.forEach(function (t, a) { MONTHS.forEach(function (m, b) { SEATS.forEach(function (s, c) { FACT.push([t, m, s, 6 + 3 * a + 2 * b + 4 * (2 - c) + ((a * b + c) % 4)]); }); }); });
+    var DIM = [
+      { n: "Team", lv: ["team", "zone", "ALL"], f: [function (r) { return r[0]; }, function (r) { return ZONE[r[0]]; }, null] },
+      { n: "Time", lv: ["month", "season", "ALL"], f: [function (r) { return r[1]; }, function (r) { return r[1].slice(0, 4); }, null] },
+      { n: "Seat", lv: ["seat", "ALL"], f: [function (r) { return r[2]; }, null] }
+    ];
+    var lev = [0, 1, 1], filt = [null, null, null], last = "Start: tickets (thousands) by team and season, all seat types added up.";
+    var wrap = h("div", { class: "dbcube" }); el.appendChild(wrap); var ctr = [];
+    DIM.forEach(function (d, i) {
+      var f = h("div", { class: "wfield" }, "<span>" + d.n + " level</span>"); wrap.appendChild(f);
+      var ch = DH.chips(f, d.lv, function (j) { var o = lev[i]; lev[i] = j; filt[i] = null; last = j > o ? "Roll-up on " + d.n + ": " + d.lv[o] + " → " + d.lv[j] + " (coarser, fewer rows)." : j < o ? "Drill-down on " + d.n + ": " + d.lv[o] + " → " + d.lv[j] + " (finer, more rows)." : last; fill(i); draw(); }, lev[i]);
+      var sel = h("select", { "aria-label": d.n + " filter" }); var ff = h("label", { class: "wfield" }, "<span>" + d.n + " = </span>"); ff.appendChild(sel); f.appendChild(ff);
+      sel.addEventListener("change", function () { filt[i] = sel.value || null; var nf = filt.filter(function (x) { return x; }).length; last = !filt[i] ? "Removed the condition on " + d.n + "." : nf === 1 ? "Slice: fix " + d.n + " = " + filt[i] + " (one dimension pinned to one value)." : "Dice: conditions on " + nf + " dimensions select a sub-cube."; draw(); });
+      ctr.push({ ch: ch, sel: sel, fw: ff });
+    });
+    var rd = DH.readout(el), box = h("div", { class: "dbwrap" }); el.appendChild(box);
+    function fill(i) {
+      var d = DIM[i], fn = d.f[lev[i]], s = ctr[i].sel; s.innerHTML = "";
+      ctr[i].fw.style.display = fn ? "" : "none"; if (!fn) return;
+      s.appendChild(h("option", { value: "" }, "(any)")); uniq(FACT.map(fn)).forEach(function (v) { s.appendChild(h("option", { value: v }, esc(v))); });
+    }
+    function draw() {
+      var act = DIM.map(function (d, i) { return d.f[lev[i]]; }), groups = {}, order = [];
+      FACT.forEach(function (r) {
+        if (!act.every(function (fn, i) { return !filt[i] || !fn || fn(r) === filt[i]; })) return;
+        var key = act.map(function (fn) { return fn ? fn(r) : "ALL"; });
+        var ks = key.join("|"); if (!groups[ks]) { groups[ks] = { k: key, s: 0 }; order.push(ks); } groups[ks].s += r[3];
+      });
+      var cols = [], idx = []; DIM.forEach(function (d, i) { if (act[i]) { cols.push(d.lv[lev[i]]); idx.push(i); } });
+      var rel = { name: "SUM(tickets) by (" + DIM.map(function (d, i) { return d.lv[lev[i]]; }).join(", ") + ")", cols: cols.concat(["tickets"]), rows: order.map(function (ks) { var g = groups[ks]; return idx.map(function (i) { return g.k[i]; }).concat([g.s]); }) };
+      box.innerHTML = tbl(rel, { tall: true });
+      rd.innerHTML = last + "<br><span class='k'>this view is the cuboid</span> <b>(" + DIM.map(function (d, i) { return d.lv[lev[i]]; }).join(", ") + ")</b>" +
+        "<br><span class='k'>cuboids in this cube</span> (2 levels + ALL) × (2 levels + ALL) × (1 level + ALL) = 3 × 3 × 2 = <b>18</b>";
+    }
+    DIM.forEach(function (d, i) { fill(i); }); draw();
   };
 })();
 
