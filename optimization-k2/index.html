@@ -5308,6 +5308,11 @@ $$f(\x+\d)\approx f(\x)+\grad f(\x)^\top\d+\tfrac12\d^\top\grad^2f(\x)\,\d .$$
 The linear term is the slope; the quadratic term is the curvature. Dropping the quadratic term gives the first-order model used by gradient descent; keeping it gives the model that Newton's method minimizes.</p>
 <p><b>What this says.</b> The sign $\approx$ means the two sides differ by something much smaller than $\norm{\d}^2$ when $\d$ is small (written $o(\norm{\d}^2)$, "little-o"). The term $\grad f(\x)^\top\d$ is the predicted change from the slope. The term $\tfrac12\d^\top\grad^2f(\x)\,\d$ is the correction from curvature.</p>
 <p><b>Small numbers (one variable).</b> $f(x)=x^3$ at $x=1$ with $d=0.1$: here $f'=3$ and $f''=6$, so the model gives $1+3(0.1)+\tfrac12\cdot6\cdot(0.1)^2=1.33$, while the true value is $1.1^3=1.331$.</p>
+<div class="panel try">
+<span class="label">Try it</span>
+<p class="task">Drag the black point anywhere on the map. The blue arrow is $\grad f$ (it points uphill, across the contour lines); the green arrow is $-\grad f$ (steepest downhill). Turn the dial to choose a direction $\d$ and read its slope $\grad f^\top\d$. Find the direction with the most negative slope and check that it matches the green arrow. Any direction with $\grad f^\top\d\lt0$ is a descent direction.</p>
+<div class="widget" data-w="gradfield"></div>
+</div>
 <h3>The quadratic</h3>
 <p>The quadratic function is the simplest bowl, and the only function for which we can finish every calculation by hand. Real problems look like a quadratic near their minimum, so what works for the quadratic is the template for everything else. In $f(\x)=\tfrac12\x^\top A\x-\b^\top\x$, the first term is the bowl and the second tilts it.</p>
 <p>With $A=A^\top$, the function $f(\x)=\tfrac12\x^\top A\x-\b^\top\x$ has
@@ -5353,6 +5358,11 @@ For this $f$ the Taylor expansion is exact: $f(\x+\d)=f(\x)+\g^\top\d+\tfrac12\d
 </ol>
 </div>
 
+<div class="panel try">
+<span class="label">Try it</span>
+<p class="task">The rings mark the critical points (where $\grad f=\0$). Click near a ring, or press "Next critical point", to see the gradient, the Hessian, its eigenvalues and the verdict: both eigenvalues positive gives a minimum, both negative a maximum, mixed signs a saddle. Type your own function too, e.g. <code>x^2 + x*y + y^2 - 3*x</code> or <code>x^3 + y^3 - 3*x*y</code>.</p>
+<div class="widget" data-w="p3_classify"></div>
+</div>
 <div class="practice">
 <div class="prob" data-id="pm-calc-p1" data-ans="5;7" data-labels="∂f/∂x₁;∂f/∂x₂">
 <div class="stem"><p>For $f(x_1,x_2)=x_1^2+3x_1x_2+2x_2^2$, find $\grad f(1,1)$.</p></div>
@@ -5428,6 +5438,11 @@ that is, every tangent plane lies below the graph. For twice-differentiable $f$ 
 <div class="prose">
 <p>Proof: put $\x=\x^\star$ in the inequality: $f(\y)\ge f(\x^\star)+\0^\top(\y-\x^\star)=f(\x^\star)$ for every $\y$. $\square$ This is why, on the quadratic with $A\succ0$, solving $A\x=\b$ is the whole job: $\g=\0$ cannot be a trap.</p>
 <p><b>Reading the proof.</b> The inequality holds for every pair $\x,\y$, so we may choose $\x=\x^\star$. The term $\grad f(\x^\star)^\top(\y-\x^\star)$ is a zero vector dotted with something, hence $0$. What is left says $f(\y)\ge f(\x^\star)$ for every $\y$. That is the definition of a global minimizer.</p>
+<div class="panel try">
+<span class="label">Try it</span>
+<p class="task">Drag the two blue points along the graph. For a convex function ($x^2$, $e^x$, $|x|$) the chord never dips below the graph. For $x^4-2x^2$ and $\sin x$, find placements where the graph pokes above the chord (shaded): those functions are not convex. Then type your own function, e.g. <code>x^4 + x</code>.</p>
+<div class="widget" data-w="p4_chord" data-cfg='{"mode":"chord","f":0}'></div>
+</div>
 <h3>Strong convexity and smoothness</h3>
 <p><b>Intuition.</b> Convexity says the bowl has no bumps. It does not say how deep the curve is. Two numbers fill that gap. $m$ is a floor on the curvature: the bowl is at least this curved in every direction, so it cannot be nearly flat. $L$ is a ceiling: no direction is sharper than this. The ratio $\kappa=L/m$ compares the sharpest to the gentlest direction. A large $\kappa$ is a long, narrow valley, and that is the situation that makes gradient descent slow (Chapter 5) and that CG and Newton are designed to handle.</p>
 <p>For the quadratic these are eigenvalue bounds. In general, $f$ is <b>$m$-strongly convex</b> and <b>$L$-smooth</b> when $mI\preceq\grad^2f(\x)\preceq LI$ at every $\x$ (the curvature in every direction lies between $m\gt0$ and $L$). Then $\kappa=L/m\ge1$ measures how stretched the contours are. For $f=\tfrac12\x^\top A\x-\b^\top\x$ with $A\succ0$: $m=\lambda_{\min}(A)$, $L=\lambda_{\max}(A)$, and an exact identity holds,
@@ -5531,6 +5546,11 @@ $$\alpha=-\frac{\g^\top\d}{\d^\top A\d},\qquad\text{and for }\d=-\g:\quad \alpha
 After an exact step the new gradient is orthogonal to the direction used in that step: $\g_{k+1}^\top\d_k=0$ (because $\phi'(\alpha_k)=\g_{k+1}^\top\d_k=0$). The gradient also updates cheaply, $\g_{k+1}=\g_k+\alpha_kA\d_k$.</p>
 <p><b>Where each fact comes from.</b> For the quadratic, Taylor is exact with $\d$ replaced by $\alpha\d$, giving the parabola in $\alpha$ shown above. Its derivative is $\phi'(\alpha)=\g^\top\d+\alpha\,\d^\top A\d$; setting it to zero gives the formula for $\alpha$. This is a minimum because $\d^\top A\d\gt0$ (parabola opens upward) and the step is positive because $\g^\top\d\lt0$. The orthogonality comes from the chain rule: $\phi'(\alpha_k)=\g_{k+1}^\top\d_k$, and we set it to zero. The gradient update comes from $\g_{k+1}=A(\x_k+\alpha_k\d_k)-\b=\g_k+\alpha_kA\d_k$.</p>
 <p><b>What this says.</b> When you stop at the lowest point along a line, the slope along that line is zero there, so the new gradient is perpendicular to the line you walked. This is the fact behind both the zig-zag in Chapter 5 and the "conjugate" idea in Part 8.</p>
+<div class="panel try">
+<span class="label">Try it</span>
+<p class="task">This is $\phi(\alpha)=f(\x_k+\alpha\d)$: the function seen along one ray. Drag the black point $\x_k$ and turn the direction $\d$ (angle measured from $-\grad f$). The small plot shows $\phi$, its slope at $\alpha=0$ (which is $\phi'(0)=\grad f(\x_k)^\top\d$), and the exact minimizer along the ray. Turn $\d$ past $90°$ from $-\grad f$ and watch $\phi'(0)$ turn positive: the direction is no longer downhill.</p>
+<div class="widget" data-w="p6_slice"></div>
+</div>
 <h3>Inexact searches</h3>
 <p>For a general function, finding the exact lowest point along the line means solving an equation at every step. That cost is wasted, since the next step will move us anyway. So we only require a step that is "good enough". Two simple tests define "good enough".</p>
 <p>For general $f$ an exact minimizer along the line is too costly, so we accept steps satisfying conditions with constants $0\lt c_1\lt c_2\lt1$:</p>
@@ -5578,6 +5598,11 @@ After an exact step the new gradient is orthogonal to the direction used in that
 </ol>
 </div>
 
+<div class="panel try">
+<span class="label">Try it</span>
+<p class="task">Pick a slice $\phi$ and a rule (Armijo, Wolfe, strong Wolfe). Drag on the plot, or use the slider, to move the trial step $\alpha$; the readout checks each inequality with numbers, and the coloured bars mark the steps each rule accepts. Notice: Armijo accepts tiny steps near $0$ (it only forbids steps that are too long); the Wolfe curvature condition removes those tiny steps.</p>
+<div class="widget" data-w="p6_rules"></div>
+</div>
 <div class="practice">
 <div class="prob" data-id="pm-ls-p1" data-ans="1/3" data-labels="α">
 <div class="stem"><p>On a quadratic with $A=\begin{pmatrix}3&1\\1&1\end{pmatrix}$ the gradient at $\x_k$ is $\g=(1,1)^\top$. Find the exact steepest-descent step $\alpha=\g^\top\g/\g^\top A\g$.</p></div>
@@ -5661,6 +5686,11 @@ Equivalently $\norm{\x_{k+1}-\x^\star}_A\le\frac{\kappa-1}{\kappa+1}\norm{\x_k-\
 <p>For $\kappa=1$ the factor is 0; for $\kappa=100$ it is $(99/101)^2\approx0.961$, so about 60 steps are needed to gain one decimal digit of accuracy ($0.961^{58}\approx0.1$).</p>
 <p>Each "decimal digit" means the gap shrinks by a factor of $10$. If $\rho$ is the factor per step, $k$ steps shrink the gap by $\rho^k$, so we need $\rho^k\le10^{-1}$, i.e. $k\ge\ln(0.1)/\ln\rho$. Here $\ln$ is the natural logarithm; both logs are negative, so the ratio is positive.</p>
 <p><b>Intuition for the orders.</b> Think about how many correct digits you gain per step. Linear: a fixed number of new digits each step (say $0.3$). Superlinear: the gain per step keeps growing. Quadratic: the number of correct digits doubles. The error $e_k$ is whatever distance you track; the symbol $\rho$ is read "rho" and $C$ is some constant.</p>
+<div class="panel try">
+<span class="label">Try it</span>
+<p class="task">Gradient descent with exact line search on a bowl with $\kappa=10$. Press "Step" a few times: each new step is at a right angle to the previous one, so the path zig-zags. Raise $\kappa$ to 50 and click different starting points: the zig-zag gets tighter and progress per step shrinks. Find a start where it finishes in one step (hint: on an axis of the ellipses, an eigenvector).</p>
+<div class="widget" data-w="p5_gdstep" data-cfg='{"kappa":10,"exact":true,"x0":[-2.8,0.6]}'></div>
+</div>
 <h3>Orders of convergence</h3>
 <p>Let $e_k\ge0$ be an error (such as $\norm{\x_k-\x^\star}$) tending to 0.</p>
 <ul>
@@ -5696,6 +5726,11 @@ Equivalently $\norm{\x_{k+1}-\x^\star}_A\le\frac{\kappa-1}{\kappa+1}\norm{\x_k-\
 <p>Take $A=\operatorname{diag}(1,\kappa)$ and $\x_0=(\kappa,1)^\top$, so $\x^\star=\0$ and $\g_0=A\x_0=(\kappa,\kappa)^\top$. Then $\g_0^\top\g_0=2\kappa^2$ and $\g_0^\top A\g_0=\kappa^2(1+\kappa)$, so $\alpha_0=2/(1+\kappa)$. This gives $\x_1=\x_0-\alpha_0\g_0=\tfrac{\kappa-1}{\kappa+1}\,(\kappa,-1)^\top$. The vector $(\kappa,-1)^\top$ has the same $A$-norm as $(\kappa,1)^\top$ (both have $\norm{\cdot}_A^2=\kappa^2+\kappa$), so the $A$-norm of the error shrinks by exactly $\tfrac{\kappa-1}{\kappa+1}$. By the same computation with the sign flipped, every following step does the same. The theorem says no start does worse than this.</p>
 </details>
 
+<div class="panel try">
+<span class="label">Try it</span>
+<p class="task">The error axis is logarithmic, so a linear rate $\rho^k$ is a straight line whose slope is set by $\rho$. Set $\kappa$ near 200 (so $\rho\approx0.99$) and move the target $\varepsilon$ from $10^{-2}$ down to $10^{-10}$: watch which curve crosses the dashed line first and how the iteration counts grow.</p>
+<div class="widget" data-w="p7_rates"></div>
+</div>
 <div class="practice">
 <div class="prob" data-id="pm-rate-p1" data-ans="0.64" data-labels="ρ">
 <div class="stem"><p>Find the guaranteed per-step factor $\big(\tfrac{\kappa-1}{\kappa+1}\big)^2$ on $f-f^\star$ for $\kappa=9$.</p></div>
