@@ -7015,7 +7015,7 @@ Both lines agree. ✓</p><p class="why-step">This is $\sigma_k=\alpha_k$ from th
 <ul><li>Using inexact (Armijo/Wolfe) steps and expecting $n$-step termination: the proof needs $\g_{k+1}^\top\d_k=0$ exactly</li><li>Saying "$\x_k$ minimizes $f$ over $\mathcal B_k$" (forgetting the shift by $\x_0$)</li><li>Expecting finite termination in floating point for large $n$: round-off slowly destroys conjugacy</li></ul>
 </div>
 <ol class="takeaways">
-<li>Exact line search along $\d_k$ gives three facts. The step length is $\alpha_k=-\g_k^\top\d_k/\d_k^\top A\d_k$. The gradient updates as $\g_{k+1}=\g_k+\alpha_kA\d_k$. The new gradient is perpendicular to the direction just searched: $\g_{k+1}^\top\d_k=0$.</li>
+<li>Exact line search along $\d_k$ gives three facts. The step length is $\alpha_k=-\g_k^\top\d_k/\d_k^\top A\d_k$. The gradient updates as $\g_{k+1}=\g_k+\alpha_kA\d_k$. The new gradient is perpendicular to the direction last searched: $\g_{k+1}^\top\d_k=0$.</li>
 <li>With $n$ conjugate directions, $\x_n=\x^\star$ from any start (Thm 5.1): in conjugate coordinates the problem is separable.</li>
 <li>Expanding Subspace (Thm 5.2): the gradient $\g_k$ is perpendicular to all the directions used so far, $\d_0,\dots,\d_{k-1}$. So $\x_k$ minimizes $f$ over the whole explored region $\x_0+\operatorname{span}\{\d_0,\dots,\d_{k-1}\}$. Equivalently, it minimizes the distance $\norm{\x-\x^\star}_A$ over that region.</li>
 </ol>
@@ -7425,10 +7425,28 @@ $$\d_k^\top A\d_k=\norm{\g_k}^2/\alpha_k$$</p></li>
 </div>
 <div class="box plain" data-k="In plain words">
 <p><b>The question.</b> CG finishes in $n$ steps, but $n$ may be a million. How good is $\x_k$ after only a few steps?</p>
-<p><b>The answer in one line.</b> After $k$ steps the error is $\e_k=Q(A)\e_0$, where $\e_k=\x_k-\x^\star$ and $Q$ is a polynomial of degree at most $k$ with $Q(0)=1$. CG automatically picks the best such $Q$.</p>
-<p><b>What "polynomial of a matrix" means.</b> Replace $t$ by $A$, so $1-2t+t^2$ becomes $I-2A+A^2$. Along an eigenvector $\v_i$ (where $A\v_i=\lambda_i\v_i$), $Q(A)$ multiplies by the plain number $Q(\lambda_i)$. So each error component along $\v_i$ gets multiplied by $Q(\lambda_i)$ (eigenvalues: <a href="#pm-linalg">Part M.1</a>).</p>
-<p><b>The tool you will use.</b> $\norm{\e_k}_A\le\max_i|Q(\lambda_i)|\cdot\norm{\e_0}_A$ holds for <b>any</b> $Q$ you choose with degree at most $k$ and $Q(0)=1$. To bound CG, you design a polynomial that is small at the eigenvalues of $A$. Here $\norm{\z}_A=\sqrt{\z^\top A\z}$, and $f(\x)-f^\star=\tfrac12\norm{\x-\x^\star}_A^2$ (<a href="#pm-convex">Part M.3</a>).</p>
-<p><b>Be able to:</b> derive $\e_k=Q(A)\e_0$ using $\g_0=A\e_0$; explain why CG's $Q$ is optimal (Expanding Subspace); write gradient descent's error as $\prod_j(1-h_jA)\e_0$.</p>
+<p><b>The answer in one line.</b> After $k$ steps the error is a polynomial in $A$ applied to the starting error:
+$$\e_k=Q(A)\e_0 .$$
+Here is what each piece means.</p>
+<ul>
+<li>The error: $\e_k=\x_k-\x^\star$, the distance from the solution.</li>
+<li>The polynomial $Q$ has degree at most $k$.</li>
+<li>It is pinned at zero: $Q(0)=1$.</li>
+</ul>
+<p>CG automatically picks the best such $Q$.</p>
+<p><b>What "polynomial of a matrix" means.</b> Replace the variable $t$ by the matrix $A$, and the constant $1$ by the identity $I$. For example, $1-2t+t^2$ becomes
+$$I-2A+A^2 .$$
+Now take an eigenvector $\v_i$ of $A$, so that $A\v_i=\lambda_i\v_i$. Along it, $Q(A)$ acts as multiplication by the plain number $Q(\lambda_i)$. So each error component along $\v_i$ gets multiplied by $Q(\lambda_i)$ (eigenvalues: <a href="#pm-linalg">Part M.1</a>).</p>
+<p><b>The tool you will use.</b> For <b>any</b> polynomial $Q$ you choose, with degree at most $k$ and $Q(0)=1$,
+$$\norm{\e_k}_A\le\max_i|Q(\lambda_i)|\cdot\norm{\e_0}_A .$$
+To bound CG, you design a polynomial that is small at the eigenvalues of $A$.</p>
+<p>The $A$-norm used here is $\norm{\z}_A=\sqrt{\z^\top A\z}$. It is tied to the function value by $f(\x)-f^\star=\tfrac12\norm{\x-\x^\star}_A^2$ (<a href="#pm-convex">Part M.3</a>).</p>
+<p><b>Be able to:</b></p>
+<ul>
+<li>Derive $\e_k=Q(A)\e_0$, using $\g_0=A\e_0$.</li>
+<li>Explain why CG's $Q$ is optimal (Expanding Subspace Theorem).</li>
+<li>Write gradient descent's error as a product: $\prod_j(1-h_jA)\,\e_0$.</li>
+</ul>
 </div>
 <div class="prose">
 <p><b>Picture first.</b> Each CG step adds a new search direction. After $k+1$ steps, your position is the starting point plus a combination of the vectors $\g_0,A\g_0,A^2\g_0,\dots,A^k\g_0$. Those are the starting gradient multiplied by powers of $A$, and a combination of powers of $A$ is a polynomial in $A$. So the leftover error is "a polynomial in $A$, applied to the starting error". Why we care: a polynomial in $A$ acts on each eigen-direction by an ordinary number. That turns a question about matrices (how big is the error?) into a question about a function of one variable (how big is the polynomial at the eigenvalues?). Part 8 supplies the facts used below (<a href="#conjugacy">conjugacy</a>, the <a href="#expanding-subspace">Expanding Subspace Theorem</a>, the <a href="#cg-method">CG method</a>); the linear algebra is in <a href="#pm-linalg">Part M.1</a>, and $f-f^\star=\tfrac12\norm{\cdot}_A^2$ is in <a href="#pm-convex">Part M.3</a>.</p>
@@ -7436,29 +7454,43 @@ $$\d_k^\top A\d_k=\norm{\g_k}^2/\alpha_k$$</p></li>
 <ul>
 <li><b>CG Theorem:</b> the directions span a Krylov subspace, $\operatorname{span}\{\d_0,\dots,\d_k\}=\mathcal K_k(\g_0):=\operatorname{span}\{\g_0,A\g_0,\dots,A^k\g_0\}$.</li>
 <li><b>Expanding Subspace Theorem:</b> $\x_{k+1}$ minimizes $f$ over the whole set $\x_0+\operatorname{span}\{\d_0,\dots,\d_k\}$, not only along the last direction.</li>
-<li><b>Error identity:</b> $f(\x)-f(\x^\star)=\tfrac12(\x-\x^\star)^\top A(\x-\x^\star)$. So minimizing $f$ is the same as minimizing the distance to $\x^\star$ measured in the $A$-norm below.</li>
+<li><b>Error identity:</b> the gap above the minimum is
+$$f(\x)-f(\x^\star)=\tfrac12(\x-\x^\star)^\top A(\x-\x^\star).$$
+So minimizing $f$ is the same as minimizing the distance to $\x^\star$ measured in the $A$-norm below.</li>
 </ul>
 <p>Finite termination in $n$ steps follows. The question this part answers is the practical one: <b>how small is the error after $k\ll n$ steps?</b></p>
 </div>
 <dl class="notation"><span class="label">Notation for this part</span>
 <dt>$\e_k=\x_k-\x^\star$</dt><dd>the error after $k$ steps</dd>
 <dt>$\norm{\z}_A=\sqrt{\z^\top A\z}$</dt><dd>the $A$-norm ("energy norm"); $f(\x)-f^\star=\tfrac12\norm{\x-\x^\star}_A^2$</dd>
-<dt>$0<\lambda_1\le\dots\le\lambda_n$</dt><dd>eigenvalues of $A$, with orthonormal eigenvectors $\v_1,\dots,\v_n$; $m=\lambda_1$, $L=\lambda_n$, $\kappa=L/m$</dd>
+<dt>$0<\lambda_1\le\dots\le\lambda_n$</dt><dd>the eigenvalues of $A$, in increasing order; their orthonormal eigenvectors are $\v_1,\dots,\v_n$</dd>
+<dt>$m,\ L,\ \kappa$</dt><dd>smallest eigenvalue $m=\lambda_1$, largest eigenvalue $L=\lambda_n$, condition number $\kappa=L/m$</dd>
 <dt>$\xi_i$</dt><dd>coordinates of the starting error in the eigenbasis: $\e_0=\sum_i\xi_i\v_i$</dd>
 <dt>$\mathcal P_k$</dt><dd>real polynomials of degree at most $k$</dd>
 <dt>$\mathcal Q_k$</dt><dd>residual polynomials: those $Q\in\mathcal P_k$ with $Q(0)=1$</dd>
 </dl>
 
 <div class="prose">
-<p><b>Reading the symbols aloud.</b> $\mathcal K_k(\g_0)$: "the Krylov space", all combinations of $\g_0,\dots,A^k\g_0$. $\min_{Q\in\mathcal Q_k}$: "the smallest value over all polynomials $Q$ in the family". $\max_i|Q(\lambda_i)|$: "the largest absolute value of $Q$ among the eigenvalues". $\deg Q$: the highest power of $t$ in $Q$. The Greek letters are only names: $\xi$ ("xi") for the coordinates of the error, $\lambda$ for eigenvalues, $\gamma$ for polynomial coefficients.</p>
+<p><b>Reading the symbols aloud.</b></p>
+<ul>
+<li>$\mathcal K_k(\g_0)$: "the Krylov space", all combinations of $\g_0,\dots,A^k\g_0$.</li>
+<li>$\min_{Q\in\mathcal Q_k}$: "the smallest value over all polynomials $Q$ in the family".</li>
+<li>$\max_i|Q(\lambda_i)|$: "the largest absolute value of $Q$ among the eigenvalues".</li>
+<li>$\deg Q$: the highest power of $t$ in $Q$.</li>
+</ul>
+<p>The Greek letters are only names: $\xi$ ("xi") for the coordinates of the error, $\lambda$ for eigenvalues, $\gamma$ for polynomial coefficients.</p>
 <h3>Plugging a matrix into a polynomial</h3>
 <p>A polynomial such as $t^2-2t$ takes a number and returns a number. Matrices can be multiplied and added too, so we can feed in a matrix instead: $A^2-2A$. The only rule is that a constant $c$ becomes $cI$. This is the one new idea of the chapter, and the next lemma is why it is useful.</p>
-<p>For a polynomial $P(t)=\gamma_0+\gamma_1t+\dots+\gamma_kt^k$, define $P(A)=\gamma_0I+\gamma_1A+\dots+\gamma_kA^k$. If $A\v=\lambda\v$, then
+<p>For a polynomial $P(t)=\gamma_0+\gamma_1t+\dots+\gamma_kt^k$, define the matrix
+$$P(A)=\gamma_0I+\gamma_1A+\dots+\gamma_kA^k.$$
+Now suppose $\v$ is an eigenvector, $A\v=\lambda\v$. Applying $A$ twice gives
 $$A^2\v=A(\lambda\v)=\lambda^2\v,$$
 and in general $A^j\v=\lambda^j\v$. Adding up:</p>
 </div>
 <div class="box thm" data-k="Lemma" data-name="Polynomials of a symmetric matrix">
-<p>$P(A)\v_i=P(\lambda_i)\,\v_i$ for every eigenpair $(\lambda_i,\v_i)$. So in the eigenbasis, $P(A)$ multiplies the $i$-th coordinate by the number $P(\lambda_i)$.</p>
+<p>For every eigenpair $(\lambda_i,\v_i)$ of $A$,
+$$P(A)\v_i=P(\lambda_i)\,\v_i .$$
+So in the eigenbasis, $P(A)$ multiplies the $i$-th coordinate by the number $P(\lambda_i)$.</p>
 </div>
 <div class="prose">
 <p><b>What this says.</b> If $\v$ is an eigenvector, then $P(A)$ acts on $\v$ exactly like multiplication by the number $P(\lambda)$. The proof is one line:
@@ -7466,14 +7498,30 @@ $$\begin{aligned}P(A)\v&=\gamma_0\v+\gamma_1\lambda\v+\dots+\gamma_k\lambda^k\v 
 A matrix polynomial is therefore a different scaling factor for every eigen-direction.</p>
 </div>
 <div class="prose">
-<p>Example: take $A=\begin{pmatrix}1&0\\0&4\end{pmatrix}$ and $P(t)=1-\tfrac t2$. Then
+<p>Example:</p>
+<ul>
+<li>Matrix: $A=\begin{pmatrix}1&0\\0&4\end{pmatrix}$.</li>
+<li>Polynomial: $P(t)=1-\tfrac t2$.</li>
+</ul>
+<p>Replacing $t$ by $A$ gives
 $$P(A)=I-\tfrac12A=\begin{pmatrix}1/2&0\\0&-1\end{pmatrix}.$$
-The diagonal entries are $P(1)$ and $P(4)$.</p>
+The diagonal entries are $P(1)$ and $P(4)$, the polynomial evaluated at the two eigenvalues.</p>
 </div>
 <div class="example">
-<p class="problem">Let $A=\begin{pmatrix}3&1\\1&3\end{pmatrix}$ (eigenvalues $4$ and $2$, unit eigenvectors $\v_1=(1,1)^\top/\sqrt2$ and $\v_2=(1,-1)^\top/\sqrt2$) and $\e_0=(2,0)^\top$. Take $Q(t)=1-\tfrac t3$. Compute $Q(A)\e_0$ in two ways and its $A$-norm.</p>
+<div class="problem">
+<p>Given:</p>
+<ul>
+<li>Matrix: $A=\begin{pmatrix}3&1\\1&3\end{pmatrix}$.</li>
+<li>Eigenvalues of $A$: $4$ and $2$.</li>
+<li>Unit eigenvector for eigenvalue $4$: $\v_1=(1,1)^\top/\sqrt2$.</li>
+<li>Unit eigenvector for eigenvalue $2$: $\v_2=(1,-1)^\top/\sqrt2$.</li>
+<li>Starting error: $\e_0=(2,0)^\top$.</li>
+<li>Polynomial: $Q(t)=1-\tfrac t3$.</li>
+</ul>
+<p>Compute $Q(A)\e_0$ in two ways, and find its $A$-norm.</p>
+</div>
 <ol class="steps">
-<li><p>Directly, $Q(A)=I-\tfrac13A$. Then
+<li><p>Directly, the matrix polynomial is $Q(A)=I-\tfrac13A$. Then
 $$Q(A)\e_0=\e_0-\tfrac13A\e_0=\begin{pmatrix}2\\0\end{pmatrix}-\tfrac13\begin{pmatrix}6\\2\end{pmatrix}=\begin{pmatrix}0\\-\tfrac23\end{pmatrix}.$$</p><p class="why-step">Replace $t$ by $A$ and the constant $1$ by $I$.</p></li>
 <li><p>Eigen-expansion: $\e_0=\xi_1\v_1+\xi_2\v_2$ with coordinates
 $$\xi_1=\v_1^\top\e_0=\sqrt2,\qquad \xi_2=\v_2^\top\e_0=\sqrt2.$$
@@ -7497,9 +7545,11 @@ $$\frac{\norm{Q(A)\e_0}_A}{\norm{\e_0}_A}=\sqrt{\frac{4/3}{12}}=\tfrac13.$$</p><
 <div class="prose">
 
 <h3>Step 1: CG's iterates are "$\x_0$ + a polynomial in $A$ times $\g_0$"</h3>
-<p>Since $\x_{k+1}=\x_0+\alpha_0\d_0+\dots+\alpha_k\d_k$ and the $\d_i$ span $\mathcal K_k(\g_0)$, there are numbers $\gamma_0,\dots,\gamma_k$ with
-$$\x_{k+1}=\x_0+\gamma_0\g_0+\gamma_1A\g_0+\dots+\gamma_kA^k\g_0=\x_0+P_k(A)\,\g_0,\qquad P_k\in\mathcal P_k .$$
-This is [NW] (5.25) and [LD] §9.4 (24).</p>
+<p>The next point is the start plus the steps taken:
+$$\x_{k+1}=\x_0+\alpha_0\d_0+\dots+\alpha_k\d_k .$$
+The directions $\d_i$ span $\mathcal K_k(\g_0)$. So there are numbers $\gamma_0,\dots,\gamma_k$ with
+$$\x_{k+1}=\x_0+\gamma_0\g_0+\gamma_1A\g_0+\dots+\gamma_kA^k\g_0=\x_0+P_k(A)\,\g_0,$$
+where $P_k\in\mathcal P_k$ is a polynomial of degree at most $k$. This is [NW] (5.25) and [LD] §9.4 (24).</p>
 <p><b>Why this is true.</b></p>
 <ol>
 <li>Each CG step adds a multiple of the current direction, $\x_{k+1}=\x_k+\alpha_k\d_k$. Adding them up gives the first equation.</li>
@@ -7512,18 +7562,21 @@ $$P_k(t)=\gamma_0+\gamma_1t+\dots+\gamma_kt^k.$$</li>
 <h3>Step 2: the error is $Q(A)\e_0$ with $Q(0)=1$</h3>
 <p>Because $\b=A\x^\star$, the first gradient is $\g_0=A\x_0-A\x^\star=A\e_0$. Subtract $\x^\star$ from Step 1:
 $$\begin{aligned}\e_{k+1}&=\e_0+P_k(A)A\e_0 &&\text{(substitute }\g_0\text{)}\\ &=\big[I+AP_k(A)\big]\e_0 &&\text{(factor out }\e_0\text{)}\\ &=Q_{k+1}(A)\,\e_0 &&\text{(define }Q_{k+1}\text{)}\end{aligned}$$
-with
+with the new polynomial
 $$Q_{k+1}(t):=1+t\,P_k(t).$$
-$Q_{k+1}$ has degree at most $k+1$ and $Q_{k+1}(0)=1$.</p>
-<p>Conversely, any $Q$ of degree $\le k+1$ with $Q(0)=1$ arises this way. The polynomial $Q(t)-1$ vanishes at $t=0$, so
-$$P(t)=\frac{Q(t)-1}{t}$$
-is a polynomial of degree $\le k$.</p>
+It has two properties:</p>
+<ul>
+<li>Its degree is at most $k+1$.</li>
+<li>Its value at zero is $Q_{k+1}(0)=1$.</li>
+</ul>
+<p>Conversely, any $Q$ of degree $\le k+1$ with $Q(0)=1$ arises this way. The polynomial $Q(t)-1$ vanishes at $t=0$, so dividing by $t$ leaves a polynomial:
+$$P(t)=\frac{Q(t)-1}{t},\qquad\deg P\le k.$$</p>
 <p><b>The derivation, line by line.</b></p>
 <ol>
 <li>Start from $\x_{k+1}=\x_0+P_k(A)\g_0$ (Step 1).</li>
 <li>Subtract $\x^\star$ from both sides:
 $$\e_{k+1}=\x_0-\x^\star+P_k(A)\g_0=\e_0+P_k(A)\g_0.$$
-The left side is the definition of $\e_{k+1}$. The first two terms on the right are the definition of $\e_0$.</li>
+The left side is the definition of $\e_{k+1}$. The first two terms on the right, $\x_0-\x^\star$, are the definition of $\e_0$.</li>
 <li>Replace $\g_0$ by $A\e_0$, using $\b=A\x^\star$:
 $$\g_0=A\x_0-\b=A\x_0-A\x^\star=A\e_0.$$</li>
 <li>Now $\e_{k+1}=\e_0+P_k(A)A\e_0$. Write $\e_0=I\e_0$ and factor out $\e_0$ on the right:
@@ -7538,16 +7591,21 @@ Matrix polynomials in the same $A$ commute, so $P_k(A)A=AP_k(A)$.</li>
 <p><b>Check on the smallest case.</b> With $P_0=-\alpha_0$ we get $Q_1(t)=1-\alpha_0t$: one CG step multiplies the error component along $\v_i$ by $1-\alpha_0\lambda_i$, the familiar steepest-descent step.</p>
 </div>
 <div class="box def" data-k="Definition" data-name="Residual polynomials">
-<p>$\mathcal Q_k=\{Q\in\mathcal P_k:\ Q(0)=1\}$. The map $P\mapsto Q(t)=1+tP(t)$ is a one-to-one correspondence between $\mathcal P_k$ and $\mathcal Q_{k+1}$. After $k$ steps of CG, $\e_k=Q_k(A)\e_0$ for some $Q_k\in\mathcal Q_k$.</p>
+<p>The family of <b>residual polynomials</b> of degree at most $k$ is
+$$\mathcal Q_k=\{Q\in\mathcal P_k:\ Q(0)=1\}.$$
+The map $P\mapsto Q(t)=1+tP(t)$ is a one-to-one correspondence between $\mathcal P_k$ and $\mathcal Q_{k+1}$. After $k$ steps of CG, the error is $\e_k=Q_k(A)\e_0$ for some $Q_k\in\mathcal Q_k$.</p>
 </div>
 <div class="callout"><b>Careful with indices:</b> the point $\x_{k+1}$ uses a "position" polynomial $P_k$ of degree $k$ but an error polynomial $Q_{k+1}$ of degree $k+1$. Off-by-one slips here are the most common mistake in this topic. Also, the constraint is $Q(0)=1$, not "$Q$ is monic" (leading coefficient 1).</div>
 
 <div class="story"><span class="label">Gradient descent is a polynomial too</span>
-<p>Take gradient descent with any step sizes: $\y_0=\x_0$ and $\y_{j+1}=\y_j-h_j\grad f(\y_j)$. Since $\grad f(\y_j)=A(\y_j-\x^\star)$, each step multiplies the error by $I-h_jA$:
+<p>Take gradient descent with any step sizes $h_j$. Start at $\y_0=\x_0$ and iterate
+$$\y_{j+1}=\y_j-h_j\grad f(\y_j).$$
+The gradient is $\grad f(\y_j)=A(\y_j-\x^\star)$, so each step multiplies the error by $I-h_jA$:
 $$\y_{j+1}-\x^\star=(I-h_jA)(\y_j-\x^\star).$$
-After $k$ steps:
+After $k$ steps the error is
 $$\y_k-\x^\star=Q(A)\e_0,\qquad Q(t)=\prod_{j=0}^{k-1}(1-h_jt).$$
-This $Q$ has degree $k$ and $Q(0)=1$. Each step size $h_j$ places a root of $Q$ at $t=1/h_j$. A constant step $h$ gives $Q(t)=(1-ht)^k$: all $k$ roots stacked at the same place. So gradient descent, CG and many other methods all produce errors of the form $Q(A)\e_0$. What differs is <i>which</i> $Q$.</p>
+This $Q$ has degree $k$ and $Q(0)=1$. Each step size $h_j$ places a root of $Q$ at $t=1/h_j$. A constant step $h$ gives $Q(t)=(1-ht)^k$: all $k$ roots stacked at the same place.</p>
+<p>So gradient descent, CG and many other methods all produce errors of the form $Q(A)\e_0$. What differs is <i>which</i> $Q$.</p>
 </div>
 
 <div class="prose">
@@ -7572,9 +7630,13 @@ Then use the correspondence $P\leftrightarrow Q$.</li>
 <p><b>What this says.</b> Imagine all the ways to choose $k+1$ numbers $\gamma_0,\dots,\gamma_k$. Each choice gives a point in $\x_0+\mathcal K_k(\g_0)$, with error $Q(A)\e_0$ for the matching $Q$. CG's choice is the one with the smallest $A$-norm of error. Any other choice, such as gradient descent's step sizes, is at least as far from $\x^\star$.</p>
 
 <h3>Step 3: eigenvalues turn the matrix problem into a scalar one</h3>
-<p>Expand the starting error in the eigenbasis, $\e_0=\sum_i\xi_i\v_i$. By the lemma, $Q(A)\e_0=\sum_iQ(\lambda_i)\xi_i\v_i$. For any coefficients $c_i$,
-$$\Big\lVert\sum_ic_i\v_i\Big\rVert_A^2=\sum_{i,j}c_ic_j\,\v_i^\top A\v_j=\sum_i\lambda_ic_i^2,$$
-because $\v_i^\top A\v_j=\lambda_j\v_i^\top\v_j$ is $0$ for $i\ne j$ and $\lambda_i$ for $i=j$. Therefore
+<p>Expand the starting error in the eigenbasis:
+$$\e_0=\sum_i\xi_i\v_i .$$
+By the lemma, the polynomial acts on each piece separately:
+$$Q(A)\e_0=\sum_iQ(\lambda_i)\xi_i\v_i .$$
+For any coefficients $c_i$, the squared $A$-norm of the combination $\sum_ic_i\v_i$ has no cross terms:
+$$\Big\lVert\sum_ic_i\v_i\Big\rVert_A^2=\sum_{i,j}c_ic_j\,\v_i^\top A\v_j=\sum_i\lambda_ic_i^2 .$$
+The reason is that $\v_i^\top A\v_j=\lambda_j\v_i^\top\v_j$, which is $0$ for $i\ne j$ and $\lambda_i$ for $i=j$. Therefore
 $$\norm{Q(A)\e_0}_A^2=\sum_{i=1}^n\lambda_i\,Q(\lambda_i)^2\,\xi_i^2,\qquad \norm{\e_0}_A^2=\sum_{i=1}^n\lambda_i\,\xi_i^2 .$$
 Read it like this: <b>the error component along $\v_i$ gets multiplied by the number $Q(\lambda_i)$</b>.</p>
 <p><b>Why the cross terms vanish.</b></p>
@@ -7590,13 +7652,19 @@ $$\v_i^\top A\v_j=\lambda_j\v_i^\top\v_j=0.$$</li>
 <p><b>Intuition.</b> The error is a mixture of components, each scaled by $Q(\lambda_i)$. If every scale factor has size at most $\rho$, the total cannot exceed $\rho$ times the original. So the problem becomes: find a polynomial that is small at the eigenvalues. We do not need to know CG's polynomial; any polynomial we can exhibit gives a guarantee.</p>
 </div>
 <div class="box thm" data-k="Theorem" data-name="The min–max bound ([LD] §9.4 Thm 2; [NW] (5.32)–(5.33))">
-<p>For every $k\ge0$ and every $Q\in\mathcal Q_{k+1}$,
+<p>For every $k\ge0$ and every residual polynomial $Q\in\mathcal Q_{k+1}$,
 $$\norm{\e_{k+1}}_A^2\le\max_{1\le i\le n}Q(\lambda_i)^2\;\norm{\e_0}_A^2 .$$
-Hence, after $k$ steps, $\displaystyle\norm{\e_k}_A\le\Big(\min_{Q\in\mathcal Q_k}\ \max_{i}\,|Q(\lambda_i)|\Big)\norm{\e_0}_A$.</p>
+Hence, after $k$ steps, the error obeys
+$$\norm{\e_k}_A\le\Big(\min_{Q\in\mathcal Q_k}\ \max_{i}\,|Q(\lambda_i)|\Big)\norm{\e_0}_A .$$</p>
 </div>
 <div class="prose">
 <p><b>What this says.</b> Pick any polynomial of degree $\le k$ with $Q(0)=1$. Look at its largest absolute value $\rho$ over the eigenvalues of $A$. Then CG's $k$-th error is at most $\rho$ times the initial one, in the $A$-norm. </p>
-<p>Small numbers: take eigenvalues $\{1,4\}$ and $Q(t)=1-\tfrac25t$. Then
+<p>Small numbers:</p>
+<ul>
+<li>Eigenvalues of $A$: $1$ and $4$.</li>
+<li>Polynomial: $Q(t)=1-\tfrac25t$.</li>
+</ul>
+<p>Its values at the eigenvalues are
 $$Q(1)=0.6,\qquad Q(4)=-0.6.$$
 So $\norm{\e_1}_A\le0.6\norm{\e_0}_A$ for every start. Because the bound uses the same number for every $\e_0$, it also holds for the worst $\e_0$.</p>
 </div>
@@ -7607,8 +7675,8 @@ So $\norm{\e_1}_A\le0.6\norm{\e_0}_A$ for every start. Because the bound uses th
 <li><p>Fix any $Q\in\mathcal Q_{k+1}$. By the optimality theorem, $\norm{\e_{k+1}}_A^2\le\norm{Q(A)\e_0}_A^2$.</p><p class="why-step">CG achieves the minimum over all of $\mathcal Q_{k+1}$, so any particular $Q$ can only do worse or equal.</p></li>
 <li><p>Expand:
 $$\norm{Q(A)\e_0}_A^2=\sum_i\lambda_iQ(\lambda_i)^2\xi_i^2.$$</p><p class="why-step">This is the eigen-expansion formula of Step 3.</p></li>
-<li><p>Bound each $Q(\lambda_i)^2$ by the largest one:
-$$\sum_i\lambda_iQ(\lambda_i)^2\xi_i^2\le\Big(\max_jQ(\lambda_j)^2\Big)\sum_i\lambda_i\xi_i^2.$$</p><p class="why-step">Every weight $\lambda_i\xi_i^2$ is $\ge0$ (here $A\succ0$ is used), so replacing each $Q(\lambda_i)^2$ by the largest one can only increase the sum.</p></li>
+<li><p>Bound each factor $Q(\lambda_i)^2$ by the largest one:
+$$\sum_i\lambda_iQ(\lambda_i)^2\xi_i^2\le\Big(\max_jQ(\lambda_j)^2\Big)\sum_i\lambda_i\xi_i^2.$$</p><p class="why-step">Every weight $\lambda_i\xi_i^2$ is $\ge0$, because $A\succ0$. So replacing each $Q(\lambda_i)^2$ by the largest one can only increase the sum.</p></li>
 <li><p>The last sum is $\sum_i\lambda_i\xi_i^2=\norm{\e_0}_A^2$, which gives the bound.</p>
 <p>The left side does not depend on $Q$, so we may take the minimum over $Q$ on the right. Square roots give the second form.</p><p class="why-step">The bound holds for every $Q$ simultaneously, so it holds for the best one.</p></li>
 </ol>
@@ -7625,15 +7693,23 @@ $$\sum_i\lambda_iQ(\lambda_i)^2\xi_i^2\le\Big(\max_jQ(\lambda_j)^2\Big)\sum_i\la
 </div>
 
 <div class="example">
-<p class="problem">Let $A=\begin{pmatrix}1&0\\0&4\end{pmatrix}$, $\b=\0$ (so $\x^\star=\0$) and $\x_0=(1,1)^\top$. Run one CG step, find $Q_1$, and compare the actual error with the min–max bound.</p>
+<div class="problem">
+<p>Given:</p>
+<ul>
+<li>Matrix: $A=\begin{pmatrix}1&0\\0&4\end{pmatrix}$.</li>
+<li>Linear term: $\b=\0$, so the minimizer is $\x^\star=\0$.</li>
+<li>Starting point: $\x_0=(1,1)^\top$.</li>
+</ul>
+<p>Run one CG step and find the polynomial $Q_1$. Then compare the actual error with the min–max bound.</p>
+</div>
 <ol class="steps">
 <li><p>Gradient and direction:
 $$\g_0=A\x_0=(1,4)^\top,\qquad \d_0=-\g_0.$$
 Step length:
 $$\alpha_0=\frac{\norm{\g_0}^2}{\d_0^\top A\d_0}=\frac{1+16}{1+64}=\frac{17}{65}.$$</p><p class="why-step">CG's first step is steepest descent with exact line search.</p></li>
-<li><p>New point, which equals the error since $\x^\star=\0$:
+<li><p>The new point equals the error, since $\x^\star=\0$:
 $$\x_1=\x_0-\tfrac{17}{65}\g_0=\big(\tfrac{48}{65},-\tfrac{3}{65}\big)^\top=\e_1.$$
-The polynomial is $Q_1(t)=1-\tfrac{17}{65}t$, with values
+The polynomial is $Q_1(t)=1-\tfrac{17}{65}t$, with values at the two eigenvalues
 $$Q_1(1)=\tfrac{48}{65},\qquad Q_1(4)=-\tfrac{3}{65}.$$
 These are exactly the two components of $\e_1$.</p><p class="why-step">$\e_0=(1,1)$ means $\xi_1=\xi_2=1$ (the eigenvectors are the coordinate axes), so component $i$ of $\e_1$ is $Q_1(\lambda_i)\cdot1$.</p></li>
 <li><p>Error after one step:
@@ -7645,7 +7721,9 @@ $$\norm{\e_1}_A/\norm{\e_0}_A\approx0.333.$$</p><p class="why-step">The weighted
 <li><p>Compare three numbers.</p>
 <ul>
 <li>The min–max bound with this $Q_1$: $\max\big(\tfrac{48}{65},\tfrac{3}{65}\big)\approx0.738$.</li>
-<li>The best degree-1 worst case on $\{1,4\}$ is $Q(t)=1-\tfrac25t$, with $|Q(1)|=|Q(4)|=0.6$. This equals $\frac{\kappa-1}{\kappa+1}$.</li>
+<li>The best degree-1 worst case on the eigenvalues $1$ and $4$ uses the polynomial $Q(t)=1-\tfrac25t$.
+Both $|Q(1)|$ and $|Q(4)|$ equal $0.6$.
+This number is $\frac{\kappa-1}{\kappa+1}$.</li>
 <li>CG's actual ratio: $0.333$, which beats both.</li>
 </ul><p class="why-step">The bound must hold for every $\e_0$; CG adapts to this particular $\e_0$, whose larger weight sits on $\lambda=4$, so it pushes $Q$ close to $0$ there.</p></li>
 <li><p>At step 2, $Q_2(t)=(1-t)(1-\tfrac t4)$ vanishes at both eigenvalues, so $\e_2=\0$.</p><p class="why-step">A degree-2 polynomial with $Q(0)=1$ can have roots at both eigenvalues; CG's optimal choice must achieve error $0$, matching finite termination for $n=2$.</p></li>
@@ -7654,7 +7732,15 @@ $$\norm{\e_1}_A/\norm{\e_0}_A\approx0.333.$$</p><p class="why-step">The weighted
 
 <div class="practice">
 <div class="prob" data-id="cgp-polynomial-p1" data-ans="9/14;-1/14" data-labels="Q₁(1);Q₁(3)">
-<div class="stem"><p>$A=\operatorname{diag}(1,3)$, $\b=\0$, $\x_0=(1,1)^\top$. After one CG step, $\e_1=Q_1(A)\e_0$. Find $Q_1(1)$ and $Q_1(3)$.</p></div>
+<div class="stem">
+<p>Given:</p>
+<ul>
+<li>Matrix: $A=\operatorname{diag}(1,3)$.</li>
+<li>Linear term: $\b=\0$.</li>
+<li>Starting point: $\x_0=(1,1)^\top$.</li>
+</ul>
+<p>After one CG step the error is $\e_1=Q_1(A)\e_0$. Find the two numbers $Q_1(1)$ and $Q_1(3)$.</p>
+</div>
 <div class="hint"><p>Use $Q_1(t)=1-\alpha_0t$ with $\alpha_0=\norm{\g_0}^2/\g_0^\top A\g_0$ and $\g_0=(1,3)$.</p></div>
 <div class="sol"><p>Step length:
 $$\alpha_0=\frac{1+9}{1+27}=\frac{5}{14}.$$
@@ -7666,12 +7752,27 @@ Error ratio:
 $$\sqrt{\frac{(81+3)/196}{4}}=\sqrt{3/28}\approx0.327.$$</p></div>
 </div>
 <div class="prob" data-id="cgp-polynomial-p2" data-ans="5;4" data-labels="deg Q ≤;deg P ≤">
-<div class="stem"><p>After 5 CG steps, $\x_5=\x_0+P(A)\g_0$ and $\e_5=Q(A)\e_0$. What are the largest possible degrees of $Q$ and of $P$?</p></div>
+<div class="stem">
+<p>Given:</p>
+<ul>
+<li>After 5 CG steps the point is $\x_5=\x_0+P(A)\g_0$.</li>
+<li>The error is $\e_5=Q(A)\e_0$.</li>
+</ul>
+<p>What are the largest possible degrees of $Q$ and of $P$?</p>
+</div>
 <div class="hint"><p>$\x_5-\x_0\in\mathcal K_4(\g_0)=\operatorname{span}\{\g_0,\dots,A^4\g_0\}$, and $Q(t)=1+tP(t)$.</p></div>
 <div class="sol"><p>$\x_5-\x_0$ is a combination of $\d_0,\dots,\d_4$, which span $\mathcal K_4(\g_0)$, so $\deg P\le4$. Then $Q=1+tP$ has degree $\le5$.</p></div>
 </div>
 <div class="prob" data-id="cgp-polynomial-p3" data-ans="0.375" data-labels="bound">
-<div class="stem"><p>$A$ has eigenvalues $1,2,4$. Gradient descent with steps $h_0=\tfrac12$, $h_1=\tfrac14$ has error polynomial $Q(t)=(1-\tfrac t2)(1-\tfrac t4)$. Using this $Q$ in the min–max bound, what upper bound do you get on CG's $\norm{\e_2}_A/\norm{\e_0}_A$?</p></div>
+<div class="stem">
+<p>Given:</p>
+<ul>
+<li>Eigenvalues of $A$: the three values $1$, $2$ and $4$.</li>
+<li>Gradient descent with step sizes $h_0=\tfrac12$ and $h_1=\tfrac14$.</li>
+<li>Its error polynomial is $Q(t)=(1-\tfrac t2)(1-\tfrac t4)$.</li>
+</ul>
+<p>Use this $Q$ in the min–max bound. What upper bound do you get on CG's ratio $\norm{\e_2}_A/\norm{\e_0}_A$?</p>
+</div>
 <div class="hint"><p>Evaluate $|Q|$ at each eigenvalue and take the largest.</p></div>
 <div class="sol"><p>Values of $Q$ at the eigenvalues:
 $$Q(1)=\tfrac12\cdot\tfrac34=\tfrac38,\qquad Q(2)=0,\qquad Q(4)=(-1)\cdot0=0.$$
@@ -7689,14 +7790,30 @@ has degree 2 and $Q(0)=1$. The others fail:</p>
 </ul></div>
 </div>
 <div class="prob" data-id="p9x-poly-1" data-ans="-1;-1" data-labels="first entry;second entry">
-<div class="stem"><p>Let $A=\begin{pmatrix}3&1\\1&3\end{pmatrix}$ and $\e_0=(2,0)^\top$. Compute $Q(A)\e_0$ for $Q(t)=1-\tfrac t2$.</p></div>
+<div class="stem">
+<p>Given:</p>
+<ul>
+<li>Matrix: $A=\begin{pmatrix}3&1\\1&3\end{pmatrix}$.</li>
+<li>Starting error: $\e_0=(2,0)^\top$.</li>
+<li>Polynomial: $Q(t)=1-\tfrac t2$.</li>
+</ul>
+<p>Compute the vector $Q(A)\e_0$.</p>
+</div>
 <div class="hint"><p>Use $Q(A)\e_0=\e_0-\tfrac12A\e_0$ and $A\e_0=(6,2)^\top$.</p></div>
 <div class="sol"><p>Compute:
 $$Q(A)\e_0=(2,0)^\top-\tfrac12(6,2)^\top=(2-3,\ 0-1)^\top=(-1,-1)^\top.$$
 So both entries are $-1$.</p></div>
 </div>
 <div class="prob" data-id="p9x-poly-2" data-ans="1/3" data-labels="ratio">
-<div class="stem"><p>For the matrix $A=\begin{pmatrix}3&1\\1&3\end{pmatrix}$ (eigenvalues $2,4$) and any start, what ratio bound $\norm{\e_1}_A/\norm{\e_0}_A$ from the polynomial $Q(t)=1-\tfrac t3$ in the min–max bound?</p></div>
+<div class="stem">
+<p>Given:</p>
+<ul>
+<li>Matrix: $A=\begin{pmatrix}3&1\\1&3\end{pmatrix}$, with eigenvalues $2$ and $4$.</li>
+<li>Polynomial: $Q(t)=1-\tfrac t3$.</li>
+<li>Any starting error $\e_0$.</li>
+</ul>
+<p>What ratio bound on $\norm{\e_1}_A/\norm{\e_0}_A$ does this polynomial give in the min–max bound?</p>
+</div>
 <div class="hint"><p>Evaluate $|Q|$ at $t=2$ and $t=4$ and take the larger.</p></div>
 <div class="sol"><p>Values:
 $$Q(2)=\tfrac13,\qquad Q(4)=-\tfrac13.$$
@@ -7705,13 +7822,14 @@ The larger absolute value is $\tfrac13$, so the bound is $\tfrac13$.</p></div>
 </div>
 
 <div class="dodont">
-<ul><li>Write $\g_0=A\e_0$ (because $\b=A\x^\star$) to pass from $\x_0+P(A)\g_0$ to $Q(A)\e_0$</li><li>Check both conditions on a residual polynomial: the degree, and $Q(0)=1$</li><li>Measure the error in the $A$-norm, where the eigen-expansion has no cross terms</li><li>Remember any admissible $Q$ gives an upper bound; CG's own $Q$ is at least as good</li></ul>
-<ul><li>Saying CG's polynomial is "monic" or "the Chebyshev polynomial": it is whatever minimizes $\norm{Q(A)\e_0}_A$, and depends on $\e_0$</li><li>Mixing up $P_k$ (degree $k$, position) and $Q_{k+1}$ (degree $k+1$, error)</li><li>Forgetting the weights $\lambda_i$ in $\norm{Q(A)\e_0}_A^2=\sum\lambda_iQ(\lambda_i)^2\xi_i^2$</li></ul>
+<ul><li>Use the identity $\g_0=A\e_0$ (it holds because $\b=A\x^\star$) to pass from $\x_0+P(A)\g_0$ to $Q(A)\e_0$</li><li>Check both conditions on a residual polynomial: the degree, and $Q(0)=1$</li><li>Measure the error in the $A$-norm, where the eigen-expansion has no cross terms</li><li>Remember any admissible $Q$ gives an upper bound; CG's own $Q$ is at least as good</li></ul>
+<ul><li>Saying CG's polynomial is "monic" or "the Chebyshev polynomial": it is whatever minimizes $\norm{Q(A)\e_0}_A$, and depends on $\e_0$</li><li>Mixing up the position polynomial $P_k$ (degree $k$) and the error polynomial $Q_{k+1}$ (degree $k+1$)</li><li>Forgetting the weights $\lambda_i$ in $\norm{Q(A)\e_0}_A^2=\sum\lambda_iQ(\lambda_i)^2\xi_i^2$</li></ul>
 </div>
 <ol class="takeaways">
-<li>CG's iterates satisfy $\e_k=Q_k(A)\e_0$ with $\deg Q_k\le k$ and $Q_k(0)=1$, and CG's $Q_k$ minimizes $\norm{Q(A)\e_0}_A$ over all such polynomials.</li>
-<li>In the eigenbasis, $Q(A)$ multiplies the error component along $\v_i$ by $Q(\lambda_i)$, so $\norm{Q(A)\e_0}_A^2=\sum_i\lambda_iQ(\lambda_i)^2\xi_i^2$.</li>
-<li>Min–max bound: $\norm{\e_k}_A\le\max_i|Q(\lambda_i)|\,\norm{\e_0}_A$ for every $Q\in\mathcal Q_k$, so bounding CG means designing a polynomial that is small at the eigenvalues.</li>
+<li>CG's error is $\e_k=Q_k(A)\e_0$, where $Q_k$ has degree at most $k$ and $Q_k(0)=1$. Among all such polynomials, CG's $Q_k$ is the one that minimizes $\norm{Q(A)\e_0}_A$.</li>
+<li>In the eigenbasis, $Q(A)$ multiplies the error component along $\v_i$ by the number $Q(\lambda_i)$. Hence
+$$\norm{Q(A)\e_0}_A^2=\sum_i\lambda_iQ(\lambda_i)^2\xi_i^2 .$$</li>
+<li>Min–max bound: for every residual polynomial $Q\in\mathcal Q_k$, $\norm{\e_k}_A\le\max_i|Q(\lambda_i)|\,\norm{\e_0}_A$. So bounding CG means designing a polynomial that is small at the eigenvalues.</li>
 </ol>
 <div class="quiz" data-id="cgp-polynomial">
 <div class="q"><div class="q-text"><p>After 3 CG steps, $\e_3=Q(A)\e_0$, where $Q$ is…</p></div>
@@ -7747,7 +7865,9 @@ The larger absolute value is $\tfrac13$, so the bound is $\tfrac13$.</p></div>
 <p>A marksman with $k$ shots: with $k$ targets, every target can be hit. If the targets stand in a few tight groups, one shot per group almost does the job.</p>
 </div>
 <div class="box plain" data-k="In plain words">
-<p><b>Few distinct eigenvalues means few steps.</b> If $A$ has only $r$ different eigenvalues $\tau_1,\dots,\tau_r$, the polynomial $Q(t)=(1-t/\tau_1)\cdots(1-t/\tau_r)$ has $Q(0)=1$ and is zero at every eigenvalue. So CG is exact after at most $r$ steps.</p>
+<p><b>Few distinct eigenvalues means few steps.</b> Suppose $A$ has only $r$ different eigenvalues $\tau_1,\dots,\tau_r$. Build the polynomial
+$$Q(t)=(1-t/\tau_1)\cdots(1-t/\tau_r).$$
+It equals $1$ at $t=0$ and is zero at every eigenvalue. So CG is exact after at most $r$ steps.</p>
 <p><b>Clusters are almost as good.</b> Put one root of $Q$ inside each tight group of eigenvalues, and $Q$ is tiny on the whole group. With $m$ large outliers plus one tight cluster, about $m+1$ steps suffice (Luenberger's bound).</p>
 <p><b>CG always beats gradient descent.</b> Gradient descent's error is also $Q(A)\e_0$, with $Q(t)=\prod_j(1-h_jt)$. CG picks the best $Q$ of that degree, so it can never do worse.</p>
 <p><b>Be able to:</b> given a list of eigenvalues, state the step count and write the polynomial that proves it; apply Luenberger with the eigenvalues sorted; give the one-line "CG dominates gradient descent" proof.</p>
@@ -7757,7 +7877,8 @@ The larger absolute value is $\tfrac13$, so the bound is $\tfrac13$.</p></div>
 <p><b>Intuition.</b> A polynomial of degree $r$ has $r$ roots to place wherever we like. If the matrix has only $r$ different eigenvalues, we can put one root exactly on each. Then the polynomial is zero on every eigen-direction, so it wipes out the whole error. Repeats do not matter, because one root on a value kills every copy of it.</p>
 </div>
 <div class="box thm" data-k="Theorem" data-name="Few distinct eigenvalues ([NW] Thm 5.4; [LD] §9.4)">
-<p>If $A$ has only $r$ distinct eigenvalues $\tau_1<\dots<\tau_r$, then CG reaches $\x^\star$ in at most $r$ iterations, from any $\x_0$.</p>
+<p>Suppose $A$ has only $r$ distinct eigenvalues, listed as $\tau_1<\dots<\tau_r$.</p>
+<p>Then CG reaches $\x^\star$ in at most $r$ iterations, from any starting point $\x_0$.</p>
 </div>
 <div class="prose">
 <p><b>What this says.</b> The number of steps CG needs depends on how many <i>different</i> eigenvalues $A$ has, not on its size $n$. A $10^6\times10^6$ matrix with 3 different eigenvalues is solved in at most 3 steps (in exact arithmetic).</p>
@@ -7765,13 +7886,14 @@ The larger absolute value is $\tfrac13$, so the bound is $\tfrac13$.</p></div>
 <div class="example">
 <p class="problem">Prove the theorem with an explicit polynomial.</p>
 <ol class="steps">
-<li><p>Let $Q(t)=\Big(1-\dfrac t{\tau_1}\Big)\Big(1-\dfrac t{\tau_2}\Big)\cdots\Big(1-\dfrac t{\tau_r}\Big)$.</p><p class="why-step">One factor per distinct eigenvalue, each normalized so that it equals 1 at $t=0$. All $\tau_j>0$ since $A\succ0$, so the divisions are fine.</p></li>
-<li><p>$\deg Q=r$ and $Q(0)=1$, so $Q\in\mathcal Q_r$.</p><p class="why-step">These are the two conditions for an admissible residual polynomial after $r$ steps.</p></li>
-<li><p>Every eigenvalue $\lambda_i$ equals some $\tau_j$, so $Q(\lambda_i)=0$ for all $i$. Hence
+<li><p>Let $Q$ be the product with one factor per distinct eigenvalue:
+$$Q(t)=\Big(1-\dfrac t{\tau_1}\Big)\Big(1-\dfrac t{\tau_2}\Big)\cdots\Big(1-\dfrac t{\tau_r}\Big).$$</p><p class="why-step">One factor per distinct eigenvalue, each normalized so that it equals 1 at $t=0$. All $\tau_j>0$ since $A\succ0$, so the divisions are fine.</p></li>
+<li><p>The degree is $r$ and $Q(0)=1$, so $Q\in\mathcal Q_r$.</p><p class="why-step">These are the two conditions for an admissible residual polynomial after $r$ steps.</p></li>
+<li><p>Every eigenvalue $\lambda_i$ equals some $\tau_j$, so $Q(\lambda_i)=0$ for all $i$. Hence the largest value of $|Q|$ on the spectrum is zero:
 $$\max_i|Q(\lambda_i)|=0.$$</p><p class="why-step">Repeated eigenvalues cost nothing: one root kills every copy.</p></li>
 <li><p>The min–max bound after $r$ steps gives
 $$\norm{\e_r}_A\le0\cdot\norm{\e_0}_A=0.$$
-So $\x_r=\x^\star$. If CG reaches $\g_k=\0$ earlier, it has already stopped at $\x^\star$.</p><p class="why-step">$\norm{\cdot}_A$ is a norm because $A\succ0$, so $\norm{\e_r}_A=0$ forces $\e_r=\0$.</p></li>
+So $\x_r=\x^\star$. If CG reaches $\g_k=\0$ earlier, it has already stopped at $\x^\star$.</p><p class="why-step">The $A$-norm is a norm because $A\succ0$, so $\norm{\e_r}_A=0$ forces $\e_r=\0$.</p></li>
 </ol>
 </div>
 <div class="prose">
@@ -7781,15 +7903,22 @@ So $\x_r=\x^\star$. If CG reaches $\g_k=\0$ earlier, it has already stopped at $
 <h3>How to build the polynomial: a recipe</h3>
 <ol>
 <li>List the eigenvalues and cross out repeats. The distinct ones are $\tau_1,\dots,\tau_r$.</li>
-<li>For each $\tau_j$ write the factor $(1-t/\tau_j)$. It is zero at $t=\tau_j$ and equals $1$ at $t=0$.</li>
-<li>Multiply the $r$ factors. The product has degree $r$, equals $1$ at $0$, and is zero at every eigenvalue.</li>
+<li>For each distinct eigenvalue $\tau_j$ write the factor $(1-t/\tau_j)$. The factor is zero at $t=\tau_j$ and equals $1$ at $t=0$.</li>
+<li>Multiply the $r$ factors. The product has degree $r$, equals $1$ at $t=0$, and is zero at every eigenvalue.</li>
 <li>Conclude: at most $r$ CG steps.</li>
 </ol>
 </div>
 <div class="example">
-<p class="problem">$A=\operatorname{diag}(2,2,4)$ (a $3\times3$ matrix with a repeated eigenvalue) and $\e_0=(1,1,1)^\top$. Build the polynomial, expand it, and verify that $Q(A)\e_0=\0$. How many CG steps are needed?</p>
+<div class="problem">
+<p>Given:</p>
+<ul>
+<li>Matrix: $A=\operatorname{diag}(2,2,4)$, a $3\times3$ matrix with a repeated eigenvalue.</li>
+<li>Starting error: $\e_0=(1,1,1)^\top$.</li>
+</ul>
+<p>Build the polynomial and expand it. Verify that $Q(A)\e_0=\0$. How many CG steps are needed?</p>
+</div>
 <ol class="steps">
-<li><p>Distinct eigenvalues: $\tau_1=2$ and $\tau_2=4$, so $r=2$. The polynomial is
+<li><p>The distinct eigenvalues are $\tau_1=2$ and $\tau_2=4$, so $r=2$. The polynomial is
 $$Q(t)=\left(1-\tfrac t2\right)\left(1-\tfrac t4\right).$$</p><p class="why-step">The repeated $2$ gets one factor only.</p></li>
 <li><p>Expand:
 $$Q(t)=1-\tfrac34t+\tfrac18t^2.$$
@@ -7798,16 +7927,16 @@ $$Q(0)=1,\qquad Q(2)=1-1.5+0.5=0,\qquad Q(4)=1-3+2=0.$$</p><p class="why-step">$
 <li><p>Apply $Q$ to the matrix:
 $$Q(A)=I-\tfrac34A+\tfrac18A^2=\operatorname{diag}\big(Q(2),Q(2),Q(4)\big)=0.$$
 So $Q(A)\e_0=\0$ for every $\e_0$, not only this one.</p><p class="why-step">A diagonal matrix polynomial is applied entry by entry (the lemma).</p></li>
-<li><p>So $\e_2=\0$: at most $2$ steps, not $3$. In the form $Q(t)=1+tP(t)$ we have
-$$P(t)=-\tfrac34+\tfrac t8,$$
-of degree $1$, matching $\x_2=\x_0+P_1(A)\g_0$.</p><p class="why-step">Degree $r$ for $Q$ means $r$ steps and degree $r-1$ for $P$ (Chapter 1, Step 2).</p></li>
+<li><p>So $\e_2=\0$: at most $2$ steps, not $3$. Writing $Q(t)=1+tP(t)$, the position polynomial is
+$$P(t)=-\tfrac34+\tfrac t8 .$$
+It has degree $1$, matching $\x_2=\x_0+P_1(A)\g_0$.</p><p class="why-step">Degree $r$ for $Q$ means $r$ steps and degree $r-1$ for $P$ (Chapter 1, Step 2).</p></li>
 </ol>
 </div>
 <div class="callout"><b>Careful:</b> $(t-2)(t-4)$ is zero on the spectrum but equals $8$ at $t=0$, so it is not admissible. Divide by $8$ to get the right polynomial:
 $$\tfrac18(t-2)(t-4)=\left(1-\tfrac t2\right)\left(1-\tfrac t4\right).$$
 Always check $Q(0)=1$.</div>
 <div class="story"><span class="label">Identity plus low rank</span>
-<p>Let $A=I+\u\u^\top$ with $\u\ne\0$. Find the eigenvalues in two cases.</p>
+<p>Let $A=I+\u\u^\top$, where $\u$ is a nonzero vector. Find the eigenvalues in two cases.</p>
 <ul>
 <li>Every $\mathbf w\perp\u$ satisfies
 $$A\mathbf w=\mathbf w+\u(\u^\top\mathbf w)=\mathbf w.$$
@@ -7816,12 +7945,27 @@ So $\mathbf w$ is an eigenvector with eigenvalue 1.</li>
 $$A\u=\u+\u\norm{\u}^2=(1+\norm{\u}^2)\,\u.$$
 So the eigenvalue is $1+\norm{\u}^2$.</li>
 </ul>
-<p>Two distinct eigenvalues: CG solves $A\x=\b$ in <b>2 steps</b>, whatever $n$ is. More generally, $I$ plus a rank-$p$ symmetric positive semidefinite matrix needs at most $p+1$ steps.</p>
-<p>This happens in practice. Ridge regression with $p$ data points and $n\gg p$ features (Part 1) solves $(\mu I+X^\top X)\x=X^\top\mathbf y$ with $X$ of size $p\times n$. $X^\top X$ has rank at most $p$, so the matrix has eigenvalue $\mu$ with multiplicity at least $n-p$ and at most $p+1$ distinct eigenvalues: CG needs at most $p+1$ steps. Steepest descent enjoys no such property.</p>
+<p>Two distinct eigenvalues: CG solves $A\x=\b$ in <b>2 steps</b>, whatever $n$ is.</p>
+<p>More generally, take the identity plus a symmetric positive semidefinite matrix of rank $p$. CG needs at most $p+1$ steps on it.</p>
+<p>This happens in practice. Take ridge regression with $p$ data points and $n\gg p$ features (Part 1).</p>
+<ul>
+<li>The system to solve is $(\mu I+X^\top X)\x=X^\top\mathbf y$.</li>
+<li>The data matrix $X$ has $p$ rows and $n$ columns, so $X^\top X$ has rank at most $p$.</li>
+<li>The matrix therefore has eigenvalue $\mu$ with multiplicity at least $n-p$, and at most $p+1$ distinct eigenvalues.</li>
+</ul>
+<p>CG needs at most $p+1$ steps. Steepest descent enjoys no such property.</p>
 </div>
 
 <div class="predict">
-<p class="q-text">$A$ is $100\times100$ with eigenvalues $1$ (97 times), $10$, $50$ and $200$. At most how many CG steps until $\x_k=\x^\star$?</p>
+<div class="q-text">
+<p>Given:</p>
+<ul>
+<li>Matrix size: $A$ is $100\times100$.</li>
+<li>Eigenvalue $1$ appears $97$ times.</li>
+<li>The other eigenvalues are $10$, $50$ and $200$.</li>
+</ul>
+<p>At most how many CG steps until $\x_k=\x^\star$?</p>
+</div>
 <div class="o">100<div class="e">That's the general finite-termination guarantee, but it ignores the repeated eigenvalue.</div></div>
 <div class="o ok">4<div class="e">Four distinct eigenvalues, so $Q(t)=(1-t)(1-\frac t{10})(1-\frac t{50})(1-\frac t{200})$ kills them all.</div></div>
 <div class="o">3<div class="e">The three outliers need three roots, but the eigenvalue 1 needs one too.</div></div>
@@ -7829,7 +7973,7 @@ So the eigenvalue is $1+\norm{\u}^2$.</li>
 <div class="reveal">
 <div class="panel try">
 <span class="label">Try it</span>
-<p class="task">Here $n=12$ but only three distinct values. Step $k$ from 0 to 3 and watch $Q_k$ (blue, top) acquire roots at the three values; the error (bottom, log scale) drops to machine zero at $k=3$. Then drag one dot slightly away from its group: the error is no longer exactly zero at $k=3$, but very small.</p>
+<p class="task">Here there are $12$ eigenvalues but only three distinct values. Step the iteration count from $0$ to $3$ and watch the polynomial (blue, top) acquire roots at the three values. The error (bottom, log scale) drops to machine zero at step $3$. Then drag one dot slightly away from its group. The error is no longer exactly zero at step $3$, but it is very small.</p>
 <div class="widget" data-w="p9_spectrum" data-cfg='{"preset":1,"k":3}'></div>
 </div>
 </div>
@@ -7846,47 +7990,64 @@ $$\norm{\e_{k+1}}_A\le\frac{\lambda_{n-k}-\lambda_1}{\lambda_{n-k}+\lambda_1}\,\
 ([NW] states the squared version, $\norm{\e_{k+1}}_A^2\le\big(\frac{\lambda_{n-k}-\lambda_1}{\lambda_{n-k}+\lambda_1}\big)^2\norm{\e_0}_A^2$.)</p>
 </div>
 <div class="prose">
-<p><b>What this says.</b> $\lambda_{n-k}$ is the $(k+1)$-th largest eigenvalue (so $\lambda_n$ is the largest). After $k+1$ steps, the bound is the steepest-descent rate $\frac{\kappa'-1}{\kappa'+1}$ for the "effective" matrix with the $k$ largest eigenvalues removed, where $\kappa'=\lambda_{n-k}/\lambda_1$. Sort the eigenvalues from small to large first, then read off $\lambda_{n-k}$.</p>
+<p><b>What this says.</b> The eigenvalue $\lambda_{n-k}$ is the $(k+1)$-th largest one, so $\lambda_n$ is the largest. Sort the eigenvalues from small to large first, then read off $\lambda_{n-k}$.</p>
+<p>After $k+1$ steps, the bound is the steepest-descent rate for an "effective" matrix with the $k$ largest eigenvalues removed. That rate is
+$$\frac{\kappa'-1}{\kappa'+1},\qquad \kappa'=\lambda_{n-k}/\lambda_1 .$$</p>
 </div>
 <div class="prose">
 <p>How to read it:</p>
 <ul>
-<li><b>$k=0$:</b> the bound is $\frac{\lambda_n-\lambda_1}{\lambda_n+\lambda_1}=\frac{\kappa-1}{\kappa+1}$, the one-step steepest descent rate from Part 5. That makes sense: CG's first step <i>is</i> steepest descent with exact line search.</li>
+<li><b>$k=0$:</b> the bound is the one-step steepest descent rate from Part 5,
+$$\frac{\lambda_n-\lambda_1}{\lambda_n+\lambda_1}=\frac{\kappa-1}{\kappa+1}.$$
+That makes sense: CG's first step <i>is</i> steepest descent with exact line search.</li>
 <li><b>Each further step removes the largest remaining eigenvalue</b> from the effective condition number. The polynomial behind it spends $k$ roots on the $k$ largest eigenvalues and one root at the midpoint of what is left.</li>
-<li><b>$m$ outliers plus a cluster.</b> If $m$ eigenvalues are large and the other $n-m$ lie in $[1-\epsilon,1+\epsilon]$, take $k=m$: $\lambda_{n-m}\le1+\epsilon$ and $\lambda_1\ge1-\epsilon$, so after $m+1$ steps
+<li><b>$m$ outliers plus a cluster.</b> Suppose $m$ eigenvalues are large and the other $n-m$ lie in the narrow interval $[1-\epsilon,1+\epsilon]$. Take $k=m$. Then $\lambda_{n-m}\le1+\epsilon$ and $\lambda_1\ge1-\epsilon$, so after $m+1$ steps
 $$\norm{\e_{m+1}}_A\le\frac{2\epsilon}{2}\norm{\e_0}_A=\epsilon\norm{\e_0}_A.$$
 CG spends $m$ steps on the outliers and one on the whole cluster.</li>
 </ul>
 <p>[NW] Fig. 5.4 shows exactly this with five large eigenvalues and the rest in $[0.95,1.05]$: a sharp drop around iteration 6, and another at iteration 7, because the matrix "almost" has six distinct eigenvalues. In general, $r$ tight clusters mean CG approximately solves the problem in about $r$ steps ([NW] p.116): a polynomial with one root per cluster is not zero at the eigenvalues, but tiny.</p>
 </div>
 <div class="example">
-<p class="problem">$A$ has eigenvalues $1,2,3,100$. Use Luenberger's bound with $k=1$ (two steps), and write down the polynomial that proves it.</p>
+<div class="problem">
+<p>Given:</p>
+<ul>
+<li>Eigenvalues of $A$: $1$, $2$, $3$ and $100$.</li>
+<li>Number of extra steps: $k=1$, so two steps in total.</li>
+</ul>
+<p>Use Luenberger's bound, and write down the polynomial that proves it.</p>
+</div>
 <ol class="steps">
-<li><p>Sorted eigenvalues:
-$$\lambda_1=1,\quad\lambda_2=2,\quad\lambda_3=3,\quad\lambda_4=100,\qquad n=4.$$
+<li><p>Sorted eigenvalues, with $n=4$:
+$$\lambda_1=1,\quad\lambda_2=2,\quad\lambda_3=3,\quad\lambda_4=100.$$
 With $k=1$ we need $\lambda_{n-k}=\lambda_3=3$.</p><p class="why-step">One root will go on the largest eigenvalue $100$; the rest lie in $[1,3]$.</p></li>
 <li><p>The bound is
 $$\frac{3-1}{3+1}=\tfrac12.$$</p><p class="why-step">Substitute into $\frac{\lambda_{n-k}-\lambda_1}{\lambda_{n-k}+\lambda_1}$.</p></li>
-<li><p>The proof polynomial. Midpoint of the remaining range: $c=\tfrac12(1+3)=2$. Then
+<li><p>The proof polynomial. The midpoint of the remaining range is $c=\tfrac12(1+3)=2$. Then
 $$Q(t)=\left(1-\tfrac t2\right)\left(1-\tfrac t{100}\right).$$
 It has degree $2$ and $Q(0)=1$.</p><p class="why-step">One root at the midpoint $c$ of the remaining eigenvalue range, one root at the outlier.</p></li>
 <li><p>Check the values at the four eigenvalues:
-$$Q(1)=\tfrac12\cdot0.99=0.495,\qquad Q(2)=0,\qquad Q(3)=-\tfrac12\cdot0.97=-0.485,\qquad Q(100)=0.$$
+$$\begin{aligned}Q(1)&=\tfrac12\cdot0.99=0.495\\ Q(2)&=0\\ Q(3)&=-\tfrac12\cdot0.97=-0.485\\ Q(100)&=0\end{aligned}$$
 The largest absolute value is $0.495\le\tfrac12$. ✓</p><p class="why-step">The min–max bound then gives $\norm{\e_2}_A\le0.495\norm{\e_0}_A$, even a little better than Luenberger's $0.5$.</p></li>
 </ol>
 </div>
 <details class="deeper"><summary>Go deeper: the polynomial behind Luenberger's bound</summary>
-<p>[NW] states the theorem without proof. Here is the construction. Let $c=\tfrac12(\lambda_1+\lambda_{n-k})$ and
-$$Q(t)=\Big(1-\frac tc\Big)\prod_{j=n-k+1}^{n}\Big(1-\frac t{\lambda_j}\Big).$$
-Goal: show $\max_i|Q(\lambda_i)|\le\frac{\lambda_{n-k}-\lambda_1}{\lambda_{n-k}+\lambda_1}$.</p>
+<p>[NW] states the theorem without proof. Here is the construction.</p>
+<p>What we set up:</p>
+<ul>
+<li>The midpoint of the remaining eigenvalue range: $c=\tfrac12(\lambda_1+\lambda_{n-k})$.</li>
+<li>One root at the midpoint, and one root at each of the $k$ largest eigenvalues:
+$$Q(t)=\Big(1-\frac tc\Big)\prod_{j=n-k+1}^{n}\Big(1-\frac t{\lambda_j}\Big).$$</li>
+</ul>
+<p>Goal: show that the largest value of $|Q|$ on the spectrum is at most the Luenberger factor,
+$$\max_i|Q(\lambda_i)|\le\frac{\lambda_{n-k}-\lambda_1}{\lambda_{n-k}+\lambda_1}.$$</p>
 <ol>
 <li>$Q$ has degree $k+1$ and $Q(0)=1$.</li>
 <li>$Q$ vanishes at the $k$ largest eigenvalues.</li>
-<li>Take any remaining eigenvalue $\lambda_i\in[\lambda_1,\lambda_{n-k}]$. Every product factor $1-\lambda_i/\lambda_j$ lies in $[0,1]$, since $\lambda_i\le\lambda_j$.</li>
+<li>Take any remaining eigenvalue $\lambda_i$ in the interval $[\lambda_1,\lambda_{n-k}]$. Every factor $1-\lambda_i/\lambda_j$ in the product lies in $[0,1]$, since $\lambda_i\le\lambda_j$.</li>
 <li>The first factor satisfies
 $$\begin{aligned}\left|1-\frac{\lambda_i}{c}\right|&=\frac{|c-\lambda_i|}{c}\\ &\le\frac{\tfrac12(\lambda_{n-k}-\lambda_1)}{c}\\ &=\frac{\lambda_{n-k}-\lambda_1}{\lambda_{n-k}+\lambda_1}.\end{aligned}$$</li>
 </ol>
-<p>So $\max_i|Q(\lambda_i)|$ is at most that number. Apply the min–max bound.</p>
+<p>So the largest value of $|Q|$ on the spectrum is at most that number. Apply the min–max bound.</p>
 </details>
 
 <div class="prose">
@@ -7894,10 +8055,13 @@ $$\begin{aligned}\left|1-\frac{\lambda_i}{c}\right|&=\frac{|c-\lambda_i|}{c}\\ &
 <p><b>Intuition.</b> Gradient descent with any step sizes produces an error of the form "polynomial in $A$ applied to $\e_0$", with a polynomial whose roots are $1/h_j$ and whose value at $0$ is $1$. CG searches over <i>all</i> polynomials of that degree and value, so gradient descent's polynomial is one of its candidates. The winner of a contest cannot do worse than one of the contestants.</p>
 </div>
 <div class="box thm" data-k="Corollary" data-name="CG dominates gradient descent with any step sizes">
-<p>Let $\y_0=\x_0$ and $\y_{j+1}=\y_j-h_j\grad f(\y_j)$ for <i>any</i> step sizes $h_0,\dots,h_k$ (constant step, exact line search, Armijo, anything). Then $f(\x_{k+1})\le f(\y_{k+1})$.</p>
+<p>Let $\y_0=\x_0$ and run gradient descent,
+$$\y_{j+1}=\y_j-h_j\grad f(\y_j),$$
+with <i>any</i> step sizes $h_0,\dots,h_k$ (constant step, exact line search, Armijo, anything). Then CG is at least as good:
+$$f(\x_{k+1})\le f(\y_{k+1}).$$</p>
 </div>
 <div class="prose">
-<p><b>Proof.</b> Goal: show $\norm{\e_{k+1}}_A\le\norm{\y_{k+1}-\x^\star}_A$.</p>
+<p><b>Proof.</b> Goal: show that CG's error is no larger than gradient descent's, $\norm{\e_{k+1}}_A\le\norm{\y_{k+1}-\x^\star}_A$.</p>
 <ol>
 <li>From the story in Chapter 9.1,
 $$\y_{k+1}-\x^\star=Q(A)\e_0,\qquad Q(t)=\prod_{j=0}^k(1-h_jt)\in\mathcal Q_{k+1}.$$</li>
@@ -7907,22 +8071,36 @@ $$\norm{\e_{k+1}}_A\le\norm{\y_{k+1}-\x^\star}_A.$$</li>
 </ol>
 <p>Conclusion: $f(\x_{k+1})\le f(\y_{k+1})$. $\blacksquare$</p>
 <p>(Step sizes chosen by a line search depend on the iterates, but once the run is over they are fixed numbers $h_j$, and the identity above holds.) [LD] makes a related point: each CG step is at least as good as one steepest descent step taken from the same point $\x_k$.</p>
-<p><b>Small numbers.</b> Take eigenvalues $1$ and $4$ and gradient descent with $h_0=0.4$. Then $Q(t)=1-0.4t$, with
+<p><b>Small numbers.</b></p>
+<ul>
+<li>Eigenvalues of $A$: $1$ and $4$.</li>
+<li>Gradient descent with one step size, $h_0=0.4$.</li>
+</ul>
+<p>The error polynomial is $Q(t)=1-0.4t$, with values
 $$Q(1)=0.6,\qquad Q(4)=-0.6.$$
 So gradient descent's first error is exactly $0.6$ times the initial one in each component. CG's first error is no larger in the $A$-norm. In the worked example of Chapter 1, CG achieved $0.333$ from $\e_0=(1,1)$.</p>
-<p><b>Recovering the Part 5 rate.</b> On the whole interval $[m,L]$, the degree-1 polynomial $Q(t)=1-\frac{2t}{m+L}$ has maximum absolute value
-$$\frac{L-m}{L+m}=\frac{\kappa-1}{\kappa+1},$$
-attained at both ends. Using $Q(t)^k$ in the min–max bound shows CG is never slower than $\big(\frac{\kappa-1}{\kappa+1}\big)^k$. That is the polynomial of gradient descent with constant step $h=\frac2{m+L}$: all $k$ roots stacked at the midpoint. Chapter 9.3 spreads them out.</p>
+<p><b>Recovering the Part 5 rate.</b> On the whole interval $[m,L]$, take the degree-1 polynomial $Q(t)=1-\frac{2t}{m+L}$. Its largest absolute value, attained at both ends, is
+$$\frac{L-m}{L+m}=\frac{\kappa-1}{\kappa+1}.$$
+Using $Q(t)^k$ in the min–max bound shows that CG is never slower than $\big(\frac{\kappa-1}{\kappa+1}\big)^k$.</p>
+<p>That polynomial belongs to gradient descent with the constant step $h=\frac2{m+L}$: all $k$ roots stacked at the midpoint. Chapter 9.3 spreads them out.</p>
 </div>
 
 <div class="panel try">
 <span class="label">Try it</span>
-<p class="task">This is a cluster of nine eigenvalues near 1 plus three outliers (4, 7, 9.5). Step $k$ from 0 to 5: the polynomial puts its first roots near the outliers, then one in the cluster, and the error (blue) collapses around $k=4$ while steepest descent (red) crawls. Then try "3 clusters", "spread" and "uniform, κ = 100", and compare how far the blue curve sits below the gold Chebyshev bound.</p>
+<p class="task">This spectrum has a cluster of nine eigenvalues near $1$, plus three outliers at $4$, $7$ and $9.5$. Step the iteration count from $0$ to $5$. The polynomial puts its first roots near the outliers, then one in the cluster. The error (blue) collapses around step $4$, while steepest descent (red) crawls. Then try "3 clusters", "spread" and "uniform, κ = 100", and compare how far the blue curve sits below the gold Chebyshev bound.</p>
 <div class="widget" data-w="p9_spectrum" data-cfg='{"preset":2,"k":4}'></div>
 </div>
 
 <div class="example">
-<p class="problem">$A\in\R^{100\times100}$ is SPD with eigenvalues $1$ (multiplicity 97), $10$, $50$, $200$. (a) In at most how many steps does CG terminate, and which polynomial proves it? (b) What does Luenberger's bound give after $1,2,3,4$ steps? (Book, Exercise "Designing the polynomial".)</p>
+<div class="problem">
+<p>Given:</p>
+<ul>
+<li>Matrix: $A\in\R^{100\times100}$, symmetric positive definite.</li>
+<li>Eigenvalue $1$ has multiplicity $97$.</li>
+<li>The other eigenvalues are $10$, $50$ and $200$.</li>
+</ul>
+<p>(a) In at most how many steps does CG terminate, and which polynomial proves it? (b) What does Luenberger's bound give after $1$, $2$, $3$ and $4$ steps? (Book, Exercise &ldquo;Designing the polynomial&rdquo;.)</p>
+</div>
 <ol class="steps">
 <li><p>(a) Four distinct eigenvalues, so at most 4 steps, by $Q(t)=(1-t)(1-\frac t{10})(1-\frac t{50})(1-\frac t{200})$.</p><p class="why-step">Theorem on few distinct eigenvalues.</p></li>
 <li><p>Sorted eigenvalues:
@@ -7937,7 +8115,14 @@ which says nothing. The spectrum's shape matters far more than $\kappa$.</p></li
 
 <div class="practice">
 <div class="prob" data-id="cgp-spectrum-p1" data-ans="2" data-labels="max steps">
-<div class="stem"><p>$A=I+\u\u^\top\in\R^{500\times500}$ with $\norm{\u}^2=3$. In at most how many steps does CG solve $A\x=\b$?</p></div>
+<div class="stem">
+<p>Given:</p>
+<ul>
+<li>Matrix: $A=I+\u\u^\top$, of size $500\times500$.</li>
+<li>The vector $\u$ has squared length $\norm{\u}^2=3$.</li>
+</ul>
+<p>In at most how many steps does CG solve $A\x=\b$?</p>
+</div>
 <div class="hint"><p>Find the eigenvalues: what does $A$ do to vectors orthogonal to $\u$, and to $\u$ itself?</p></div>
 <div class="sol"><p>Eigenvalues:</p>
 <ul>
@@ -7948,7 +8133,14 @@ which says nothing. The spectrum's shape matters far more than $\kappa$.</p></li
 $$Q(t)=(1-t)\left(1-\tfrac t4\right).$$</p></div>
 </div>
 <div class="prob" data-id="cgp-spectrum-p2" data-ans="21" data-labels="max steps">
-<div class="stem"><p>Ridge regression with $X\in\R^{20\times1000}$ (20 data points, 1000 features) gives the system $(0.1I+X^\top X)\x=X^\top\mathbf y$. In the worst case, how many CG steps are needed (exact arithmetic)?</p></div>
+<div class="stem">
+<p>Given:</p>
+<ul>
+<li>Data matrix: $X\in\R^{20\times1000}$, with 20 data points and 1000 features.</li>
+<li>System: $(0.1I+X^\top X)\x=X^\top\mathbf y$.</li>
+</ul>
+<p>In the worst case, how many CG steps are needed (exact arithmetic)?</p>
+</div>
 <div class="hint"><p>What is the rank of $X^\top X$? How many eigenvalues of $0.1I+X^\top X$ can differ from $0.1$?</p></div>
 <div class="sol"><p>Count the eigenvalues.</p>
 <ol>
@@ -7959,28 +8151,59 @@ $$Q(t)=(1-t)\left(1-\tfrac t4\right).$$</p></div>
 <p>Hence at most 21 steps.</p></div>
 </div>
 <div class="prob" data-id="cgp-spectrum-p3" data-ans="0.99641;0.1" data-labels="after 1 step;after 4 steps" data-tol="0.002">
-<div class="stem"><p>$A\in\R^{1000\times1000}$ has three outlying eigenvalues $100$, $300$, $500$, and the other 997 eigenvalues lie in $[0.9,1.1]$, with $0.9$ and $1.1$ both attained. Use Luenberger's bound to bound $\norm{\e_1}_A/\norm{\e_0}_A$ and $\norm{\e_4}_A/\norm{\e_0}_A$.</p></div>
-<div class="hint"><p>After $k+1$ steps the bound is $\frac{\lambda_{n-k}-\lambda_1}{\lambda_{n-k}+\lambda_1}$. For 4 steps, $k=3$: which eigenvalue is $\lambda_{n-3}$?</p></div>
+<div class="stem">
+<p>Given:</p>
+<ul>
+<li>Matrix size: $A\in\R^{1000\times1000}$.</li>
+<li>Three outlying eigenvalues: $100$, $300$ and $500$.</li>
+<li>The other $997$ eigenvalues lie in the interval $[0.9,1.1]$, and both end values are attained.</li>
+</ul>
+<p>Use Luenberger's bound to bound the ratio $\norm{\e_1}_A/\norm{\e_0}_A$ after one step, and the ratio $\norm{\e_4}_A/\norm{\e_0}_A$ after four steps.</p>
+</div>
+<div class="hint"><p>After $k+1$ steps the bound is
+$$\frac{\lambda_{n-k}-\lambda_1}{\lambda_{n-k}+\lambda_1}.$$
+For four steps, $k=3$. Which eigenvalue is $\lambda_{n-3}$?</p></div>
 <div class="sol"><p>One step ($k=0$):
 $$\frac{500-0.9}{500+0.9}=\frac{499.1}{500.9}\approx0.99641.$$
 Four steps ($k=3$): the three outliers are removed and $\lambda_{n-3}=1.1$. The bound is
 $$\frac{1.1-0.9}{1.1+0.9}=0.1.$$</p></div>
 </div>
 <div class="prob" data-id="cgp-spectrum-p4" data-ans="At most 0.2" data-choices="At most 0.2|At least 0.2|Exactly 0.2|Can't compare">
-<div class="stem"><p>Steepest descent with exact line search, started from $\x_0$ on a convex quadratic, reaches $f(\y_3)-f^\star=0.2$. CG started from the same $\x_0$ has $f(\x_3)-f^\star$…</p></div>
+<div class="stem">
+<p>Given:</p>
+<ul>
+<li>Steepest descent with exact line search starts at $\x_0$ on a convex quadratic.</li>
+<li>After three steps it reaches $f(\y_3)-f^\star=0.2$.</li>
+</ul>
+<p>CG started from the same $\x_0$ has $f(\x_3)-f^\star$…</p>
+</div>
 <div class="hint"><p>Where does $\y_3$ lie, and over which set does $\x_3$ minimize $f$?</p></div>
 <div class="sol"><p>The gradient descent error is
 $$\y_3-\x^\star=Q(A)\e_0,\qquad Q(t)=(1-h_0t)(1-h_1t)(1-h_2t)\in\mathcal Q_3.$$
 So $\y_3\in\x_0+\mathcal K_2(\g_0)$. CG's $\x_3$ minimizes $f$ over that set, so $f(\x_3)-f^\star\le0.2$.</p></div>
 </div>
 <div class="prob" data-id="p9x-spec-1" data-ans="0.5" data-labels="bound">
-<div class="stem"><p>$A$ has eigenvalues $1,2,3,100$. Use Luenberger's bound with $k=1$ to bound $\norm{\e_2}_A/\norm{\e_0}_A$.</p></div>
+<div class="stem">
+<p>Given:</p>
+<ul>
+<li>Eigenvalues of $A$: $1$, $2$, $3$ and $100$.</li>
+<li>Number of extra steps: $k=1$.</li>
+</ul>
+<p>Use Luenberger's bound to bound $\norm{\e_2}_A/\norm{\e_0}_A$.</p>
+</div>
 <div class="hint"><p>Sorted, $\lambda_{n-k}=\lambda_3$. The bound is $\frac{\lambda_3-\lambda_1}{\lambda_3+\lambda_1}$.</p></div>
 <div class="sol"><p>With $\lambda_3=3$ and $\lambda_1=1$:
 $$\frac{3-1}{3+1}=0.5.$$</p></div>
 </div>
 <div class="prob" data-id="p9x-spec-2" data-ans="3/8" data-labels="Q(1)" data-tol="0.002">
-<div class="stem"><p>$A=\operatorname{diag}(2,2,4)$. The polynomial that proves two-step termination is $Q(t)=(1-\tfrac t2)(1-\tfrac t4)$. Compute $Q(1)$. (It is not an eigenvalue, so $Q(1)$ is not zero.)</p></div>
+<div class="stem">
+<p>Given:</p>
+<ul>
+<li>Matrix: $A=\operatorname{diag}(2,2,4)$.</li>
+<li>The polynomial that proves two-step termination: $Q(t)=(1-\tfrac t2)(1-\tfrac t4)$.</li>
+</ul>
+<p>Compute $Q(1)$. (The number $1$ is not an eigenvalue, so $Q(1)$ is not zero.)</p>
+</div>
 <div class="hint"><p>$Q(1)=(1-\tfrac12)(1-\tfrac14)$.</p></div>
 <div class="sol"><p>Multiply:
 $$Q(1)=\tfrac12\cdot\tfrac34=\tfrac38=0.375.$$</p></div>
@@ -7992,8 +8215,11 @@ $$Q(1)=\tfrac12\cdot\tfrac34=\tfrac38=0.375.$$</p></div>
 <ul><li>Writing $Q(t)=(t-\tau_1)\cdots(t-\tau_r)$, which has $Q(0)\ne1$ in general</li><li>Judging CG's speed by $\kappa$ alone: two matrices with the same $\kappa$ can need 2 steps or hundreds</li><li>Expecting exact termination in $r$ steps for clusters: tight clusters give small error, not zero</li></ul>
 </div>
 <ol class="takeaways">
-<li>$r$ distinct eigenvalues ⇒ at most $r$ CG steps, proved by $Q(t)=\prod_{j=1}^r(1-t/\tau_j)$.</li>
-<li>Luenberger: $\norm{\e_{k+1}}_A\le\frac{\lambda_{n-k}-\lambda_1}{\lambda_{n-k}+\lambda_1}\norm{\e_0}_A$; with $m$ outliers and a cluster of width $2\epsilon$ around 1, about $m+1$ steps reduce the error to $\epsilon$.</li>
+<li>If $A$ has $r$ distinct eigenvalues, CG needs at most $r$ steps. The proof uses the polynomial with one root per distinct eigenvalue:
+$$Q(t)=\prod_{j=1}^r(1-t/\tau_j).$$</li>
+<li>Luenberger's bound:
+$$\norm{\e_{k+1}}_A\le\frac{\lambda_{n-k}-\lambda_1}{\lambda_{n-k}+\lambda_1}\norm{\e_0}_A .$$
+With $m$ outliers and a cluster of width $2\epsilon$ around $1$, about $m+1$ steps reduce the error to $\epsilon$.</li>
 <li>CG is never worse than gradient descent with any step sizes, because every such method's error is $Q(A)\e_0$ for some $Q$ in the same family.</li>
 </ol>
 <div class="quiz" data-id="cgp-spectrum">
@@ -8032,30 +8258,48 @@ $$Q(1)=\tfrac12\cdot\tfrac34=\tfrac38=0.375.$$</p></div>
 </div>
 <div class="box plain" data-k="In plain words">
 <p><b>When all you know is the smallest and largest eigenvalue</b> ($m$ and $L$, with $\kappa=L/m$), you need a polynomial that is small on the whole interval $[m,L]$ and equals 1 at $0$. The best one is a stretched Chebyshev polynomial.</p>
-<p><b>The result to memorize:</b> $\norm{\e_k}_A\le2\left(\frac{\sqrt\kappa-1}{\sqrt\kappa+1}\right)^k\norm{\e_0}_A$. Compare gradient descent's $\left(\frac{\kappa-1}{\kappa+1}\right)^k$ (<a href="#pm-rates">Part M.5</a>): CG has $\sqrt\kappa$ where gradient descent has $\kappa$.</p>
-<p><b>What that means in iterations:</b> roughly $\frac{\sqrt\kappa}{2}\ln\frac2\varepsilon$ for CG versus $\frac{\kappa}{2}\ln\frac1\varepsilon$ for gradient descent. With $\kappa=10^4$, that is about 100 times fewer.</p>
-<p><b>Be able to:</b> quote the bound with its factor 2 and its norm; turn a rate into an iteration count with logarithms; say when Chebyshev is the right tool (only $m$ and $L$ known) and when the spectrum's shape gives more (Chapter 9.2).</p>
+<p><b>The result to memorize:</b></p>
+$$\norm{\e_k}_A\le2\left(\frac{\sqrt\kappa-1}{\sqrt\kappa+1}\right)^k\norm{\e_0}_A .$$
+<p>Compare gradient descent's factor $\left(\frac{\kappa-1}{\kappa+1}\right)^k$ (<a href="#pm-rates">Part M.5</a>). CG has $\sqrt\kappa$ where gradient descent has $\kappa$.</p>
+<p><b>What that means in iterations:</b></p>
+<ul>
+<li>CG needs roughly $\frac{\sqrt\kappa}{2}\ln\frac2\varepsilon$ iterations.</li>
+<li>Gradient descent needs roughly $\frac{\kappa}{2}\ln\frac1\varepsilon$ iterations.</li>
+</ul>
+<p>With $\kappa=10^4$, that is about 100 times fewer for CG.</p>
+<p><b>Be able to:</b></p>
+<ul>
+<li>Quote the bound with its factor 2 and its norm.</li>
+<li>Turn a rate into an iteration count with logarithms.</li>
+<li>Say when Chebyshev is the right tool (only $m$ and $L$ known) and when the spectrum's shape gives more (Chapter 9.2).</li>
+</ul>
 </div>
 <div class="prose">
-<p>Suppose we only know $m=\lambda_1$ and $L=\lambda_n$. Every eigenvalue lies in $[m,L]$, so making $Q$ small on the whole interval is enough:
+<p>Suppose we only know the smallest eigenvalue $m=\lambda_1$ and the largest $L=\lambda_n$. Every eigenvalue lies in $[m,L]$, so making $Q$ small on the whole interval is enough:
 $$\max_i|Q(\lambda_i)|\le\max_{t\in[m,L]}|Q(t)|.$$
-Gradient descent's best constant-step polynomial $(1-\frac{2t}{m+L})^k$ gives $\big(\frac{\kappa-1}{\kappa+1}\big)^k$ (Chapter 9.2). Can another degree-$k$ polynomial with $Q(0)=1$ be smaller on $[m,L]$? Yes, and the answer is classical.</p>
+Gradient descent's best constant-step polynomial is $(1-\frac{2t}{m+L})^k$. It gives the factor $\big(\frac{\kappa-1}{\kappa+1}\big)^k$ (Chapter 9.2).</p>
+<p>Can another degree-$k$ polynomial with $Q(0)=1$ be smaller on $[m,L]$? Yes, and the answer is classical.</p>
 </div>
 <div class="prose">
 <p><b>Intuition.</b> We want a polynomial that is $1$ at $t=0$ and as small as possible everywhere on $[m,L]$, the interval holding the eigenvalues. Among polynomials of a given degree, the ones that stay small over an interval most efficiently are the ones that wiggle up and down by equal amounts, like a wave. The Chebyshev polynomials $T_k$ are exactly such waves on $[-1,1]$: they never leave $[-1,1]$ there, yet once you step outside the interval they shoot up quickly. Our trick: stretch $[m,L]$ onto $[-1,1]$. The point $t=0$ then lands slightly outside, where $T_k$ is huge. Dividing by that huge value gives a polynomial equal to $1$ at $0$ and tiny on the whole interval.</p>
 </div>
 <div class="box def" data-k="Definition" data-name="Chebyshev polynomials">
-<p>$T_0(z)=1$, $T_1(z)=z$, $T_{k+1}(z)=2z\,T_k(z)-T_{k-1}(z)$. So $T_2=2z^2-1$, $T_3=4z^3-3z$, and $T_k$ has degree $k$. Two facts:</p>
+<p>The Chebyshev polynomials start from two simple polynomials and follow a recurrence:
+$$T_0(z)=1,\qquad T_1(z)=z,\qquad T_{k+1}(z)=2z\,T_k(z)-T_{k-1}(z).$$
+So $T_2=2z^2-1$ and $T_3=4z^3-3z$, and $T_k$ has degree $k$. Two facts:</p>
 <ul>
-<li>$T_k(\cos\theta)=\cos k\theta$. Hence $|T_k(z)|\le1$ on $[-1,1]$, and it touches $\pm1$ alternately $k+1$ times.</li>
-<li>For $|z|\ge1$: $T_k(z)=\tfrac12\big[(z+\sqrt{z^2-1})^k+(z-\sqrt{z^2-1})^k\big]$, so it grows fast outside $[-1,1]$.</li>
+<li>Inside $[-1,1]$: $T_k(\cos\theta)=\cos k\theta$. Hence the values stay in range, $|T_k(z)|\le1$ for $z\in[-1,1]$, and $T_k$ touches $+1$ and $-1$ alternately, $k+1$ times in all.</li>
+<li>Outside, for $|z|\ge1$:
+$$T_k(z)=\tfrac12\big[(z+\sqrt{z^2-1})^k+(z-\sqrt{z^2-1})^k\big],$$
+so it grows fast outside $[-1,1]$.</li>
 </ul>
 <p>(Both formulas satisfy the same recurrence and starting values; for the first, $\cos(k+1)\theta+\cos(k-1)\theta=2\cos\theta\cos k\theta$.)</p>
 </div>
 <div class="prose">
 <p><b>What a Chebyshev polynomial is.</b> It is built by a recurrence: start with $1$ and $z$, and obtain the next from the previous two by "$2z$ times the latest, minus the one before". For example:
 $$\begin{aligned}T_2&=2z\cdot z-1=2z^2-1\\ T_3&=2z(2z^2-1)-z=4z^3-3z\end{aligned}$$</p>
-<p><b>Why it stays within $\pm1$ on $[-1,1]$.</b> Any $z$ in $[-1,1]$ can be written $z=\cos\theta$ for some angle $\theta$. The claim is that $T_k(\cos\theta)=\cos k\theta$.</p>
+<p><b>Why it stays within $\pm1$ on $[-1,1]$.</b> Any $z$ in $[-1,1]$ can be written as $z=\cos\theta$ for some angle $\theta$. The claim is
+$$T_k(\cos\theta)=\cos k\theta .$$</p>
 <ul>
 <li>For $k=2$ this is the double-angle rule: $2\cos^2\theta-1=\cos2\theta$.</li>
 <li>For $k=3$ it is the triple-angle rule: $4\cos^3\theta-3\cos\theta=\cos3\theta$.</li>
@@ -8065,23 +8309,27 @@ is the recurrence.</li>
 </ul>
 <p>Since a cosine never leaves $[-1,1]$, neither does $T_k$ there.</p>
 <p><b>Small numbers.</b> Values of $T_3(z)=4z^3-3z$:
-$$T_3(1)=1,\quad T_3(\tfrac12)=\tfrac12-\tfrac32=-1,\quad T_3(-\tfrac12)=1,\quad T_3(-1)=-1,\quad T_3(0)=0.$$
-It touches $+1,-1,+1,-1$ at four points. These are the equal ripples ($k+1=4$ touches for $k=3$).</p>
-<p><b>Why it is big outside $[-1,1]$.</b> For $z\gt1$ there is no angle with $\cos\theta=z$, but the second formula takes over: $T_k(z)=\tfrac12\big[(z+\sqrt{z^2-1})^k+(z-\sqrt{z^2-1})^k\big]$. The number $z+\sqrt{z^2-1}$ is bigger than $1$, and raising it to the power $k$ grows geometrically.</p>
+$$\begin{aligned}T_3(1)&=1\\ T_3(\tfrac12)&=\tfrac12-\tfrac32=-1\\ T_3(-\tfrac12)&=1\\ T_3(-1)&=-1\\ T_3(0)&=0\end{aligned}$$
+The polynomial touches $+1,-1,+1,-1$ at four points. These are the equal ripples: $k+1=4$ touches for $k=3$.</p>
+<p><b>Why it is big outside $[-1,1]$.</b> For $z\gt1$ there is no angle with $\cos\theta=z$, but the second formula takes over:
+$$T_k(z)=\tfrac12\big[(z+\sqrt{z^2-1})^k+(z-\sqrt{z^2-1})^k\big].$$
+The number $z+\sqrt{z^2-1}$ is bigger than $1$, and raising it to the power $k$ grows geometrically.</p>
 <p>Small numbers:
 $$T_3(1.25)=4(1.953125)-3.75=4.0625,\qquad T_3(2)=26.$$
-Via the recurrence: $T_2(2)=7$, and then $T_3(2)=2\cdot2\cdot7-2=26$. So a value only slightly past $1$ is already several times larger than the ripples inside.</p>
+Via the recurrence: first $T_2(2)=7$, and then $T_3(2)=2\cdot2\cdot7-2=26$. So a value only slightly past $1$ is already several times larger than the ripples inside.</p>
 </div>
 <div class="callout"><b>Careful:</b> $T_k$ is a tool for building a good $Q$. It is <i>not</i> CG's polynomial (that one depends on $\e_0$). And $T_k(\cos\theta)=\cos k\theta$ holds only for $|z|\le1$; outside, use the second formula.</div>
 <div class="prose">
-<p><b>Intuition.</b> The result says CG's error shrinks by a fixed factor $q=\frac{\sqrt\kappa-1}{\sqrt\kappa+1}$ per step (times a harmless 2 in front). Compare steepest descent, where the factor is $\frac{\kappa-1}{\kappa+1}$. Replacing $\kappa$ by $\sqrt\kappa$ makes a huge difference when $\kappa$ is large: for $\kappa=10^4$ the factors are $0.9998$ and $0.98$.</p>
+<p><b>Intuition.</b> The result says CG's error shrinks by a fixed factor per step (times a harmless 2 in front). That factor is
+$$q=\frac{\sqrt\kappa-1}{\sqrt\kappa+1}.$$
+Compare steepest descent, where the factor is $\frac{\kappa-1}{\kappa+1}$. Replacing $\kappa$ by $\sqrt\kappa$ makes a huge difference when $\kappa$ is large. For $\kappa=10^4$ the two factors are $0.98$ for CG and $0.9998$ for steepest descent.</p>
 </div>
 <div class="box thm" data-k="Theorem" data-name="The CG convergence rate ([NW] p.117)">
 <p>For all $k\ge0$,
 $$\norm{\e_k}_A\le2\left(\frac{\sqrt\kappa-1}{\sqrt\kappa+1}\right)^k\norm{\e_0}_A .$$</p>
 </div>
 <div class="prose">
-<p><b>Where it comes from.</b> Goal: build a degree-$k$ polynomial with $Q(0)=1$ that is small on $[m,L]$.</p>
+<p><b>Where it comes from.</b> Goal: build a polynomial $Q$ of degree $k$ with $Q(0)=1$ that is small on the interval $[m,L]$.</p>
 <ol>
 <li>The map
 $$z(t)=\frac{L+m-2t}{L-m}$$
@@ -8091,23 +8339,31 @@ $$z_0=\frac{\kappa+1}{\kappa-1}\gt1.$$</li>
 $$Q(t)=\frac{T_k(z(t))}{T_k(z_0)} .$$
 It has degree $k$, and $Q(0)=1$ because we divided by $T_k(z_0)$.</li>
 <li>On $[m,L]$ we have $|T_k(z(t))|\le1$, so $|Q|\le1/T_k(z_0)$.</li>
-<li>Since $z_0\gt1$ and $T_k$ grows fast outside $[-1,1]$, $T_k(z_0)$ is large. So $Q$ is small on the whole interval.</li>
+<li>The point $z_0$ lies beyond $1$, and $T_k$ grows fast outside $[-1,1]$. So $T_k(z_0)$ is large, and $Q$ is small on the whole interval.</li>
 <li>A short calculation (below) gives
 $$\frac1{T_k(z_0)}\le2q^k,\qquad q=\frac{\sqrt\kappa-1}{\sqrt\kappa+1}.$$</li>
 </ol>
 <p>The min–max bound finishes the proof. (If $\kappa=1$, then $A=mI$ and CG finishes in one step.)</p>
 </div>
 <div class="example">
-<p class="problem">Take $m=1$, $L=9$ ($\kappa=9$) and degree $k=2$. Build the Chebyshev residual polynomial, find its maximum on $[1,9]$, and compare it with steepest descent's two-step polynomial and with $2q^2$.</p>
+<div class="problem">
+<p>Given:</p>
+<ul>
+<li>Smallest eigenvalue: $m=1$.</li>
+<li>Largest eigenvalue: $L=9$, so $\kappa=9$.</li>
+<li>Degree: $k=2$.</li>
+</ul>
+<p>Build the Chebyshev residual polynomial and find its maximum on $[1,9]$. Compare that maximum with steepest descent's two-step polynomial and with the bound $2q^2$.</p>
+</div>
 <ol class="steps">
 <li><p>The stretch map:
 $$z(t)=\frac{L+m-2t}{L-m}=\frac{10-2t}{8}.$$
 Key values:
 $$z(1)=1,\qquad z(9)=-1,\qquad z(0)=z_0=\tfrac{10}{8}=1.25=\tfrac{\kappa+1}{\kappa-1}.$$</p><p class="why-step">This map is the stretch from $[1,9]$ onto $[-1,1]$; it sends $0$ slightly outside the interval.</p></li>
-<li><p>Value at $z_0$:
+<li><p>Value of $T_2$ at $z_0$:
 $$T_2(z_0)=2(1.25)^2-1=2.125.$$
-So $Q(t)=T_2(z(t))/2.125$ has $Q(0)=1$.</p><p class="why-step">Dividing by $T_2(z_0)$ is what forces $Q(0)=1$.</p></li>
-<li><p>On $[1,9]$ we have $|T_2(z(t))|\le1$, so
+So the polynomial $Q(t)=T_2(z(t))/2.125$ has $Q(0)=1$.</p><p class="why-step">Dividing by $T_2(z_0)$ is what forces $Q(0)=1$.</p></li>
+<li><p>On $[1,9]$ the numerator obeys $|T_2(z(t))|\le1$, so
 $$|Q(t)|\le\frac1{2.125}=\tfrac8{17}\approx0.471.$$</p><p class="why-step">The numerator stays within $\pm1$ because $z(t)\in[-1,1]$.</p></li>
 <li><p>Compare three numbers.</p>
 <ul>
@@ -8119,17 +8375,18 @@ $$|Q(t)|\le\frac1{2.125}=\tfrac8{17}\approx0.471.$$</p><p class="why-step">The n
 </ol>
 </div>
 <details class="deeper"><summary>Go deeper: the calculation, and why Chebyshev is optimal</summary>
-<p><b>The calculation.</b> Let $z_0=\frac{\kappa+1}{\kappa-1}$. First:
+<p><b>The calculation.</b> Recall $z_0=\frac{\kappa+1}{\kappa-1}$. First:
 $$z_0^2-1=\frac{(\kappa+1)^2-(\kappa-1)^2}{(\kappa-1)^2}=\frac{4\kappa}{(\kappa-1)^2}.$$
 Then:
 $$\begin{aligned}z_0+\sqrt{z_0^2-1}&=\frac{\kappa+2\sqrt\kappa+1}{\kappa-1}\\ &=\frac{(\sqrt\kappa+1)^2}{(\sqrt\kappa-1)(\sqrt\kappa+1)}\\ &=\frac{\sqrt\kappa+1}{\sqrt\kappa-1}=\frac1q .\end{aligned}$$
 By the closed form, dropping the positive second term:
 $$T_k(z_0)\ge\tfrac12q^{-k}\quad\Longleftrightarrow\quad\frac1{T_k(z_0)}\le2q^k.$$
 The second term is $\tfrac12q^k$, which is why the bound is nearly exact for moderate $k$.</p>
-<p><b>Optimality.</b> Among all $Q$ of degree $\le k$ with $Q(0)=1$, the scaled Chebyshev polynomial has the smallest maximum on $[m,L]$. Sketch:</p>
+<p><b>Optimality.</b> Among all polynomials $Q$ of degree $\le k$ with $Q(0)=1$, the scaled Chebyshev polynomial has the smallest maximum on $[m,L]$. Sketch:</p>
 <ol>
-<li>Suppose some $\tilde Q$ had $\max|\tilde Q|\lt1/T_k(z_0)$.</li>
-<li>Then $Q-\tilde Q$ would alternate in sign at the $k+1$ points where $Q=\pm1/T_k(z_0)$. So it has $k$ roots inside $[m,L]$.</li>
+<li>Suppose some other polynomial $\tilde Q$ had a smaller maximum on $[m,L]$, namely $\max|\tilde Q|\lt1/T_k(z_0)$.</li>
+<li>Then the difference $Q-\tilde Q$ would alternate in sign at the $k+1$ points where $Q=\pm1/T_k(z_0)$.
+Between those points it must cross zero, so it has $k$ roots inside $[m,L]$.</li>
 <li>It also has a root at $t=0$, since both polynomials equal $1$ there.</li>
 <li>That is $k+1$ roots for a nonzero polynomial of degree $\le k$, which is impossible.</li>
 </ol>
@@ -8138,7 +8395,7 @@ The second term is $\tfrac12q^k$, which is why the bound is nearly exact for mod
 
 <div class="panel try">
 <span class="label">Try it</span>
-<p class="task">Blue is the scaled Chebyshev polynomial, red dashed is gradient descent's $(1-\frac{2t}{m+L})^k$; both equal 1 at $t=0$. Raise the degree and press "Zoom in on the interval": the blue curve wiggles with equal-height ripples inside $[m,L]$ and its ripples shrink far faster than the red curve's maximum. Increase $\kappa$ and see both get worse, red much more. Switch to "$T_k$ on $[-1,1]$" to see the equioscillation.</p>
+<p class="task">Blue is the scaled Chebyshev polynomial. Red dashed is gradient descent's polynomial $(1-\frac{2t}{m+L})^k$. Both equal 1 at $t=0$. Raise the degree and press "Zoom in on the interval": the blue curve wiggles with equal-height ripples inside $[m,L]$ and its ripples shrink far faster than the red curve's maximum. Increase $\kappa$ and see both get worse, red much more. Switch to "$T_k$ on $[-1,1]$" to see the equioscillation.</p>
 <div class="widget" data-w="p9_cheb" data-cfg='{"kappa":10,"k":4}'></div>
 </div>
 
@@ -8146,10 +8403,14 @@ The second term is $\tfrac12q^k$, which is why the bound is nearly exact for mod
 <h3>What $\sqrt\kappa$ means for iteration counts</h3>
 <p>To guarantee $\norm{\e_k}_A\le\varepsilon\norm{\e_0}_A$:</p>
 <ul>
-<li><b>Steepest descent</b> (rate $\frac{\kappa-1}{\kappa+1}$, Part 5): need $k\ge\dfrac{\ln(1/\varepsilon)}{\ln\frac{\kappa+1}{\kappa-1}}\approx\dfrac\kappa2\ln\dfrac1\varepsilon$.</li>
-<li><b>CG</b>: need $2q^k\le\varepsilon$, i.e. $k\ge\dfrac{\ln(2/\varepsilon)}{\ln\frac{\sqrt\kappa+1}{\sqrt\kappa-1}}\approx\dfrac{\sqrt\kappa}2\ln\dfrac2\varepsilon$.</li>
+<li><b>Steepest descent</b> (rate $\frac{\kappa-1}{\kappa+1}$, Part 5): need
+$$k\ge\dfrac{\ln(1/\varepsilon)}{\ln\frac{\kappa+1}{\kappa-1}}\approx\dfrac\kappa2\ln\dfrac1\varepsilon .$$</li>
+<li><b>CG</b>: need $2q^k\le\varepsilon$, that is
+$$k\ge\dfrac{\ln(2/\varepsilon)}{\ln\frac{\sqrt\kappa+1}{\sqrt\kappa-1}}\approx\dfrac{\sqrt\kappa}2\ln\dfrac2\varepsilon .$$</li>
 </ul>
-<p>The approximations use $\ln\frac{x+1}{x-1}=\ln(1+\frac1x)-\ln(1-\frac1x)\approx\frac2x$ for large $x$. So the iteration count is $O(\kappa\log\frac1\varepsilon)$ for steepest descent and $O(\sqrt\kappa\log\frac1\varepsilon)$ for CG.</p>
+<p>The approximations use the fact that, for large $x$,
+$$\ln\frac{x+1}{x-1}=\ln(1+\tfrac1x)-\ln(1-\tfrac1x)\approx\frac2x .$$
+So the iteration count is $O(\kappa\log\frac1\varepsilon)$ for steepest descent and $O(\sqrt\kappa\log\frac1\varepsilon)$ for CG.</p>
 </div>
 <div class="table-wrap"><table>
 <thead><tr><th style="text-transform:none">$\kappa$</th><th style="text-transform:none">SD factor $\frac{\kappa-1}{\kappa+1}$</th><th style="text-transform:none">CG factor $\frac{\sqrt\kappa-1}{\sqrt\kappa+1}$</th><th style="text-transform:none">Iterations for $\varepsilon=10^{-6}$: SD vs CG</th></tr></thead>
@@ -8166,7 +8427,7 @@ The second term is $\tfrac12q^k$, which is why the bound is nearly exact for mod
 </div>
 
 <div class="prose">
-<p><b>The recipe from a rate to an iteration count.</b> Goal: find the smallest $k$ with $2q^k\le\varepsilon$.</p>
+<p><b>The recipe from a rate to an iteration count.</b> Goal: find the smallest number of steps $k$ with $2q^k\le\varepsilon$.</p>
 <ol>
 <li>Write the bound with $k$ unknown: $2q^k\le\varepsilon$.</li>
 <li>Divide by $2$: $q^k\le\varepsilon/2$.</li>
@@ -8179,27 +8440,41 @@ $$k\ge\frac{\ln(\varepsilon/2)}{\ln q}=\frac{\ln(2/\varepsilon)}{\ln(1/q)}.$$</l
 <p>Here $\ln$ is the natural logarithm and $\varepsilon$ ("epsilon") is the accuracy we want. Steepest descent works the same without the 2.</p>
 </div>
 <div class="example">
-<p class="problem">For $\kappa=100$ and $\varepsilon=10^{-6}$, compute the guaranteed iteration counts for steepest descent and CG (error in the $A$-norm).</p>
+<div class="problem">
+<p>Given:</p>
+<ul>
+<li>Condition number: $\kappa=100$.</li>
+<li>Target accuracy: $\varepsilon=10^{-6}$, measured in the $A$-norm.</li>
+</ul>
+<p>Compute the guaranteed iteration counts for steepest descent and for CG.</p>
+</div>
 <ol class="steps">
 <li><p>SD: the factor is $\frac{99}{101}\approx0.980198$, with $\ln0.980198\approx-0.020001$. We need
 $$k\ge\frac{\ln10^{-6}}{\ln0.980198}=\frac{-13.8155}{-0.020001}\approx690.75.$$
 So $k=691$.</p><p class="why-step">Solve $(\frac{\kappa-1}{\kappa+1})^k\le\varepsilon$ by taking logarithms; both logs are negative, so the inequality direction is preserved when dividing.</p></li>
-<li><p>CG: $\sqrt\kappa=10$, so $q=\frac9{11}\approx0.81818$ and $\ln q\approx-0.20067$. We need $2q^k\le10^{-6}$, which means
+<li><p>CG: here $\sqrt\kappa=10$, so $q=\frac9{11}\approx0.81818$ and $\ln q\approx-0.20067$. We need $2q^k\le10^{-6}$, which means
 $$k\ge\frac{\ln(5\times10^{-7})}{\ln q}=\frac{-14.5087}{-0.20067}\approx72.3.$$
 So $k=73$.</p><p class="why-step">The factor 2 adds $\ln2$ to the numerator, which barely matters.</p></li>
-<li><p>Ratio $691/73\approx9.5\approx\sqrt{100}$.</p><p class="why-step">For large $\kappa$ the ratio of counts tends to $\sqrt\kappa\cdot\frac{\ln(1/\varepsilon)}{\ln(2/\varepsilon)}\approx\sqrt\kappa$.</p></li>
+<li><p>The ratio of the counts is $691/73\approx9.5$, close to $\sqrt{100}=10$.</p><p class="why-step">For large $\kappa$ the ratio of counts tends to $\sqrt\kappa\cdot\frac{\ln(1/\varepsilon)}{\ln(2/\varepsilon)}\approx\sqrt\kappa$.</p></li>
 </ol>
 </div>
 <div class="example">
-<p class="problem">For $\kappa=25$ and $\varepsilon=10^{-4}$, find the guaranteed iteration counts for CG and for steepest descent.</p>
+<div class="problem">
+<p>Given:</p>
+<ul>
+<li>Condition number: $\kappa=25$.</li>
+<li>Target accuracy: $\varepsilon=10^{-4}$.</li>
+</ul>
+<p>Find the guaranteed iteration counts for CG and for steepest descent.</p>
+</div>
 <ol class="steps">
-<li><p>CG: $\sqrt\kappa=5$, so $q=\tfrac{5-1}{5+1}=\tfrac23$. We need $2q^k\le10^{-4}$, which means
+<li><p>CG: here $\sqrt\kappa=5$, so $q=\tfrac{5-1}{5+1}=\tfrac23$. We need $2q^k\le10^{-4}$, which means
 $$k\ge\frac{\ln(2\times10^4)}{\ln(3/2)}=\frac{9.9035}{0.40547}\approx24.4.$$
 So $k=25$.</p><p class="why-step">Step (4) of the recipe: $\ln(2/\varepsilon)=\ln20000$ and $\ln(1/q)=\ln1.5$.</p></li>
 <li><p>Steepest descent: the factor is $\tfrac{24}{26}=\tfrac{12}{13}$. We need $(\tfrac{12}{13})^k\le10^{-4}$, which means
 $$k\ge\frac{\ln10^4}{\ln(13/12)}=\frac{9.2103}{0.08004}\approx115.1.$$
 So $k=116$.</p><p class="why-step">Same method without the factor 2.</p></li>
-<li><p>The ratio is $116/25\approx4.6$, close to $\sqrt{25}=5$.</p><p class="why-step">The advantage of CG grows with $\kappa$.</p></li>
+<li><p>The ratio of the counts is $116/25\approx4.6$, close to $\sqrt{25}=5$.</p><p class="why-step">The advantage of CG grows with $\kappa$.</p></li>
 </ol>
 </div>
 
@@ -8209,7 +8484,7 @@ $$\norm{\e_k}\le\sqrt\kappa\cdot2q^k\norm{\e_0}.$$
 
 <div class="panel try">
 <span class="label">Try it</span>
-<p class="task">Forty eigenvalues spread uniformly over $[0.1,10]$ ($\kappa=100$). Compare the blue CG curve with the gold Chebyshev bound: CG stays below the bound from the start and then bends downward ever more steeply as it "removes" the extreme eigenvalues one by one (Luenberger's bound at work). Then switch to "3 clusters": same picture for the bounds, completely different for CG.</p>
+<p class="task">Forty eigenvalues are spread uniformly over the interval from $0.1$ to $10$, so $\kappa=100$. Compare the blue CG curve with the gold Chebyshev bound: CG stays below the bound from the start and then bends downward ever more steeply as it "removes" the extreme eigenvalues one by one (Luenberger's bound at work). Then switch to "3 clusters": same picture for the bounds, completely different for CG.</p>
 <div class="widget" data-w="p9_spectrum" data-cfg='{"preset":4,"k":12}'></div>
 </div>
 
@@ -8222,15 +8497,30 @@ $$T_2(2)=7,\qquad T_3(2)=2\cdot2\cdot7-2=26.$$
 Check with $T_3=4z^3-3z$: $32-6=26$.</p></div>
 </div>
 <div class="prob" data-id="cgp-chebyshev-p2" data-ans="16/65" data-labels="1/T₃(z₀)" data-tol="0.002">
-<div class="stem"><p>Let $\kappa=9$ and $k=3$. Compute the exact maximum of the scaled Chebyshev polynomial on $[m,L]$, namely $1/T_3(z_0)$ with $z_0=\frac{\kappa+1}{\kappa-1}$, and compare it with $2q^3$.</p></div>
+<div class="stem">
+<p>Given:</p>
+<ul>
+<li>Condition number: $\kappa=9$.</li>
+<li>Degree: $k=3$.</li>
+<li>The point where the interval is stretched to: $z_0=\frac{\kappa+1}{\kappa-1}$.</li>
+</ul>
+<p>Compute the exact maximum of the scaled Chebyshev polynomial on $[m,L]$, which is $1/T_3(z_0)$. Compare it with $2q^3$.</p>
+</div>
 <div class="hint"><p>$z_0=\frac{10}8=1.25$ and $T_3(z)=4z^3-3z$.</p></div>
 <div class="sol"><p>Evaluate $T_3$:
 $$T_3(1.25)=4(1.953125)-3.75=4.0625,\qquad\frac1{T_3(z_0)}=\frac{16}{65}\approx0.2462.$$
 With $q=\frac{3-1}{3+1}=\frac12$ we get $2q^3=0.25$. The bound $2q^k$ is very close to the exact Chebyshev value.</p></div>
 </div>
 <div class="prob" data-id="cgp-chebyshev-p3" data-ans="726;69078" data-labels="CG;steepest descent">
-<div class="stem"><p>For $\kappa=10^4$ and $\varepsilon=10^{-6}$, find the smallest $k$ for which the worst-case bound guarantees $\norm{\e_k}_A\le\varepsilon\norm{\e_0}_A$, for CG and for steepest descent.</p></div>
-<div class="hint"><p>CG: $q=\frac{99}{101}$, solve $2q^k\le10^{-6}$. SD: factor $\frac{9999}{10001}$, solve $(\cdot)^k\le10^{-6}$.</p></div>
+<div class="stem">
+<p>Given:</p>
+<ul>
+<li>Condition number: $\kappa=10^4$.</li>
+<li>Target accuracy: $\varepsilon=10^{-6}$.</li>
+</ul>
+<p>Find the smallest $k$ for which the worst-case bound guarantees $\norm{\e_k}_A\le\varepsilon\norm{\e_0}_A$. Do this for CG and for steepest descent.</p>
+</div>
+<div class="hint"><p>CG: the factor is $q=\frac{99}{101}$. Solve $2q^k\le10^{-6}$.</p><p>Steepest descent: the factor is $\frac{9999}{10001}$. Solve (factor)$^k\le10^{-6}$.</p></div>
 <div class="sol"><p>CG: $\ln q=\ln\frac{99}{101}\approx-0.0200007$. Then
 $$k\ge\frac{\ln(5\times10^{-7})}{\ln q}\approx\frac{-14.5087}{-0.0200007}\approx725.4.$$
 So $726$.</p>
@@ -8246,13 +8536,28 @@ $$k\ge\frac{\ln(5\times10^{-8})}{\ln(9/11)}=\frac{-16.811}{-0.20067}\approx83.8.
 So $k=84$ (versus 73 for the $A$-norm).</p></div>
 </div>
 <div class="prob" data-id="p9x-cheb-1" data-ans="8/17" data-labels="1/T₂(z₀)" data-tol="0.002">
-<div class="stem"><p>For $\kappa=9$ and $k=2$, compute the maximum $1/T_2(z_0)$ of the Chebyshev residual polynomial on $[m,L]$, where $z_0=\frac{\kappa+1}{\kappa-1}$.</p></div>
+<div class="stem">
+<p>Given:</p>
+<ul>
+<li>Condition number: $\kappa=9$.</li>
+<li>Degree: $k=2$.</li>
+<li>The stretched point: $z_0=\frac{\kappa+1}{\kappa-1}$.</li>
+</ul>
+<p>Compute the maximum $1/T_2(z_0)$ of the Chebyshev residual polynomial on $[m,L]$.</p>
+</div>
 <div class="hint"><p>$z_0=1.25$ and $T_2(z)=2z^2-1$.</p></div>
 <div class="sol"><p>Evaluate $T_2$:
 $$T_2(1.25)=2(1.5625)-1=2.125,\qquad\frac1{2.125}=\tfrac8{17}\approx0.4706.$$</p></div>
 </div>
 <div class="prob" data-id="p9x-cheb-2" data-ans="25;116" data-labels="CG;steepest descent">
-<div class="stem"><p>For $\kappa=25$ and $\varepsilon=10^{-4}$, find the smallest $k$ guaranteed by the worst-case bound, for CG ($2q^k\le\varepsilon$) and for steepest descent ($(\tfrac{\kappa-1}{\kappa+1})^k\le\varepsilon$).</p></div>
+<div class="stem">
+<p>Given:</p>
+<ul>
+<li>Condition number: $\kappa=25$.</li>
+<li>Target accuracy: $\varepsilon=10^{-4}$.</li>
+</ul>
+<p>Find the smallest $k$ guaranteed by the worst-case bound. For CG the condition is $2q^k\le\varepsilon$. For steepest descent it is $(\tfrac{\kappa-1}{\kappa+1})^k\le\varepsilon$.</p>
+</div>
 <div class="hint"><p>CG: $q=\tfrac23$. Steepest descent: factor $\tfrac{12}{13}$. Use logarithms.</p></div>
 <div class="sol"><p>CG:
 $$k\ge\frac{\ln(20000)}{\ln(1.5)}\approx24.4,$$
@@ -8268,8 +8573,9 @@ so $116$.</p></div>
 <ul><li>Dropping the factor 2 or the square root ($\kappa$ vs $\sqrt\kappa$) in the CG rate</li><li>Treating the $\sqrt\kappa$ bound as CG's actual behaviour: it is a worst case over spectra in $[m,L]$</li><li>Applying the $A$-norm bound to $\norm{\e_k}$ without the $\sqrt\kappa$ conversion factor</li></ul>
 </div>
 <ol class="takeaways">
-<li>The scaled Chebyshev polynomial $T_k(z(t))/T_k(z_0)$ has $Q(0)=1$ and maximum $1/T_k(z_0)\le2q^k$ on $[m,L]$, giving $\norm{\e_k}_A\le2\big(\frac{\sqrt\kappa-1}{\sqrt\kappa+1}\big)^k\norm{\e_0}_A$.</li>
-<li>Iterations to accuracy $\varepsilon$: $O(\kappa\log\frac1\varepsilon)$ for steepest descent versus $O(\sqrt\kappa\log\frac1\varepsilon)$ for CG; for $\kappa=10^4$ roughly $69\,000$ versus $730$.</li>
+<li>The scaled Chebyshev polynomial $T_k(z(t))/T_k(z_0)$ equals $1$ at $t=0$, and its maximum on $[m,L]$ is $1/T_k(z_0)\le2q^k$. This gives the rate
+$$\norm{\e_k}_A\le2\Big(\frac{\sqrt\kappa-1}{\sqrt\kappa+1}\Big)^k\norm{\e_0}_A .$$</li>
+<li>Iterations to reach accuracy $\varepsilon$: steepest descent needs $O(\kappa\log\frac1\varepsilon)$, while CG needs $O(\sqrt\kappa\log\frac1\varepsilon)$. For $\kappa=10^4$ that is roughly $69\,000$ versus $730$.</li>
 <li>The $\sqrt\kappa$ bound is pessimistic for clustered spectra and is stated in the $A$-norm; converting to the Euclidean norm costs a factor $\sqrt\kappa$.</li>
 </ol>
 <div class="quiz" data-id="cgp-chebyshev">
@@ -8302,7 +8608,13 @@ so $116$.</p></div>
 <div class="o ok">$\operatorname{span}\{\d_0,\dots,\d_k\}=\mathcal K_k(\g_0)=\operatorname{span}\{\g_0,A\g_0,\dots,A^k\g_0\}$<div class="e">So $\x_{k+1}-\x_0$ is a polynomial in $A$ applied to $\g_0$.</div></div>
 <div class="o">$\alpha_k$ is chosen by exact line search<div class="e">Exact line search alone gives steepest descent, which has a polynomial too, but not the optimal one.</div></div>
 </div>
-<div class="q" data-from="Part 8 + Ch. 9.1"><div class="q-text"><p>The Expanding Subspace Theorem says $\x_k$ minimizes $f$ over $\x_0+\operatorname{span}\{\d_0,\dots,\d_{k-1}\}$. Minimizing $f$ there is the same as minimizing…</p></div>
+<div class="q" data-from="Part 8 + Ch. 9.1"><div class="q-text">
+<p>Recall:</p>
+<ul>
+<li>The Expanding Subspace Theorem says that $\x_k$ minimizes $f$ over the set $\x_0+\operatorname{span}\{\d_0,\dots,\d_{k-1}\}$.</li>
+</ul>
+<p>Minimizing $f$ over that set is the same as minimizing…</p>
+</div>
 <div class="o">$\norm{\x-\x^\star}$ (Euclidean)<div class="e">The Euclidean and $A$-norm minimizers over a subspace differ in general.</div></div>
 <div class="o ok">$\norm{\x-\x^\star}_A$<div class="e">$f(\x)-f^\star=\tfrac12\norm{\x-\x^\star}_A^2$.</div></div>
 <div class="o">$\norm{\grad f(\x)}$<div class="e">That would be a different method (minimizing the residual norm).</div></div>
@@ -8312,7 +8624,15 @@ so $116$.</p></div>
 <div class="o ok">Luenberger's bound at $k=0$ equals $\frac{\kappa-1}{\kappa+1}$, and later steps can only improve on steepest descent<div class="e">CG's first step is steepest descent; afterwards CG optimizes over a family containing every gradient method.</div></div>
 <div class="o">CG and steepest descent have the same rate once $k\ge2$<div class="e">CG's worst case is governed by $\sqrt\kappa$, not $\kappa$.</div></div>
 </div>
-<div class="q" data-from="Part 7 + Ch. 9.3"><div class="q-text"><p>For $f\in\mathcal S_{\mu,L}^{1,1}$, gradient descent with $h=\frac2{\mu+L}$ contracts $\norm{\x_k-\x^\star}$ by $\frac{L-\mu}{L+\mu}$ per step. On a quadratic with spectrum in $[\mu,L]$, this is the maximum on $[\mu,L]$ of…</p></div>
+<div class="q" data-from="Part 7 + Ch. 9.3"><div class="q-text">
+<p>Setting:</p>
+<ul>
+<li>The function $f$ is in the class $\mathcal S_{\mu,L}^{1,1}$: $\mu$-strongly convex and $L$-smooth.</li>
+<li>Gradient descent uses the step $h=\frac2{\mu+L}$.</li>
+<li>It contracts the distance $\norm{\x_k-\x^\star}$ by the factor $\frac{L-\mu}{L+\mu}$ per step.</li>
+</ul>
+<p>On a quadratic whose spectrum lies in $[\mu,L]$, this factor is the maximum on $[\mu,L]$ of…</p>
+</div>
 <div class="o ok">$|1-ht|$, the degree-1 residual polynomial of one gradient step<div class="e">At $t=\mu$ and $t=L$ it equals $\frac{L-\mu}{L+\mu}$, and it is smaller in between.</div></div>
 <div class="o">$|T_1(t)|$<div class="e">$T_1(t)=t$ is not even 1 at $t=0$.</div></div>
 <div class="o">$1/T_1(z_0)$ with $z_0=\frac{\kappa+1}{\kappa-1}$<div class="e">Numerically equal! But the question asks which polynomial gradient descent uses. (Indeed, at degree 1, Chebyshev and the best gradient step coincide.)</div></div>
@@ -8386,15 +8706,28 @@ $$q_k(\d):=f(\x_k)+\g_k^\top\d+\tfrac12\d^\top\hess f(\x_k)\,\d .$$
 This <b>quadratic model</b> $q_k$ is a bowl when $\hess f(\x_k)\succ0$. Its gradient is $\grad q_k(\d)=\grad f(\x_k)+\hess f(\x_k)\d$, which vanishes exactly at the Newton direction. So <b>Newton jumps to the bottom of the local quadratic model</b> ([FR] (3.1.1)). Gradient descent, by contrast, uses the model $f(\x_k)+\grad f(\x_k)^\top\d+\frac1{2\alpha}\norm{\d}^2$, which pretends the curvature is the same, $1/\alpha$, in every direction.</p>
 <p><b>The derivation, line by line.</b> We find the $\d$ that minimizes $q_k(\d)$.</p>
 <ol>
-<li><b>Write the model.</b> $q_k(\d)=f(\x_k)+\g_k^\top\d+\tfrac12\d^\top H_k\d$, with $H_k:=\hess f(\x_k)$. The unknown is $\d$; $f(\x_k)$, $\g_k$, $H_k$ are known numbers and vectors. <i>Reason:</i> this is the second-order Taylor expansion of $f$ at $\x_k$ (<a href="#pm-calculus">Part M.2</a>).</li>
-<li><b>Differentiate with respect to $\d$.</b> The constant has gradient $\0$; $\g_k^\top\d$ has gradient $\g_k$; $\tfrac12\d^\top H_k\d$ has gradient $H_k\d$ (using that $H_k$ is symmetric). So $\grad q_k(\d)=\g_k+H_k\d$. <i>Reason:</i> gradient rules for linear and quadratic forms.</li>
-<li><b>Set the gradient to zero.</b> $\g_k+H_k\d=\0$, that is $H_k\d=-\g_k$. <i>Reason:</i> a stationary point of a function is where its gradient vanishes, and for a convex function (here when $H_k\succ0$) that stationary point is the global minimizer of $q_k$.</li>
-<li><b>Solve.</b> $\d_k=-H_k^{-1}\g_k$, and $\x_{k+1}=\x_k+\d_k$. <i>Reason:</i> $H_k\succ0$ implies $H_k$ is invertible.</li>
+<li><b>Write the model.</b> Write $H_k:=\hess f(\x_k)$ for the Hessian at the current point. The model is
+$$q_k(\d)=f(\x_k)+\g_k^\top\d+\tfrac12\d^\top H_k\d.$$
+The unknown is the step $\d$. Everything else is known: the value $f(\x_k)$, the gradient $\g_k$ and the Hessian $H_k$. <i>Reason:</i> this is the second-order Taylor expansion of $f$ at $\x_k$ (<a href="#pm-calculus">Part M.2</a>).</li>
+<li><b>Differentiate with respect to $\d$.</b> Take the three terms one at a time:
+<ul>
+<li>The constant $f(\x_k)$ has gradient $\0$.</li>
+<li>The linear term $\g_k^\top\d$ has gradient $\g_k$.</li>
+<li>The quadratic term $\tfrac12\d^\top H_k\d$ has gradient $H_k\d$, because $H_k$ is symmetric.</li>
+</ul>
+Adding up: $\grad q_k(\d)=\g_k+H_k\d$. <i>Reason:</i> gradient rules for linear and quadratic forms.</li>
+<li><b>Set the gradient to zero.</b> This gives the linear system $H_k\d=-\g_k$. <i>Reason:</i> a stationary point of a function is where its gradient vanishes. For a convex function (here, when $H_k\succ0$) that stationary point is the global minimizer of $q_k$.</li>
+<li><b>Solve.</b> The Newton direction is $\d_k=-H_k^{-1}\g_k$, and the new point is $\x_{k+1}=\x_k+\d_k$. <i>Reason:</i> $H_k\succ0$ implies that $H_k$ is invertible.</li>
 <li><b>Value at the bottom (optional).</b> Substituting back:
 $$\min_\d q_k=f(\x_k)-\tfrac12\g_k^\top H_k^{-1}\g_k$$
 So the model predicts a decrease of $\tfrac12\g_k^\top H_k^{-1}\g_k\ge0$.</li>
 </ol>
-<p><b>Numeric check (1-D).</b> $f(x)=x-\ln x$ at $x_k=0.5$ has $f=1.1931$, $f'=-1$, $f''=4$.</p>
+<p><b>Numeric check (1-D).</b> Take $f(x)=x-\ln x$ at the point $x_k=0.5$. The three known numbers are:</p>
+<ul>
+<li>Value: $f=1.1931$.</li>
+<li>Slope: $f'=-1$.</li>
+<li>Curvature: $f''=4$.</li>
+</ul>
 <p>$$\begin{aligned}q(d)&=1.1931-d+2d^2\\ q'(d)&=-1+4d=0 &&\Rightarrow\ d=0.25\\ q(0.25)&=1.1931-\tfrac12\cdot\tfrac14=1.0681 &&\text{(predicted)}\\ f(0.75)&=0.75-\ln0.75=1.0377 &&\text{(true)}\end{aligned}$$</p>
 <p>The model is not exact, but the step is good.</p>
 </div>
@@ -8413,14 +8746,25 @@ So the model predicts a decrease of $\tfrac12\g_k^\top H_k^{-1}\g_k\ge0$.</li>
 <div class="o">At most $n$ steps, like CG<div class="e">CG needs up to $n$ because it learns curvature one direction at a time. Newton is handed all of it at once.</div></div>
 <div class="o ok">Exactly one step<div class="e">The quadratic model of a quadratic is the function itself, so the bottom of the model is the true minimizer.</div></div>
 <div class="reveal"><div class="box thm" data-k="Proposition" data-name="One step on a strictly convex quadratic">
-<p>For $f(\x)=\tfrac12\x^\top A\x-\b^\top\x$ with $A\succ0$: $\grad f(\x_0)=A\x_0-\b$ and $\hess f=A$, so for every $\x_0$:
+<p>Take $f(\x)=\tfrac12\x^\top A\x-\b^\top\x$ with $A\succ0$. Its gradient and Hessian are $\grad f(\x_0)=A\x_0-\b$ and $\hess f=A$. So for every starting point $\x_0$:
 $$\begin{aligned}\x_1&=\x_0-A^{-1}(A\x_0-\b) &&\text{(Newton step)}\\ &=\x_0-\x_0+A^{-1}\b &&\text{(expand)}\\ &=A^{-1}\b=\x^\star\end{aligned}$$
-On the running example (fit the line, $A=\begin{pmatrix}28&12\\12&6\end{pmatrix}$, $\b=(46,20)$, $\kappa\approx46.2$), one Newton step from anywhere lands on $(w,c)=(1.5,\tfrac13)$. Gradient descent with the best fixed step needs hundreds of steps for ten digits.</p>
+On the running example (fit the line) the data are:</p>
+<ul>
+<li>Matrix: $A=\begin{pmatrix}28&12\\12&6\end{pmatrix}$.</li>
+<li>Right-hand side: $\b=(46,20)$.</li>
+<li>Condition number: $\kappa\approx46.2$.</li>
+</ul>
+<p>One Newton step from anywhere lands on $(w,c)=(1.5,\tfrac13)$. Gradient descent with the best fixed step needs hundreds of steps for ten digits.</p>
 </div></div>
 </div>
 
 <div class="prose">
-<p><b>What the proposition says.</b> If $f$ is already a quadratic, its Taylor model is $f$ itself, so "the bottom of the model" is the true minimizer. One step from any starting point suffices. Numeric example: $A=\begin{pmatrix}2&1\\1&3\end{pmatrix}$, $\b=(3,4)^\top$, start $\x_0=(5,-7)^\top$.</p>
+<p><b>What the proposition says.</b> If $f$ is already a quadratic, its Taylor model is $f$ itself, so "the bottom of the model" is the true minimizer. One step from any starting point suffices. Numeric example, with:</p>
+<ul>
+<li>Matrix: $A=\begin{pmatrix}2&1\\1&3\end{pmatrix}$.</li>
+<li>Right-hand side: $\b=(3,4)^\top$.</li>
+<li>Starting point: $\x_0=(5,-7)^\top$.</li>
+</ul>
 <p>$$\begin{aligned}A\x_0&=(3,-16)^\top\\ \g_0&=A\x_0-\b=(0,-20)^\top\\ A^{-1}&=\tfrac15\begin{pmatrix}3&-1\\-1&2\end{pmatrix}\\ A^{-1}\g_0&=(4,-8)^\top\\ \x_1&=(5,-7)^\top-(4,-8)^\top=(1,1)^\top\\ A\x_1&=(3,4)^\top=\b &&\text{(check)}\end{aligned}$$</p>
 <p>The same system appeared in Part 8.</p>
 <h3>Why Newton doesn't care about $\kappa$: affine invariance</h3>
@@ -8433,9 +8777,14 @@ This is exactly the Newton step in $\x$, mapped back by $S^{-1}$. Stretching or 
 <p>A direction $\d$ is a descent direction when $\grad f(\x_k)^\top\d\lt0$. For the Newton direction,
 $$\grad f(\x_k)^\top\d_k=-\grad f(\x_k)^\top[\hess f(\x_k)]^{-1}\grad f(\x_k).$$
 If $\hess f(\x_k)\succ0$ then its inverse is also positive definite (eigenvalues $1/\lambda_i>0$), so this is negative whenever $\grad f(\x_k)\ne\0$: <b>descent</b>. If the Hessian is indefinite, the Newton direction may point uphill or towards a saddle point; Part 3 showed Newton walking into a saddle (a point where the gradient is zero but which is not a minimum: a minimum in some directions, a maximum in others). Newton is a root-finder for $\grad f=\0$, and maxima and saddles are roots too.</p>
-<p><b>Numeric check.</b> In the worked example below, $\g_0=(0.4375,0.25)^\top$ and $\d_0=(-0.05,-0.1)^\top$:</p>
+<p><b>Numeric check.</b> In the worked example below we find:</p>
+<ul>
+<li>Gradient: $\g_0=(0.4375,0.25)^\top$.</li>
+<li>Newton direction: $\d_0=(-0.05,-0.1)^\top$.</li>
+</ul>
+<p>The slope along the direction is:</p>
 <p>$$\g_0^\top\d_0=-0.021875-0.025=-0.046875\lt0\qquad\text{(downhill)}$$</p>
-<p>One-dimensional contrast: $f(t)=t^3/3-2t$ at $t=-1$.</p>
+<p>One-dimensional contrast: take $f(t)=t^3/3-2t$ at the point $t=-1$.</p>
 <p>$$\begin{aligned}f'&=1-2=-1\\ f''&=2t=-2\lt0\\ d&=-f'/f''=-0.5\\ f'd&=+0.5\gt0 &&\text{(uphill)}\end{aligned}$$</p>
 <p>Newton moves uphill, toward the local <i>maximum</i> at $t=-\sqrt2$.</p>
 </div>
@@ -8443,7 +8792,12 @@ If $\hess f(\x_k)\succ0$ then its inverse is also positive definite (eigenvalues
 <div class="callout"><b>Careful:</b> "Newton's method" in this course means the iteration for <i>minimization</i>, $\x_{k+1}=\x_k-[\hess f]^{-1}\grad f$. It uses second derivatives of $f$. The root-finding version $t_{k+1}=t_k-\phi/\phi'$ uses first derivatives of $\phi$; the two are the same method once $\phi=f'$.</div>
 
 <div class="example">
-<p class="problem">[FR] (3.1.3): take one Newton step for $f(\x)=x_1^4+x_1x_2+(1+x_2)^2$ from $\x_0=(0.75,-1.25)^\top$, and check that $f$ decreased.</p>
+<div class="problem"><p>[FR] (3.1.3). Given:</p>
+<ul>
+<li>Function: $f(\x)=x_1^4+x_1x_2+(1+x_2)^2$.</li>
+<li>Starting point: $\x_0=(0.75,-1.25)^\top$.</li>
+</ul>
+<p>Take one Newton step, and check that $f$ decreased.</p></div>
 <ol class="steps">
 <li><p>Gradient: $\grad f=\big(4x_1^3+x_2,\ x_1+2(1+x_2)\big)$. At $\x_0$:</p><p>$$\begin{aligned}\partial_1f&=4(0.421875)-1.25=0.4375\\ \partial_2f&=0.75+2(-0.25)=0.25\\ \g_0&=(0.4375,\ 0.25)\end{aligned}$$</p><p class="why-step">Differentiate term by term: $x_1x_2$ contributes $x_2$ to $\partial_1f$ and $x_1$ to $\partial_2f$.</p></li>
 <li><p>Hessian:</p><p>$$\begin{aligned}\hess f&=\begin{pmatrix}12x_1^2&1\\1&2\end{pmatrix}\\ \hess f(\x_0)&=\begin{pmatrix}6.75&1\\1&2\end{pmatrix}\\ \det&=13.5-1=12.5\gt0\end{aligned}$$</p><p>The diagonal is positive too, so the matrix is positive definite.</p><p class="why-step">For a $2\times2$ symmetric matrix, positive diagonal and positive determinant mean both eigenvalues are positive, so the Newton direction will be a descent direction.</p></li>
@@ -8453,7 +8807,14 @@ If $\hess f(\x_k)\succ0$ then its inverse is also positive definite (eigenvalues
 </ol>
 </div>
 <div class="example">
-<p class="problem">Newton's root iteration and its error, in numbers. Minimize $f(x)=e^x-2x$ ($f'=e^x-2$, $f''=e^x$, minimizer $x^\star=\ln2=0.693147\ldots$) from $x_0=0$. Compute four steps and watch the error.</p>
+<div class="problem"><p>Newton's root iteration and its error, in numbers. Given:</p>
+<ul>
+<li>Function: $f(x)=e^x-2x$.</li>
+<li>Derivatives: $f'=e^x-2$ and $f''=e^x$.</li>
+<li>Minimizer: $x^\star=\ln2=0.693147\ldots$</li>
+<li>Starting point: $x_0=0$.</li>
+</ul>
+<p>Compute four steps and watch the error.</p></div>
 <ol class="steps">
 <li><p>The rule is $x_{k+1}=x_k-\dfrac{e^{x_k}-2}{e^{x_k}}=x_k-1+2e^{-x_k}$.</p><p class="why-step">Slope over curvature, with a minus sign.</p></li>
 <li><p>Iterate:</p><p>$$\begin{aligned}x_1&=0-1+2=1\\ x_2&=1-1+2e^{-1}=0.735759\\ x_3&=0.735759-1+2e^{-0.735759}=0.694042\\ x_4&=0.693148\end{aligned}$$</p><p class="why-step">Each step uses only the current $x_k$.</p></li>
@@ -8474,12 +8835,12 @@ If $\hess f(\x_k)\succ0$ then its inverse is also positive definite (eigenvalues
 <div class="sol"><p>Simplify the iteration, then run it:</p><p>$$\begin{aligned}x_{k+1}&=x_k-x_k^2+x_k=2x_k-x_k^2\\ x_1&=1-0.25=0.75\\ x_2&=1.5-0.5625=0.9375\end{aligned}$$</p><p>Note $1-x_{k+1}=(1-x_k)^2$: the error is squared at every step ($0.5\to0.25\to0.0625$).</p></div>
 </div>
 <div class="prob" data-id="p10-idea-p3" data-ans="16/23;-8/23" data-labels="x₁ (first coordinate);x₁ (second coordinate)" data-tol="0.001">
-<div class="stem"><p>One Newton step for $f(x,y)=x^4+y^2+xy$ from $(1,0)$. Give the new point.</p></div>
-<div class="hint"><p>$\grad f=(4x^3+y,\ 2y+x)=(4,1)$ at $(1,0)$, and $\hess f=\begin{pmatrix}12x^2&1\\1&2\end{pmatrix}=\begin{pmatrix}12&1\\1&2\end{pmatrix}$ there. Solve $\hess f\,\d=-\grad f$.</p></div>
+<div class="stem"><p>Given:</p><ul><li>Function: $f(x,y)=x^4+y^2+xy$.</li><li>Starting point: $(1,0)$.</li></ul><p>Take one Newton step. Give the new point.</p></div>
+<div class="hint"><p>At $(1,0)$ the gradient is $\grad f=(4x^3+y,\ 2y+x)=(4,1)$. The Hessian there is $\hess f=\begin{pmatrix}12x^2&1\\1&2\end{pmatrix}=\begin{pmatrix}12&1\\1&2\end{pmatrix}$. Then solve $\hess f\,\d=-\grad f$.</p></div>
 <div class="sol"><p>$$\begin{aligned}\det&=23\\ \d&=-\frac1{23}\begin{pmatrix}2&-1\\-1&12\end{pmatrix}\begin{pmatrix}4\\1\end{pmatrix}=-\frac1{23}\begin{pmatrix}7\\8\end{pmatrix}\\ \x_1&=(1-\tfrac7{23},\ -\tfrac8{23})=(\tfrac{16}{23},-\tfrac8{23})\approx(0.6957,-0.3478)\end{aligned}$$</p></div>
 </div>
 <div class="prob" data-id="p10x-idea-newton1d" data-ans="0.73576" data-labels="x₂" data-tol="0.0005">
-<div class="stem"><p>Newton's method for $f(x)=e^x-2x$ from $x_0=0$. What is $x_2$? (Five decimal places.)</p></div>
+<div class="stem"><p>Given: $f(x)=e^x-2x$, starting at $x_0=0$.</p><p>Run Newton's method. What is $x_2$? (Five decimal places.)</p></div>
 <div class="hint"><p>$x_{k+1}=x_k-(e^{x_k}-2)/e^{x_k}$. First compute $x_1$.</p></div>
 <div class="sol"><p>$$\begin{aligned}x_1&=0-(1-2)/1=1\\ x_2&=1-(e-2)/e=1-1+2/e=2/e\approx0.73576\end{aligned}$$</p><p>The minimizer is $\ln2\approx0.69315$, so the error has gone from $0.693$ to $0.307$ to $0.043$.</p></div>
 </div>
@@ -8500,7 +8861,7 @@ If $\hess f(\x_k)\succ0$ then its inverse is also positive definite (eigenvalues
 <li>The direction is downhill when $\hess f(\x_k)\succ0$; otherwise it can go uphill or to a maximum or saddle.</li>
 </ol>
 <div class="quiz" data-id="p10-idea">
-<div class="q"><div class="q-text"><p>At $\x_k$, $\hess f(\x_k)=\begin{pmatrix}2&0\\0&-2\end{pmatrix}$ and $\grad f(\x_k)=(0,1)$. The Newton direction $\d_k$ and the slope $\grad f^\top\d_k$ are…</p></div>
+<div class="q"><div class="q-text"><p>At the point $\x_k$ we know:</p><ul><li>Hessian: $\hess f(\x_k)=\begin{pmatrix}2&0\\0&-2\end{pmatrix}$.</li><li>Gradient: $\grad f(\x_k)=(0,1)$.</li></ul><p>The Newton direction $\d_k$ and the slope $\grad f^\top\d_k$ are…</p></div>
 <div class="o">$\d_k=(0,-\tfrac12)$, slope $-\tfrac12$: downhill<div class="e">Solve $\hess f\,\d=-\grad f$ carefully: the second equation is $-2d_2=-1$.</div></div>
 <div class="o ok">$\d_k=(0,\tfrac12)$, slope $+\tfrac12$: uphill<div class="e">$-2d_2=-1$ gives $d_2=\tfrac12$, and $\grad f^\top\d=\tfrac12\gt0$. With an indefinite Hessian the Newton direction can go uphill.</div></div>
 <div class="o">$\d_k=(0,-1)$, the negative gradient<div class="e">That is the gradient-descent direction; Newton rescales it by the inverse Hessian.</div></div>
@@ -8549,7 +8910,7 @@ If $\hess f(\x_k)\succ0$ then its inverse is also positive definite (eigenvalues
 <ul>
 <li><b>Linear</b>: $r_{k+1}\le q\,r_k$ for some fixed $q\in(0,1)$ and all large $k$. Each step gains a fixed number of digits. Gradient descent on a strongly convex function (Part 7) and CG's bound (Part 9) are of this type.</li>
 <li><b>Superlinear</b>: $r_{k+1}/r_k\to0$ (the ratio of successive errors tends to zero). Each step gains more digits than the last.</li>
-<li><b>Quadratic</b>: $r_{k+1}\le c\,r_k^2$ for some $c\gt0$ and all large $k$. If $c\,r_k=10^{-2}$ then $c\,r_{k+1}\le10^{-4}$, then $10^{-8}$, $10^{-16}$: <b>the number of correct digits doubles each step</b>.</li>
+<li><b>Quadratic</b>: $r_{k+1}\le c\,r_k^2$ for some constant $c\gt0$ and all large $k$. For example, if $c\,r_k=10^{-2}$, then $c\,r_{k+1}\le10^{-4}$, then $10^{-8}$, then $10^{-16}$. So <b>the number of correct digits doubles each step</b>.</li>
 </ul>
 <p>Quadratic $\Rightarrow$ superlinear $\Rightarrow$ linear. (Slower still is <i>sublinear</i>, like the $O(1/k)$ bound of Part 7.)</p>
 </div>
@@ -8575,13 +8936,19 @@ If $\hess f(\x_k)\succ0$ then its inverse is also positive definite (eigenvalues
 <p><b>Intuition first.</b> Newton trusts a parabola fitted at the current point. If the real function bends away from that parabola quickly, the bottom of the parabola can be a terrible guess. The function $\sqrt{1+t^2}$ is convex and has a clean minimizer at $0$, yet far from $0$ it looks like a straight line (curvature almost zero), so the fitted parabola is very flat and its bottom is far away, on the other side. The calculation below shows the effect exactly.</p>
 </div>
 <div class="box thm" data-k="Example" data-name="[Y] Example 1.2.4 (p.34)">
-<p>Find the root $t^\star=0$ of $\phi(t)=\dfrac{t}{\sqrt{1+t^2}}$. (This is $f'$ for the strictly convex $f(t)=\sqrt{1+t^2}$, so it is also Newton for minimizing $f$.) By the quotient rule, $\phi'(t)=\dfrac{\sqrt{1+t^2}-t^2/\sqrt{1+t^2}}{1+t^2}=\dfrac1{(1+t^2)^{3/2}}$, so
+<p>Find the root $t^\star=0$ of the function
+$$\phi(t)=\dfrac{t}{\sqrt{1+t^2}}.$$
+This $\phi$ is the derivative $f'$ of the strictly convex function $f(t)=\sqrt{1+t^2}$, so this is also Newton's method for minimizing $f$. By the quotient rule, the derivative of $\phi$ is
+$$\phi'(t)=\dfrac{\sqrt{1+t^2}-t^2/\sqrt{1+t^2}}{1+t^2}=\dfrac1{(1+t^2)^{3/2}},$$
+so the iteration becomes
 $$\begin{aligned}t_{k+1}&=t_k-\frac{t_k}{\sqrt{1+t_k^2}}\,(1+t_k^2)^{3/2}\\&=t_k-t_k(1+t_k^2)=-t_k^3 .\end{aligned}$$
 Three cases:</p>
 <ul>
-<li><b>If $|t_0|\lt1$</b>, then $|t_k|=|t_0|^{3^k}\to0$ extremely fast. From $0.9$: $0.9,\ -0.729,\ 0.387,\ -0.058,\ 2.0\times10^{-4},\ -7.6\times10^{-12}$.</li>
+<li><b>If $|t_0|\lt1$</b>, then $|t_k|=|t_0|^{3^k}\to0$ extremely fast. Starting from $0.9$ the iterates are
+$$0.9,\ -0.729,\ 0.387,\ -0.058,\ 2.0\times10^{-4},\ -7.6\times10^{-12}.$$</li>
 <li><b>If $|t_0|=1$</b>, it oscillates between $\pm1$ forever.</li>
-<li><b>If $|t_0|\gt1$</b>, it diverges. From $1.05$: $-1.16,\ 1.55,\ -3.73,\ 52,\ -1.4\times10^5$.</li>
+<li><b>If $|t_0|\gt1$</b>, it diverges. Starting from $1.05$ the iterates are
+$$-1.16,\ 1.55,\ -3.73,\ 52,\ -1.4\times10^5.$$</li>
 </ul>
 </div>
 <div class="prose">
@@ -8595,8 +8962,10 @@ Three cases:</p>
 <p><b>Intuition first.</b> The example shows that a guarantee must restrict the starting point. The theorem says exactly how: if the Hessian does not change too fast (constant $M$), and the bowl at the minimizer has genuine curvature in every direction (constant $\ell$), then starting within the radius $\frac{2\ell}{3M}$ is enough, and then the error is squared, up to a constant, at every step. Read it as: curvature $\ell$ at the bottom helps; how fast the curvature changes, $M$, hurts. The ratio $\ell/M$ is the size of the safe ball.</p>
 <p>Nesterov works under three assumptions ([Y] p.34):</p>
 <ol>
-<li><b>(N1)</b> $f\in C^{2,2}_M(\R^n)$: $f$ is twice differentiable and its Hessian is <b>Lipschitz</b> with constant $M$ (a Lipschitz function cannot change faster than $M$ times the distance moved): $\norm{\hess f(\x)-\hess f(\y)}\le M\norm{\x-\y}$ for all $\x,\y$, where $\norm{\cdot}$ on matrices is the operator norm (largest stretch factor; for symmetric matrices, the largest $|\lambda|$). $M$ measures how far $f$ is from quadratic; $M=0$ for a quadratic.</li>
-<li><b>(N2)</b> There is a local minimizer $\x^\star$ with $\hess f(\x^\star)\succeq\ell I$ for some $\ell\gt0$ ([Y] (1.2.22); $\succeq\ell I$ means every eigenvalue of the Hessian is at least $\ell$): the bowl is genuinely curved in every direction at the bottom. ($\ell$ plays the role that $\mu$ played for strong convexity in Part 7 (the guaranteed smallest curvature; <a href="#pm-convex">Part M.3</a>), but only at $\x^\star$.)</li>
+<li><b>(N1)</b> The function $f\in C^{2,2}_M(\R^n)$ is twice differentiable, and its Hessian is <b>Lipschitz</b> with constant $M$. A Lipschitz function cannot change faster than $M$ times the distance moved. In symbols, for all $\x,\y$:
+$$\norm{\hess f(\x)-\hess f(\y)}\le M\norm{\x-\y}.$$
+Here $\norm{\cdot}$ on matrices is the operator norm (the largest stretch factor; for symmetric matrices, the largest $|\lambda|$). The constant $M$ measures how far $f$ is from quadratic, and $M=0$ for a quadratic.</li>
+<li><b>(N2)</b> There is a local minimizer $\x^\star$ with $\hess f(\x^\star)\succeq\ell I$ for some $\ell\gt0$ ([Y] (1.2.22)). The notation $\succeq\ell I$ means every eigenvalue of the Hessian is at least $\ell$. In words: the bowl is genuinely curved in every direction at the bottom. The number $\ell$ plays the role that $\mu$ played for strong convexity in Part 7 (the guaranteed smallest curvature; <a href="#pm-convex">Part M.3</a>), but only at $\x^\star$.</li>
 <li><b>(N3)</b> The start $\x_0$ is close enough to $\x^\star$.</li>
 </ol>
 </div>
@@ -8606,14 +8975,31 @@ $$\norm{\x_{k+1}-\x^\star}\le\frac{M\norm{\x_k-\x^\star}^2}{2\big(\ell-M\norm{\x
 In particular $r_{k+1}\le\frac{3M}{2\ell}r_k^2$: quadratic convergence. ([FR] Thm 3.1.1 states the same fact with less explicit constants.)</p>
 </div>
 <div class="prose">
-<p><b>What this says.</b> $r_k=\norm{\x_k-\x^\star}$ is the distance to the minimizer. Inside the ball of radius $\bar r$ the next distance is at most a constant times the square of the current one, and the iterates never leave the ball. Numeric illustration: $M=\ell=1$, so $\bar r=\tfrac23$. From $r_0=0.5$ the bound gives:</p>
+<p><b>What this says.</b> $r_k=\norm{\x_k-\x^\star}$ is the distance to the minimizer. Inside the ball of radius $\bar r$ the next distance is at most a constant times the square of the current one, and the iterates never leave the ball. Numeric illustration, with:</p>
+<ul>
+<li>Constants: $M=\ell=1$, so the radius is $\bar r=\tfrac23$.</li>
+<li>Starting distance: $r_0=0.5$.</li>
+</ul>
+<p>The bound then gives:</p>
 <p>$$\begin{aligned}r_1&\le\frac{0.25}{2(0.5)}=0.25\\ r_2&\le\frac{0.0625}{2(0.75)}=0.0417\\ r_3&\le\frac{0.001736}{2(0.9583)}=9.06\times10^{-4}\\ r_4&\le4.1\times10^{-7}\end{aligned}$$</p>
 <p>The digit count doubles. (These are upper bounds; the true errors can be smaller.)</p>
-<p><b>Proof skeleton to remember.</b> Five steps, A to E. <b>A</b>: write the new error as $H_k^{-1}G_k$ times the old error, where $G_k$ measures how much the Hessian changed between $\x_k$ and the segment to $\x^\star$. <b>B</b>: Lipschitz continuity of $\hess f$ gives $\norm{G_k}\le\frac M2r_k$. <b>C</b>: curvature $\ell$ at $\x^\star$ plus the same Lipschitz bound gives $\norm{H_k^{-1}}\le\frac1{\ell-Mr_k}$. <b>D</b>: multiply: $r_{k+1}\le\frac{Mr_k^2}{2(\ell-Mr_k)}$. <b>E</b>: if $r_k\lt\frac{2\ell}{3M}$ the factor in front of $r_k$ is below $1$, so the next iterate is again in the ball, and we can repeat. In one dimension this is the whole story of "error squared": $e_{k+1}=\frac{1}{f''(x_k)}\cdot(\text{change of }f''\text{ over a distance }\lesssim e_k)\cdot e_k$, and the change of $f''$ is about $M e_k$.</p>
+<p><b>Proof skeleton to remember.</b> Five steps, A to E:</p>
+<ul>
+<li><b>A</b>: write the new error as $H_k^{-1}G_k$ times the old error. Here $G_k$ measures how much the Hessian changed between $\x_k$ and the segment to $\x^\star$.</li>
+<li><b>B</b>: Lipschitz continuity of $\hess f$ gives $\norm{G_k}\le\frac M2r_k$.</li>
+<li><b>C</b>: curvature $\ell$ at $\x^\star$, plus the same Lipschitz bound, gives $\norm{H_k^{-1}}\le\frac1{\ell-Mr_k}$.</li>
+<li><b>D</b>: multiply the two bounds to get $r_{k+1}\le\frac{Mr_k^2}{2(\ell-Mr_k)}$.</li>
+<li><b>E</b>: if $r_k\lt\frac{2\ell}{3M}$, the factor in front of $r_k$ is below $1$. The next iterate is again in the ball, so we can repeat.</li>
+</ul>
+<p>In one dimension this is the whole story of "error squared". The new error is the old error times two factors: one over the curvature, and the change of the curvature over a distance of about $e_k$. The change of curvature is about $Me_k$, so $e_{k+1}\approx\frac{M}{f''(x_k)}e_k^2$.</p>
 </div>
 
 <div class="example">
-<p class="problem">Prove Theorem 1.2.5. (Examinable: know steps A–E and why $\bar r=2\ell/(3M)$.) Write $r_k=\norm{\x_k-\x^\star}$ and $H_k=\hess f(\x_k)$.</p>
+<div class="problem"><p>Prove Theorem 1.2.5. (Examinable: know steps A–E and why $\bar r=2\ell/(3M)$.) Notation:</p>
+<ul>
+<li>Error: $r_k=\norm{\x_k-\x^\star}$.</li>
+<li>Hessian at the iterate: $H_k=\hess f(\x_k)$.</li>
+</ul></div>
 <ol class="steps">
 <li><p><b>Step A (exact error formula).</b> <i>Goal:</i> express the new error through the old error with no approximation. Since $\grad f(\x^\star)=\0$, the fundamental theorem of calculus along the segment from $\x^\star$ to $\x_k$ gives
 $$\begin{aligned}\grad f(\x_k)&=\grad f(\x_k)-\grad f(\x^\star)\\ &=\int_0^1\hess f\big(\x^\star+\tau(\x_k-\x^\star)\big)(\x_k-\x^\star)\,d\tau\end{aligned}$$
@@ -8628,7 +9014,7 @@ $$\begin{aligned}\u^\top H_k\u&\ge\u^\top\hess f(\x^\star)\u-\norm{H_k-\hess f(\
 So if $r_k\lt\ell/M$, every eigenvalue of $H_k$ is at least $\ell-Mr_k\gt0$, and $\norm{H_k^{-1}}\le\dfrac1{\ell-Mr_k}$.</p><p class="why-step">This is [Y] Corollary 1.2.2 with (N2). The smallest eigenvalue is the minimum of $\u^\top H\u$ over unit $\u$ (<a href="#pm-linalg">Part M.1</a>), and the inverse has eigenvalues $1/\lambda_i$.</p></li>
 <li><p><b>Step D (combine).</b> <i>Goal:</i> bound the product in Step A by the product of the bounds.
 $$r_{k+1}\le\norm{H_k^{-1}}\,\norm{G_k}\,r_k\le\dfrac{Mr_k^2}{2(\ell-Mr_k)}$$</p><p class="why-step">Take norms in Step A and use $\norm{AB\v}\le\norm A\norm B\norm\v$.</p></li>
-<li><p><b>Step E (staying in the ball; where $2\ell/3M$ comes from).</b> Suppose $r_k\lt\bar r=\frac{2\ell}{3M}$. Then $Mr_k\lt\frac23\ell$, so $\ell-Mr_k\gt\frac\ell3$. In particular $r_k\lt\ell/M$, so Step C applies, and
+<li><p><b>Step E (staying in the ball; where $2\ell/3M$ comes from).</b> Suppose $r_k\lt\bar r=\frac{2\ell}{3M}$. Then $Mr_k\lt\frac23\ell$, so $\ell-Mr_k\gt\frac\ell3$. In particular $r_k\lt\ell/M$, so Step C applies. Therefore
 $$r_{k+1}\le\frac{Mr_k^2}{2\ell/3}=r_k\cdot\frac{3Mr_k}{2\ell}\lt r_k\lt\bar r$$
 By induction from $r_0\lt\bar r$, this holds for every $k$, and $r_{k+1}\le\frac{3M}{2\ell}r_k^2$.</p><p class="why-step">Why induction: Step D gives a bound only if $r_k\lt\ell/M$, so we need every iterate to stay in the ball; Step E shows it does, because the new distance is smaller than the old one. $\bar r$ is exactly the radius at which the contraction factor $\frac{Mr_k}{2(\ell-Mr_k)}$ equals 1: solve $Mr=2(\ell-Mr)$ to get $r=\frac{2\ell}{3M}$.</p></li>
 </ol>
@@ -8649,10 +9035,16 @@ $$\begin{aligned}f''+\nu&=-2+3=1\gt0 &&\text{(modified curvature)}\\ d&=-f'/1=+1
 </div>
 
 <div class="example">
-<p class="problem">Damped Newton in numbers. $f(x)=x-\ln x$ ($x\gt0$), start $x_0=3$, where pure Newton jumps to $-3$ (Chapter 1). Use Armijo backtracking with $c=10^{-4}$: try $h=1,\tfrac12,\tfrac14,\dots$ until $f(\x+h\d)\le f(\x)+c\,h\,f'(\x)\,d$.</p>
+<div class="problem"><p>Damped Newton in numbers. Given:</p>
+<ul>
+<li>Function: $f(x)=x-\ln x$, defined for $x\gt0$.</li>
+<li>Starting point: $x_0=3$, where pure Newton jumps to $-3$ (Chapter 1).</li>
+<li>Armijo constant: $c=10^{-4}$.</li>
+</ul>
+<p>Use backtracking: try $h=1,\tfrac12,\tfrac14,\dots$ until $f(\x+h\d)\le f(\x)+c\,h\,f'(\x)\,d$.</p></div>
 <ol class="steps">
 <li><p>Compute at $x=3$:</p><p>$$\begin{aligned}f'(3)&=1-\tfrac13=\tfrac23\\ f''(3)&=\tfrac19\\ d&=-f'/f''=-6\\ f'd&=-4\lt0 &&\text{(downhill)}\\ f(3)&=3-\ln3=1.9014\end{aligned}$$</p><p class="why-step">The direction is fine; the length is the problem.</p></li>
-<li><p>$h=1$: $x=-3$, outside the domain: rejected. $h=\tfrac12$: $x=0$, $\ln0$ undefined: rejected.</p><p class="why-step">A trial point outside the domain is never acceptable.</p></li>
+<li><p>Trial $h=1$ gives $x=-3$, outside the domain, so it is rejected. Trial $h=\tfrac12$ gives $x=0$, where $\ln0$ is undefined, so it is rejected.</p><p class="why-step">A trial point outside the domain is never acceptable.</p></li>
 <li><p>Try $h=\tfrac14$:</p><p>$$\begin{aligned}x&=3-1.5=1.5\\ f(1.5)&=1.5-\ln1.5=1.0945\\ \text{Armijo bound}&=1.9014+10^{-4}\cdot\tfrac14\cdot(-4)=1.9013\end{aligned}$$</p><p>Since $1.0945\le1.9013$, accept.</p><p class="why-step">The sufficient decrease test compares the actual drop ($0.81$) with a small fraction of the drop the slope alone predicts.</p></li>
 <li><p>Now $x_1=1.5$, and pure Newton works (using $x_{k+1}=2x_k-x_k^2$ from Chapter 1):</p><p>$$\begin{aligned}x_2&=2(1.5)-1.5^2=0.75\\ x_3&=0.9375\end{aligned}$$</p><p>The iterates converge to $1$ with $h=1$ accepted.</p><p class="why-step">Near the solution the full step is accepted, so the quadratic rate returns. This is the practical recipe: damping far away, full steps nearby.</p></li>
 </ol>
@@ -8666,14 +9058,14 @@ $$\begin{aligned}f''+\nu&=-2+3=1\gt0 &&\text{(modified curvature)}\\ d&=-f'/1=+1
 
 <div class="practice">
 <div class="prob" data-id="p10-rate-p1" data-ans="0.7764" data-labels="r̄" data-tol="0.005">
-<div class="stem"><p>For $f(t)=\sqrt{1+t^2}$ (minimizer $t^\star=0$), compute $\bar r=\frac{2\ell}{3M}$ from Theorem 1.2.5. Use $\ell=f''(0)$ and $M=\max_t|f'''(t)|$ (a Lipschitz constant for $f''$ by the mean value theorem).</p></div>
-<div class="hint"><p>$f''(t)=(1+t^2)^{-3/2}$ and $f'''(t)=-3t(1+t^2)^{-5/2}$. Maximize $3t(1+t^2)^{-5/2}$ by setting its derivative to zero: you'll get $t^2=\tfrac14$.</p></div>
+<div class="stem"><p>Given:</p><ul><li>Function: $f(t)=\sqrt{1+t^2}$, with minimizer $t^\star=0$.</li><li>Curvature constant: $\ell=f''(0)$.</li><li>Lipschitz constant: $M=\max_t|f'''(t)|$ (a Lipschitz constant for $f''$ by the mean value theorem).</li></ul><p>Compute $\bar r=\frac{2\ell}{3M}$ from Theorem 1.2.5.</p></div>
+<div class="hint"><p>The derivatives are $f''(t)=(1+t^2)^{-3/2}$ and $f'''(t)=-3t(1+t^2)^{-5/2}$. Maximize $3t(1+t^2)^{-5/2}$ by setting its derivative to zero: you will get $t^2=\tfrac14$.</p></div>
 <div class="sol"><p>$$\begin{aligned}\ell&=f''(0)=1\\ \tfrac{d}{dt}\big[3t(1+t^2)^{-5/2}\big]&=3(1+t^2)^{-7/2}(1+t^2-5t^2)=0 &&\Rightarrow\ t=\tfrac12\\ M&=\tfrac32(1.25)^{-5/2}\approx0.8587\\ \bar r&=\frac2{3(0.8587)}\approx0.776\end{aligned}$$</p><p>The theorem guarantees quadratic convergence for $|t_0|\lt0.776$; the true basin, from $t_{k+1}=-t_k^3$, is $|t_0|\lt1$.</p></div>
 </div>
 <div class="prob" data-id="p10-rate-p2" data-ans="8/9" data-labels="x₃" data-tol="0.001">
-<div class="stem"><p>Newton's method on $f(x)=x^4$ from $x_0=3$. Find $x_3$. (Then ask yourself which hypothesis of Theorem 1.2.5 fails.)</p></div>
+<div class="stem"><p>Given: $f(x)=x^4$, starting at $x_0=3$.</p><p>Run Newton's method and find $x_3$. (Then ask yourself which hypothesis of Theorem 1.2.5 fails.)</p></div>
 <div class="hint"><p>$x_{k+1}=x_k-\frac{4x_k^3}{12x_k^2}$.</p></div>
-<div class="sol"><p>$x_{k+1}=\tfrac23x_k$, so $x_3=3\cdot\tfrac8{27}=\tfrac89\approx0.889$. The convergence is only linear (ratio $\tfrac23$) because $f''(0)=0$: no $\ell\gt0$ exists, so (N2) fails.</p></div>
+<div class="sol"><p>The iteration is $x_{k+1}=\tfrac23x_k$, so $x_3=3\cdot\tfrac8{27}=\tfrac89\approx0.889$. The convergence is only linear, with ratio $\tfrac23$. The reason is that $f''(0)=0$, so no $\ell\gt0$ exists and (N2) fails.</p></div>
 </div>
 <div class="prob" data-id="p10-rate-p3" data-ans="6" data-labels="k">
 <div class="stem"><p>In [Y] Example 1.2.4 with $t_0=0.95$, what is the smallest $k$ with $|t_k|\lt10^{-6}$?</p></div>
@@ -8681,12 +9073,12 @@ $$\begin{aligned}f''+\nu&=-2+3=1\gt0 &&\text{(modified curvature)}\\ d&=-f'/1=+1
 <div class="sol"><p>$$\ln10^6/|\ln0.95|=13.816/0.0513\approx269.3$$</p><p>Since $3^5=243\lt269.3\lt729=3^6$, the answer is $k=6$:</p><p>$$\begin{aligned}|t_5|&=0.95^{243}\approx3.9\times10^{-6}\\ |t_6|&\approx6\times10^{-17}\end{aligned}$$</p><p>Slow at first (close to 1 the cubing barely helps), then explosive.</p></div>
 </div>
 <div class="prob" data-id="p10x-rate-damped" data-ans="1/4" data-labels="accepted h">
-<div class="stem"><p>Damped Newton on $f(x)=x-\ln x$ from $x_0=3$ with trial step lengths $h=1,\tfrac12,\tfrac14,\tfrac18,\dots$ and the only requirement that the trial point stays in the domain $x\gt0$ and satisfies $f(x_0+hd)\lt f(x_0)$. Which $h$ is the first accepted?</p></div>
+<div class="stem"><p>Given:</p><ul><li>Function: $f(x)=x-\ln x$, defined for $x\gt0$.</li><li>Starting point: $x_0=3$.</li><li>Trial step lengths: $h=1,\tfrac12,\tfrac14,\tfrac18,\dots$</li><li>Acceptance rule: the trial point stays in the domain $x\gt0$ and satisfies $f(x_0+hd)\lt f(x_0)$.</li></ul><p>Damped Newton is used. Which $h$ is the first accepted?</p></div>
 <div class="hint"><p>The Newton direction is $d=-6$. Compute $x_0+hd$ for each $h$.</p></div>
 <div class="sol"><p>$$\begin{aligned}h=1&:\ x=-3 &&\text{(outside)}\\ h=\tfrac12&:\ x=0 &&\text{(outside)}\\ h=\tfrac14&:\ x=1.5,\ f=1.0945\lt1.9014=f(3) &&\text{(accepted)}\end{aligned}$$</p><p>The answer is $\tfrac14$.</p></div>
 </div>
 <div class="prob" data-id="p10-rate-p4" data-ans="1/180" data-labels="bound on r_{k+1}" data-tol="0.002">
-<div class="stem"><p>Suppose (N1)–(N2) hold with $M=1$, $\ell=1$, and $r_k=0.1$. What upper bound does Theorem 1.2.5 give for $r_{k+1}$? Is $r_k$ inside the ball $\bar r$?</p></div>
+<div class="stem"><p>Suppose (N1)–(N2) hold. Given:</p><ul><li>Lipschitz constant: $M=1$.</li><li>Curvature constant: $\ell=1$.</li><li>Current error: $r_k=0.1$.</li></ul><p>What upper bound does Theorem 1.2.5 give for $r_{k+1}$? Is $r_k$ inside the ball $\bar r$?</p></div>
 <div class="hint"><p>$\bar r=\frac2{3}$. Plug into $\frac{Mr_k^2}{2(\ell-Mr_k)}$.</p></div>
 <div class="sol"><p>$0.1\lt\bar r=0.667$, so the theorem applies:</p><p>$$\begin{aligned}r_{k+1}&\le\frac{0.01}{2(0.9)}=\frac1{180}\approx0.00556\\ r_{k+2}&\lesssim\frac{3.1\times10^{-5}}{1.99}\approx1.5\times10^{-5}\end{aligned}$$</p><p>The digits double.</p></div>
 </div>
@@ -8698,7 +9090,8 @@ $$\begin{aligned}f''+\nu&=-2+3=1\gt0 &&\text{(modified curvature)}\\ d&=-f'/1=+1
 </div>
 <ol class="takeaways">
 <li>Quadratic convergence means $r_{k+1}\le c\,r_k^2$: the number of correct digits doubles each step.</li>
-<li>[Y] Thm 1.2.5: with an $M$-Lipschitz Hessian and $\hess f(\x^\star)\succeq\ell I$, Newton converges quadratically from any $\x_0$ with $\norm{\x_0-\x^\star}\lt\frac{2\ell}{3M}$; the proof bounds $\norm{H_k^{-1}}\le\frac1{\ell-Mr_k}$ and $\norm{G_k}\le\frac M2r_k$.</li>
+<li>[Y] Thm 1.2.5: suppose the Hessian is $M$-Lipschitz and $\hess f(\x^\star)\succeq\ell I$. Then Newton converges quadratically from any start $\x_0$ with $\norm{\x_0-\x^\star}\lt\frac{2\ell}{3M}$.</li>
+<li>The proof rests on two bounds: $\norm{H_k^{-1}}\le\frac1{\ell-Mr_k}$ and $\norm{G_k}\le\frac M2r_k$.</li>
 <li>Pure Newton is local: $t_{k+1}=-t_k^3$ diverges for $|t_0|\gt1$. Practical Newton adds a line search and makes the Hessian positive definite.</li>
 </ol>
 <div class="quiz" data-id="p10-rate">
@@ -8756,17 +9149,30 @@ By Taylor's theorem for the gradient, $\boldsymbol\gamma_k=G\boldsymbol\delta_k+
 <dt>$G$</dt><dd>the Hessian ($[FR]$'s letter); constant for a quadratic</dd>
 </dl>
 <div class="prose">
-<p><b>Reading the symbols aloud.</b> $\boldsymbol\delta_k$ is "delta", the step actually taken. $\boldsymbol\gamma_k$ is "gamma", the change in the gradient over that step. $\boldsymbol\delta^\top\boldsymbol\gamma$ is a number (a dot product), written $\rho$ below; it measures the curvature seen along the step. $\boldsymbol\delta\boldsymbol\delta^\top$ (a column times a row, the <b>outer product</b>) is an $n\times n$ matrix with entries $\delta_i\delta_j$; it has rank one and, for any vector $\z$, $\z^\top(\boldsymbol\delta\boldsymbol\delta^\top)\z=(\z^\top\boldsymbol\delta)^2\ge0$. We will use this repeatedly.</p>
-<p><b>One 2-by-2 data set, used for all three updates below.</b> $H=I$, $\boldsymbol\delta=(1,1)^\top$, $\boldsymbol\gamma=(3,2)^\top$ (these come from the quadratic with Hessian $G=\begin{pmatrix}2&1\\1&1\end{pmatrix}$, since $G\boldsymbol\delta=(3,2)^\top$). Then:</p>
+<p><b>Reading the symbols aloud.</b></p>
+<ul>
+<li>Step: $\boldsymbol\delta_k$ is read "delta". It is the step actually taken.</li>
+<li>Gradient change: $\boldsymbol\gamma_k$ is read "gamma". It is the change in the gradient over that step.</li>
+<li>Curvature along the step: $\boldsymbol\delta^\top\boldsymbol\gamma$ is a single number (a dot product), written $\rho$ below.</li>
+<li>Outer product: $\boldsymbol\delta\boldsymbol\delta^\top$ is a column times a row. It is an $n\times n$ matrix with entries $\delta_i\delta_j$, and it has rank one.</li>
+</ul>
+<p>For any vector $\z$, the outer product satisfies $\z^\top(\boldsymbol\delta\boldsymbol\delta^\top)\z=(\z^\top\boldsymbol\delta)^2\ge0$. We will use this repeatedly.</p>
+<p><b>One 2-by-2 data set, used for all three updates below.</b></p>
+<ul>
+<li>Current inverse-Hessian guess: $H=I$.</li>
+<li>Step: $\boldsymbol\delta=(1,1)^\top$.</li>
+<li>Gradient change: $\boldsymbol\gamma=(3,2)^\top$.</li>
+</ul>
+<p>These come from the quadratic with Hessian $G=\begin{pmatrix}2&1\\1&1\end{pmatrix}$, since $G\boldsymbol\delta=(3,2)^\top$. Then:</p>
 <p>$$\begin{aligned}\rho&=\boldsymbol\delta^\top\boldsymbol\gamma=5\gt0\\ H\boldsymbol\gamma&=(3,2)^\top\\ \boldsymbol\gamma^\top H\boldsymbol\gamma&=13\end{aligned}$$</p>
 <p>The current $H=I$ fails the secant condition: $H\boldsymbol\gamma=(3,2)^\top\ne\boldsymbol\delta$. Each update repairs it.</p>
 </div>
 <div class="box alg" data-k="Algorithm" data-name="Quasi-Newton iteration ([FR] (3.2.1))">
-<p>Choose $\x_1$ and a symmetric positive definite $H_1$ (often $I$). For $k=1,2,\dots$:</p>
+<p>Choose a starting point $\x_1$ and a symmetric positive definite matrix $H_1$ (often the identity $I$). Then for $k=1,2,\dots$ do:</p>
 <ol>
-<li>set $\d_k=-H_k\g_k$;</li>
-<li>line search along $\d_k$ for $\alpha_k$, and set $\x_{k+1}=\x_k+\alpha_k\d_k$;</li>
-<li>update $H_k$ to $H_{k+1}$ using $\boldsymbol\delta_k$ and $\boldsymbol\gamma_k$.</li>
+<li>Direction: set $\d_k=-H_k\g_k$.</li>
+<li>Move: line search along $\d_k$ for a step length $\alpha_k$, and set $\x_{k+1}=\x_k+\alpha_k\d_k$.</li>
+<li>Update: change $H_k$ into $H_{k+1}$, using the step $\boldsymbol\delta_k$ and the gradient change $\boldsymbol\gamma_k$.</li>
 </ol>
 <p>Advantages over Newton ([FR] p.50): (i) only first derivatives; (ii) $H_k\succ0$ makes $\d_k$ a descent direction, since $\g_k^\top\d_k=-\g_k^\top H_k\g_k\lt0$, even where the true Hessian is indefinite; (iii) $O(n^2)$ multiplications per step, because we update an inverse and never solve a system.</p>
 </div>
@@ -8775,10 +9181,10 @@ By Taylor's theorem for the gradient, $\boldsymbol\gamma_k=G\boldsymbol\delta_k+
 <div class="prose">
 <h3>The quasi-Newton (secant) condition</h3>
 <p>We cannot ask $H_k$ to satisfy $H_k\boldsymbol\gamma_k=\boldsymbol\delta_k$: the step was taken with $H_k$ before $\boldsymbol\gamma_k$ was known. So we demand it of the <i>next</i> matrix.</p>
-<p><b>The picture in one dimension (in words).</b> Draw the graph of the slope function $f'$. Newton would draw the tangent line to this graph at the newest point; its slope is $f''$, which we are trying to avoid computing. We do know two points on the graph: $(x_k,f'(x_k))$ and $(x_{k+1},f'(x_{k+1}))$. Draw the straight line through those two points (the <b>secant</b> or chord). Its slope is $\gamma/\delta=\dfrac{f'(x_{k+1})-f'(x_k)}{x_{k+1}-x_k}$, a free estimate of $f''$ lying between the values of $f''$ at the two points. The Newton step is $-f'/f''=-H\,f'$ with $H=1/f''$, so the secant estimate is $H=\delta/\gamma$. This is exactly the condition $H_{k+1}\gamma_k=\delta_k$. Numbers: $f=x-\ln x$, $x_k=1.5$, $x_{k+1}=1.2$:</p>
+<p><b>The picture in one dimension (in words).</b> Draw the graph of the slope function $f'$. Newton would draw the tangent line to this graph at the newest point; its slope is $f''$, which we are trying to avoid computing. We do know two points on the graph: $(x_k,f'(x_k))$ and $(x_{k+1},f'(x_{k+1}))$. Draw the straight line through those two points (the <b>secant</b> or chord). Its slope is $\gamma/\delta=\dfrac{f'(x_{k+1})-f'(x_k)}{x_{k+1}-x_k}$, a free estimate of $f''$ lying between the values of $f''$ at the two points. The Newton step is $-f'/f''=-H\,f'$ with $H=1/f''$, so the secant estimate is $H=\delta/\gamma$. This is exactly the condition $H_{k+1}\gamma_k=\delta_k$. Numbers: take $f=x-\ln x$ with the two points $x_k=1.5$ and $x_{k+1}=1.2$. Then:</p>
 <p>$$\begin{aligned}\delta&=-0.3\\ \gamma&=\tfrac16-\tfrac13=-\tfrac16\\ \gamma/\delta&=0.556 &&\text{(chord slope)}\\ H&=\delta/\gamma=1.8\end{aligned}$$</p>
 <p>The chord slope lies between $f''(1.5)=0.444$ and $f''(1.2)=0.694$.</p>
-<p><b>In $n$ dimensions.</b> The gradient is now a map from $\R^n$ to $\R^n$, and the "slope of the chord" is replaced by the statement: the Hessian (approximation $B$) must send the step $\boldsymbol\delta$ to the observed gradient change $\boldsymbol\gamma$, i.e. $B\boldsymbol\delta=\boldsymbol\gamma$ (for a quadratic this is exactly true with the true Hessian: $G\boldsymbol\delta=\boldsymbol\gamma$). Equivalently, $H=B^{-1}$ must send $\boldsymbol\gamma$ back to $\boldsymbol\delta$. One step reveals what the Hessian does along <i>one</i> direction, $\boldsymbol\delta$, not the whole matrix. That is why the condition fixes only $n$ numbers out of the $\frac12n(n+1)$ in a symmetric matrix, and why the method has to keep learning, one step at a time.</p>
+<p><b>In $n$ dimensions.</b> The gradient is now a map from $\R^n$ to $\R^n$, and the "slope of the chord" is replaced by a statement about matrices. The Hessian approximation $B$ must send the step $\boldsymbol\delta$ to the observed gradient change $\boldsymbol\gamma$, that is, $B\boldsymbol\delta=\boldsymbol\gamma$. (For a quadratic this is exactly true with the true Hessian: $G\boldsymbol\delta=\boldsymbol\gamma$.) Equivalently, $H=B^{-1}$ must send $\boldsymbol\gamma$ back to $\boldsymbol\delta$. One step reveals what the Hessian does along <i>one</i> direction, $\boldsymbol\delta$, not the whole matrix. That is why the condition fixes only $n$ numbers out of the $\frac12n(n+1)$ in a symmetric matrix, and why the method has to keep learning, one step at a time.</p>
 </div>
 <div class="box def" data-k="Definition" data-name="Quasi-Newton condition ([FR] (3.2.5))">
 <p>$$H_{k+1}\boldsymbol\gamma_k=\boldsymbol\delta_k,$$ or equivalently, for $B=H^{-1}$, $B_{k+1}\boldsymbol\delta_k=\boldsymbol\gamma_k$. 
@@ -8794,7 +9200,15 @@ So $\u$ must be parallel to $\boldsymbol\delta-H\boldsymbol\gamma$. Take $\u=\bo
 $$H_{k+1}^{\rm SR1}=H+\frac{(\boldsymbol\delta-H\boldsymbol\gamma)(\boldsymbol\delta-H\boldsymbol\gamma)^\top}{(\boldsymbol\delta-H\boldsymbol\gamma)^\top\boldsymbol\gamma}.$$</p>
 </div>
 <div class="prose">
-<p><b>Reading the formula, symbol by symbol.</b> $H$ is the current inverse-Hessian guess. $H\boldsymbol\gamma$ is where the current guess sends the observed gradient change; the truth should be $\boldsymbol\delta$. So $\u=\boldsymbol\delta-H\boldsymbol\gamma$ is the <i>error</i> of the current guess on this pair. The numerator $\u\u^\top$ is a rank-one matrix pointing along that error. The denominator $\u^\top\boldsymbol\gamma$ is a number that scales the correction so that, after adding it, the guess sends $\boldsymbol\gamma$ exactly to $\boldsymbol\delta$: $(\u\u^\top/\u^\top\boldsymbol\gamma)\boldsymbol\gamma=\u$, and $H\boldsymbol\gamma+\u=\boldsymbol\delta$.</p>
+<p><b>Reading the formula, symbol by symbol.</b></p>
+<ul>
+<li>$H$ is the current inverse-Hessian guess.</li>
+<li>$H\boldsymbol\gamma$ is where the current guess sends the observed gradient change. The truth should be $\boldsymbol\delta$.</li>
+<li>$\u=\boldsymbol\delta-H\boldsymbol\gamma$ is therefore the <i>error</i> of the current guess on this pair.</li>
+<li>The numerator $\u\u^\top$ is a rank-one matrix pointing along that error.</li>
+<li>The denominator $\u^\top\boldsymbol\gamma$ is a number that scales the correction. After adding it, the guess sends $\boldsymbol\gamma$ exactly to $\boldsymbol\delta$.</li>
+</ul>
+<p>The scaling works because $(\u\u^\top/\u^\top\boldsymbol\gamma)\boldsymbol\gamma=\u$, and then $H\boldsymbol\gamma+\u=\boldsymbol\delta$.</p>
 <p><b>Numeric check on the shared data.</b></p>
 <p>$$\begin{aligned}\u&=\boldsymbol\delta-H\boldsymbol\gamma=(1,1)^\top-(3,2)^\top=(-2,-1)^\top\\ \u^\top\boldsymbol\gamma&=-6-2=-8\\ H_{\rm new}&=I+\tfrac1{-8}\begin{pmatrix}4&2\\2&1\end{pmatrix}=\begin{pmatrix}\tfrac12&-\tfrac14\\-\tfrac14&\tfrac78\end{pmatrix}\\ H_{\rm new}\boldsymbol\gamma&=(\tfrac32-\tfrac12,\ -\tfrac34+\tfrac74)^\top=(1,1)^\top=\boldsymbol\delta &&\text{(secant check)}\end{aligned}$$</p>
 <p>Here the result is positive definite (determinant $\tfrac7{16}-\tfrac1{16}=\tfrac38\gt0$ and positive diagonal), but in general SR1 gives no such guarantee (practice problem 2).</p>
@@ -8808,18 +9222,30 @@ $$H_{k+1}^{\rm SR1}=H+\frac{(\boldsymbol\delta-H\boldsymbol\gamma)(\boldsymbol\d
 <ol>
 <li><b>Induction setup.</b> For $i=2$ the property is the secant condition. Assume it for $i$, and let $\u_i=\boldsymbol\delta_i-H_i\boldsymbol\gamma_i$.</li>
 <li><b>Case $j=i$.</b> The secant condition gives $H_{i+1}\boldsymbol\gamma_i=\boldsymbol\delta_i$.</li>
-<li><b>Case $j\lt i$.</b> Apply the SR1 update to $\boldsymbol\gamma_j$:
+<li><b>Case $j\lt i$.</b> Apply the SR1 update to the old gradient change $\boldsymbol\gamma_j$:
 $$H_{i+1}\boldsymbol\gamma_j=H_i\boldsymbol\gamma_j+\u_i\frac{\u_i^\top\boldsymbol\gamma_j}{\u_i^\top\boldsymbol\gamma_i}$$
-We show the correction vanishes, i.e. $\u_i^\top\boldsymbol\gamma_j=0$:
+We show that the correction vanishes, that is, $\u_i^\top\boldsymbol\gamma_j=0$:
 $$\begin{aligned}\u_i^\top\boldsymbol\gamma_j&=\boldsymbol\delta_i^\top\boldsymbol\gamma_j-\boldsymbol\gamma_i^\top H_i\boldsymbol\gamma_j &&\text{(}H_i\text{ symmetric)}\\&=\boldsymbol\delta_i^\top G\boldsymbol\delta_j-\boldsymbol\gamma_i^\top\boldsymbol\delta_j &&\text{(hypothesis; }\boldsymbol\gamma_j=G\boldsymbol\delta_j)\\&=\boldsymbol\delta_i^\top G\boldsymbol\delta_j-\boldsymbol\delta_i^\top G\boldsymbol\delta_j &&\text{(}\boldsymbol\gamma_i=G\boldsymbol\delta_i)\\&=0\end{aligned}$$
 So $H_{i+1}\boldsymbol\gamma_j=H_i\boldsymbol\gamma_j=\boldsymbol\delta_j$.</li>
-<li><b>Conclusion.</b> At $i=n+1$, $H_{n+1}G\boldsymbol\delta_j=\boldsymbol\delta_j$ for $n$ independent vectors $\boldsymbol\delta_j$. Hence $H_{n+1}G=I$. $\square$</li>
+<li><b>Conclusion.</b> At $i=n+1$ we have $H_{n+1}G\boldsymbol\delta_j=\boldsymbol\delta_j$ for $n$ independent vectors $\boldsymbol\delta_j$. Hence $H_{n+1}G=I$. $\square$</li>
 </ol>
 </div>
 <div class="prose">
 <p><b>What this says.</b> On a quadratic, SR1 learns the exact inverse Hessian after $n$ steps, whichever line searches are used, as long as the updates are defined and the steps are independent. Then the next Newton-like step lands on the minimizer.</p>
-<p><b>Proof skeleton to remember.</b> Hereditary property $H_i\boldsymbol\gamma_j=\boldsymbol\delta_j$ for all $j\lt i$, by induction. The new correction is a multiple of $\u_i$; show $\u_i^\top\boldsymbol\gamma_j=0$ for old $j$, so the correction does not change what $H$ does to $\boldsymbol\gamma_j$.</p>
-<p><b>Reading the key computation.</b> $\u_i^\top\boldsymbol\gamma_j=\boldsymbol\delta_i^\top\boldsymbol\gamma_j-\boldsymbol\gamma_i^\top H_i\boldsymbol\gamma_j$ (expand $\u_i=\boldsymbol\delta_i-H_i\boldsymbol\gamma_i$ and transpose, using $H_i^\top=H_i$). Next replace $H_i\boldsymbol\gamma_j$ by $\boldsymbol\delta_j$ (induction hypothesis), so the second term is $\boldsymbol\gamma_i^\top\boldsymbol\delta_j=\boldsymbol\delta_i^\top G\boldsymbol\delta_j$ (using $\boldsymbol\gamma_i=G\boldsymbol\delta_i$ and $G=G^\top$). The first term is $\boldsymbol\delta_i^\top\boldsymbol\gamma_j=\boldsymbol\delta_i^\top G\boldsymbol\delta_j$ (using $\boldsymbol\gamma_j=G\boldsymbol\delta_j$). The two cancel. The last step: if $H_{n+1}G\boldsymbol\delta_j=\boldsymbol\delta_j$ for $n$ independent vectors $\boldsymbol\delta_j$, then $(H_{n+1}G-I)$ kills a basis, so it is the zero matrix.</p>
+<p><b>Proof skeleton to remember.</b></p>
+<ul>
+<li>Prove the hereditary property $H_i\boldsymbol\gamma_j=\boldsymbol\delta_j$ for all $j\lt i$, by induction.</li>
+<li>The new correction is a multiple of $\u_i$.</li>
+<li>Show that $\u_i^\top\boldsymbol\gamma_j=0$ for old $j$, so the correction does not change what $H$ does to $\boldsymbol\gamma_j$.</li>
+</ul>
+<p><b>Reading the key computation.</b></p>
+<ul>
+<li>Expand $\u_i=\boldsymbol\delta_i-H_i\boldsymbol\gamma_i$ and transpose, using $H_i^\top=H_i$. This gives $\u_i^\top\boldsymbol\gamma_j=\boldsymbol\delta_i^\top\boldsymbol\gamma_j-\boldsymbol\gamma_i^\top H_i\boldsymbol\gamma_j$.</li>
+<li>Replace $H_i\boldsymbol\gamma_j$ by $\boldsymbol\delta_j$ (induction hypothesis). The second term becomes $\boldsymbol\gamma_i^\top\boldsymbol\delta_j=\boldsymbol\delta_i^\top G\boldsymbol\delta_j$, using $\boldsymbol\gamma_i=G\boldsymbol\delta_i$ and $G=G^\top$.</li>
+<li>The first term is $\boldsymbol\delta_i^\top\boldsymbol\gamma_j=\boldsymbol\delta_i^\top G\boldsymbol\delta_j$, using $\boldsymbol\gamma_j=G\boldsymbol\delta_j$.</li>
+<li>The two terms cancel.</li>
+<li>Last step: if $H_{n+1}G\boldsymbol\delta_j=\boldsymbol\delta_j$ for $n$ independent vectors $\boldsymbol\delta_j$, then $H_{n+1}G-I$ kills a basis, so it is the zero matrix.</li>
+</ul>
 </div>
 <div class="prose">
 <p>The proof never used exact line searches. But SR1 has two flaws ([FR] p.53): $H_{k+1}$ need not stay positive definite (so $\d_k$ may stop being downhill), and the denominator $(\boldsymbol\delta-H\boldsymbol\gamma)^\top\boldsymbol\gamma$ can be zero or tiny. Practical codes skip the update in that case.</p>
@@ -8832,8 +9258,14 @@ $$\begin{aligned}H_{k+1}\boldsymbol\gamma&=H\boldsymbol\gamma+\boldsymbol\delta\
 Read it as: add the new information along $\boldsymbol\delta$, remove what $H$ used to say along $\boldsymbol\gamma$.</p>
 </div>
 <div class="prose">
-<p><b>Reading the formula, symbol by symbol.</b> $H$: the old guess. $\boldsymbol\delta\boldsymbol\delta^\top/\boldsymbol\delta^\top\boldsymbol\gamma$: a rank-one matrix along the step, scaled by $1/\rho$, so that applied to $\boldsymbol\gamma$ it returns exactly $\boldsymbol\delta$. $H\boldsymbol\gamma\boldsymbol\gamma^\top H/\boldsymbol\gamma^\top H\boldsymbol\gamma$: a rank-one matrix along $H\boldsymbol\gamma$, scaled so that applied to $\boldsymbol\gamma$ it returns exactly $H\boldsymbol\gamma$ (and is subtracted). Net effect on $\boldsymbol\gamma$: $H\boldsymbol\gamma+\boldsymbol\delta-H\boldsymbol\gamma=\boldsymbol\delta$.</p>
-<p><b>Numeric check on the shared data</b> ($\rho=5$, $\boldsymbol\gamma^\top H\boldsymbol\gamma=13$):</p>
+<p><b>Reading the formula, symbol by symbol.</b></p>
+<ul>
+<li>$H$ is the old guess.</li>
+<li>$\boldsymbol\delta\boldsymbol\delta^\top/\boldsymbol\delta^\top\boldsymbol\gamma$ is a rank-one matrix along the step, scaled by $1/\rho$. Applied to $\boldsymbol\gamma$, it returns exactly $\boldsymbol\delta$.</li>
+<li>$H\boldsymbol\gamma\boldsymbol\gamma^\top H/\boldsymbol\gamma^\top H\boldsymbol\gamma$ is a rank-one matrix along $H\boldsymbol\gamma$. Applied to $\boldsymbol\gamma$, it returns exactly $H\boldsymbol\gamma$, and it is subtracted.</li>
+<li>Net effect on $\boldsymbol\gamma$: $H\boldsymbol\gamma+\boldsymbol\delta-H\boldsymbol\gamma=\boldsymbol\delta$.</li>
+</ul>
+<p><b>Numeric check on the shared data</b>, where $\rho=5$ and $\boldsymbol\gamma^\top H\boldsymbol\gamma=13$:</p>
 <p>$$\begin{aligned}H_{\rm new}&=I+\tfrac15\begin{pmatrix}1&1\\1&1\end{pmatrix}-\tfrac1{13}\begin{pmatrix}9&6\\6&4\end{pmatrix}=\tfrac1{65}\begin{pmatrix}33&-17\\-17&58\end{pmatrix}\\ H_{\rm new}\boldsymbol\gamma&=\tfrac1{65}(99-34,\ -51+116)^\top=(1,1)^\top=\boldsymbol\delta &&\text{(secant check)}\end{aligned}$$</p>
 <p>The determinant is $\tfrac{5}{13}\gt0$ with positive diagonal: positive definite.</p>
 </div>
@@ -8845,17 +9277,23 @@ Read it as: add the new information along $\boldsymbol\delta$, remove what $H$ u
 </div>
 
 <div class="prose">
-<p><b>What this says.</b> If the current matrix is positive definite and the step shows positive curvature ($\boldsymbol\delta^\top\boldsymbol\gamma\gt0$), the updated matrix is positive definite too. So the search direction $-H_{k+1}\g_{k+1}$ stays downhill, for every $k$. <b>Proof skeleton to remember.</b> Factor $H=LL^\top$; write $\z^\top H_{k+1}\z$ as (a Cauchy–Schwarz gap, $\ge0$) plus (a square over $\rho$, $\ge0$); show both cannot be zero at once.</p>
+<p><b>What this says.</b> If the current matrix is positive definite and the step shows positive curvature ($\boldsymbol\delta^\top\boldsymbol\gamma\gt0$), the updated matrix is positive definite too. So the search direction $-H_{k+1}\g_{k+1}$ stays downhill, for every $k$.</p>
+<p><b>Proof skeleton to remember.</b></p>
+<ul>
+<li>Factor $H=LL^\top$.</li>
+<li>Write $\z^\top H_{k+1}\z$ as a Cauchy–Schwarz gap (which is $\ge0$) plus a square over $\rho$ (also $\ge0$).</li>
+<li>Show that both cannot be zero at once.</li>
+</ul>
 </div>
 <div class="example">
 <p class="problem">Prove [FR] Theorem 3.2.2. (Examinable.)</p>
 <ol class="steps">
-<li><p>Since $H\succ0$, write $H=LL^\top$ with $L$ invertible (Cholesky factorization: every positive definite matrix has one). Take any $\z\ne\0$ and set $\a=L^\top\z$, $\b=L^\top\boldsymbol\gamma$. Then $\z^\top H\z=\a^\top\a$, $\z^\top H\boldsymbol\gamma=\a^\top\b$ and $\boldsymbol\gamma^\top H\boldsymbol\gamma=\b^\top\b$.</p><p class="why-step">The factorization turns every $H$-weighted product into an ordinary dot product, so Cauchy–Schwarz ($(\a^\top\b)^2\le\norm\a^2\norm\b^2$) becomes available.</p></li>
+<li><p>Since $H\succ0$, write $H=LL^\top$ with $L$ invertible (Cholesky factorization: every positive definite matrix has one). Take any nonzero $\z$ and set:</p><p>$$\begin{aligned}\a&=L^\top\z\\ \b&=L^\top\boldsymbol\gamma\end{aligned}$$</p><p>Then the three $H$-weighted products become ordinary dot products:</p><p>$$\begin{aligned}\z^\top H\z&=\a^\top\a\\ \z^\top H\boldsymbol\gamma&=\a^\top\b\\ \boldsymbol\gamma^\top H\boldsymbol\gamma&=\b^\top\b\end{aligned}$$</p><p class="why-step">The factorization turns every $H$-weighted product into an ordinary dot product, so Cauchy–Schwarz ($(\a^\top\b)^2\le\norm\a^2\norm\b^2$) becomes available.</p></li>
 <li><p>Dot the DFP formula with $\z$ on both sides. A term $\u\u^\top/c$ contributes $(\z^\top\u)^2/c$, so:
 $$\z^\top H_{k+1}\z=\z^\top H\z+\dfrac{(\z^\top\boldsymbol\delta)^2}{\boldsymbol\delta^\top\boldsymbol\gamma}-\dfrac{(\z^\top H\boldsymbol\gamma)^2}{\boldsymbol\gamma^\top H\boldsymbol\gamma}$$
 Substitute the quantities of the first step:
 $$\z^\top H_{k+1}\z=\underbrace{\a^\top\a-\frac{(\a^\top\b)^2}{\b^\top\b}}_{\ge0}+\underbrace{\frac{(\z^\top\boldsymbol\delta)^2}{\boldsymbol\delta^\top\boldsymbol\gamma}}_{\ge0}.$$</p><p class="why-step">The first bracket is $\ge0$ by Cauchy–Schwarz, $(\a^\top\b)^2\le\norm\a^2\norm\b^2$. The second is a square divided by the positive number $\boldsymbol\delta^\top\boldsymbol\gamma$.</p></li>
-<li><p>Both can vanish only if $\a\parallel\b$, i.e. $\z=c\boldsymbol\gamma$ with $c\ne0$ ($L^\top$ is invertible). But then the second term is positive:
+<li><p>Both terms can vanish only if $\a$ is parallel to $\b$. That means $\z=c\boldsymbol\gamma$ for some $c\ne0$, because $L^\top$ is invertible. But then the second term is positive:
 $$\frac{c^2(\boldsymbol\gamma^\top\boldsymbol\delta)^2}{\boldsymbol\delta^\top\boldsymbol\gamma}=c^2\,\boldsymbol\delta^\top\boldsymbol\gamma\gt0$$
 So $\z^\top H_{k+1}\z\gt0$ for every $\z\ne\0$. Induction on $k$ finishes the proof.</p><p class="why-step">The two terms are never zero together: this is exactly where $\boldsymbol\delta^\top\boldsymbol\gamma\gt0$ is needed.</p></li>
 </ol>
@@ -8884,8 +9322,21 @@ Equivalently, for $B=H^{-1}$: $\displaystyle B_{k+1}^{\rm BFGS}=B+\frac{\boldsym
 <p>$$\begin{aligned}H_{k+1}\boldsymbol\gamma&=H\boldsymbol\gamma+\big(1+\tfrac{\boldsymbol\gamma^\top H\boldsymbol\gamma}{\rho}\big)\boldsymbol\delta-\tfrac{\boldsymbol\delta(\boldsymbol\gamma^\top H\boldsymbol\gamma)+H\boldsymbol\gamma\,\rho}{\rho}\\ &=H\boldsymbol\gamma+\boldsymbol\delta+\tfrac{\boldsymbol\gamma^\top H\boldsymbol\gamma}{\rho}\boldsymbol\delta-\tfrac{\boldsymbol\gamma^\top H\boldsymbol\gamma}{\rho}\boldsymbol\delta-H\boldsymbol\gamma\\ &=\boldsymbol\delta\end{aligned}$$</p>
 <p>In $B$-form it is even quicker:</p>
 <p>$$B_{k+1}\boldsymbol\delta=B\boldsymbol\delta+\boldsymbol\gamma-B\boldsymbol\delta=\boldsymbol\gamma$$</p>
-<p><b>Reading the $B$-form, symbol by symbol.</b> $B$: the old Hessian guess. $\boldsymbol\gamma\boldsymbol\gamma^\top/\boldsymbol\gamma^\top\boldsymbol\delta$: rank one along the observed gradient change, scaled so that applied to $\boldsymbol\delta$ it returns $\boldsymbol\gamma$ (the new information). $B\boldsymbol\delta\boldsymbol\delta^\top B/\boldsymbol\delta^\top B\boldsymbol\delta$: rank one along $B\boldsymbol\delta$, scaled so that applied to $\boldsymbol\delta$ it returns $B\boldsymbol\delta$ (the old claim, removed). This is the DFP formula with $H\to B$ and $\boldsymbol\delta\leftrightarrow\boldsymbol\gamma$.</p>
-<p><b>Numeric check on the shared data</b> ($H=I$, $\boldsymbol\delta=(1,1)$, $\boldsymbol\gamma=(3,2)$, $\rho=5$). Compute the pieces:
+<p><b>Reading the $B$-form, symbol by symbol.</b></p>
+<ul>
+<li>$B$ is the old Hessian guess.</li>
+<li>$\boldsymbol\gamma\boldsymbol\gamma^\top/\boldsymbol\gamma^\top\boldsymbol\delta$ is rank one along the observed gradient change. Applied to $\boldsymbol\delta$, it returns $\boldsymbol\gamma$ (the new information).</li>
+<li>$B\boldsymbol\delta\boldsymbol\delta^\top B/\boldsymbol\delta^\top B\boldsymbol\delta$ is rank one along $B\boldsymbol\delta$. Applied to $\boldsymbol\delta$, it returns $B\boldsymbol\delta$ (the old claim, which is removed).</li>
+</ul>
+<p>This is the DFP formula with $H\to B$ and $\boldsymbol\delta\leftrightarrow\boldsymbol\gamma$.</p>
+<p><b>Numeric check on the shared data.</b> The data are:</p>
+<ul>
+<li>Current guess: $H=I$.</li>
+<li>Step: $\boldsymbol\delta=(1,1)$.</li>
+<li>Gradient change: $\boldsymbol\gamma=(3,2)$.</li>
+<li>Curvature along the step: $\rho=5$.</li>
+</ul>
+<p>Compute the pieces:
 $$\begin{aligned}1+\boldsymbol\gamma^\top H\boldsymbol\gamma/\rho&=1+\tfrac{13}5=\tfrac{18}5\\ \tfrac{18}5\cdot\tfrac{\boldsymbol\delta\boldsymbol\delta^\top}{5}&=\tfrac{18}{25}\begin{pmatrix}1&1\\1&1\end{pmatrix}\\ \boldsymbol\delta\boldsymbol\gamma^\top H+H\boldsymbol\gamma\boldsymbol\delta^\top&=\begin{pmatrix}3&2\\3&2\end{pmatrix}+\begin{pmatrix}3&3\\2&2\end{pmatrix}=\begin{pmatrix}6&5\\5&4\end{pmatrix}\end{aligned}$$
 Assemble and check:
 $$\begin{aligned}H_{\rm new}&=I+\tfrac{18}{25}\begin{pmatrix}1&1\\1&1\end{pmatrix}-\tfrac15\begin{pmatrix}6&5\\5&4\end{pmatrix}=\tfrac1{25}\begin{pmatrix}13&-7\\-7&23\end{pmatrix}\\ H_{\rm new}\boldsymbol\gamma&=\tfrac1{25}(39-14,\ -21+46)^\top=(1,1)^\top=\boldsymbol\delta &&\text{(secant check)}\\ \det H_{\rm new}&=\tfrac{299-49}{625}=\tfrac25\gt0\end{aligned}$$
@@ -8896,8 +9347,19 @@ So $H_{\rm new}$ is positive definite. All three updates satisfy the same secant
 
 <div class="prose">
 <h3>Why BFGS stays positive definite, step by step</h3>
-<p><b>Intuition first.</b> The BFGS formula looks messy, but it hides a simple structure: the new matrix is the old one "squeezed" through a fixed matrix $V$ (a congruence), plus a rank-one positive piece. A congruence of a positive definite matrix is positive semidefinite, and the extra piece fixes the one direction that could be lost. <b>Skeleton to remember:</b> (1) rewrite $H^{\rm BFGS}_{k+1}=V^\top HV+\boldsymbol\delta\boldsymbol\delta^\top/\rho$; (2) both terms are $\ge0$ as quadratic forms; (3) if the sum is $0$, both terms are $0$, which forces $\z=\0$.</p>
-<p><b>Setup.</b> Let $H\succ0$ and $\rho=\boldsymbol\delta^\top\boldsymbol\gamma\gt0$. Define the $n\times n$ matrix $V=I-\dfrac{\boldsymbol\gamma\boldsymbol\delta^\top}{\rho}$.</p>
+<p><b>Intuition first.</b> The BFGS formula looks messy, but it hides a simple structure. The new matrix is the old one "squeezed" through a fixed matrix $V$ (a congruence), plus a rank-one positive piece. A congruence of a positive definite matrix is positive semidefinite, and the extra piece fixes the one direction that could be lost.</p>
+<p><b>Skeleton to remember:</b></p>
+<ol>
+<li>Rewrite the update as $H^{\rm BFGS}_{k+1}=V^\top HV+\boldsymbol\delta\boldsymbol\delta^\top/\rho$.</li>
+<li>Both terms are $\ge0$ as quadratic forms.</li>
+<li>If the sum is $0$, both terms are $0$, which forces $\z=\0$.</li>
+</ol>
+<p><b>Setup.</b> Assume:</p>
+<ul>
+<li>The old matrix is positive definite: $H\succ0$.</li>
+<li>The curvature along the step is positive: $\rho=\boldsymbol\delta^\top\boldsymbol\gamma\gt0$.</li>
+</ul>
+<p>Define the $n\times n$ matrix $V=I-\dfrac{\boldsymbol\gamma\boldsymbol\delta^\top}{\rho}$.</p>
 <ol>
 <li><b>Product form.</b> $V^\top=I-\dfrac{\boldsymbol\delta\boldsymbol\gamma^\top}{\rho}$. Multiply out:
 $$V^\top HV=H-\dfrac{H\boldsymbol\gamma\boldsymbol\delta^\top}{\rho}-\dfrac{\boldsymbol\delta\boldsymbol\gamma^\top H}{\rho}+\dfrac{\boldsymbol\gamma^\top H\boldsymbol\gamma}{\rho^2}\boldsymbol\delta\boldsymbol\delta^\top$$
@@ -8905,28 +9367,37 @@ Adding $\boldsymbol\delta\boldsymbol\delta^\top/\rho$ gives exactly the BFGS mat
 $$H^{\rm BFGS}_{k+1}=V^\top HV+\dfrac{\boldsymbol\delta\boldsymbol\delta^\top}{\rho}$$ <i>Reason: expansion of a product of three matrices, using $(\boldsymbol\gamma\boldsymbol\delta^\top)^\top=\boldsymbol\delta\boldsymbol\gamma^\top$.</i></li>
 <li><b>Quadratic form.</b> For any $\z$:
 $$\z^\top H_{k+1}\z=(V\z)^\top H(V\z)+\dfrac{(\boldsymbol\delta^\top\z)^2}{\rho}$$ <i>Reason: $\z^\top V^\top HV\z=(V\z)^\top H(V\z)$, and $\z^\top\boldsymbol\delta\boldsymbol\delta^\top\z=(\boldsymbol\delta^\top\z)^2$.</i></li>
-<li><b>Both terms are nonnegative.</b> The first is $\ge0$ because $H\succ0$ (a positive definite matrix gives $\w^\top H\w\ge0$ for every $\w$, here $\w=V\z$). The second is $\ge0$ because it is a square divided by $\rho\gt0$. <i>This is where $\rho\gt0$ is used.</i></li>
-<li><b>The sum can be zero only if both are zero.</b> Suppose $\z^\top H_{k+1}\z=0$. Then $\boldsymbol\delta^\top\z=0$, and $(V\z)^\top H(V\z)=0$, which (as $H\succ0$) forces $V\z=\0$.</li>
-<li><b>Conclude.</b> With $\boldsymbol\delta^\top\z=0$:
+<li><b>Both terms are nonnegative.</b> The first term is $\ge0$ because $H\succ0$: a positive definite matrix gives $\w^\top H\w\ge0$ for every $\w$, and here $\w=V\z$. The second term is $\ge0$ because it is a square divided by $\rho\gt0$. <i>This is where $\rho\gt0$ is used.</i></li>
+<li><b>The sum can be zero only if both are zero.</b> Suppose $\z^\top H_{k+1}\z=0$. Then two things follow:
+<ul>
+<li>The second term vanishes, so $\boldsymbol\delta^\top\z=0$.</li>
+<li>The first term vanishes, so $(V\z)^\top H(V\z)=0$. Since $H\succ0$, this forces $V\z=\0$.</li>
+</ul></li>
+<li><b>Conclude.</b> Using $\boldsymbol\delta^\top\z=0$:
 $$V\z=\z-\boldsymbol\gamma\,\dfrac{\boldsymbol\delta^\top\z}{\rho}=\z$$
-So $V\z=\0$ means $\z=\0$. Hence $\z^\top H_{k+1}\z\gt0$ for every $\z\ne\0$, and $H_{k+1}$ is symmetric: positive definite. $\blacksquare$</li>
+So $V\z=\0$ means $\z=\0$. Hence $\z^\top H_{k+1}\z\gt0$ for every nonzero $\z$. Together with symmetry, $H_{k+1}$ is positive definite. $\blacksquare$</li>
 </ol>
-<p><b>Numeric check.</b> On the shared data ($H=I$):</p>
+<p><b>Numeric check.</b> On the shared data, with $H=I$:</p>
 <p>$$\begin{aligned}V&=I-\tfrac15\begin{pmatrix}3\\2\end{pmatrix}(1,1)=\begin{pmatrix}\tfrac25&-\tfrac35\\-\tfrac25&\tfrac35\end{pmatrix}\\ V^\top V&=\tfrac1{25}\begin{pmatrix}8&-12\\-12&18\end{pmatrix}\\ V^\top V+\tfrac15\begin{pmatrix}1&1\\1&1\end{pmatrix}&=\tfrac1{25}\begin{pmatrix}13&-7\\-7&23\end{pmatrix}\end{aligned}$$</p>
 <p>This is the matrix found above. ✓</p>
-<div class="callout"><b>Careful:</b> the assumption $\boldsymbol\delta^\top\boldsymbol\gamma\gt0$ is not automatic. A line search that only decreases $f$ can produce $\boldsymbol\delta^\top\boldsymbol\gamma\le0$, and then BFGS (and DFP) can lose positive definiteness or divide by zero or a negative number. The Wolfe curvature condition, or an exact line search, guarantees $\rho\gt0$ (see the box above). Numeric example of failure: $\boldsymbol\delta=(1,0)$, $\boldsymbol\gamma=(-1,2)$ has $\rho=-1\lt0$; no valid update exists for a positive definite $H$ in the sense of the theorem.</div>
+<div class="callout"><b>Careful:</b> the assumption $\boldsymbol\delta^\top\boldsymbol\gamma\gt0$ is not automatic. A line search that only decreases $f$ can produce $\boldsymbol\delta^\top\boldsymbol\gamma\le0$, and then BFGS (and DFP) can lose positive definiteness or divide by zero or a negative number. The Wolfe curvature condition, or an exact line search, guarantees $\rho\gt0$ (see the box above). Numeric example of failure: the step $\boldsymbol\delta=(1,0)$ and gradient change $\boldsymbol\gamma=(-1,2)$ give $\rho=-1\lt0$. No valid update exists for a positive definite $H$ in the sense of the theorem.</div>
 
 <h3>Quasi-Newton on a quadratic with exact line search: the link to conjugate directions (Part 8)</h3>
 <p><b>Intuition first.</b> Part 8 showed that conjugate directions with exact line searches solve an $n$-variable quadratic in $n$ steps, and that CG generates such directions cheaply. DFP and BFGS reach the same conclusion by a different road: the matrix $H_k$ is the memory of earlier steps, and the direction $-H_k\g_k$ is automatically conjugate to all earlier ones. Here is why, in three facts.</p>
 <ol>
 <li><b>Fact 1 (hereditary property, [FR] §3.3).</b> For DFP and BFGS on a quadratic with Hessian $G$ and exact line searches, $H_{k+1}\boldsymbol\gamma_j=\boldsymbol\delta_j$ for <i>all</i> $j\le k$, not only for $j=k$. (Same idea as SR1's hereditary property: the update does not undo what earlier pairs taught.)</li>
-<li><b>Fact 2 (Part 8, Expanding Subspace).</b> If $\d_1,\dots,\d_k$ are $G$-conjugate and the line searches are exact, then $\g_{k+1}^\top\d_j=0$ for $j\le k$. Since $\boldsymbol\delta_j=\alpha_j\d_j$, also $\g_{k+1}^\top\boldsymbol\delta_j=0$.</li>
+<li><b>Fact 2 (Part 8, Expanding Subspace).</b> Suppose the directions $\d_1,\dots,\d_k$ are $G$-conjugate and the line searches are exact. Then $\g_{k+1}^\top\d_j=0$ for $j\le k$. Since $\boldsymbol\delta_j=\alpha_j\d_j$, also $\g_{k+1}^\top\boldsymbol\delta_j=0$.</li>
 <li><b>Fact 3 (the induction).</b> Suppose $\d_1,\dots,\d_k$ are mutually conjugate. For $j\le k$ compute:
 $$\begin{aligned}\d_{k+1}^\top G\boldsymbol\delta_j&=-\g_{k+1}^\top H_{k+1}G\boldsymbol\delta_j &&\text{(}\d_{k+1}=-H_{k+1}\g_{k+1};\ H_{k+1}\text{ symmetric)}\\ &=-\g_{k+1}^\top H_{k+1}\boldsymbol\gamma_j &&\text{(}\boldsymbol\gamma_j=G\boldsymbol\delta_j)\\ &=-\g_{k+1}^\top\boldsymbol\delta_j &&\text{(Fact 1)}\\ &=0 &&\text{(Fact 2)}\end{aligned}$$
 As $\boldsymbol\delta_j$ is a nonzero multiple of $\d_j$, $\d_{k+1}$ is conjugate to every earlier direction. Induction (starting from $\d_1$ alone) gives the whole list.</li>
 </ol>
 <p><b>Consequence.</b> DFP and BFGS are conjugate direction methods on a quadratic with exact line searches, so by the Conjugate Direction Theorem (Part 8) they reach $\x^\star$ in at most $n$ steps. With $H_1=I$ the first direction is $-\g_1$, as in CG, and [FR] shows the whole sequence of iterates coincides with CG's.</p>
-<p><b>Numeric verification with Fletcher's example</b> (above: $G=\mathrm{diag}(20,2)$, $\x_1=(0.1,1)^\top$). BFGS gave $\d_2=-H_2\g_2=\tfrac1{121}(36,-360)^\top$. Run CG from the same start:</p>
+<p><b>Numeric verification with Fletcher's example</b> (above), which has:</p>
+<ul>
+<li>Hessian: $G=\mathrm{diag}(20,2)$.</li>
+<li>Starting point: $\x_1=(0.1,1)^\top$.</li>
+</ul>
+<p>BFGS gave the second direction $\d_2=-H_2\g_2=\tfrac1{121}(36,-360)^\top$. Run CG from the same start:</p>
 <p>$$\begin{aligned}\g_1&=(2,2)^\top,\quad \d_1=(-2,-2)^\top\\ \g_2&=(-\tfrac{18}{11},\tfrac{18}{11})^\top &&\text{(exact step }\tfrac1{11})\\ \beta&=\norm{\g_2}^2/\norm{\g_1}^2=\tfrac{648/121}{8}=\tfrac{81}{121}\\ -\g_2+\beta\d_1&=(\tfrac{18}{11}-\tfrac{162}{121},\ -\tfrac{18}{11}-\tfrac{162}{121})^\top\\ &=\tfrac1{121}(36,-360)^\top\end{aligned}$$</p>
 <p>The two directions are identical. Conjugacy check:</p>
 <p>$$\d_2^\top G\d_1=\tfrac1{121}\big(36\cdot20\cdot(-2)+(-360)\cdot2\cdot(-2)\big)=\tfrac{-1440+1440}{121}=0$$</p>
@@ -8934,7 +9405,14 @@ As $\boldsymbol\delta_j$ is a nonzero multiple of $\d_j$, $\d_{k+1}$ is conjugat
 </div>
 
 <div class="example">
-<p class="problem">[FR] Table 3.2.1: $f(\x)=10x_1^2+x_2^2$ (so $G=\mathrm{diag}(20,2)$), $\x_1=(0.1,\,1)^\top$, $H_1=I$, exact line searches. Do the BFGS iteration by hand until it stops.</p>
+<div class="problem"><p>[FR] Table 3.2.1. Given:</p>
+<ul>
+<li>Function: $f(\x)=10x_1^2+x_2^2$, so the Hessian is $G=\mathrm{diag}(20,2)$.</li>
+<li>Starting point: $\x_1=(0.1,\,1)^\top$.</li>
+<li>Initial matrix: $H_1=I$.</li>
+<li>Line searches: exact.</li>
+</ul>
+<p>Do the BFGS iteration by hand until it stops.</p></div>
 <ol class="steps">
 <li><p>First step (steepest descent):</p><p>$$\begin{aligned}\g_1&=G\x_1=(2,2)\\ \d_1&=-\g_1=(-2,-2)\\ \alpha_1&=\dfrac{-\g_1^\top\d_1}{\d_1^\top G\d_1}=\dfrac8{80+8}=\dfrac1{11} &&\text{(exact step)}\\ \x_2&=(0.1-\tfrac2{11},\ 1-\tfrac2{11})=(-\tfrac9{110},\ \tfrac9{11})\\ \g_2&=(-\tfrac{18}{11},\ \tfrac{18}{11})\end{aligned}$$</p><p class="why-step">With $H_1=I$ the first step is steepest descent with exact line search (Part 5's formula).</p></li>
 <li><p>Step and gradient change:</p><p>$$\begin{aligned}\boldsymbol\delta_1&=-\tfrac2{11}(1,1)\\ \boldsymbol\gamma_1&=G\boldsymbol\delta_1=-\tfrac4{11}(10,1)\\ \boldsymbol\delta_1^\top\boldsymbol\gamma_1&=\tfrac8{121}\cdot11=\tfrac8{11}\gt0\end{aligned}$$</p><p class="why-step">On a quadratic you can get $\boldsymbol\gamma$ as $G\boldsymbol\delta$ instead of subtracting gradients. Always check $\boldsymbol\delta^\top\boldsymbol\gamma\gt0$ before a DFP/BFGS update.</p></li>
@@ -8953,37 +9431,37 @@ $$H_2\boldsymbol\gamma_1=\frac1{242}\cdot\big(-\tfrac4{11}\big)(150-29,\ -290+41
 
 <div class="practice">
 <div class="prob" data-id="p10-qn-p1" data-ans="169/162;-22/162;46/162" data-labels="[H₂]₁₁;[H₂]₁₂;[H₂]₂₂" data-tol="0.002">
-<div class="stem"><p>$f(\x)=x_1^2+2x_2^2$ (so $G=\mathrm{diag}(2,4)$), $\x_1=(1,1)$, $H_1=I$, exact line search. Compute $H_2$ by the BFGS formula.</p></div>
-<div class="hint"><p>$\g_1=(2,4)$, $\alpha_1=\frac{20}{72}=\frac5{18}$, $\boldsymbol\delta_1=-\frac59(1,2)$, $\boldsymbol\gamma_1=-\frac59(2,8)$, $\boldsymbol\delta_1^\top\boldsymbol\gamma_1=\frac{50}9$. The scalar factor is $1+\frac{\boldsymbol\gamma^\top\boldsymbol\gamma}{\boldsymbol\delta^\top\boldsymbol\gamma}=\frac{43}9$.</p></div>
+<div class="stem"><p>Given:</p><ul><li>Function: $f(\x)=x_1^2+2x_2^2$, so the Hessian is $G=\mathrm{diag}(2,4)$.</li><li>Starting point: $\x_1=(1,1)$.</li><li>Initial matrix: $H_1=I$.</li><li>Line search: exact.</li></ul><p>Compute $H_2$ by the BFGS formula.</p></div>
+<div class="hint"><p>The ingredients are:</p><ul><li>Gradient: $\g_1=(2,4)$.</li><li>Step length: $\alpha_1=\frac{20}{72}=\frac5{18}$.</li><li>Step: $\boldsymbol\delta_1=-\frac59(1,2)$.</li><li>Gradient change: $\boldsymbol\gamma_1=-\frac59(2,8)$.</li><li>Curvature along the step: $\boldsymbol\delta_1^\top\boldsymbol\gamma_1=\frac{50}9$.</li></ul><p>The scalar factor is $1+\frac{\boldsymbol\gamma^\top\boldsymbol\gamma}{\boldsymbol\delta^\top\boldsymbol\gamma}=\frac{43}9$.</p></div>
 <div class="sol"><p>Compute the two matrices, then assemble:</p><p>$$\begin{aligned}\frac{\boldsymbol\delta\boldsymbol\delta^\top}{\boldsymbol\delta^\top\boldsymbol\gamma}&=\frac1{18}\begin{pmatrix}1&2\\2&4\end{pmatrix}\\ \frac{\boldsymbol\delta\boldsymbol\gamma^\top+\boldsymbol\gamma\boldsymbol\delta^\top}{\boldsymbol\delta^\top\boldsymbol\gamma}&=\frac1{18}\begin{pmatrix}4&12\\12&32\end{pmatrix}\\ H_2&=I+\frac{43}{162}\begin{pmatrix}1&2\\2&4\end{pmatrix}-\frac9{162}\begin{pmatrix}4&12\\12&32\end{pmatrix}\\ &=\frac1{162}\begin{pmatrix}169&-22\\-22&46\end{pmatrix}\end{aligned}$$</p><p>Check the secant condition:</p><p>$$H_2\boldsymbol\gamma_1=-\frac59\cdot\frac1{162}(338-176,\ -44+368)^\top=-\frac59(1,2)^\top=\boldsymbol\delta_1\ \checkmark$$</p></div>
 </div>
 <div class="prob" data-id="p10-qn-p2" data-ans="-2/3" data-labels="det H₂ (SR1)" data-tol="0.002">
-<div class="stem"><p>$H=I$, $\boldsymbol\delta=(1,0)$, $\boldsymbol\gamma=(\tfrac12,1)$. (These come from the positive definite quadratic with $G=\begin{pmatrix}0.5&1\\1&3\end{pmatrix}$, and $\boldsymbol\delta^\top\boldsymbol\gamma=\tfrac12\gt0$.) Compute the SR1 update and its determinant.</p></div>
-<div class="hint"><p>$\u=\boldsymbol\delta-H\boldsymbol\gamma=(\tfrac12,-1)$ and $\u^\top\boldsymbol\gamma=\tfrac14-1=-\tfrac34$.</p></div>
+<div class="stem"><p>Given:</p><ul><li>Current guess: $H=I$.</li><li>Step: $\boldsymbol\delta=(1,0)$.</li><li>Gradient change: $\boldsymbol\gamma=(\tfrac12,1)$.</li></ul><p>These come from the positive definite quadratic with $G=\begin{pmatrix}0.5&1\\1&3\end{pmatrix}$, and $\boldsymbol\delta^\top\boldsymbol\gamma=\tfrac12\gt0$. Compute the SR1 update and its determinant.</p></div>
+<div class="hint"><p>First the error vector $\u=\boldsymbol\delta-H\boldsymbol\gamma=(\tfrac12,-1)$. Then the denominator $\u^\top\boldsymbol\gamma=\tfrac14-1=-\tfrac34$.</p></div>
 <div class="sol"><p>$$\begin{aligned}H_{\rm new}&=I-\tfrac43\begin{pmatrix}\frac14&-\frac12\\-\frac12&1\end{pmatrix}=\begin{pmatrix}\frac23&\frac23\\\frac23&-\frac13\end{pmatrix}\\ \det H_{\rm new}&=-\tfrac29-\tfrac49=-\tfrac23\lt0\end{aligned}$$</p><p>So $H_{\rm new}$ is <b>indefinite</b>, even though $\boldsymbol\delta^\top\boldsymbol\gamma\gt0$. It still satisfies $H_{\rm new}\boldsymbol\gamma=(1,0)=\boldsymbol\delta$. (BFGS on the same pair gives $\begin{pmatrix}6&-2\\-2&1\end{pmatrix}$, determinant 2, positive definite.)</p></div>
 </div>
 <div class="prob" data-id="p10-qn-p3" data-ans="0.9" data-labels="x₂" data-tol="0.001">
-<div class="stem"><p>In one dimension, minimize $f(x)=x-\ln x$ by the quasi-Newton iteration $x_{k+1}=x_k-H_kf'(x_k)$ with unit steps. Given $x_0=1.5$ and $x_1=1.2$, compute $H_1$ from the secant condition and then $x_2$.</p></div>
-<div class="hint"><p>$f'(x)=1-1/x$: $f'(1.5)=\tfrac13$, $f'(1.2)=\tfrac16$. The secant condition in 1-D: $H_1=\delta/\gamma$.</p></div>
+<div class="stem"><p>In one dimension, minimize $f(x)=x-\ln x$ by the quasi-Newton iteration $x_{k+1}=x_k-H_kf'(x_k)$ with unit steps. Given:</p><ul><li>First point: $x_0=1.5$.</li><li>Second point: $x_1=1.2$.</li></ul><p>Compute $H_1$ from the secant condition, and then $x_2$.</p></div>
+<div class="hint"><p>The derivative is $f'(x)=1-1/x$, so $f'(1.5)=\tfrac13$ and $f'(1.2)=\tfrac16$. The secant condition in one dimension is $H_1=\delta/\gamma$.</p></div>
 <div class="sol"><p>$$\begin{aligned}\delta&=1.2-1.5=-0.3\\ \gamma&=\tfrac16-\tfrac13=-\tfrac16\\ H_1&=\delta/\gamma=1.8\\ x_2&=1.2-1.8\cdot\tfrac16=0.9\end{aligned}$$</p><p>Here $H_1$ estimates $1/f''$ (the true $1/f''(1.2)=1.44$). With $n=1$ the secant condition determines $H$ uniquely, so SR1, DFP and BFGS all give this same secant step.</p></div>
 </div>
 <div class="prob" data-id="p10x-qn-dfp" data-ans="33/65;-17/65;58/65" data-labels="[H]₁₁;[H]₁₂;[H]₂₂" data-tol="0.002">
-<div class="stem"><p>$H=I$, $\boldsymbol\delta=(1,1)$, $\boldsymbol\gamma=(3,2)$. Compute the DFP update $H+\dfrac{\boldsymbol\delta\boldsymbol\delta^\top}{\boldsymbol\delta^\top\boldsymbol\gamma}-\dfrac{H\boldsymbol\gamma\boldsymbol\gamma^\top H}{\boldsymbol\gamma^\top H\boldsymbol\gamma}$ and check the secant condition.</p></div>
-<div class="hint"><p>$\boldsymbol\delta^\top\boldsymbol\gamma=5$ and $\boldsymbol\gamma^\top\boldsymbol\gamma=13$. The two matrices are $\frac15\begin{pmatrix}1&1\\1&1\end{pmatrix}$ and $\frac1{13}\begin{pmatrix}9&6\\6&4\end{pmatrix}$.</p></div>
+<div class="stem"><p>Given:</p><ul><li>Current guess: $H=I$.</li><li>Step: $\boldsymbol\delta=(1,1)$.</li><li>Gradient change: $\boldsymbol\gamma=(3,2)$.</li></ul><p>Compute the DFP update $H+\dfrac{\boldsymbol\delta\boldsymbol\delta^\top}{\boldsymbol\delta^\top\boldsymbol\gamma}-\dfrac{H\boldsymbol\gamma\boldsymbol\gamma^\top H}{\boldsymbol\gamma^\top H\boldsymbol\gamma}$ and check the secant condition.</p></div>
+<div class="hint"><p>The two scalars are $\boldsymbol\delta^\top\boldsymbol\gamma=5$ and $\boldsymbol\gamma^\top\boldsymbol\gamma=13$. The two matrices are $\frac15\begin{pmatrix}1&1\\1&1\end{pmatrix}$ and $\frac1{13}\begin{pmatrix}9&6\\6&4\end{pmatrix}$.</p></div>
 <div class="sol"><p>$$\begin{aligned}H_{\rm new}&=\begin{pmatrix}1+\frac15-\frac9{13}&\frac15-\frac6{13}\\\frac15-\frac6{13}&1+\frac15-\frac4{13}\end{pmatrix}=\frac1{65}\begin{pmatrix}33&-17\\-17&58\end{pmatrix}\\ H_{\rm new}\boldsymbol\gamma&=\frac1{65}(99-34,\ -51+116)^\top=(1,1)^\top=\boldsymbol\delta &&\text{(check)}\end{aligned}$$</p></div>
 </div>
 <div class="prob" data-id="p10x-qn-cgbeta" data-ans="81/121" data-labels="β" data-tol="0.002">
-<div class="stem"><p>Fletcher's example ($G=\mathrm{diag}(20,2)$, $\x_1=(0.1,1)$, exact line searches): BFGS and CG produce the same second direction. Compute CG's $\beta=\norm{\g_2}^2/\norm{\g_1}^2$ with $\g_1=(2,2)$ and $\g_2=(-\tfrac{18}{11},\tfrac{18}{11})$.</p></div>
+<div class="stem"><p>Fletcher's example: BFGS and CG produce the same second direction. Given:</p><ul><li>Hessian: $G=\mathrm{diag}(20,2)$.</li><li>Starting point: $\x_1=(0.1,1)$, with exact line searches.</li><li>First gradient: $\g_1=(2,2)$.</li><li>Second gradient: $\g_2=(-\tfrac{18}{11},\tfrac{18}{11})$.</li></ul><p>Compute CG's weight $\beta=\norm{\g_2}^2/\norm{\g_1}^2$.</p></div>
 <div class="hint"><p>$\norm{\g_1}^2=8$ and $\norm{\g_2}^2=2\cdot\frac{324}{121}$.</p></div>
 <div class="sol"><p>$$\begin{aligned}\norm{\g_2}^2&=\frac{648}{121}\\ \beta&=\frac{648}{121\cdot8}=\frac{81}{121}\approx0.669\end{aligned}$$</p><p>Then $-\g_2+\beta\d_1=\frac1{121}(36,-360)$, the BFGS direction.</p></div>
 </div>
 <div class="prob" data-id="p10x-qn-pdcheck" data-ans="No: δᵀγ is negative" data-choices="Yes: BFGS preserves positive definiteness always|No: δᵀγ is negative|Yes: because H is the identity|No: because the dimension is 2">
-<div class="stem"><p>$H=I\succ0$, $\boldsymbol\delta=(1,0)$, $\boldsymbol\gamma=(-1,2)$. Does the theorem guarantee that the BFGS update is positive definite?</p></div>
+<div class="stem"><p>Given:</p><ul><li>Current guess: $H=I\succ0$.</li><li>Step: $\boldsymbol\delta=(1,0)$.</li><li>Gradient change: $\boldsymbol\gamma=(-1,2)$.</li></ul><p>Does the theorem guarantee that the BFGS update is positive definite?</p></div>
 <div class="hint"><p>What condition does the proof use besides $H\succ0$?</p></div>
 <div class="sol"><p>The proof needs $\rho=\boldsymbol\delta^\top\boldsymbol\gamma\gt0$. Here $\rho=-1\lt0$, so the guarantee does not apply (and the denominators in the update have the wrong sign). A Wolfe line search would have prevented this pair.</p></div>
 </div>
 <div class="prob" data-id="p10-qn-p4" data-ans="SR1 is undefined; DFP and BFGS are fine" data-choices="All three updates are defined|SR1 is undefined; DFP and BFGS are fine|DFP and BFGS are undefined; SR1 is fine|None is defined">
-<div class="stem"><p>$H=I$, $\boldsymbol\delta=(2,0)$, $\boldsymbol\gamma=(1,1)$. Which of SR1, DFP, BFGS can be applied?</p></div>
+<div class="stem"><p>Given:</p><ul><li>Current guess: $H=I$.</li><li>Step: $\boldsymbol\delta=(2,0)$.</li><li>Gradient change: $\boldsymbol\gamma=(1,1)$.</li></ul><p>Which of SR1, DFP, BFGS can be applied?</p></div>
 <div class="hint"><p>Compute the SR1 denominator $(\boldsymbol\delta-H\boldsymbol\gamma)^\top\boldsymbol\gamma$, and the DFP/BFGS denominators $\boldsymbol\delta^\top\boldsymbol\gamma$ and $\boldsymbol\gamma^\top H\boldsymbol\gamma$.</p></div>
 <div class="sol"><p>Check the denominators:</p><p>$$\begin{aligned}\boldsymbol\delta-\boldsymbol\gamma&=(1,-1)^\top\\ (1,-1)\cdot(1,1)&=0 &&\text{(SR1 denominator)}\\ \boldsymbol\delta^\top\boldsymbol\gamma&=2\gt0 &&\text{(DFP, BFGS)}\\ \boldsymbol\gamma^\top\boldsymbol\gamma&=2\gt0 &&\text{(DFP)}\end{aligned}$$</p><p>The SR1 denominator vanishes although the numerator is not zero, so SR1 is undefined (practical codes skip the update). DFP and BFGS are defined and positive definite.</p></div>
 </div>
@@ -8994,7 +9472,7 @@ $$H_2\boldsymbol\gamma_1=\frac1{242}\cdot\big(-\tfrac4{11}\big)(150-29,\ -290+41
 <ul><li>Mixing up $H$ (inverse Hessian, $H\boldsymbol\gamma=\boldsymbol\delta$) with $B$ (Hessian, $B\boldsymbol\delta=\boldsymbol\gamma$): DFP in $H$-form looks like BFGS in $B$-form</li><li>Assuming SR1 keeps $H$ positive definite</li><li>Claiming $n$-step termination with an inexact line search</li></ul>
 </div>
 <ol class="takeaways">
-<li>Quasi-Newton methods move along $-H_k\g_k$ and update $H_k\approx[\hess f]^{-1}$ so that $H_{k+1}\boldsymbol\gamma_k=\boldsymbol\delta_k$: only gradients, $O(n^2)$ work, superlinear convergence.</li>
+<li>Quasi-Newton methods move along $-H_k\g_k$, where $H_k\approx[\hess f]^{-1}$. After each step they update $H_k$ so that $H_{k+1}\boldsymbol\gamma_k=\boldsymbol\delta_k$. They need only gradients, $O(n^2)$ work per step, and converge superlinearly.</li>
 <li>SR1 is the unique symmetric rank-one update and has the hereditary property on quadratics, but can lose positive definiteness or break down; DFP and BFGS are dual rank-two updates that stay positive definite whenever $\boldsymbol\delta^\top\boldsymbol\gamma\gt0$, which a Wolfe line search guarantees.</li>
 <li>On a quadratic with exact line searches, DFP/BFGS from $H_1=I$ reproduce the CG iterates and end with $H_{n+1}=G^{-1}$.</li>
 </ol>
@@ -9149,12 +9627,12 @@ $$H_2\boldsymbol\gamma_1=\frac1{242}\cdot\big(-\tfrac4{11}\big)(150-29,\ -290+41
 </section>
 
 <div class="quiz review" data-id="p10-review" data-title="Part 10 review (with Parts 3, 5, 8–9)">
-<div class="q" data-from="Ch. 10.1"><div class="q-text"><p>Newton's method on $f(\x)=\tfrac12\x^\top A\x-\b^\top\x$, $A\succ0$, from $\x_0$. Then $\x_1=$</p></div>
+<div class="q" data-from="Ch. 10.1"><div class="q-text"><p>Newton's method is run on the quadratic $f(\x)=\tfrac12\x^\top A\x-\b^\top\x$ with $A\succ0$, from any starting point $\x_0$. Then $\x_1=$</p></div>
 <div class="o">$\x_0-\alpha(A\x_0-\b)$ for the exact step $\alpha$<div class="e">That's one step of steepest descent with exact line search.</div></div>
 <div class="o ok">$A^{-1}\b$<div class="e">$\x_0-A^{-1}(A\x_0-\b)=A^{-1}\b=\x^\star$, from any start.</div></div>
 <div class="o">$\x_0-A(A\x_0-\b)$<div class="e">The Hessian has to be inverted, not multiplied.</div></div>
 </div>
-<div class="q" data-from="Part 3"><div class="q-text"><p>Pure Newton converges to a point $\bar\x$ with $\grad f(\bar\x)=\0$ and $\hess f(\bar\x)$ having eigenvalues $3$ and $-1$. Then $\bar\x$ is…</p></div>
+<div class="q" data-from="Part 3"><div class="q-text"><p>Pure Newton converges to a point $\bar\x$. At that point the gradient is zero, $\grad f(\bar\x)=\0$, and the Hessian $\hess f(\bar\x)$ has eigenvalues $3$ and $-1$. Then $\bar\x$ is…</p></div>
 <div class="o">a local minimizer, because Newton converged there<div class="e">Newton converges to any nondegenerate stationary point. Check the second-order condition.</div></div>
 <div class="o ok">a saddle point<div class="e">An indefinite Hessian at a stationary point means a saddle (Part 3's second-order test).</div></div>
 <div class="o">a local maximizer<div class="e">A maximizer needs a negative semidefinite Hessian; one eigenvalue here is positive.</div></div>
