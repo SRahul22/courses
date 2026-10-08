@@ -6146,6 +6146,13 @@ $$\beta_{k+1}=\frac{\g_{k+1}^\top A\d_k}{\d_k^\top A\d_k},\quad \d_{k+1}=-\g_{k+
 <p>"CG finishes in at most $n$ steps" is useless when $n=10^6$. This viewpoint tells you how good $\x_k$ is for small $k$, and it is the basis of several short exam proofs.</p>
 <p>A sound engineer with a $k$-band equaliser: the error is a mix of "frequencies" (eigenvalues), and CG sets the $k$ knobs to silence that mix as well as possible. With only a few distinct frequencies, it can silence them completely.</p>
 </div>
+<div class="box plain" data-k="In plain words">
+<p><b>The question.</b> CG finishes in $n$ steps, but $n$ may be a million. How good is $\x_k$ after only a few steps?</p>
+<p><b>The answer in one line.</b> After $k$ steps the error is $\e_k=Q(A)\e_0$, where $\e_k=\x_k-\x^\star$ and $Q$ is a polynomial of degree at most $k$ with $Q(0)=1$. CG automatically picks the best such $Q$.</p>
+<p><b>What "polynomial of a matrix" means.</b> Replace $t$ by $A$, so $1-2t+t^2$ becomes $I-2A+A^2$. Along an eigenvector $\v_i$ (where $A\v_i=\lambda_i\v_i$), $Q(A)$ multiplies by the plain number $Q(\lambda_i)$. So each error component along $\v_i$ gets multiplied by $Q(\lambda_i)$ (eigenvalues: <a href="#pm-linalg">Part M.1</a>).</p>
+<p><b>The tool you will use.</b> $\norm{\e_k}_A\le\max_i|Q(\lambda_i)|\cdot\norm{\e_0}_A$ holds for <b>any</b> $Q$ you choose with degree at most $k$ and $Q(0)=1$. To bound CG, you design a polynomial that is small at the eigenvalues of $A$. Here $\norm{\z}_A=\sqrt{\z^\top A\z}$, and $f(\x)-f^\star=\tfrac12\norm{\x-\x^\star}_A^2$ (<a href="#pm-convex">Part M.3</a>).</p>
+<p><b>Be able to:</b> derive $\e_k=Q(A)\e_0$ using $\g_0=A\e_0$; explain why CG's $Q$ is optimal (Expanding Subspace); write gradient descent's error as $\prod_j(1-h_jA)\e_0$.</p>
+</div>
 <div class="prose">
 <p>Recall the setting from Part 8. We minimize $f(\x)=\tfrac12\x^\top A\x-\b^\top\x$ with $A$ symmetric positive definite ($A\succ0$), so the minimizer is $\x^\star=A^{-1}\b$ and the gradient is $\g_k=\grad f(\x_k)=A\x_k-\b$. Part 8 gave us three facts about CG:</p>
 <ul>
@@ -6312,6 +6319,12 @@ Hence, after $k$ steps, $\displaystyle\norm{\e_k}_A\le\Big(\min_{Q\in\mathcal Q_
 <p>A classic exam question: "$A$ has eigenvalues …; in at most how many steps does CG terminate? Write down the polynomial that proves it." Another: why is CG never worse than gradient descent?</p>
 <p>A marksman with $k$ shots: with $k$ targets, every target can be hit. If the targets stand in a few tight groups, one shot per group almost does the job.</p>
 </div>
+<div class="box plain" data-k="In plain words">
+<p><b>Few distinct eigenvalues means few steps.</b> If $A$ has only $r$ different eigenvalues $\tau_1,\dots,\tau_r$, the polynomial $Q(t)=(1-t/\tau_1)\cdots(1-t/\tau_r)$ has $Q(0)=1$ and is zero at every eigenvalue. So CG is exact after at most $r$ steps.</p>
+<p><b>Clusters are almost as good.</b> Put one root of $Q$ inside each tight group of eigenvalues, and $Q$ is tiny on the whole group. With $m$ large outliers plus one tight cluster, about $m+1$ steps suffice (Luenberger's bound).</p>
+<p><b>CG always beats gradient descent.</b> Gradient descent's error is also $Q(A)\e_0$, with $Q(t)=\prod_j(1-h_jt)$. CG picks the best $Q$ of that degree, so it can never do worse.</p>
+<p><b>Be able to:</b> given a list of eigenvalues, state the step count and write the polynomial that proves it; apply Luenberger with the eigenvalues sorted; give the one-line "CG dominates gradient descent" proof.</p>
+</div>
 
 <div class="box thm" data-k="Theorem" data-name="Few distinct eigenvalues ([NW] Thm 5.4; [LD] §9.4)">
 <p>If $A$ has only $r$ distinct eigenvalues $\tau_1<\dots<\tau_r$, then CG reaches $\x^\star$ in at most $r$ iterations, from any $\x_0$.</p>
@@ -6465,6 +6478,12 @@ It has degree $k+1$ and $Q(0)=1$, and it vanishes at the $k$ largest eigenvalues
 <p>If all you know about $A$ is its smallest and largest eigenvalue, the best polynomial is a rescaled Chebyshev polynomial, and it gives CG's headline rate $2\big(\frac{\sqrt\kappa-1}{\sqrt\kappa+1}\big)^k$.</p>
 <p>This is the "$\sqrt\kappa$ versus $\kappa$" comparison quoted in every exam and every numerical library: for $\kappa=10^4$, about 100 times fewer iterations than steepest descent, at essentially the same cost per iteration.</p>
 <p>Spacing fence posts: gradient descent with a constant step piles all $k$ roots at one point; Chebyshev spreads them across $[m,L]$, packed more tightly near the ends, so the polynomial stays low everywhere.</p>
+</div>
+<div class="box plain" data-k="In plain words">
+<p><b>When all you know is the smallest and largest eigenvalue</b> ($m$ and $L$, with $\kappa=L/m$), you need a polynomial that is small on the whole interval $[m,L]$ and equals 1 at $0$. The best one is a stretched Chebyshev polynomial.</p>
+<p><b>The result to memorize:</b> $\norm{\e_k}_A\le2\left(\frac{\sqrt\kappa-1}{\sqrt\kappa+1}\right)^k\norm{\e_0}_A$. Compare gradient descent's $\left(\frac{\kappa-1}{\kappa+1}\right)^k$ (<a href="#pm-rates">Part M.5</a>): CG has $\sqrt\kappa$ where gradient descent has $\kappa$.</p>
+<p><b>What that means in iterations:</b> roughly $\frac{\sqrt\kappa}{2}\ln\frac2\varepsilon$ for CG versus $\frac{\kappa}{2}\ln\frac1\varepsilon$ for gradient descent. With $\kappa=10^4$, that is about 100 times fewer.</p>
+<p><b>Be able to:</b> quote the bound with its factor 2 and its norm; turn a rate into an iteration count with logarithms; say when Chebyshev is the right tool (only $m$ and $L$ known) and when the spectrum's shape gives more (Chapter 9.2).</p>
 </div>
 <div class="prose">
 <p>Suppose we only know $m=\lambda_1$ and $L=\lambda_n$. Every eigenvalue lies in $[m,L]$, so making $Q$ small on the whole interval is enough:
