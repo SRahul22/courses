@@ -5420,7 +5420,7 @@ After an exact step the new gradient is orthogonal to the direction used in that
 <p><b>Armijo:</b> $f(\x_k+\alpha\d_k)\le f(\x_k)+c_1\alpha\,\g_k^\top\d_k$. The decrease must be at least a fraction $c_1$ of what the initial slope promises. It rules out steps that are too long. <b>Backtracking</b> starts at a trial $\alpha$ and multiplies it by a factor like $\tfrac12$ until Armijo holds.</p>
 <p><b>Curvature (Wolfe):</b> $\grad f(\x_k+\alpha\d_k)^\top\d_k\ge c_2\,\g_k^\top\d_k$. The slope along $\d_k$ must have risen to at least $c_2$ times the initial (negative) slope. It rules out steps that are too short. Armijo plus curvature are the <b>Wolfe conditions</b>.</p>
 </div>
-<div class="box thm" data-k="Lemma" data-name="Wolfe implies s^T y positive">
+<div class="box thm" data-k="Lemma" data-name="Wolfe implies sᵀy &gt; 0">
 <p>Let $\s_k=\x_{k+1}-\x_k=\alpha_k\d_k$ and $\y_k=\g_{k+1}-\g_k$. If $\d_k$ is a descent direction and $\alpha_k$ satisfies the curvature condition, then $\s_k^\top\y_k\gt0$.</p>
 </div>
 <div class="prose">
@@ -8526,7 +8526,7 @@ So $\sum\norm{\g_k}^2\lt\infty$, hence $\norm{\g_k}\to0$, and $\min_{k\le N}\nor
       renderMathInElement(root, {
         delimiters: [{ left: "$$", right: "$$", display: true }, { left: "\\[", right: "\\]", display: true }, { left: "$", right: "$", display: false }, { left: "\\(", right: "\\)", display: false }],
         throwOnError: false, ignoredClasses: ["nomath", "readout"], ignoredTags: ["script", "noscript", "style", "textarea", "pre", "code", "input"],
-        macros: { "\\R": "\\mathbb{R}", "\\N": "\\mathbb{N}", "\\Q": "\\mathbb{Q}", "\\Z": "\\mathbb{Z}", "\\x": "\\mathbf{x}", "\\y": "\\mathbf{y}", "\\z": "\\mathbf{z}", "\\d": "\\mathbf{d}", "\\g": "\\mathbf{g}", "\\a": "\\mathbf{a}", "\\b": "\\mathbf{b}", "\\u": "\\mathbf{u}", "\\v": "\\mathbf{v}", "\\e": "\\mathbf{e}", "\\p": "\\mathbf{p}", "\\r": "\\mathbf{r}", "\\0": "\\mathbf{0}", "\\grad": "\\nabla", "\\hess": "\\nabla^2", "\\norm": "\\lVert #1 \\rVert", "\\ip": "\\langle #1, #2 \\rangle", "\\argmin": "\\operatorname*{arg\\,min}", "\\argmax": "\\operatorname*{arg\\,max}", "\\T": "^{\\top}", "\\eps": "\\varepsilon" }
+        macros: { "\\R": "\\mathbb{R}", "\\N": "\\mathbb{N}", "\\Q": "\\mathbb{Q}", "\\Z": "\\mathbb{Z}", "\\x": "\\mathbf{x}", "\\y": "\\mathbf{y}", "\\z": "\\mathbf{z}", "\\d": "\\mathbf{d}", "\\g": "\\mathbf{g}", "\\a": "\\mathbf{a}", "\\b": "\\mathbf{b}", "\\u": "\\mathbf{u}", "\\v": "\\mathbf{v}", "\\e": "\\mathbf{e}", "\\p": "\\mathbf{p}", "\\r": "\\mathbf{r}", "\\0": "\\mathbf{0}", "\\s": "\\mathbf{s}", "\\w": "\\mathbf{w}", "\\c": "\\mathbf{c}", "\\grad": "\\nabla", "\\hess": "\\nabla^2", "\\norm": "\\lVert #1 \\rVert", "\\ip": "\\langle #1, #2 \\rangle", "\\argmin": "\\operatorname*{arg\\,min}", "\\argmax": "\\operatorname*{arg\\,max}", "\\T": "^{\\top}", "\\eps": "\\varepsilon" }
       });
       root.dataset.math = "1";
     } catch (e) { console.warn(e); }
