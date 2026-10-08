@@ -6443,7 +6443,7 @@ $$\beta_{k+1}=\frac{\g_{k+1}^\top A\d_k}{\d_k^\top A\d_k},\quad \d_{k+1}=-\g_{k+
 <p class="youneed"><b>Skipped the earlier parts?</b> <a href="#pm-linalg">Part M, the midterm toolkit</a>, teaches everything below in one place.<br><b>You need:</b> Part 8 (CG algorithm, Krylov subspaces, Expanding Subspace Theorem), Part 5 (the steepest descent rate $\frac{\kappa-1}{\kappa+1}$ on quadratics), Part 0b (eigenvalues and the spectral theorem).</p>
 
 <!-- ============ Chapter 1 ============ -->
-<section class="ch" id="cgp-polynomial" data-level="n" data-min="35" data-title="CG picks the best polynomial" data-src="Lecture 13 (24 Sep); Book Ch. 17 §1–3; [NW] §5.1 Rate of Convergence (5.24)–(5.33), p.112–114; [LD] §9.4 Theorems 1–2 (p.271–273)">
+<section class="ch" id="cgp-polynomial" data-level="n" data-min="50" data-title="CG picks the best polynomial" data-src="Lecture 13 (24 Sep); Book Ch. 17 §1–3; [NW] §5.1 Rate of Convergence (5.24)–(5.33), p.112–114; [LD] §9.4 Theorems 1–2 (p.271–273)">
 <h2>From Krylov subspaces to polynomials: CG picks the best one</h2>
 <div class="opener">
 <p>After $k$ steps, CG's error equals a polynomial in the matrix $A$ applied to the starting error, and CG automatically chooses the best such polynomial.</p>
@@ -6458,6 +6458,7 @@ $$\beta_{k+1}=\frac{\g_{k+1}^\top A\d_k}{\d_k^\top A\d_k},\quad \d_{k+1}=-\g_{k+
 <p><b>Be able to:</b> derive $\e_k=Q(A)\e_0$ using $\g_0=A\e_0$; explain why CG's $Q$ is optimal (Expanding Subspace); write gradient descent's error as $\prod_j(1-h_jA)\e_0$.</p>
 </div>
 <div class="prose">
+<p><b>Picture first.</b> Each CG step adds a new search direction. After $k+1$ steps, your position is the starting point plus a combination of the vectors $\g_0,A\g_0,A^2\g_0,\dots,A^k\g_0$. Those are the starting gradient multiplied by powers of $A$, and a combination of powers of $A$ is a polynomial in $A$. So the leftover error is "a polynomial in $A$, applied to the starting error". Why we care: a polynomial in $A$ acts on each eigen-direction by an ordinary number. That turns a question about matrices (how big is the error?) into a question about a function of one variable (how big is the polynomial at the eigenvalues?). Part 8 supplies the facts used below (<a href="#conjugacy">conjugacy</a>, the <a href="#expanding-subspace">Expanding Subspace Theorem</a>, the <a href="#cg-method">CG method</a>); the linear algebra is in <a href="#pm-linalg">Part M.1</a>, and $f-f^\star=\tfrac12\norm{\cdot}_A^2$ is in <a href="#pm-convex">Part M.3</a>.</p>
 <p>Recall the setting from Part 8. We minimize $f(\x)=\tfrac12\x^\top A\x-\b^\top\x$ with $A$ symmetric positive definite ($A\succ0$), so the minimizer is $\x^\star=A^{-1}\b$ and the gradient is $\g_k=\grad f(\x_k)=A\x_k-\b$. Part 8 gave us three facts about CG:</p>
 <ul>
 <li><b>CG Theorem:</b> the directions span a Krylov subspace, $\operatorname{span}\{\d_0,\dots,\d_k\}=\mathcal K_k(\g_0):=\operatorname{span}\{\g_0,A\g_0,\dots,A^k\g_0\}$.</li>
@@ -6476,24 +6477,50 @@ $$\beta_{k+1}=\frac{\g_{k+1}^\top A\d_k}{\d_k^\top A\d_k},\quad \d_{k+1}=-\g_{k+
 </dl>
 
 <div class="prose">
+<p><b>Reading the symbols aloud.</b> $\mathcal K_k(\g_0)$: "the Krylov space", all combinations of $\g_0,\dots,A^k\g_0$. $\min_{Q\in\mathcal Q_k}$: "the smallest value over all polynomials $Q$ in the family". $\max_i|Q(\lambda_i)|$: "the largest absolute value of $Q$ among the eigenvalues". $\deg Q$: the highest power of $t$ in $Q$. The Greek letters are only names: $\xi$ ("xi") for the coordinates of the error, $\lambda$ for eigenvalues, $\gamma$ for polynomial coefficients.</p>
 <h3>Plugging a matrix into a polynomial</h3>
+<p>A polynomial such as $t^2-2t$ takes a number and returns a number. Matrices can be multiplied and added too, so we can feed in a matrix instead: $A^2-2A$. The only rule is that a constant $c$ becomes $cI$. This is the one new idea of the chapter, and the next lemma is why it is useful.</p>
 <p>For a polynomial $P(t)=\gamma_0+\gamma_1t+\dots+\gamma_kt^k$, define $P(A)=\gamma_0I+\gamma_1A+\dots+\gamma_kA^k$. If $A\v=\lambda\v$, then $A^2\v=A(\lambda\v)=\lambda^2\v$, and in general $A^j\v=\lambda^j\v$. Adding up:</p>
 </div>
 <div class="box thm" data-k="Lemma" data-name="Polynomials of a symmetric matrix">
 <p>$P(A)\v_i=P(\lambda_i)\,\v_i$ for every eigenpair $(\lambda_i,\v_i)$. So in the eigenbasis, $P(A)$ multiplies the $i$-th coordinate by the number $P(\lambda_i)$.</p>
 </div>
 <div class="prose">
+<p><b>What this says.</b> If $\v$ is an eigenvector, then $P(A)$ acts on $\v$ exactly like multiplication by the number $P(\lambda)$. The proof is one line: $P(A)\v=\gamma_0\v+\gamma_1\lambda\v+\dots+\gamma_k\lambda^k\v=(\gamma_0+\gamma_1\lambda+\dots+\gamma_k\lambda^k)\v=P(\lambda)\v$. A matrix polynomial is therefore a different scaling factor for every eigen-direction.</p>
+</div>
+<div class="prose">
 <p>Example: $A=\begin{pmatrix}1&0\\0&4\end{pmatrix}$ and $P(t)=1-\tfrac t2$ give $P(A)=I-\tfrac12A=\begin{pmatrix}1/2&0\\0&-1\end{pmatrix}$: the diagonal entries are $P(1)$ and $P(4)$.</p>
+</div>
+<div class="example">
+<p class="problem">Let $A=\begin{pmatrix}3&1\\1&3\end{pmatrix}$ (eigenvalues $4$ and $2$, unit eigenvectors $\v_1=(1,1)^\top/\sqrt2$ and $\v_2=(1,-1)^\top/\sqrt2$) and $\e_0=(2,0)^\top$. Take $Q(t)=1-\tfrac t3$. Compute $Q(A)\e_0$ in two ways and its $A$-norm.</p>
+<ol class="steps">
+<li><p>Directly: $Q(A)=I-\tfrac13A$, so $Q(A)\e_0=\e_0-\tfrac13A\e_0=(2,0)^\top-\tfrac13(6,2)^\top=(0,-\tfrac23)^\top$.</p><p class="why-step">Replace $t$ by $A$ and the constant $1$ by $I$.</p></li>
+<li><p>Eigen-expansion: $\e_0=\xi_1\v_1+\xi_2\v_2$ with $\xi_1=\v_1^\top\e_0=\sqrt2$ and $\xi_2=\v_2^\top\e_0=\sqrt2$. (Check: $\sqrt2\v_1+\sqrt2\v_2=(1,1)+(1,-1)=(2,0)$.)</p><p class="why-step">Coordinates along orthonormal vectors are inner products (<a href="#pm-linalg">Part M.1</a>).</p></li>
+<li><p>$Q(4)=1-\tfrac43=-\tfrac13$ and $Q(2)=1-\tfrac23=\tfrac13$, so $Q(A)\e_0=-\tfrac13\sqrt2\v_1+\tfrac13\sqrt2\v_2=-\tfrac13(1,1)^\top+\tfrac13(1,-1)^\top=(0,-\tfrac23)^\top$. Same vector.</p><p class="why-step">The lemma: each coordinate is multiplied by $Q(\lambda_i)$.</p></li>
+<li><p>$A$-norm squared by the formula: $\sum_i\lambda_iQ(\lambda_i)^2\xi_i^2=4\cdot\tfrac19\cdot2+2\cdot\tfrac19\cdot2=\tfrac43$. Directly: $\e^\top A\e=(0,-\tfrac23)\cdot(-\tfrac23,-2)^\top=\tfrac43$. ✓ And $\norm{\e_0}_A^2=4\cdot2+2\cdot2=12$, so $\norm{Q(A)\e_0}_A/\norm{\e_0}_A=\sqrt{(4/3)/12}=\tfrac13$.</p><p class="why-step">The $A$-norm formula needs the weights $\lambda_i$; it has no cross terms because the eigenvectors are orthogonal.</p></li>
+</ol>
+</div>
+<div class="prose">
 
 <h3>Step 1: CG's iterates are "$\x_0$ + a polynomial in $A$ times $\g_0$"</h3>
 <p>Since $\x_{k+1}=\x_0+\alpha_0\d_0+\dots+\alpha_k\d_k$ and the $\d_i$ span $\mathcal K_k(\g_0)$, there are numbers $\gamma_0,\dots,\gamma_k$ with
 $$\x_{k+1}=\x_0+\gamma_0\g_0+\gamma_1A\g_0+\dots+\gamma_kA^k\g_0=\x_0+P_k(A)\,\g_0,\qquad P_k\in\mathcal P_k .$$
 This is [NW] (5.25) and [LD] §9.4 (24).</p>
+<p><b>Why this is true.</b> Each CG step adds a multiple of the current direction: $\x_{k+1}=\x_k+\alpha_k\d_k$. Adding them up gives the first equation. Part 8's CG Theorem says each $\d_j$ is a combination of $\g_0,A\g_0,\dots,A^j\g_0$. Collecting terms by powers of $A$ gives numbers $\gamma_0,\dots,\gamma_k$ (the $\gamma_j$ collect the coefficients of $A^j\g_0$), which is the polynomial $P_k(t)=\gamma_0+\gamma_1t+\dots+\gamma_kt^k$. Smallest case: after one step, $\x_1=\x_0-\alpha_0\g_0$, so $P_0$ is the constant $-\alpha_0$.</p>
 
 <h3>Step 2: the error is $Q(A)\e_0$ with $Q(0)=1$</h3>
 <p>Because $\b=A\x^\star$, the first gradient is $\g_0=A\x_0-A\x^\star=A\e_0$. Subtract $\x^\star$ from Step 1:
 $$\e_{k+1}=\e_0+P_k(A)A\e_0=\big[I+AP_k(A)\big]\e_0=Q_{k+1}(A)\,\e_0,\qquad Q_{k+1}(t):=1+t\,P_k(t).$$
 $Q_{k+1}$ has degree at most $k+1$ and $Q_{k+1}(0)=1$. Conversely, any $Q$ of degree $\le k+1$ with $Q(0)=1$ arises this way: $Q(t)-1$ vanishes at $t=0$, so $P(t)=(Q(t)-1)/t$ is a polynomial of degree $\le k$.</p>
+<p><b>The derivation, line by line.</b></p>
+<ol>
+<li>Start from $\x_{k+1}=\x_0+P_k(A)\g_0$ (Step 1).</li>
+<li>Subtract $\x^\star$ from both sides: $\e_{k+1}=\x_0-\x^\star+P_k(A)\g_0=\e_0+P_k(A)\g_0$. (The left side is the definition of $\e_{k+1}$; the first two terms on the right are the definition of $\e_0$.)</li>
+<li>Replace $\g_0$ by $A\e_0$, using $\b=A\x^\star$: $\g_0=A\x_0-\b=A\x_0-A\x^\star=A\e_0$.</li>
+<li>Now $\e_{k+1}=\e_0+P_k(A)A\e_0$. Write $\e_0=I\e_0$ and factor out $\e_0$ on the right: $\e_{k+1}=[I+P_k(A)A]\e_0$. (Matrix polynomials in the same $A$ commute, so $P_k(A)A=AP_k(A)$.)</li>
+<li>The bracket is the polynomial $1+tP_k(t)$ evaluated at $A$. Call that polynomial $Q_{k+1}$. Then $\e_{k+1}=Q_{k+1}(A)\e_0$, $\deg Q_{k+1}\le k+1$ because $t$ times a degree-$k$ polynomial has degree $k+1$, and $Q_{k+1}(0)=1+0\cdot P_k(0)=1$.</li>
+</ol>
+<p><b>Check on the smallest case.</b> With $P_0=-\alpha_0$ we get $Q_1(t)=1-\alpha_0t$: one CG step multiplies the error component along $\v_i$ by $1-\alpha_0\lambda_i$, the familiar steepest-descent step.</p>
 </div>
 <div class="box def" data-k="Definition" data-name="Residual polynomials">
 <p>$\mathcal Q_k=\{Q\in\mathcal P_k:\ Q(0)=1\}$. The map $P\mapsto Q(t)=1+tP(t)$ is a one-to-one correspondence between $\mathcal P_k$ and $\mathcal Q_{k+1}$. After $k$ steps of CG, $\e_k=Q_k(A)\e_0$ for some $Q_k\in\mathcal Q_k$.</p>
@@ -6506,6 +6533,9 @@ $$\y_{j+1}-\x^\star=(I-h_jA)(\y_j-\x^\star)\quad\Longrightarrow\quad \y_k-\x^\st
 This $Q$ has degree $k$ and $Q(0)=1$. Each step size $h_j$ places a root of $Q$ at $t=1/h_j$. A constant step $h$ gives $Q(t)=(1-ht)^k$: all $k$ roots stacked at the same place. So gradient descent, CG and many other methods all produce errors of the form $Q(A)\e_0$. What differs is <i>which</i> $Q$.</p>
 </div>
 
+<div class="prose">
+<p><b>Intuition.</b> After $k+1$ steps, the set of points CG could possibly have reached is $\x_0$ plus the Krylov space. Part 8 says CG does not merely land somewhere in that set: it lands at the best point, the closest to $\x^\star$. In polynomial language, "best point" means "best polynomial". This is what lets us use any polynomial we can design as a stand-in for CG's own, which is unknown and depends on $\e_0$.</p>
+</div>
 <div class="box thm" data-k="Theorem" data-name="CG is the optimal Krylov method ([LD] §9.4 Thm 1; [NW] (5.28))">
 <p>The $(k+1)$-st CG iterate satisfies
 $$\norm{\e_{k+1}}_A=\min_{P\in\mathcal P_k}\norm{\x_0+P(A)\g_0-\x^\star}_A=\min_{Q\in\mathcal Q_{k+1}}\norm{Q(A)\e_0}_A .$$
@@ -6513,6 +6543,7 @@ Among all points of $\x_0+\mathcal K_k(\g_0)$, the CG iterate is the closest to 
 </div>
 <div class="prose">
 <p><b>Proof.</b> The set $\{\x_0+P(A)\g_0:P\in\mathcal P_k\}$ is exactly $\x_0+\mathcal K_k(\g_0)=\x_0+\operatorname{span}\{\d_0,\dots,\d_k\}$. By the Expanding Subspace Theorem, $\x_{k+1}$ minimizes $f$ over this set, hence minimizes $f-f^\star=\tfrac12\norm{\cdot-\x^\star}_A^2$. That is the first equality. The second follows from $\x_0+P(A)\g_0-\x^\star=[I+AP(A)]\e_0=Q(A)\e_0$ and the correspondence $P\leftrightarrow Q$. $\blacksquare$</p>
+<p><b>What this says.</b> Imagine all the ways to choose $k+1$ numbers $\gamma_0,\dots,\gamma_k$. Each choice gives a point in $\x_0+\mathcal K_k(\g_0)$, with error $Q(A)\e_0$ for the matching $Q$. CG's choice is the one with the smallest $A$-norm of error. Any other choice, such as gradient descent's step sizes, is at least as far from $\x^\star$.</p>
 
 <h3>Step 3: eigenvalues turn the matrix problem into a scalar one</h3>
 <p>Expand the starting error in the eigenbasis, $\e_0=\sum_i\xi_i\v_i$. By the lemma, $Q(A)\e_0=\sum_iQ(\lambda_i)\xi_i\v_i$. For any coefficients $c_i$,
@@ -6520,11 +6551,18 @@ $$\Big\lVert\sum_ic_i\v_i\Big\rVert_A^2=\sum_{i,j}c_ic_j\,\v_i^\top A\v_j=\sum_i
 because $\v_i^\top A\v_j=\lambda_j\v_i^\top\v_j$ is $0$ for $i\ne j$ and $\lambda_i$ for $i=j$. Therefore
 $$\norm{Q(A)\e_0}_A^2=\sum_{i=1}^n\lambda_i\,Q(\lambda_i)^2\,\xi_i^2,\qquad \norm{\e_0}_A^2=\sum_{i=1}^n\lambda_i\,\xi_i^2 .$$
 Read it like this: <b>the error component along $\v_i$ gets multiplied by the number $Q(\lambda_i)$</b>.</p>
+<p><b>Why the cross terms vanish.</b> Expand $\big(\sum_ic_i\v_i\big)^\top A\big(\sum_jc_j\v_j\big)$ into all pairs $(i,j)$. For $i\ne j$, $\v_i^\top A\v_j=\lambda_j\v_i^\top\v_j=0$ because the eigenvectors are orthogonal. Only $i=j$ survives, with $\v_i^\top\v_i=1$. Apply this with $c_i=Q(\lambda_i)\xi_i$ for the first formula and $c_i=\xi_i$ for the second (see the numeric check above).</p>
+</div>
+<div class="prose">
+<p><b>Intuition.</b> The error is a mixture of components, each scaled by $Q(\lambda_i)$. If every scale factor has size at most $\rho$, the total cannot exceed $\rho$ times the original. So the problem becomes: find a polynomial that is small at the eigenvalues. We do not need to know CG's polynomial; any polynomial we can exhibit gives a guarantee.</p>
 </div>
 <div class="box thm" data-k="Theorem" data-name="The min–max bound ([LD] §9.4 Thm 2; [NW] (5.32)–(5.33))">
 <p>For every $k\ge0$ and every $Q\in\mathcal Q_{k+1}$,
 $$\norm{\e_{k+1}}_A^2\le\max_{1\le i\le n}Q(\lambda_i)^2\;\norm{\e_0}_A^2 .$$
 Hence, after $k$ steps, $\displaystyle\norm{\e_k}_A\le\Big(\min_{Q\in\mathcal Q_k}\ \max_{i}\,|Q(\lambda_i)|\Big)\norm{\e_0}_A$.</p>
+</div>
+<div class="prose">
+<p><b>What this says.</b> Pick any polynomial of degree $\le k$ with $Q(0)=1$. Look at its largest absolute value $\rho$ over the eigenvalues of $A$. Then CG's $k$-th error is at most $\rho$ times the initial one, in the $A$-norm. Small numbers: for eigenvalues $\{1,4\}$ and $Q(t)=1-\tfrac25t$, $Q(1)=0.6$ and $Q(4)=-0.6$, so $\norm{\e_1}_A\le0.6\norm{\e_0}_A$ for every start. Because the bound uses the same number for every $\e_0$, it also holds for the worst $\e_0$.</p>
 </div>
 
 <div class="example">
@@ -6579,6 +6617,16 @@ Hence, after $k$ steps, $\displaystyle\norm{\e_k}_A\le\Big(\min_{Q\in\mathcal Q_
 <div class="hint"><p>Two conditions: degree at most 2, and value 1 at $t=0$.</p></div>
 <div class="sol"><p>$1-t+\frac{t^2}4=(1-\frac t2)^2$ has degree 2 and $Q(0)=1$. $t^2-3t+2$ and $2-t$ have $Q(0)=2$; $(1-t)^3$ has $Q(0)=1$ but degree 3, which needs three steps.</p></div>
 </div>
+<div class="prob" data-id="p9x-poly-1" data-ans="-1;-1" data-labels="first entry;second entry">
+<div class="stem"><p>Let $A=\begin{pmatrix}3&1\\1&3\end{pmatrix}$ and $\e_0=(2,0)^\top$. Compute $Q(A)\e_0$ for $Q(t)=1-\tfrac t2$.</p></div>
+<div class="hint"><p>$Q(A)\e_0=\e_0-\tfrac12A\e_0$, and $A\e_0=(6,2)^\top$.</p></div>
+<div class="sol"><p>$(2,0)-\tfrac12(6,2)=(2-3,\,0-1)=(-1,-1)$. So both entries are $-1$.</p></div>
+</div>
+<div class="prob" data-id="p9x-poly-2" data-ans="1/3" data-labels="ratio">
+<div class="stem"><p>For the matrix $A=\begin{pmatrix}3&1\\1&3\end{pmatrix}$ (eigenvalues $2,4$) and any start, what ratio bound $\norm{\e_1}_A/\norm{\e_0}_A$ from the polynomial $Q(t)=1-\tfrac t3$ in the min–max bound?</p></div>
+<div class="hint"><p>Evaluate $|Q|$ at $t=2$ and $t=4$ and take the larger.</p></div>
+<div class="sol"><p>$Q(2)=\tfrac13$ and $Q(4)=-\tfrac13$, so the bound is $\tfrac13$.</p></div>
+</div>
 </div>
 
 <div class="dodont">
@@ -6616,7 +6664,7 @@ Hence, after $k$ steps, $\displaystyle\norm{\e_k}_A\le\Big(\min_{Q\in\mathcal Q_
 </section>
 
 <!-- ============ Chapter 2 ============ -->
-<section class="ch" id="cgp-spectrum" data-level="n" data-min="35" data-title="What the spectrum decides" data-src="Lecture 13; Book Ch. 17 §4.1–4.3; [NW] Thm 5.4 (p.114), Thm 5.5 (p.115), Figs 5.3–5.5; [LD] §9.4 (p.273)">
+<section class="ch" id="cgp-spectrum" data-level="n" data-min="50" data-title="What the spectrum decides" data-src="Lecture 13; Book Ch. 17 §4.1–4.3; [NW] Thm 5.4 (p.114), Thm 5.5 (p.115), Figs 5.3–5.5; [LD] §9.4 (p.273)">
 <h2>What the spectrum decides: few eigenvalues, clusters, and gradient descent beaten</h2>
 <div class="opener">
 <p>Because the min–max bound only sees where the eigenvalues sit, the <i>shape</i> of the spectrum, not only $n$ or $\kappa$, decides how fast CG is.</p>
@@ -6630,8 +6678,14 @@ Hence, after $k$ steps, $\displaystyle\norm{\e_k}_A\le\Big(\min_{Q\in\mathcal Q_
 <p><b>Be able to:</b> given a list of eigenvalues, state the step count and write the polynomial that proves it; apply Luenberger with the eigenvalues sorted; give the one-line "CG dominates gradient descent" proof.</p>
 </div>
 
+<div class="prose">
+<p><b>Intuition.</b> A polynomial of degree $r$ has $r$ roots to place wherever we like. If the matrix has only $r$ different eigenvalues, we can put one root exactly on each. Then the polynomial is zero on every eigen-direction, so it wipes out the whole error. Repeats do not matter, because one root on a value kills every copy of it.</p>
+</div>
 <div class="box thm" data-k="Theorem" data-name="Few distinct eigenvalues ([NW] Thm 5.4; [LD] §9.4)">
 <p>If $A$ has only $r$ distinct eigenvalues $\tau_1<\dots<\tau_r$, then CG reaches $\x^\star$ in at most $r$ iterations, from any $\x_0$.</p>
+</div>
+<div class="prose">
+<p><b>What this says.</b> The number of steps CG needs depends on how many <i>different</i> eigenvalues $A$ has, not on its size $n$. A $10^6\times10^6$ matrix with 3 different eigenvalues is solved in at most 3 steps (in exact arithmetic).</p>
 </div>
 <div class="example">
 <p class="problem">Prove the theorem with an explicit polynomial.</p>
@@ -6645,6 +6699,25 @@ Hence, after $k$ steps, $\displaystyle\norm{\e_k}_A\le\Big(\min_{Q\in\mathcal Q_
 <div class="prose">
 <p>[NW] writes the same polynomial as $Q_r(\lambda)=\frac{(-1)^r}{\tau_1\cdots\tau_r}(\lambda-\tau_1)\cdots(\lambda-\tau_r)$; expanding the product shows they agree.</p>
 </div>
+<div class="prose">
+<h3>How to build the polynomial: a recipe</h3>
+<ol>
+<li>List the eigenvalues and cross out repeats. The distinct ones are $\tau_1,\dots,\tau_r$.</li>
+<li>For each $\tau_j$ write the factor $(1-t/\tau_j)$. It is zero at $t=\tau_j$ and equals $1$ at $t=0$.</li>
+<li>Multiply the $r$ factors. The product has degree $r$, equals $1$ at $0$, and is zero at every eigenvalue.</li>
+<li>Conclude: at most $r$ CG steps.</li>
+</ol>
+</div>
+<div class="example">
+<p class="problem">$A=\operatorname{diag}(2,2,4)$ (a $3\times3$ matrix with a repeated eigenvalue) and $\e_0=(1,1,1)^\top$. Build the polynomial, expand it, and verify that $Q(A)\e_0=\0$. How many CG steps are needed?</p>
+<ol class="steps">
+<li><p>Distinct eigenvalues: $\tau_1=2$, $\tau_2=4$, so $r=2$ and $Q(t)=(1-\tfrac t2)(1-\tfrac t4)$.</p><p class="why-step">The repeated $2$ gets one factor only.</p></li>
+<li><p>Expand: $Q(t)=1-\tfrac34t+\tfrac18t^2$. Check: $Q(0)=1$, $Q(2)=1-1.5+0.5=0$, $Q(4)=1-3+2=0$.</p><p class="why-step">$\tfrac t2+\tfrac t4=\tfrac34t$ and $\tfrac t2\cdot\tfrac t4=\tfrac{t^2}8$.</p></li>
+<li><p>$Q(A)=I-\tfrac34A+\tfrac18A^2=\operatorname{diag}(Q(2),Q(2),Q(4))=\0$, so $Q(A)\e_0=\0$ for every $\e_0$, not only this one.</p><p class="why-step">A diagonal matrix polynomial is applied entry by entry (the lemma).</p></li>
+<li><p>So $\e_2=\0$: at most $2$ steps, not $3$. In the form $Q(t)=1+tP(t)$ we have $P(t)=-\tfrac34+\tfrac t8$, of degree $1$, matching $\x_2=\x_0+P_1(A)\g_0$.</p><p class="why-step">Degree $r$ for $Q$ means $r$ steps and degree $r-1$ for $P$ (Chapter 1, Step 2).</p></li>
+</ol>
+</div>
+<div class="callout"><b>Careful:</b> $(t-2)(t-4)$ is zero on the spectrum but equals $8$ at $t=0$, so it is not admissible. Divide by $8$ to get $\tfrac18(t-2)(t-4)=(1-\tfrac t2)(1-\tfrac t4)$, which is the right polynomial. Always check $Q(0)=1$.</div>
 <div class="story"><span class="label">Identity plus low rank</span>
 <p>Let $A=I+\u\u^\top$ with $\u\ne\0$. Every $\mathbf w\perp\u$ satisfies $A\mathbf w=\mathbf w+\u(\u^\top\mathbf w)=\mathbf w$, so it is an eigenvector with eigenvalue 1; and $A\u=\u+\u\norm{\u}^2$ gives eigenvalue $1+\norm{\u}^2$. Two distinct eigenvalues: CG solves $A\x=\b$ in <b>2 steps</b>, whatever $n$ is. More generally, $I$ plus a rank-$p$ symmetric positive semidefinite matrix needs at most $p+1$ steps.</p>
 <p>This happens in practice. Ridge regression with $p$ data points and $n\gg p$ features (Part 1) solves $(\mu I+X^\top X)\x=X^\top\mathbf y$ with $X$ of size $p\times n$. $X^\top X$ has rank at most $p$, so the matrix has eigenvalue $\mu$ with multiplicity at least $n-p$ and at most $p+1$ distinct eigenvalues: CG needs at most $p+1$ steps. Steepest descent enjoys no such property.</p>
@@ -6667,12 +6740,16 @@ Hence, after $k$ steps, $\displaystyle\norm{\e_k}_A\le\Big(\min_{Q\in\mathcal Q_
 
 <div class="prose">
 <h3>Clusters: Luenberger's bound</h3>
+<p><b>Intuition.</b> Suppose a few eigenvalues are far away from the rest, and the rest are bunched together. Spend one root on each far-away eigenvalue (killing it), and one root in the middle of the bunch. Inside a narrow bunch, a polynomial with a root in the middle stays close to zero across the whole bunch. So the error is small, though not zero.</p>
 <p>Exactly repeated eigenvalues are rare. Tight clusters are common, and a root placed inside a tight cluster makes $Q$ tiny on the whole cluster. The following estimate makes this precise.</p>
 </div>
 <div class="box thm" data-k="Theorem" data-name="Luenberger's bound ([NW] Thm 5.5)">
 <p>For $0\le k\le n-1$,
 $$\norm{\e_{k+1}}_A\le\frac{\lambda_{n-k}-\lambda_1}{\lambda_{n-k}+\lambda_1}\,\norm{\e_0}_A .$$
 ([NW] states the squared version, $\norm{\e_{k+1}}_A^2\le\big(\frac{\lambda_{n-k}-\lambda_1}{\lambda_{n-k}+\lambda_1}\big)^2\norm{\e_0}_A^2$.)</p>
+</div>
+<div class="prose">
+<p><b>What this says.</b> $\lambda_{n-k}$ is the $(k+1)$-th largest eigenvalue (so $\lambda_n$ is the largest). After $k+1$ steps, the bound is the steepest-descent rate $\frac{\kappa'-1}{\kappa'+1}$ for the "effective" matrix with the $k$ largest eigenvalues removed, where $\kappa'=\lambda_{n-k}/\lambda_1$. Sort the eigenvalues from small to large first, then read off $\lambda_{n-k}$.</p>
 </div>
 <div class="prose">
 <p>How to read it:</p>
@@ -6683,6 +6760,15 @@ $$\norm{\e_{k+1}}_A\le\frac{\lambda_{n-k}-\lambda_1}{\lambda_{n-k}+\lambda_1}\,\
 </ul>
 <p>[NW] Fig. 5.4 shows exactly this with five large eigenvalues and the rest in $[0.95,1.05]$: a sharp drop around iteration 6, and another at iteration 7, because the matrix "almost" has six distinct eigenvalues. In general, $r$ tight clusters mean CG approximately solves the problem in about $r$ steps ([NW] p.116): a polynomial with one root per cluster is not zero at the eigenvalues, but tiny.</p>
 </div>
+<div class="example">
+<p class="problem">$A$ has eigenvalues $1,2,3,100$. Use Luenberger's bound with $k=1$ (two steps), and write down the polynomial that proves it.</p>
+<ol class="steps">
+<li><p>Sorted: $\lambda_1=1,\lambda_2=2,\lambda_3=3,\lambda_4=100$, $n=4$. With $k=1$, $\lambda_{n-k}=\lambda_3=3$.</p><p class="why-step">One root will go on the largest eigenvalue $100$; the rest lie in $[1,3]$.</p></li>
+<li><p>The bound is $\dfrac{3-1}{3+1}=\tfrac12$.</p><p class="why-step">Substitute into $\frac{\lambda_{n-k}-\lambda_1}{\lambda_{n-k}+\lambda_1}$.</p></li>
+<li><p>The proof polynomial: $c=\tfrac12(1+3)=2$ and $Q(t)=(1-\tfrac t2)(1-\tfrac t{100})$. It has degree $2$ and $Q(0)=1$.</p><p class="why-step">One root at the midpoint $c$ of the remaining eigenvalue range, one root at the outlier.</p></li>
+<li><p>Check: $Q(1)=\tfrac12\cdot0.99=0.495$, $Q(2)=0$, $Q(3)=-\tfrac12\cdot0.97=-0.485$, $Q(100)=0$. The largest absolute value is $0.495\le\tfrac12$. ✓</p><p class="why-step">The min–max bound then gives $\norm{\e_2}_A\le0.495\norm{\e_0}_A$, even a little better than Luenberger's $0.5$.</p></li>
+</ol>
+</div>
 <details class="deeper"><summary>Go deeper: the polynomial behind Luenberger's bound</summary>
 <p>[NW] states the theorem without proof. Here is the construction. Let $c=\tfrac12(\lambda_1+\lambda_{n-k})$ and
 $$Q(t)=\Big(1-\frac tc\Big)\prod_{j=n-k+1}^{n}\Big(1-\frac t{\lambda_j}\Big).$$
@@ -6691,6 +6777,7 @@ It has degree $k+1$ and $Q(0)=1$, and it vanishes at the $k$ largest eigenvalues
 
 <div class="prose">
 <h3>CG beats every gradient method</h3>
+<p><b>Intuition.</b> Gradient descent with any step sizes produces an error of the form "polynomial in $A$ applied to $\e_0$", with a polynomial whose roots are $1/h_j$ and whose value at $0$ is $1$. CG searches over <i>all</i> polynomials of that degree and value, so gradient descent's polynomial is one of its candidates. The winner of a contest cannot do worse than one of the contestants.</p>
 </div>
 <div class="box thm" data-k="Corollary" data-name="CG dominates gradient descent with any step sizes">
 <p>Let $\y_0=\x_0$ and $\y_{j+1}=\y_j-h_j\grad f(\y_j)$ for <i>any</i> step sizes $h_0,\dots,h_k$ (constant step, exact line search, Armijo, anything). Then $f(\x_{k+1})\le f(\y_{k+1})$.</p>
@@ -6698,6 +6785,7 @@ It has degree $k+1$ and $Q(0)=1$, and it vanishes at the $k$ largest eigenvalues
 <div class="prose">
 <p><b>Proof.</b> From the story in Chapter 9.1, $\y_{k+1}-\x^\star=Q(A)\e_0$ with $Q(t)=\prod_{j=0}^k(1-h_jt)\in\mathcal Q_{k+1}$. CG's error is the minimum of $\norm{Q(A)\e_0}_A$ over all of $\mathcal Q_{k+1}$, so $\norm{\e_{k+1}}_A\le\norm{\y_{k+1}-\x^\star}_A$, and $f-f^\star=\tfrac12\norm{\cdot}_A^2$. $\blacksquare$</p>
 <p>(Step sizes chosen by a line search depend on the iterates, but once the run is over they are fixed numbers $h_j$, and the identity above holds.) [LD] makes a related point: each CG step is at least as good as one steepest descent step taken from the same point $\x_k$.</p>
+<p><b>Small numbers.</b> Take eigenvalues $1$ and $4$ and gradient descent with $h_0=0.4$. Then $Q(t)=1-0.4t$, with $Q(1)=0.6$ and $Q(4)=-0.6$. So gradient descent's first error is exactly $0.6$ times the initial one in each component, and CG's first error is no larger in the $A$-norm. In the worked example of Chapter 1, CG achieved $0.333$ from $\e_0=(1,1)$.</p>
 <p><b>Recovering the Part 5 rate.</b> On the whole interval $[m,L]$, the degree-1 polynomial $Q(t)=1-\frac{2t}{m+L}$ has maximum $\frac{L-m}{L+m}=\frac{\kappa-1}{\kappa+1}$, attained at both ends. Using $Q(t)^k$ in the min–max bound shows CG is never slower than $\big(\frac{\kappa-1}{\kappa+1}\big)^k$. That is the polynomial of gradient descent with constant step $h=\frac2{m+L}$: all $k$ roots stacked at the midpoint. Chapter 9.3 spreads them out.</p>
 </div>
 
@@ -6738,6 +6826,16 @@ It has degree $k+1$ and $Q(0)=1$, and it vanishes at the $k$ largest eigenvalues
 <div class="hint"><p>Where does $\y_3$ lie, and over which set does $\x_3$ minimize $f$?</p></div>
 <div class="sol"><p>$\y_3-\x^\star=Q(A)\e_0$ with $Q(t)=(1-h_0t)(1-h_1t)(1-h_2t)\in\mathcal Q_3$, so $\y_3\in\x_0+\mathcal K_2(\g_0)$. CG's $\x_3$ minimizes $f$ over that set, so $f(\x_3)-f^\star\le0.2$.</p></div>
 </div>
+<div class="prob" data-id="p9x-spec-1" data-ans="0.5" data-labels="bound">
+<div class="stem"><p>$A$ has eigenvalues $1,2,3,100$. Use Luenberger's bound with $k=1$ to bound $\norm{\e_2}_A/\norm{\e_0}_A$.</p></div>
+<div class="hint"><p>Sorted, $\lambda_{n-k}=\lambda_3$. The bound is $\frac{\lambda_3-\lambda_1}{\lambda_3+\lambda_1}$.</p></div>
+<div class="sol"><p>$\lambda_3=3$, $\lambda_1=1$: $\frac{3-1}{3+1}=0.5$.</p></div>
+</div>
+<div class="prob" data-id="p9x-spec-2" data-ans="3/8" data-labels="Q(1)" data-tol="0.002">
+<div class="stem"><p>$A=\operatorname{diag}(2,2,4)$. The polynomial that proves two-step termination is $Q(t)=(1-\tfrac t2)(1-\tfrac t4)$. Compute $Q(1)$. (It is not an eigenvalue, so $Q(1)$ is not zero.)</p></div>
+<div class="hint"><p>$Q(1)=(1-\tfrac12)(1-\tfrac14)$.</p></div>
+<div class="sol"><p>$\tfrac12\cdot\tfrac34=\tfrac38=0.375$.</p></div>
+</div>
 </div>
 
 <div class="dodont">
@@ -6776,7 +6874,7 @@ It has degree $k+1$ and $Q(0)=1$, and it vanishes at the $k$ largest eigenvalues
 </section>
 
 <!-- ============ Chapter 3 ============ -->
-<section class="ch" id="cgp-chebyshev" data-level="n" data-min="30" data-title="The √κ bound and iteration counts" data-src="Lecture 13; Book Ch. 17 §4.4 and Examtip; [NW] §5.1 (5.35), p.117; Companion Ch. 3">
+<section class="ch" id="cgp-chebyshev" data-level="n" data-min="45" data-title="The √κ bound and iteration counts" data-src="Lecture 13; Book Ch. 17 §4.4 and Examtip; [NW] §5.1 (5.35), p.117; Companion Ch. 3">
 <h2>The $\sqrt\kappa$ bound: Chebyshev polynomials and what they mean for iteration counts</h2>
 <div class="opener">
 <p>If all you know about $A$ is its smallest and largest eigenvalue, the best polynomial is a rescaled Chebyshev polynomial, and it gives CG's headline rate $2\big(\frac{\sqrt\kappa-1}{\sqrt\kappa+1}\big)^k$.</p>
@@ -6794,6 +6892,9 @@ It has degree $k+1$ and $Q(0)=1$, and it vanishes at the $k$ largest eigenvalues
 $$\max_i|Q(\lambda_i)|\le\max_{t\in[m,L]}|Q(t)|.$$
 Gradient descent's best constant-step polynomial $(1-\frac{2t}{m+L})^k$ gives $\big(\frac{\kappa-1}{\kappa+1}\big)^k$ (Chapter 9.2). Can another degree-$k$ polynomial with $Q(0)=1$ be smaller on $[m,L]$? Yes, and the answer is classical.</p>
 </div>
+<div class="prose">
+<p><b>Intuition.</b> We want a polynomial that is $1$ at $t=0$ and as small as possible everywhere on $[m,L]$, the interval holding the eigenvalues. Among polynomials of a given degree, the ones that stay small over an interval most efficiently are the ones that wiggle up and down by equal amounts, like a wave. The Chebyshev polynomials $T_k$ are exactly such waves on $[-1,1]$: they never leave $[-1,1]$ there, yet once you step outside the interval they shoot up quickly. Our trick: stretch $[m,L]$ onto $[-1,1]$. The point $t=0$ then lands slightly outside, where $T_k$ is huge. Dividing by that huge value gives a polynomial equal to $1$ at $0$ and tiny on the whole interval.</p>
+</div>
 <div class="box def" data-k="Definition" data-name="Chebyshev polynomials">
 <p>$T_0(z)=1$, $T_1(z)=z$, $T_{k+1}(z)=2z\,T_k(z)-T_{k-1}(z)$. So $T_2=2z^2-1$, $T_3=4z^3-3z$, and $T_k$ has degree $k$. Two facts:</p>
 <ul>
@@ -6801,6 +6902,16 @@ Gradient descent's best constant-step polynomial $(1-\frac{2t}{m+L})^k$ gives $\
 <li>For $|z|\ge1$: $T_k(z)=\tfrac12\big[(z+\sqrt{z^2-1})^k+(z-\sqrt{z^2-1})^k\big]$, so it grows fast outside $[-1,1]$.</li>
 </ul>
 <p>(Both formulas satisfy the same recurrence and starting values; for the first, $\cos(k+1)\theta+\cos(k-1)\theta=2\cos\theta\cos k\theta$.)</p>
+</div>
+<div class="prose">
+<p><b>What a Chebyshev polynomial is.</b> It is built by a recurrence: start with $1$ and $z$, and obtain the next from the previous two by "$2z$ times the latest, minus the one before". For example $T_2=2z\cdot z-1=2z^2-1$ and $T_3=2z(2z^2-1)-z=4z^3-3z$.</p>
+<p><b>Why it stays within $\pm1$ on $[-1,1]$.</b> Any $z$ in $[-1,1]$ can be written $z=\cos\theta$ for some angle $\theta$. The claim is that $T_k(\cos\theta)=\cos k\theta$. For $k=2$ this is the double-angle rule: $2\cos^2\theta-1=\cos2\theta$. For $k=3$ it is the triple-angle rule: $4\cos^3\theta-3\cos\theta=\cos3\theta$. In general, the addition formula $\cos(k+1)\theta+\cos(k-1)\theta=2\cos\theta\cos k\theta$ is the recurrence. Since a cosine never leaves $[-1,1]$, neither does $T_k$ there.</p>
+<p><b>Small numbers.</b> $T_3(1)=1$, $T_3(\tfrac12)=\tfrac12-\tfrac32=-1$, $T_3(-\tfrac12)=1$, $T_3(-1)=-1$, and $T_3(0)=0$. It touches $+1,-1,+1,-1$ at four points, the equal ripples ($k+1=4$ touches for $k=3$).</p>
+<p><b>Why it is big outside $[-1,1]$.</b> For $z\gt1$ there is no angle with $\cos\theta=z$, but the second formula takes over: $T_k(z)=\tfrac12\big[(z+\sqrt{z^2-1})^k+(z-\sqrt{z^2-1})^k\big]$. The number $z+\sqrt{z^2-1}$ is bigger than $1$, and raising it to the power $k$ grows geometrically. Small numbers: $T_3(1.25)=4(1.953125)-3.75=4.0625$, and $T_3(2)=26$. (Via the recurrence: $T_2(2)=7$, $T_3(2)=2\cdot2\cdot7-2=26$.) So a value only slightly past $1$ is already several times larger than the ripples inside.</p>
+</div>
+<div class="callout"><b>Careful:</b> $T_k$ is a tool for building a good $Q$. It is <i>not</i> CG's polynomial (that one depends on $\e_0$). And $T_k(\cos\theta)=\cos k\theta$ holds only for $|z|\le1$; outside, use the second formula.</div>
+<div class="prose">
+<p><b>Intuition.</b> The result says CG's error shrinks by a fixed factor $q=\frac{\sqrt\kappa-1}{\sqrt\kappa+1}$ per step (times a harmless 2 in front). Compare steepest descent, where the factor is $\frac{\kappa-1}{\kappa+1}$. Replacing $\kappa$ by $\sqrt\kappa$ makes a huge difference when $\kappa$ is large: for $\kappa=10^4$ the factors are $0.9998$ and $0.98$.</p>
 </div>
 <div class="box thm" data-k="Theorem" data-name="The CG convergence rate ([NW] p.117)">
 <p>For all $k\ge0$,
@@ -6810,6 +6921,15 @@ $$\norm{\e_k}_A\le2\left(\frac{\sqrt\kappa-1}{\sqrt\kappa+1}\right)^k\norm{\e_0}
 <p><b>Where it comes from.</b> The map $z(t)=\frac{L+m-2t}{L-m}$ sends $[m,L]$ onto $[-1,1]$ (reversed) and sends $t=0$ to $z_0=\frac{\kappa+1}{\kappa-1}>1$. Take
 $$Q(t)=\frac{T_k(z(t))}{T_k(z_0)} .$$
 It has degree $k$, and $Q(0)=1$ because we divided by $T_k(z_0)$. On $[m,L]$, $|T_k(z(t))|\le1$, so $|Q|\le1/T_k(z_0)$. Since $z_0>1$ and $T_k$ grows fast outside $[-1,1]$, $T_k(z_0)$ is large and $Q$ is small on the whole interval. A short calculation (below) gives $1/T_k(z_0)\le2q^k$ with $q=\frac{\sqrt\kappa-1}{\sqrt\kappa+1}$. The min–max bound finishes the proof. (If $\kappa=1$, then $A=mI$ and CG finishes in one step.)</p>
+</div>
+<div class="example">
+<p class="problem">Take $m=1$, $L=9$ ($\kappa=9$) and degree $k=2$. Build the Chebyshev residual polynomial, find its maximum on $[1,9]$, and compare it with steepest descent's two-step polynomial and with $2q^2$.</p>
+<ol class="steps">
+<li><p>$z(t)=\dfrac{L+m-2t}{L-m}=\dfrac{10-2t}{8}$. Then $z(1)=1$, $z(9)=-1$, and $z(0)=z_0=\tfrac{10}{8}=1.25=\tfrac{\kappa+1}{\kappa-1}$.</p><p class="why-step">This map is the stretch from $[1,9]$ onto $[-1,1]$; it sends $0$ slightly outside the interval.</p></li>
+<li><p>$T_2(z_0)=2(1.25)^2-1=2.125$, so $Q(t)=T_2(z(t))/2.125$ has $Q(0)=1$.</p><p class="why-step">Dividing by $T_2(z_0)$ is what forces $Q(0)=1$.</p></li>
+<li><p>On $[1,9]$, $|T_2(z(t))|\le1$, so $|Q(t)|\le1/2.125=\tfrac8{17}\approx0.471$.</p><p class="why-step">The numerator stays within $\pm1$ because $z(t)\in[-1,1]$.</p></li>
+<li><p>Compare: steepest descent after two steps has factor $(\tfrac{\kappa-1}{\kappa+1})^2=0.8^2=0.64$. The CG bound $2q^2$ with $q=\tfrac{3-1}{3+1}=\tfrac12$ is $0.5$. And $0.471\le0.5\lt0.64$.</p><p class="why-step">The Chebyshev value is at most $2q^2$ (proved in the "Go deeper" box), and it beats the single repeated root.</p></li>
+</ol>
 </div>
 <details class="deeper"><summary>Go deeper: the calculation, and why Chebyshev is optimal</summary>
 <p>With $z_0=\frac{\kappa+1}{\kappa-1}$: $z_0^2-1=\frac{(\kappa+1)^2-(\kappa-1)^2}{(\kappa-1)^2}=\frac{4\kappa}{(\kappa-1)^2}$, so
@@ -6847,12 +6967,24 @@ By the closed form, dropping the positive second term, $T_k(z_0)\ge\tfrac12q^{-k
 <div class="widget" data-w="p9_iters" data-cfg='{"kappa":10000,"eps":1e-6}'></div>
 </div>
 
+<div class="prose">
+<p><b>The recipe from a rate to an iteration count.</b> (1) Write the bound with $k$ unknown: $2q^k\le\varepsilon$. (2) Divide by $2$: $q^k\le\varepsilon/2$. (3) Take natural logarithms of both sides (the logarithm keeps the direction of $\le$ because it is increasing): $k\ln q\le\ln(\varepsilon/2)$. (4) $\ln q$ is negative because $q\lt1$, so dividing by it flips the inequality: $k\ge\ln(\varepsilon/2)/\ln q=\ln(2/\varepsilon)/\ln(1/q)$. (5) Round up to the next integer. Here $\ln$ is the natural logarithm and $\varepsilon$ ("epsilon") is the accuracy we want. Steepest descent works the same without the 2.</p>
+</div>
 <div class="example">
+<p class="problem">For $\kappa=100$ and $\varepsilon=10^{-6}$<div class="example">
 <p class="problem">For $\kappa=100$ and $\varepsilon=10^{-6}$, compute the guaranteed iteration counts for steepest descent and CG (error in the $A$-norm).</p>
 <ol class="steps">
 <li><p>SD: factor $\frac{99}{101}\approx0.980198$, and $\ln0.980198\approx-0.020001$. Need $k\ge\frac{\ln10^{-6}}{\ln0.980198}=\frac{-13.8155}{-0.020001}\approx690.75$, so $k=691$.</p><p class="why-step">Solve $(\frac{\kappa-1}{\kappa+1})^k\le\varepsilon$ by taking logarithms; both logs are negative, so the inequality direction is preserved when dividing.</p></li>
 <li><p>CG: $\sqrt\kappa=10$, factor $q=\frac9{11}\approx0.81818$, $\ln q\approx-0.20067$. Need $2q^k\le10^{-6}$, i.e. $k\ge\frac{\ln(5\times10^{-7})}{\ln q}=\frac{-14.5087}{-0.20067}\approx72.3$, so $k=73$.</p><p class="why-step">The factor 2 adds $\ln2$ to the numerator, which barely matters.</p></li>
 <li><p>Ratio $691/73\approx9.5\approx\sqrt{100}$.</p><p class="why-step">For large $\kappa$ the ratio of counts tends to $\sqrt\kappa\cdot\frac{\ln(1/\varepsilon)}{\ln(2/\varepsilon)}\approx\sqrt\kappa$.</p></li>
+</ol>
+</div>
+<div class="example">
+<p class="problem">For $\kappa=25$ and $\varepsilon=10^{-4}$, find the guaranteed iteration counts for CG and for steepest descent.</p>
+<ol class="steps">
+<li><p>CG: $\sqrt\kappa=5$, so $q=\tfrac{5-1}{5+1}=\tfrac23$. Need $2q^k\le10^{-4}$, i.e. $k\ge\dfrac{\ln(2\times10^4)}{\ln(3/2)}=\dfrac{9.9035}{0.40547}\approx24.4$, so $k=25$.</p><p class="why-step">Step (4) of the recipe: $\ln(2/\varepsilon)=\ln20000$ and $\ln(1/q)=\ln1.5$.</p></li>
+<li><p>Steepest descent: factor $\tfrac{24}{26}=\tfrac{12}{13}$. Need $(\tfrac{12}{13})^k\le10^{-4}$, i.e. $k\ge\dfrac{\ln10^4}{\ln(13/12)}=\dfrac{9.2103}{0.08004}\approx115.1$, so $k=116$.</p><p class="why-step">Same method without the factor 2.</p></li>
+<li><p>The ratio is $116/25\approx4.6$, close to $\sqrt{25}=5$.</p><p class="why-step">The advantage of CG grows with $\kappa$.</p></li>
 </ol>
 </div>
 
@@ -6884,6 +7016,16 @@ By the closed form, dropping the positive second term, $T_k(z_0)\ge\tfrac12q^{-k
 <div class="stem"><p>For $\kappa=100$, how many CG steps does the Chebyshev bound need to guarantee a <b>Euclidean</b> error reduction $\norm{\e_k}\le10^{-6}\norm{\e_0}$?</p></div>
 <div class="hint"><p>$\norm{\e_k}\le\sqrt\kappa\cdot2q^k\norm{\e_0}$ with $q=\frac9{11}$.</p></div>
 <div class="sol"><p>Need $20q^k\le10^{-6}$, so $k\ge\frac{\ln(5\times10^{-8})}{\ln(9/11)}=\frac{-16.811}{-0.20067}\approx83.8$, i.e. $k=84$ (versus 73 for the $A$-norm).</p></div>
+</div>
+<div class="prob" data-id="p9x-cheb-1" data-ans="8/17" data-labels="1/T₂(z₀)" data-tol="0.002">
+<div class="stem"><p>For $\kappa=9$ and $k=2$, compute the maximum $1/T_2(z_0)$ of the Chebyshev residual polynomial on $[m,L]$, where $z_0=\frac{\kappa+1}{\kappa-1}$.</p></div>
+<div class="hint"><p>$z_0=1.25$ and $T_2(z)=2z^2-1$.</p></div>
+<div class="sol"><p>$T_2(1.25)=2(1.5625)-1=2.125$, so $1/2.125=\tfrac8{17}\approx0.4706$.</p></div>
+</div>
+<div class="prob" data-id="p9x-cheb-2" data-ans="25;116" data-labels="CG;steepest descent">
+<div class="stem"><p>For $\kappa=25$ and $\varepsilon=10^{-4}$, find the smallest $k$ guaranteed by the worst-case bound, for CG ($2q^k\le\varepsilon$) and for steepest descent ($(\tfrac{\kappa-1}{\kappa+1})^k\le\varepsilon$).</p></div>
+<div class="hint"><p>CG: $q=\tfrac23$. Steepest descent: factor $\tfrac{12}{13}$. Use logarithms.</p></div>
+<div class="sol"><p>CG: $k\ge\ln(20000)/\ln(1.5)\approx24.4$, so $25$. Steepest descent: $k\ge\ln(10^4)/\ln(13/12)\approx115.1$, so $116$.</p></div>
 </div>
 </div>
 
