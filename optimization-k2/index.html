@@ -5657,7 +5657,7 @@ $$\d_i^\top A\d_j=0\qquad\text{for all }i\ne j.$$
 Equivalently, they are orthogonal in the <b>$A$-inner product</b> $\ip{\u}{\v}_A=\u^\top A\v$, whose norm is $\norm{\u}_A=\sqrt{\u^\top A\u}$. This is a genuine inner product because $A$ is symmetric and $\u^\top A\u\gt0$ for $\u\ne\0$.</p>
 </div>
 <div class="prose">
-<p>With $A=I$, conjugate just means orthogonal. For any other $A$ the two ideas differ. For $A=\begin{pmatrix}4&1\\1&3\end{pmatrix}$, the vectors $\d_0=(1,0)^\top$ and $\d_1=(-\tfrac14,1)^\top$ are conjugate: $A\d_1=(-1+1,\,-\tfrac14+3)^\top=(0,\tfrac{11}4)^\top$, so $\d_0^\top A\d_1=0$. But $\d_0^\top\d_1=-\tfrac14\ne0$: they are not perpendicular.</p>
+<p>With $A=I$, conjugate means orthogonal. For any other $A$ the two ideas differ. For $A=\begin{pmatrix}4&1\\1&3\end{pmatrix}$, the vectors $\d_0=(1,0)^\top$ and $\d_1=(-\tfrac14,1)^\top$ are conjugate: $A\d_1=(-1+1,\,-\tfrac14+3)^\top=(0,\tfrac{11}4)^\top$, so $\d_0^\top A\d_1=0$. But $\d_0^\top\d_1=-\tfrac14\ne0$: they are not perpendicular.</p>
 <h3>The picture: stretch the ellipses into circles</h3>
 <p>Write $A=V\Lambda V^\top$ (spectral theorem) and let $A^{1/2}=V\Lambda^{1/2}V^\top$, the symmetric positive definite matrix with $A^{1/2}A^{1/2}=A$. Change variables to $\y=A^{1/2}\x$. Then
 $$\u^\top A\v=(A^{1/2}\u)^\top(A^{1/2}\v),\qquad \x^\top A\x=\norm{\y}^2.$$
@@ -5768,7 +5768,7 @@ Each correction removes the $A$-component along one old direction. This works, b
 </div>
 <div class="box plain" data-k="In plain words">
 <p><b>The recipe.</b> Walk along each conjugate direction once. On each line, go to the bottom of the parabola: $\alpha_k=-\frac{\g_k^\top\d_k}{\d_k^\top A\d_k}$ (the exact line search of <a href="#pm-linesearch">Part M.4</a>). After $n$ steps you are exactly at $\x^\star$, whatever the starting point.</p>
-<p><b>Two facts to carry everywhere.</b> First, the gradient updates as $\g_{k+1}=\g_k+\alpha_kA\d_k$. Second, after an exact line search the new gradient is perpendicular to the direction just used: $\g_{k+1}^\top\d_k=0$.</p>
+<p><b>Two facts to carry everywhere.</b> First, the gradient updates as $\g_{k+1}=\g_k+\alpha_kA\d_k$. Second, after an exact line search the new gradient is perpendicular to the direction it last searched: $\g_{k+1}^\top\d_k=0$.</p>
 <p><b>Expanding Subspace Theorem, in words.</b> After $k$ steps the gradient is perpendicular to every direction used so far. So $\x_k$ is the best point in the whole region explored, $\x_0+\operatorname{span}\{\d_0,\dots,\d_{k-1}\}$, and later steps never spoil earlier progress.</p>
 <p><b>Why the proof works.</b> The newest direction is handled by the line search; all older directions are handled by conjugacy.</p>
 <p><b>Be able to:</b> state the theorem precisely, prove part (i) by induction, and run the method by hand on a $2\times2$ example.</p>
@@ -5785,7 +5785,7 @@ $$\g_{k+1}=\g_k+\alpha_kA\d_k\qquad\text{and}\qquad\g_{k+1}^\top\d_k=0.$$</p>
 </div>
 <div class="prose">
 <p><b>Proof</b> (examinable). Expanding, $\phi(\alpha)=f(\x_k)+\alpha\,\g_k^\top\d_k+\tfrac{\alpha^2}2\d_k^\top A\d_k$, a parabola in $\alpha$ with positive leading coefficient. $\phi'(\alpha)=\g_k^\top\d_k+\alpha\,\d_k^\top A\d_k=0$ gives $\alpha_k$. Next, $\g_{k+1}=A(\x_k+\alpha_k\d_k)-\b=\g_k+\alpha_kA\d_k$. Finally, by the chain rule $\phi'(\alpha_k)=\g_{k+1}^\top\d_k$, and this is 0 at the minimizer. $\blacksquare$</p>
-<p>In words: after an exact line search, the new gradient is perpendicular to the direction you just searched. (You met this in Part 5 for $\d_k=-\g_k$.) Note that $\alpha_k$ may be negative: the method walks along the <i>line</i>, in whichever sense goes down.</p>
+<p>In words: after an exact line search, the new gradient is perpendicular to the direction you last searched. (You met this in Part 5 for $\d_k=-\g_k$.) Note that $\alpha_k$ may be negative: the method walks along the <i>line</i>, in whichever sense goes down.</p>
 </div>
 
 <div class="box thm" data-k="Theorem" data-name="Conjugate Direction Theorem ([NW] Thm 5.1, p.103; [LD] §9.1)">
@@ -5834,7 +5834,7 @@ $$\g_{k+1}^\top\d_i=\g_k^\top\d_i+\alpha_k\,\d_k^\top A\d_i.$$</p><p class="why-
 <p><b>Proof of (ii).</b> Write points of $\x_0+\mathcal B_k$ as $\x_0+D_k\y$ with $D_k=[\d_0|\cdots|\d_{k-1}]$ and $\y\in\R^k$, and let $h(\y)=f(\x_0+D_k\y)$. This is a quadratic in $\y$ with Hessian $D_k^\top AD_k=\mathrm{diag}(\d_i^\top A\d_i)\succ0$, so it is strictly convex. By the chain rule $\grad h(\y)=D_k^\top\grad f(\x_0+D_k\y)$. The iterate $\x_k=\x_0+\sum_{i\lt k}\alpha_i\d_i$ corresponds to $\y=(\alpha_0,\dots,\alpha_{k-1})$, where $\grad h=D_k^\top\g_k=\0$ by part (i). A stationary point of a convex function is a global minimizer (Part 4), and strict convexity makes it unique. The line through $\x_{k-1}$ along $\d_{k-1}$ lies inside $\x_0+\mathcal B_k$ and contains $\x_k$, so $\x_k$ minimizes over that line too. $\blacksquare$</p>
 <p>Taking $k=n$: $\x_n$ minimizes $f$ over $\x_0+\R^n=\R^n$, so $\x_n=\x^\star$. That's a second proof of the Conjugate Direction Theorem.</p>
 <h3>Another reading: the closest point in the $A$-norm</h3>
-<p>Using $A\x^\star=\b$, a short expansion gives $f(\x)-f(\x^\star)=\tfrac12\norm{\x-\x^\star}_A^2$. So minimizing $f$ is the same as minimizing the $A$-norm distance to the solution, and the theorem says: <b>$\x_k$ is the point of $\x_0+\mathcal B_k$ closest to $\x^\star$ in the $A$-norm</b>. Since $\g_k=A(\x_k-\x^\star)$, part (i) reads $\ip{\x_k-\x^\star}{\d_i}_A=0$: the error is $A$-orthogonal to the explored subspace, just like "the best approximation from a subspace is the orthogonal projection". Part 9 builds its convergence analysis on this view.</p>
+<p>Using $A\x^\star=\b$, a short expansion gives $f(\x)-f(\x^\star)=\tfrac12\norm{\x-\x^\star}_A^2$. So minimizing $f$ is the same as minimizing the $A$-norm distance to the solution, and the theorem says: <b>$\x_k$ is the point of $\x_0+\mathcal B_k$ closest to $\x^\star$ in the $A$-norm</b>. Since $\g_k=A(\x_k-\x^\star)$, part (i) reads $\ip{\x_k-\x^\star}{\d_i}_A=0$: the error is $A$-orthogonal to the explored subspace, like "the best approximation from a subspace is the orthogonal projection". Part 9 builds its convergence analysis on this view.</p>
 </div>
 <details class="deeper"><summary>Go deeper: checking $f(\x)-f^\star=\tfrac12\norm{\x-\x^\star}_A^2$</summary>
 <p>$\tfrac12(\x-\x^\star)^\top A(\x-\x^\star)=\tfrac12\x^\top A\x-\x^\top A\x^\star+\tfrac12\x^{\star\top}A\x^\star=\tfrac12\x^\top A\x-\b^\top\x+\tfrac12\b^\top\x^\star$. And $f^\star=f(\x^\star)=\tfrac12\b^\top\x^\star-\b^\top\x^\star=-\tfrac12\b^\top\x^\star$. So the right side is $f(\x)-f^\star$. ([LD] §9.2, Fig. 9.2.)</p>
@@ -5843,7 +5843,7 @@ $$\g_{k+1}^\top\d_i=\g_k^\top\d_i+\alpha_k\,\d_k^\top A\d_i.$$</p><p class="why-
 <div class="example">
 <p class="problem">Run the conjugate direction method on $A=\begin{pmatrix}4&1\\1&3\end{pmatrix}$, $\b=(1,2)^\top$ with $\d_0=(1,0)^\top$, $\d_1=(-\tfrac14,1)^\top$, from $\x_0=(2,1)^\top$.</p>
 <ol class="steps">
-<li><p>$\g_0=A\x_0-\b=(9-1,\,5-2)^\top=(8,3)^\top$, $\d_0^\top A\d_0=4$, so $\alpha_0=-\g_0^\top\d_0/4=-2$ and $\x_1=(0,1)^\top$.</p><p class="why-step">Negative $\alpha$ just means we move left along $\d_0$; that's downhill here since $\g_0^\top\d_0=8\gt0$.</p></li>
+<li><p>$\g_0=A\x_0-\b=(9-1,\,5-2)^\top=(8,3)^\top$, $\d_0^\top A\d_0=4$, so $\alpha_0=-\g_0^\top\d_0/4=-2$ and $\x_1=(0,1)^\top$.</p><p class="why-step">Negative $\alpha$ means we move left along $\d_0$; that's downhill here since $\g_0^\top\d_0=8\gt0$.</p></li>
 <li><p>$\g_1=A\x_1-\b=(1,3)^\top-(1,2)^\top=(0,1)^\top$. Check $\g_1^\top\d_0=0$. ✓</p><p class="why-step">Expanding Subspace (i) at $k=1$.</p></li>
 <li><p>$A\d_1=(0,\tfrac{11}4)^\top$, so $\d_1^\top A\d_1=\tfrac{11}4$; $\g_1^\top\d_1=1$; $\alpha_1=-\tfrac4{11}$.</p><p class="why-step">Same formula, next direction.</p></li>
 <li><p>$\x_2=(0,1)^\top-\tfrac4{11}(-\tfrac14,1)^\top=(\tfrac1{11},\tfrac7{11})^\top=\x^\star$, and $\g_2=\0$. Done in $n=2$ steps.</p><p class="why-step">Compare the coordinate axes from the same start, which end at $(0,\tfrac23)$ (the predict question above).</p></li>
@@ -5916,7 +5916,7 @@ $$\g_{k+1}^\top\d_i=\g_k^\top\d_i+\alpha_k\,\d_k^\top A\d_i.$$</p><p class="why-
 <section class="ch" id="cg-method" data-level="n" data-min="45" data-title="The conjugate gradient method" data-src="Lecture 12 (22 Sep); Book Ch. 16; [NW] §5.1 Alg 5.1–5.2, Thm 5.3 (p.107–112); [LD] §9.3 (p.268–270)">
 <h2>The conjugate gradient method and why it is correct</h2>
 <div class="opener">
-<p>CG builds conjugate directions on the fly: take the steepest descent direction and bend it just enough to be conjugate to the previous direction, $\d_k=-\g_k+\beta_k\d_{k-1}$. Conjugacy to all older directions then comes for free.</p>
+<p>CG builds conjugate directions on the fly: take the steepest descent direction and bend it exactly enough to be conjugate to the previous direction, $\d_k=-\g_k+\beta_k\d_{k-1}$. Conjugacy to all older directions then comes for free.</p>
 <p>That makes CG cost about the same per step as gradient descent (one matrix–vector product, a few vectors of storage) while finishing in at most $n$ steps. It is the standard method for large sparse positive definite systems, and the CG Theorem's proof and a by-hand run are classic exam questions.</p>
 <p>Steering a boat in a crosswind: you don't point straight at the target (the gradient); you keep a bit of your previous heading so you stop drifting back and forth.</p>
 </div>
@@ -6127,7 +6127,7 @@ $$\beta_{k+1}=\frac{\g_{k+1}^\top A\d_k}{\d_k^\top A\d_k},\quad \d_{k+1}=-\g_{k+
 <div class="o">$A^{-1}$<div class="e">Then $(A^{-1}\u)^\top(A^{-1}\v)=\u^\top A^{-2}\v$, the wrong matrix.</div></div>
 </div>
 <div class="q" data-from="Ch. 8.3"><div class="q-text"><p>In CG, $\x_k-\x_0$ always lies in…</p></div>
-<div class="o">$\operatorname{span}\{\g_k\}$<div class="e">The iterate collects all previous steps, not just one.</div></div>
+<div class="o">$\operatorname{span}\{\g_k\}$<div class="e">The iterate collects all previous steps, not only one.</div></div>
 <div class="o ok">$\mathcal K_{k-1}(\g_0)=\operatorname{span}\{\g_0,\dots,A^{k-1}\g_0\}$<div class="e">$\x_k-\x_0=\sum_{i\lt k}\alpha_i\d_i$ and $\operatorname{span}\{\d_0,\dots,\d_{k-1}\}=\mathcal K_{k-1}$. This is Part 9's starting point.</div></div>
 <div class="o">the eigenvector of the smallest eigenvalue<div class="e">Nothing forces the iterates onto an eigenvector.</div></div>
 </div>
@@ -6157,7 +6157,7 @@ $$\beta_{k+1}=\frac{\g_{k+1}^\top A\d_k}{\d_k^\top A\d_k},\quad \d_{k+1}=-\g_{k+
 <p>Recall the setting from Part 8. We minimize $f(\x)=\tfrac12\x^\top A\x-\b^\top\x$ with $A$ symmetric positive definite ($A\succ0$), so the minimizer is $\x^\star=A^{-1}\b$ and the gradient is $\g_k=\grad f(\x_k)=A\x_k-\b$. Part 8 gave us three facts about CG:</p>
 <ul>
 <li><b>CG Theorem:</b> the directions span a Krylov subspace, $\operatorname{span}\{\d_0,\dots,\d_k\}=\mathcal K_k(\g_0):=\operatorname{span}\{\g_0,A\g_0,\dots,A^k\g_0\}$.</li>
-<li><b>Expanding Subspace Theorem:</b> $\x_{k+1}$ minimizes $f$ over the whole set $\x_0+\operatorname{span}\{\d_0,\dots,\d_k\}$, not just along the last direction.</li>
+<li><b>Expanding Subspace Theorem:</b> $\x_{k+1}$ minimizes $f$ over the whole set $\x_0+\operatorname{span}\{\d_0,\dots,\d_k\}$, not only along the last direction.</li>
 <li><b>Error identity:</b> $f(\x)-f(\x^\star)=\tfrac12(\x-\x^\star)^\top A(\x-\x^\star)$. So minimizing $f$ is the same as minimizing the distance to $\x^\star$ measured in the $A$-norm below.</li>
 </ul>
 <p>Finite termination in $n$ steps follows. The question this part answers is the practical one: <b>how small is the error after $k\ll n$ steps?</b></p>
@@ -6176,7 +6176,7 @@ $$\beta_{k+1}=\frac{\g_{k+1}^\top A\d_k}{\d_k^\top A\d_k},\quad \d_{k+1}=-\g_{k+
 <p>For a polynomial $P(t)=\gamma_0+\gamma_1t+\dots+\gamma_kt^k$, define $P(A)=\gamma_0I+\gamma_1A+\dots+\gamma_kA^k$. If $A\v=\lambda\v$, then $A^2\v=A(\lambda\v)=\lambda^2\v$, and in general $A^j\v=\lambda^j\v$. Adding up:</p>
 </div>
 <div class="box thm" data-k="Lemma" data-name="Polynomials of a symmetric matrix">
-<p>$P(A)\v_i=P(\lambda_i)\,\v_i$ for every eigenpair $(\lambda_i,\v_i)$. So in the eigenbasis, $P(A)$ simply multiplies the $i$-th coordinate by the number $P(\lambda_i)$.</p>
+<p>$P(A)\v_i=P(\lambda_i)\,\v_i$ for every eigenpair $(\lambda_i,\v_i)$. So in the eigenbasis, $P(A)$ multiplies the $i$-th coordinate by the number $P(\lambda_i)$.</p>
 </div>
 <div class="prose">
 <p>Example: $A=\begin{pmatrix}1&0\\0&4\end{pmatrix}$ and $P(t)=1-\tfrac t2$ give $P(A)=I-\tfrac12A=\begin{pmatrix}1/2&0\\0&-1\end{pmatrix}$: the diagonal entries are $P(1)$ and $P(4)$.</p>
@@ -6315,7 +6315,7 @@ Hence, after $k$ steps, $\displaystyle\norm{\e_k}_A\le\Big(\min_{Q\in\mathcal Q_
 <section class="ch" id="cgp-spectrum" data-level="n" data-min="35" data-title="What the spectrum decides" data-src="Lecture 13; Book Ch. 17 §4.1–4.3; [NW] Thm 5.4 (p.114), Thm 5.5 (p.115), Figs 5.3–5.5; [LD] §9.4 (p.273)">
 <h2>What the spectrum decides: few eigenvalues, clusters, and gradient descent beaten</h2>
 <div class="opener">
-<p>Because the min–max bound only sees where the eigenvalues sit, the <i>shape</i> of the spectrum, not just $n$ or $\kappa$, decides how fast CG is.</p>
+<p>Because the min–max bound only sees where the eigenvalues sit, the <i>shape</i> of the spectrum, not only $n$ or $\kappa$, decides how fast CG is.</p>
 <p>A classic exam question: "$A$ has eigenvalues …; in at most how many steps does CG terminate? Write down the polynomial that proves it." Another: why is CG never worse than gradient descent?</p>
 <p>A marksman with $k$ shots: with $k$ targets, every target can be hit. If the targets stand in a few tight groups, one shot per group almost does the job.</p>
 </div>
@@ -6355,7 +6355,7 @@ Hence, after $k$ steps, $\displaystyle\norm{\e_k}_A\le\Big(\min_{Q\in\mathcal Q_
 <div class="reveal">
 <div class="panel try">
 <span class="label">Try it</span>
-<p class="task">Here $n=12$ but only three distinct values. Step $k$ from 0 to 3 and watch $Q_k$ (blue, top) acquire roots at the three values; the error (bottom, log scale) drops to machine zero at $k=3$. Then drag one dot slightly away from its group: the error is no longer exactly zero at $k=3$, just very small.</p>
+<p class="task">Here $n=12$ but only three distinct values. Step $k$ from 0 to 3 and watch $Q_k$ (blue, top) acquire roots at the three values; the error (bottom, log scale) drops to machine zero at $k=3$. Then drag one dot slightly away from its group: the error is no longer exactly zero at $k=3$, but very small.</p>
 <div class="widget" data-w="p9_spectrum" data-cfg='{"preset":1,"k":3}'></div>
 </div>
 </div>
@@ -6393,7 +6393,7 @@ It has degree $k+1$ and $Q(0)=1$, and it vanishes at the $k$ largest eigenvalues
 </div>
 <div class="prose">
 <p><b>Proof.</b> From the story in Chapter 9.1, $\y_{k+1}-\x^\star=Q(A)\e_0$ with $Q(t)=\prod_{j=0}^k(1-h_jt)\in\mathcal Q_{k+1}$. CG's error is the minimum of $\norm{Q(A)\e_0}_A$ over all of $\mathcal Q_{k+1}$, so $\norm{\e_{k+1}}_A\le\norm{\y_{k+1}-\x^\star}_A$, and $f-f^\star=\tfrac12\norm{\cdot}_A^2$. $\blacksquare$</p>
-<p>(Step sizes chosen by a line search depend on the iterates, but once the run is over they are just numbers $h_j$, and the identity above holds.) [LD] makes a related point: each CG step is at least as good as one steepest descent step taken from the same point $\x_k$.</p>
+<p>(Step sizes chosen by a line search depend on the iterates, but once the run is over they are fixed numbers $h_j$, and the identity above holds.) [LD] makes a related point: each CG step is at least as good as one steepest descent step taken from the same point $\x_k$.</p>
 <p><b>Recovering the Part 5 rate.</b> On the whole interval $[m,L]$, the degree-1 polynomial $Q(t)=1-\frac{2t}{m+L}$ has maximum $\frac{L-m}{L+m}=\frac{\kappa-1}{\kappa+1}$, attained at both ends. Using $Q(t)^k$ in the min–max bound shows CG is never slower than $\big(\frac{\kappa-1}{\kappa+1}\big)^k$. That is the polynomial of gradient descent with constant step $h=\frac2{m+L}$: all $k$ roots stacked at the midpoint. Chapter 9.3 spreads them out.</p>
 </div>
 
@@ -6620,7 +6620,7 @@ By the closed form, dropping the positive second term, $T_k(z_0)\ge\tfrac12q^{-k
 <div class="q" data-from="Part 8"><div class="q-text"><p>Which property of CG makes the polynomial view possible?</p></div>
 <div class="o">The gradients are mutually orthogonal<div class="e">True of CG, but the polynomial view needs to know which <i>set</i> the iterates live in.</div></div>
 <div class="o ok">$\operatorname{span}\{\d_0,\dots,\d_k\}=\mathcal K_k(\g_0)=\operatorname{span}\{\g_0,A\g_0,\dots,A^k\g_0\}$<div class="e">So $\x_{k+1}-\x_0$ is a polynomial in $A$ applied to $\g_0$.</div></div>
-<div class="o">$\alpha_k$ is chosen by exact line search<div class="e">Exact line search alone gives steepest descent, which has a polynomial too, just not the optimal one.</div></div>
+<div class="o">$\alpha_k$ is chosen by exact line search<div class="e">Exact line search alone gives steepest descent, which has a polynomial too, but not the optimal one.</div></div>
 </div>
 <div class="q" data-from="Part 8 + Ch. 9.1"><div class="q-text"><p>The Expanding Subspace Theorem says $\x_k$ minimizes $f$ over $\x_0+\operatorname{span}\{\d_0,\dots,\d_{k-1}\}$. Minimizing $f$ there is the same as minimizing…</p></div>
 <div class="o">$\norm{\x-\x^\star}$ (Euclidean)<div class="e">The Euclidean and $A$-norm minimizers over a subspace differ in general.</div></div>
@@ -6654,8 +6654,16 @@ By the closed form, dropping the positive second term, $T_k(z_0)\ge\tfrac12q^{-k
 <h2>Newton's method: follow the tangent, jump to the bottom of the model</h2>
 <div class="opener">
 <p>Newton's method replaces the function by its best quadratic approximation at the current point and jumps straight to that approximation's stationary point.</p>
-<p>Gradient descent knows which way is downhill but not how far to go, so it zig-zags when $\kappa$ is large. Newton also uses curvature: on a quadratic it finishes in one step, whatever $\kappa$ is.</p>
+<p>Gradient descent knows which way is downhill but not how far to go, so it zig-zags when $\kappa$ is large ($\kappa$ is the condition number, largest over smallest Hessian eigenvalue; large means long thin level sets). Newton also uses curvature: on a quadratic it finishes in one step, whatever $\kappa$ is.</p>
 <p>Parking a car by eye: you don't creep forward a fixed amount at a time; you judge the distance and the curve, then move to where you think the space is, and correct once.</p>
+</div>
+
+<div class="box plain" data-k="In plain words">
+<p>Problem: gradient descent is slow when the level sets are long and thin (large condition number $\kappa$, see <a href="#pm-linalg">Part M.1</a>), because it uses only the slope.</p>
+<p>The idea: at the current point $\x_k$, replace $f$ by its quadratic Taylor model (<a href="#pm-calculus">Part M.2</a>) and jump to the bottom of that bowl.</p>
+<p>In words: $\x_{k+1}=\x_k-[\hess f(\x_k)]^{-1}\grad f(\x_k)$ means "take the gradient, multiply by the inverse of the Hessian (the matrix of second derivatives), and subtract". The step $\d_k$ solves $\hess f(\x_k)\d_k=-\grad f(\x_k)$.</p>
+<p>On a strictly convex quadratic this lands on the minimizer in exactly one step, and it does not care about $\kappa$.</p>
+<p>For the exam: be able to do one Newton step by hand (gradient, Hessian, solve a $2\times2$ system), state why the step is a descent direction when the Hessian is positive definite, and say what goes wrong when it is not.</p>
 </div>
 
 <div class="prose">
@@ -6667,9 +6675,9 @@ $$t_{k+1}=t_k-\frac{\phi(t_k)}{\phi'(t_k)}\qquad(\phi'(t_k)\ne0).$$
 Geometrically: draw the tangent at $(t_k,\phi(t_k))$ and walk down it to where it crosses the axis.</p>
 <p>Example: $\phi(t)=t^2-2$ (root $\sqrt2$) from $t_0=1$ gives $t_1=1.5$, $t_2=1.416667$, $t_3=1.4142157$, $t_4=1.414213562375$. The errors are $0.41,\ 0.086,\ 0.0025,\ 2.1\times10^{-6},\ 1.6\times10^{-12}$: once close, each step roughly <i>doubles</i> the number of correct digits. Chapter 2 makes this precise.</p>
 <h3>From roots to minima</h3>
-<p>A minimizer of a smooth $f$ must satisfy the first-order condition $\grad f(\x)=\0$ (Part 3). So minimizing is "finding a root of the gradient". In one variable, apply the tangent-line rule to $\phi=f'$, whose derivative is $f''$:
+<p>A minimizer of a smooth $f$ must satisfy the first-order condition $\grad f(\x)=\0$ (the gradient vanishes at a minimizer; <a href="#pm-calculus">Part M.2</a>). So minimizing is "finding a root of the gradient". In one variable, apply the tangent-line rule to $\phi=f'$, whose derivative is $f''$:
 $$x_{k+1}=x_k-\frac{f'(x_k)}{f''(x_k)}.$$
-In $n$ variables the gradient is a map $\R^n\to\R^n$, and its "derivative" (its Jacobian matrix) is the Hessian $\hess f$. Linearizing $\grad f(\x_k+\d)\approx\grad f(\x_k)+\hess f(\x_k)\d$ and setting this to $\0$ gives the multivariable rule.</p>
+In $n$ variables the gradient is a map $\R^n\to\R^n$, and its "derivative" (its Jacobian matrix, the table of all partial derivatives) is the Hessian $\hess f$, the symmetric matrix of second partial derivatives. Linearizing $\grad f(\x_k+\d)\approx\grad f(\x_k)+\hess f(\x_k)\d$ and setting this to $\0$ gives the multivariable rule.</p>
 </div>
 
 <div class="box def" data-k="Definition" data-name="Newton's method for minimization ([Y] (1.2.21), [FR] (3.1.2))">
@@ -6678,12 +6686,12 @@ In $n$ variables the gradient is a map $\R^n\to\R^n$, and its "derivative" (its 
 <li>solve the linear system $\hess f(\x_k)\,\d_k=-\grad f(\x_k)$ for the <b>Newton direction</b> $\d_k$;</li>
 <li>set $\x_{k+1}=\x_k+\d_k$.</li>
 </ol>
-<p>In one formula, $\x_{k+1}=\x_k-[\hess f(\x_k)]^{-1}\grad f(\x_k)$. In practice the inverse is never formed: one factorizes $\hess f(\x_k)=LDL^\top$ (or Cholesky), which costs about $\tfrac16n^3$ multiplications ([FR] p.44) and also reveals whether the Hessian is positive definite.</p>
+<p>In one formula, $\x_{k+1}=\x_k-[\hess f(\x_k)]^{-1}\grad f(\x_k)$. In practice the inverse is never formed: one factorizes $\hess f(\x_k)=LDL^\top$ (or Cholesky), which costs about $\tfrac16n^3$ multiplications ([FR] p.44) and also reveals whether the Hessian is positive definite (all eigenvalues positive, written $\succ0$, so the quadratic model is a bowl).</p>
 </div>
 
 <div class="prose">
 <h3>The second derivation: minimize the quadratic model</h3>
-<p>Taylor's theorem (Part 0b) says that near $\x_k$, $f(\x_k+\d)\approx q_k(\d)$, where $\g_k=\grad f(\x_k)$ and
+<p>Taylor's theorem (<a href="#pm-calculus">Part M.2</a>) says that near $\x_k$, $f(\x_k+\d)\approx q_k(\d)$, where $\g_k=\grad f(\x_k)$ and
 $$q_k(\d):=f(\x_k)+\g_k^\top\d+\tfrac12\d^\top\hess f(\x_k)\,\d .$$
 This <b>quadratic model</b> $q_k$ is a bowl when $\hess f(\x_k)\succ0$. Its gradient is $\grad q_k(\d)=\grad f(\x_k)+\hess f(\x_k)\d$, which vanishes exactly at the Newton direction. So <b>Newton jumps to the bottom of the local quadratic model</b> ([FR] (3.1.1)). Gradient descent, by contrast, uses the model $f(\x_k)+\grad f(\x_k)^\top\d+\frac1{2\alpha}\norm{\d}^2$, which pretends the curvature is the same, $1/\alpha$, in every direction.</p>
 </div>
@@ -6712,11 +6720,11 @@ On the running example (fit the line, $A=\begin{pmatrix}28&12\\12&6\end{pmatrix}
 <h3>Why Newton doesn't care about $\kappa$: affine invariance</h3>
 <p>Change variables $\x=S\y$ with an invertible matrix $S$, and let $g(\y)=f(S\y)$. The chain rule gives $\grad g(\y)=S^\top\grad f(\x)$ and $\hess g(\y)=S^\top\hess f(\x)S$. So the Newton step in $\y$ is
 $$-\big(S^\top\hess f\,S\big)^{-1}S^\top\grad f=-S^{-1}[\hess f]^{-1}\grad f,$$
-which is exactly the Newton step in $\x$, mapped back by $S^{-1}$. Stretching or rotating the coordinates changes nothing: the iterates correspond one-to-one. Gradient descent is not like this, because $\grad g=S^\top\grad f$ points somewhere else; that is why its speed depends on $\kappa$ (Part 5) and Newton's doesn't. <b>Newton is steepest descent measured in the Hessian's own metric</b>, the metric that turns the elliptical level sets into circles.</p>
+which is exactly the Newton step in $\x$, mapped back by $S^{-1}$. Stretching or rotating the coordinates changes nothing: the iterates correspond one-to-one. Gradient descent is not like this, because $\grad g=S^\top\grad f$ points somewhere else; that is why its speed depends on $\kappa$ (Part 5; see <a href="#pm-rates">Part M.5</a>) and Newton's doesn't. <b>Newton is steepest descent measured in the Hessian's own metric</b>, the metric that turns the elliptical level sets into circles.</p>
 <h3>Is the Newton direction downhill?</h3>
 <p>A direction $\d$ is a descent direction when $\grad f(\x_k)^\top\d\lt0$. For the Newton direction,
 $$\grad f(\x_k)^\top\d_k=-\grad f(\x_k)^\top[\hess f(\x_k)]^{-1}\grad f(\x_k).$$
-If $\hess f(\x_k)\succ0$ then its inverse is also positive definite (eigenvalues $1/\lambda_i>0$), so this is negative whenever $\grad f(\x_k)\ne\0$: <b>descent</b>. If the Hessian is indefinite, the Newton direction may point uphill or towards a saddle point; Part 3 showed Newton walking into a saddle. Newton is a root-finder for $\grad f=\0$, and maxima and saddles are roots too.</p>
+If $\hess f(\x_k)\succ0$ then its inverse is also positive definite (eigenvalues $1/\lambda_i>0$), so this is negative whenever $\grad f(\x_k)\ne\0$: <b>descent</b>. If the Hessian is indefinite, the Newton direction may point uphill or towards a saddle point; Part 3 showed Newton walking into a saddle (a point where the gradient is zero but which is not a minimum: a minimum in some directions, a maximum in others). Newton is a root-finder for $\grad f=\0$, and maxima and saddles are roots too.</p>
 </div>
 
 <div class="callout"><b>Careful:</b> "Newton's method" in this course means the iteration for <i>minimization</i>, $\x_{k+1}=\x_k-[\hess f]^{-1}\grad f$. It uses second derivatives of $f$. The root-finding version $t_{k+1}=t_k-\phi/\phi'$ uses first derivatives of $\phi$; the two are the same method once $\phi=f'$.</div>
@@ -6791,9 +6799,17 @@ If $\hess f(\x_k)\succ0$ then its inverse is also positive definite (eigenvalues
 <section class="ch" id="p10-newton-rate" data-level="n" data-min="40" data-title="Quadratic convergence, and when Newton fails" data-src="Lecture 14 (29 Sep); Book Ch. 18 §2.2–2.4; [Y] Ex. 1.2.4 (p.34), Thm 1.2.5 (p.35); [FR] Thm 3.1.1 (p.46)">
 <h2>How fast Newton is, why, and where it breaks</h2>
 <div class="opener">
-<p>Close to a minimizer with a positive definite Hessian, Newton's error is squared at every step, so the number of correct digits doubles; far away it can diverge.</p>
+<p>Close to a minimizer with a positive definite Hessian (all eigenvalues positive), Newton's error is squared at every step, so the number of correct digits doubles; far away it can diverge.</p>
 <p>The proof of this (Nesterov's Theorem 1.2.5) is examinable, and so is the example where Newton diverges on a perfectly nice convex function. Practical codes add damping and Hessian fixes for exactly that reason.</p>
 <p>A strong swimmer near the shore reaches it in a few strokes, but drop the same swimmer far out in a current and strong strokes in the wrong direction only make things worse.</p>
+</div>
+
+<div class="box plain" data-k="In plain words">
+<p>Problem: how fast is Newton's method, and when can you trust it? Convergence rates are defined in <a href="#pm-rates">Part M.5</a>.</p>
+<p>The idea: near a minimizer where the Hessian is positive definite, the quadratic model is almost exact, so the error is squared each step: $r_{k+1}\le c\,r_k^2$ with $r_k=\norm{\x_k-\x^\star}$. The number of correct digits doubles.</p>
+<p>The catch: this is local. The theorem needs the start within radius $\bar r=2\ell/(3M)$ of $\x^\star$, where $\ell$ is the smallest curvature at $\x^\star$ and $M$ says how fast the Hessian can change (its Lipschitz constant). Outside that ball Newton can diverge, even on a convex function such as $\sqrt{1+t^2}$.</p>
+<p>Practical fixes: damp the step with a line search (<a href="#pm-linesearch">Part M.4</a>), or add $\nu I$ to the Hessian so it is positive definite.</p>
+<p>For the exam: define linear, superlinear and quadratic convergence, run the iteration $t_{k+1}=-t_k^3$, and reproduce proof steps A to E.</p>
 </div>
 
 <div class="prose">
@@ -6803,7 +6819,7 @@ If $\hess f(\x_k)\succ0$ then its inverse is also positive definite (eigenvalues
 <div class="box def" data-k="Definition" data-name="Linear, superlinear, quadratic convergence">
 <ul>
 <li><b>Linear</b>: $r_{k+1}\le q\,r_k$ for some fixed $q\in(0,1)$ and all large $k$. Each step gains a fixed number of digits. Gradient descent on a strongly convex function (Part 7) and CG's bound (Part 9) are of this type.</li>
-<li><b>Superlinear</b>: $r_{k+1}/r_k\to0$. Each step gains more digits than the last.</li>
+<li><b>Superlinear</b>: $r_{k+1}/r_k\to0$ (the ratio of successive errors tends to zero). Each step gains more digits than the last.</li>
 <li><b>Quadratic</b>: $r_{k+1}\le c\,r_k^2$ for some $c\gt0$ and all large $k$. If $c\,r_k=10^{-2}$ then $c\,r_{k+1}\le10^{-4}$, then $10^{-8}$, $10^{-16}$: <b>the number of correct digits doubles each step</b>.</li>
 </ul>
 <p>Quadratic $\Rightarrow$ superlinear $\Rightarrow$ linear. (Slower still is <i>sublinear</i>, like the $O(1/k)$ bound of Part 7.)</p>
@@ -6828,8 +6844,8 @@ $$\begin{aligned}t_{k+1}&=t_k-\frac{t_k}{\sqrt{1+t_k^2}}\,(1+t_k^2)^{3/2}\\&=t_k
 <h3>The local convergence theorem</h3>
 <p>Nesterov works under three assumptions ([Y] p.34):</p>
 <ol>
-<li><b>(N1)</b> $f\in C^{2,2}_M(\R^n)$: $f$ is twice differentiable and its Hessian is <b>Lipschitz</b> with constant $M$: $\norm{\hess f(\x)-\hess f(\y)}\le M\norm{\x-\y}$ for all $\x,\y$, where $\norm{\cdot}$ on matrices is the operator norm (largest stretch factor; for symmetric matrices, the largest $|\lambda|$). $M$ measures how far $f$ is from quadratic; $M=0$ for a quadratic.</li>
-<li><b>(N2)</b> There is a local minimizer $\x^\star$ with $\hess f(\x^\star)\succeq\ell I$ for some $\ell\gt0$ ([Y] (1.2.22)): the bowl is genuinely curved in every direction at the bottom. ($\ell$ plays the role that $\mu$ played for strong convexity in Part 7, but only at $\x^\star$.)</li>
+<li><b>(N1)</b> $f\in C^{2,2}_M(\R^n)$: $f$ is twice differentiable and its Hessian is <b>Lipschitz</b> with constant $M$ (a Lipschitz function cannot change faster than $M$ times the distance moved): $\norm{\hess f(\x)-\hess f(\y)}\le M\norm{\x-\y}$ for all $\x,\y$, where $\norm{\cdot}$ on matrices is the operator norm (largest stretch factor; for symmetric matrices, the largest $|\lambda|$). $M$ measures how far $f$ is from quadratic; $M=0$ for a quadratic.</li>
+<li><b>(N2)</b> There is a local minimizer $\x^\star$ with $\hess f(\x^\star)\succeq\ell I$ for some $\ell\gt0$ ([Y] (1.2.22); $\succeq\ell I$ means every eigenvalue of the Hessian is at least $\ell$): the bowl is genuinely curved in every direction at the bottom. ($\ell$ plays the role that $\mu$ played for strong convexity in Part 7 (the guaranteed smallest curvature; <a href="#pm-convex">Part M.3</a>), but only at $\x^\star$.)</li>
 <li><b>(N3)</b> The start $\x_0$ is close enough to $\x^\star$.</li>
 </ol>
 </div>
@@ -6848,7 +6864,7 @@ Therefore
 $$\x_{k+1}-\x^\star=\x_k-\x^\star-H_k^{-1}\grad f(\x_k)=H_k^{-1}G_k(\x_k-\x^\star),\quad G_k:=\int_0^1\big[H_k-\hess f(\x^\star+\tau(\x_k-\x^\star))\big]d\tau .$$</p><p class="why-step">Differentiate $\tau\mapsto\grad f(\x^\star+\tau(\x_k-\x^\star))$ by the chain rule to get the integrand. Then write $\x_k-\x^\star=H_k^{-1}H_k(\x_k-\x^\star)$ to pull out the common factor $H_k^{-1}$.</p></li>
 <li><p><b>Step B ($G_k$ is small).</b> The two points compared inside $G_k$ are $\x_k$ and $\x^\star+\tau(\x_k-\x^\star)$, which differ by $(1-\tau)(\x_k-\x^\star)$. By (N1),
 $$\norm{G_k}\le\int_0^1M(1-\tau)r_k\,d\tau=\frac M2r_k .$$</p><p class="why-step">The norm of an integral is at most the integral of the norm, and $\int_0^1(1-\tau)d\tau=\tfrac12$.</p></li>
-<li><p><b>Step C ($H_k$ is safely invertible).</b> For any unit vector $\u$, $\u^\top H_k\u\ge\u^\top\hess f(\x^\star)\u-\norm{H_k-\hess f(\x^\star)}\ge\ell-Mr_k$. So if $r_k\lt\ell/M$, every eigenvalue of $H_k$ is at least $\ell-Mr_k\gt0$, and $\norm{H_k^{-1}}\le\dfrac1{\ell-Mr_k}$.</p><p class="why-step">This is [Y] Corollary 1.2.2 with (N2). The smallest eigenvalue is the minimum of $\u^\top H\u$ over unit $\u$ (Part 0b), and the inverse has eigenvalues $1/\lambda_i$.</p></li>
+<li><p><b>Step C ($H_k$ is safely invertible).</b> For any unit vector $\u$, $\u^\top H_k\u\ge\u^\top\hess f(\x^\star)\u-\norm{H_k-\hess f(\x^\star)}\ge\ell-Mr_k$. So if $r_k\lt\ell/M$, every eigenvalue of $H_k$ is at least $\ell-Mr_k\gt0$, and $\norm{H_k^{-1}}\le\dfrac1{\ell-Mr_k}$.</p><p class="why-step">This is [Y] Corollary 1.2.2 with (N2). The smallest eigenvalue is the minimum of $\u^\top H\u$ over unit $\u$ (<a href="#pm-linalg">Part M.1</a>), and the inverse has eigenvalues $1/\lambda_i$.</p></li>
 <li><p><b>Step D (combine).</b> $r_{k+1}\le\norm{H_k^{-1}}\,\norm{G_k}\,r_k\le\dfrac{Mr_k^2}{2(\ell-Mr_k)}$.</p><p class="why-step">Take norms in Step A and use $\norm{AB\v}\le\norm A\norm B\norm\v$.</p></li>
 <li><p><b>Step E (staying in the ball; where $2\ell/3M$ comes from).</b> Suppose $r_k\lt\bar r=\frac{2\ell}{3M}$. Then $Mr_k\lt\frac23\ell$, so $\ell-Mr_k\gt\frac\ell3$ (in particular $r_k\lt\ell/M$, so Step C applies), and
 $$r_{k+1}\le\frac{Mr_k^2}{2\ell/3}=r_k\cdot\frac{3Mr_k}{2\ell}\lt r_k\lt\bar r .$$
@@ -6862,7 +6878,7 @@ By induction from $r_0\lt\bar r$, this holds for every $k$, and $r_{k+1}\le\frac
 <p>[Y] (p.36) notes that this ball has almost the same size as the region where gradient descent is guaranteed to converge linearly ($\bar r=2\ell/M$). Hence the standard plan: use a globally safe method to get close, then let Newton finish.</p>
 <h3>Making Newton practical</h3>
 <ul>
-<li><b>Damped Newton</b> ([Y] p.34): $\x_{k+1}=\x_k-h_k[\hess f(\x_k)]^{-1}\grad f(\x_k)$, with the step $h_k$ chosen by a line search (Armijo backtracking, Lecture 7) early on and $h_k=1$ near the solution. Whenever $\hess f\succ0$ the direction is downhill, so the line search always finds an acceptable step.</li>
+<li><b>Damped Newton</b> ([Y] p.34): $\x_{k+1}=\x_k-h_k[\hess f(\x_k)]^{-1}\grad f(\x_k)$, with the step $h_k$ chosen by a line search (Armijo backtracking: shrink the step until $f$ drops by a guaranteed fraction of what the slope predicts; <a href="#pm-linesearch">Part M.4</a>) early on and $h_k=1$ near the solution. Whenever $\hess f\succ0$ the direction is downhill, so the line search always finds an acceptable step.</li>
 <li><b>Hessian modification</b> ([FR] pp.47–49): if $\hess f(\x_k)$ is not positive definite, replace it by a positive definite matrix, e.g. $\hess f(\x_k)+\nu I$ with $\nu\gt0$ large enough (Levenberg–Marquardt style), or a modified $LDL^\top$ factorization. As $\nu\to\infty$ the step turns into a short gradient-descent step.</li>
 <li><b>Cost</b>: each step needs the $\tfrac12n(n+1)$ second derivatives and an $n\times n$ solve (about $\frac16n^3$ multiplications). For $n=10^6$ that is out of the question. This is what quasi-Newton methods (Chapter 3) remove.</li>
 <li><b>Degenerate minimizers</b>: if $\hess f(\x^\star)$ is singular, (N2) fails and the rate can drop to linear. For $f(x)=x^4$: $x_{k+1}=x_k-\frac{4x_k^3}{12x_k^2}=\tfrac23x_k$.</li>
@@ -6935,16 +6951,24 @@ By induction from $r_0\lt\bar r$, this holds for every $k$, and $r_{k+1}\le\frac
 <section class="ch" id="p10-quasi-newton" data-level="n" data-min="40" data-title="Quasi-Newton: SR1, DFP, BFGS" data-src="Lecture 14 (29 Sep); Book Ch. 18 §3; [FR] §3.2 (p.49–56): (3.2.1)–(3.2.14), Thm 3.2.1 (p.51), Thm 3.2.2 (p.54)">
 <h2>Quasi-Newton methods: learning curvature from gradients</h2>
 <div class="opener">
-<p>Quasi-Newton methods keep a matrix $H_k$ that approximates the <i>inverse</i> Hessian and correct it after every step using only how the gradient changed.</p>
-<p>They need no second derivatives, cost $O(n^2)$ per step instead of $O(n^3)$, always go downhill, and still converge superlinearly. BFGS is the default unconstrained optimizer in most software.</p>
+<p>Quasi-Newton methods (Newton-like: they imitate Newton without computing the Hessian) keep a matrix $H_k$ that approximates the <i>inverse</i> Hessian and correct it after every step using only how the gradient changed.</p>
+<p>They need no second derivatives, cost $O(n^2)$ per step instead of $O(n^3)$, always go downhill, and still converge superlinearly (the ratio of successive errors tends to zero). BFGS is the default unconstrained optimizer in most software.</p>
 <p>Learning a city by walking: every street you walk teaches you how far things really are in that direction. After enough walks in enough directions, your mental map is accurate.</p>
+</div>
+
+<div class="box plain" data-k="In plain words">
+<p>Problem: Newton needs the Hessian and an $n\times n$ solve every step, which is too costly for large $n$.</p>
+<p>The idea: keep a matrix $H_k$ that approximates the inverse Hessian, and fix it after each step using only the step $\boldsymbol\delta_k=\x_{k+1}-\x_k$ and the gradient change $\boldsymbol\gamma_k=\g_{k+1}-\g_k$.</p>
+<p>The rule that every update must obey is the secant condition $H_{k+1}\boldsymbol\gamma_k=\boldsymbol\delta_k$: the new matrix must map the observed gradient change back to the observed step. SR1, DFP and BFGS are three different ways to satisfy it.</p>
+<p>Search direction: $\d_k=-H_k\g_k$, followed by a line search. If $H_k$ is positive definite this is always downhill. DFP and BFGS keep $H_k$ positive definite as long as $\boldsymbol\delta_k^\top\boldsymbol\gamma_k\gt0$, which a Wolfe line search guarantees (this is the $s^\top y\gt0$ of <a href="#pm-linesearch">Part M.4</a>).</p>
+<p>For the exam: write the three update formulas, check the secant condition by hand, do one BFGS update on a $2\times2$ example, and reproduce the proofs for SR1 termination and for DFP positive definiteness.</p>
 </div>
 
 <div class="prose">
 <h3>The idea</h3>
 <p>Every step gives free curvature information. In [FR] notation, with $\g_k=\grad f(\x_k)$, define the <b>step</b> and the <b>gradient change</b> ([FR] (3.2.2)–(3.2.3)):
 $$\boldsymbol\delta_k=\x_{k+1}-\x_k,\qquad\boldsymbol\gamma_k=\g_{k+1}-\g_k .$$
-By Taylor's theorem for the gradient, $\boldsymbol\gamma_k=G\boldsymbol\delta_k+o(\norm{\boldsymbol\delta_k})$, where $G$ is the Hessian ([FR] (3.2.4)). For a quadratic with Hessian $G$ this is <b>exact</b>: $\boldsymbol\gamma_k=G\boldsymbol\delta_k$ ([FR] (3.2.8)). So the true inverse Hessian maps $\boldsymbol\gamma_k$ to $\boldsymbol\delta_k$. In one dimension, $\gamma/\delta$ is just a finite-difference estimate of $f''$: this is the old <b>secant method</b>.</p>
+By Taylor's theorem for the gradient, $\boldsymbol\gamma_k=G\boldsymbol\delta_k+o(\norm{\boldsymbol\delta_k})$, where $G$ is the Hessian ([FR] (3.2.4)) and $o(\norm{\boldsymbol\delta_k})$ is an error that shrinks faster than $\norm{\boldsymbol\delta_k}$. For a quadratic with Hessian $G$ this is <b>exact</b>: $\boldsymbol\gamma_k=G\boldsymbol\delta_k$ ([FR] (3.2.8)). So the true inverse Hessian maps $\boldsymbol\gamma_k$ to $\boldsymbol\delta_k$. In one dimension, $\gamma/\delta$ is just a finite-difference estimate of $f''$: this is the old <b>secant method</b> (Newton's root-finding rule with the derivative replaced by the slope between the last two points).</p>
 </div>
 <dl class="notation"><span class="label">Notation for this chapter ([FR] §3.2)</span>
 <dt>$H_k$</dt><dd>symmetric matrix approximating $[\hess f]^{-1}$, the <b>inverse</b> Hessian; usually $H_1=I$</dd>
@@ -6975,7 +6999,7 @@ This is $n$ equations for the $\tfrac12n(n+1)$ unknowns of a symmetric $H_{k+1}$
 
 <div class="prose">
 <h3>Rank one: SR1</h3>
-<p>Try the simplest symmetric correction, a rank-one matrix: $H_{k+1}=H+a\u\u^\top$ (dropping the index $k$ on the right, as [FR] does, (3.2.6)). The secant condition requires
+<p>Try the simplest symmetric correction, a rank-one matrix (a matrix $a\u\u^\top$ built from one vector, so it changes $H$ along one direction only): $H_{k+1}=H+a\u\u^\top$ (dropping the index $k$ on the right, as [FR] does, (3.2.6)). The secant condition requires
 $$H\boldsymbol\gamma+a\,\u(\u^\top\boldsymbol\gamma)=\boldsymbol\delta,\ \text{ i.e. }$$ $$a(\u^\top\boldsymbol\gamma)\,\u=\boldsymbol\delta-H\boldsymbol\gamma .$$
 So $\u$ must be parallel to $\boldsymbol\delta-H\boldsymbol\gamma$. Take $\u=\boldsymbol\delta-H\boldsymbol\gamma$; then $a\,\u^\top\boldsymbol\gamma=1$, which gives the <b>symmetric rank-one formula</b> ([FR] (3.2.7)):
 $$H_{k+1}^{\rm SR1}=H+\frac{(\boldsymbol\delta-H\boldsymbol\gamma)(\boldsymbol\delta-H\boldsymbol\gamma)^\top}{(\boldsymbol\delta-H\boldsymbol\gamma)^\top\boldsymbol\gamma}.$$</p>
@@ -7000,7 +7024,7 @@ $$H_{k+1}^{\rm DFP}=H+\frac{\boldsymbol\delta\boldsymbol\delta^\top}{\boldsymbol
 <div class="example">
 <p class="problem">Prove [FR] Theorem 3.2.2. (Examinable.)</p>
 <ol class="steps">
-<li><p>Since $H\succ0$, write $H=LL^\top$ with $L$ invertible (Cholesky). Take any $\z\ne\0$ and set $\a=L^\top\z$, $\b=L^\top\boldsymbol\gamma$. Then $\z^\top H\z=\a^\top\a$, $\z^\top H\boldsymbol\gamma=\a^\top\b$ and $\boldsymbol\gamma^\top H\boldsymbol\gamma=\b^\top\b$.</p><p class="why-step">The factorization turns every $H$-weighted product into an ordinary dot product, so Cauchy–Schwarz becomes available.</p></li>
+<li><p>Since $H\succ0$, write $H=LL^\top$ with $L$ invertible (Cholesky factorization: every positive definite matrix has one). Take any $\z\ne\0$ and set $\a=L^\top\z$, $\b=L^\top\boldsymbol\gamma$. Then $\z^\top H\z=\a^\top\a$, $\z^\top H\boldsymbol\gamma=\a^\top\b$ and $\boldsymbol\gamma^\top H\boldsymbol\gamma=\b^\top\b$.</p><p class="why-step">The factorization turns every $H$-weighted product into an ordinary dot product, so Cauchy–Schwarz ($(\a^\top\b)^2\le\norm\a^2\norm\b^2$) becomes available.</p></li>
 <li><p>Therefore $$\z^\top H_{k+1}\z=\underbrace{\a^\top\a-\frac{(\a^\top\b)^2}{\b^\top\b}}_{\ge0}+\underbrace{\frac{(\z^\top\boldsymbol\delta)^2}{\boldsymbol\delta^\top\boldsymbol\gamma}}_{\ge0}.$$</p><p class="why-step">The first bracket is $\ge0$ by Cauchy–Schwarz, $(\a^\top\b)^2\le\norm\a^2\norm\b^2$. The second is a square divided by the positive number $\boldsymbol\delta^\top\boldsymbol\gamma$.</p></li>
 <li><p>Both can vanish only if $\a\parallel\b$, i.e. $\z=c\boldsymbol\gamma$ with $c\ne0$ ($L^\top$ is invertible). But then the second term is $c^2(\boldsymbol\gamma^\top\boldsymbol\delta)^2/\boldsymbol\delta^\top\boldsymbol\gamma=c^2\,\boldsymbol\delta^\top\boldsymbol\gamma\gt0$. So $\z^\top H_{k+1}\z\gt0$ for every $\z\ne\0$. Induction on $k$ finishes the proof.</p><p class="why-step">The two terms are never zero together: this is exactly where $\boldsymbol\delta^\top\boldsymbol\gamma\gt0$ is needed.</p></li>
 </ol>
@@ -7010,9 +7034,9 @@ $$H_{k+1}^{\rm DFP}=H+\frac{\boldsymbol\delta\boldsymbol\delta^\top}{\boldsymbol
 <ul>
 <li><b>Quadratic</b> with $G\succ0$: $\boldsymbol\delta^\top\boldsymbol\gamma=\boldsymbol\delta^\top G\boldsymbol\delta\gt0$.</li>
 <li><b>Exact line search</b> along a descent direction: $\g_{k+1}^\top\boldsymbol\delta_k=0$ and $\g_k^\top\boldsymbol\delta_k\lt0$, so $\boldsymbol\delta^\top\boldsymbol\gamma=-\g_k^\top\boldsymbol\delta_k\gt0$.</li>
-<li><b>Wolfe line search</b> (Part 6, Lecture 7): the curvature condition $\g_{k+1}^\top\d_k\ge c_2\,\g_k^\top\d_k$ with $c_2\lt1$ gives $\boldsymbol\delta^\top\boldsymbol\gamma=\alpha_k(\g_{k+1}-\g_k)^\top\d_k\ge\alpha_k(c_2-1)\g_k^\top\d_k\gt0$.</li>
+<li><b>Wolfe line search</b> (Part 6, Lecture 7; <a href="#pm-linesearch">Part M.4</a>: Armijo decrease plus a curvature condition on the slope at the new point): the curvature condition $\g_{k+1}^\top\d_k\ge c_2\,\g_k^\top\d_k$ with $c_2\lt1$ gives $\boldsymbol\delta^\top\boldsymbol\gamma=\alpha_k(\g_{k+1}-\g_k)^\top\d_k\ge\alpha_k(c_2-1)\g_k^\top\d_k\gt0$.</li>
 </ul>
-<p>This is why quasi-Newton methods are paired with Wolfe line searches: they <i>guarantee</i> that DFP and BFGS stay positive definite.</p>
+<p>The quantity $\boldsymbol\delta^\top\boldsymbol\gamma$ is the $s^\top y$ of Part M.4 (step dotted with gradient change). This is why quasi-Newton methods are paired with Wolfe line searches: they <i>guarantee</i> that DFP and BFGS stay positive definite.</p>
 </div>
 
 <div class="prose">
@@ -7025,7 +7049,7 @@ Equivalently, for $B=H^{-1}$: $\displaystyle B_{k+1}^{\rm BFGS}=B+\frac{\boldsym
 <div class="prose">
 <p><b>Secant check</b> (write $\rho=\boldsymbol\delta^\top\boldsymbol\gamma$, a scalar): $H_{k+1}\boldsymbol\gamma=H\boldsymbol\gamma+\big(1+\frac{\boldsymbol\gamma^\top H\boldsymbol\gamma}{\rho}\big)\boldsymbol\delta-\frac{\boldsymbol\delta(\boldsymbol\gamma^\top H\boldsymbol\gamma)+H\boldsymbol\gamma\,\rho}{\rho}=\boldsymbol\delta$. In $B$-form it's even quicker: $B_{k+1}\boldsymbol\delta=B\boldsymbol\delta+\boldsymbol\gamma-B\boldsymbol\delta=\boldsymbol\gamma$.</p>
 <p><b>Duality.</b> The $B$-form of BFGS is the DFP formula with $H\leftrightarrow B$ and $\boldsymbol\delta\leftrightarrow\boldsymbol\gamma$ swapped ([FR] p.55: the two are <i>dual</i> or complementary; (3.2.14) is the dual $B$-form of DFP). Because Theorem 3.2.2's proof only needs a positive definite matrix and $\boldsymbol\gamma^\top\boldsymbol\delta\gt0$, it applies to $B_{k+1}^{\rm BFGS}$ too, so $H^{\rm BFGS}_{k+1}=(B^{\rm BFGS}_{k+1})^{-1}\succ0$ whenever $\boldsymbol\delta^\top\boldsymbol\gamma\gt0$.</p>
-<p><b>Properties of DFP and BFGS</b> ([FR] p.54, proved in [FR] §3.3–3.4). On a quadratic with exact line searches: (i) termination in at most $n$ iterations with $H_{n+1}=G^{-1}$; (ii) the hereditary property; (iii) the directions are $G$-conjugate, and with $H_1=I$ the iterates are exactly those of conjugate gradients (Parts 8–9). On general functions: (iv) $H_k\succ0$; (v) about $3n^2$ multiplications per iteration; (vi) superlinear local convergence; (vii) global convergence on strictly convex functions with exact line searches. BFGS is the more robust of the two with inexact line searches and is the standard choice.</p>
+<p><b>Properties of DFP and BFGS</b> ([FR] p.54, proved in [FR] §3.3–3.4). On a quadratic with exact line searches: (i) termination in at most $n$ iterations with $H_{n+1}=G^{-1}$; (ii) the hereditary property; (iii) the directions are $G$-conjugate (that is, $\boldsymbol\delta_i^\top G\boldsymbol\delta_j=0$ for $i\ne j$), and with $H_1=I$ the iterates are exactly those of conjugate gradients (Parts 8–9). On general functions: (iv) $H_k\succ0$; (v) about $3n^2$ multiplications per iteration; (vi) superlinear local convergence; (vii) global convergence on strictly convex functions with exact line searches. BFGS is the more robust of the two with inexact line searches and is the standard choice.</p>
 </div>
 
 <div class="example">
@@ -7111,18 +7135,26 @@ $H_2=I+\frac{43}{162}\begin{pmatrix}1&2\\2&4\end{pmatrix}-\frac9{162}\begin{pmat
 <p>Walking, cycling, driving and flying all get you there; which is fastest depends on the distance, the traffic, and how long it takes to get to the airport.</p>
 </div>
 
+<div class="box plain" data-k="In plain words">
+<p>Problem: given a task, which method should you use?</p>
+<p>The idea: every method trades cost per step against the number of steps. Gradient descent is cheap and slow (linear, depends on $\kappa$). CG is cheap and faster on quadratics. Newton takes few steps but each is $O(n^3)$. BFGS sits between: about $3n^2$ work per step and superlinear convergence.</p>
+<p>Read the table by columns: what the method needs (gradient only, or also the Hessian), the work and storage per step, how it does on a quadratic, and its rate near the solution.</p>
+<p>For the exam: given $n$ and the cost of gradients and Hessians, compare the methods in terms of cost, storage and rate, and recommend one with reasons.</p>
+</div>
+
 <div class="table-wrap"><table>
 <thead><tr><th>Method</th><th>Uses</th><th>Work per step</th><th>Storage</th><th>On a quadratic</th><th>Local rate (general $f$)</th><th>From far away</th></tr></thead>
 <tbody>
 <tr><td>Gradient descent</td><td>$\g$</td><td>$O(n)$ + 1 gradient</td><td>$O(n)$</td><td>never exact; factor $\frac{\kappa-1}{\kappa+1}$ per step</td><td>linear</td><td>safe with Armijo/Wolfe</td></tr>
-<tr><td>CG (linear, Parts 8–9)</td><td>$A\v$ products</td><td>1 mat-vec + $O(n)$</td><td>$O(n)$</td><td>$\le n$ steps; factor $\frac{\sqrt\kappa-1}{\sqrt\kappa+1}$</td><td>—</td><td>—</td></tr>
-<tr><td>Nonlinear CG (Fletcher–Reeves)</td><td>$\g$</td><td>$O(n)$ + line search</td><td>$O(n)$</td><td>$\le n$ steps (exact l.s.)</td><td>linear, often fast</td><td>safe with strong Wolfe</td></tr>
+<tr><td>CG (linear, Parts 8–9)</td><td>$A\v$ products</td><td>1 mat-vec (matrix times vector) + $O(n)$</td><td>$O(n)$</td><td>$\le n$ steps; factor $\frac{\sqrt\kappa-1}{\sqrt\kappa+1}$</td><td>—</td><td>—</td></tr>
+<tr><td>Nonlinear CG (Fletcher–Reeves, CG extended to general $f$)</td><td>$\g$</td><td>$O(n)$ + line search</td><td>$O(n)$</td><td>$\le n$ steps (exact l.s.)</td><td>linear, often fast</td><td>safe with strong Wolfe</td></tr>
 <tr><td>Newton</td><td>$\g$, $\hess f$</td><td>$\frac16n^3$ + Hessian</td><td>$O(n^2)$</td><td>1 step</td><td>quadratic</td><td>may diverge: damp and modify</td></tr>
 <tr><td>Quasi-Newton (BFGS)</td><td>$\g$</td><td>$\approx3n^2$ + line search</td><td>$O(n^2)$</td><td>$\le n$ steps (exact l.s.)</td><td>superlinear</td><td>safe with Wolfe</td></tr>
 </tbody></table></div>
 
 <div class="prose">
 <h3>How the methods are related</h3>
+<p>In the table, "exact l.s." means exact line search, $O(n^2)$ means work growing like $n^2$, and "factor" is the error-reduction ratio per step (<a href="#pm-rates">Part M.5</a>).</p>
 <ul>
 <li><b>CG = steepest descent + memory</b>: $\d_k=-\g_k+\beta_k\d_{k-1}$.</li>
 <li><b>Newton = steepest descent in the Hessian's metric</b>: it rescales space so the level sets become circles, which is why $\kappa$ disappears.</li>
@@ -7622,7 +7654,7 @@ So $\sum\norm{\g_k}^2\lt\infty$, hence $\norm{\g_k}\to0$, and $\min_{k\le N}\nor
 </div>
 <div class="prob" data-id="exam-a-p2" data-ans="Neither: an inflection point" data-choices="Local minimum|Local maximum|Neither: an inflection point">
 <div class="stem"><p>For the same $f(x)=\tfrac34x^4-x^3+2$, what is $x=0$?</p></div>
-<div class="hint"><p>$f''(0)=0$, so look at the sign of $f'$ just left and right of 0.</p></div>
+<div class="hint"><p>$f''(0)=0$, so look at the sign of $f'$ immediately left and right of 0.</p></div>
 <div class="sol"><p>$f'(x)=3x^2(x-1)\lt0$ on both sides of 0 (near 0), so $f$ is decreasing through 0: neither a minimum nor a maximum. Equivalently, $f(x)-f(0)=x^3(\tfrac34x-1)$ changes sign at 0.</p></div>
 </div>
 <div class="prob" data-id="exam-a-p3" data-ans="1/3" data-labels="local max value">
