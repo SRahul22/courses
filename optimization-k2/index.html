@@ -5333,10 +5333,15 @@ Eigenvalues: $\lambda=2$ and $\lambda=4$.</p><p class="why-step">The characteris
 <li><p>Check each eigenpair with one product:
 $$A\begin{pmatrix}1\\1\end{pmatrix}=\begin{pmatrix}4\\4\end{pmatrix}\ \Rightarrow\ \lambda=4,\qquad A\begin{pmatrix}1\\-1\end{pmatrix}=\begin{pmatrix}2\\-2\end{pmatrix}\ \Rightarrow\ \lambda=2.$$
 The two eigenvectors are orthogonal, as the spectral theorem promises.</p><p class="why-step">Always verify an eigenpair by one matrix–vector product.</p></li>
-<li><p>Both eigenvalues are positive, so $A\succ0$, with $m=2$, $L=4$, $\kappa=2$.</p><p class="why-step">Positive definiteness is a statement about eigenvalues.</p></li>
-<li><p>First $A\v=(2,-2)^\top$. Then
+<li><p>Both eigenvalues are positive, so $A\succ0$. The extreme values are:</p>
+<ul>
+<li>Smallest eigenvalue: $m=2$.</li>
+<li>Largest eigenvalue: $L=4$.</li>
+<li>Condition number: $\kappa=2$.</li>
+</ul><p class="why-step">Positive definiteness is a statement about eigenvalues.</p></li>
+<li><p>First compute $A\v=(2,-2)^\top$. Then take the dot product with $\u$:
 $$\u^\top A\v=1\cdot2+0\cdot(-2)=2.$$
-This is not $0$, so $\u$ and $\v$ are not $A$-conjugate, even though they were chosen close to the eigen-directions.</p><p class="why-step">Compute $A\v$ once, then take an ordinary dot product.</p></li>
+The result is not $0$, so $\u$ and $\v$ are not $A$-conjugate. They were chosen close to the eigen-directions, yet that is not enough.</p><p class="why-step">Compute $A\v$ once, then take an ordinary dot product.</p></li>
 </ol>
 </div>
 
@@ -5350,7 +5355,8 @@ This is not $0$, so $\u$ and $\v$ are not $A$-conjugate, even though they were c
 <p>Find a nonzero vector $\v$ that is $A$-conjugate to $\u$. Then check whether $\v$ is also orthogonal to $\u$.</p>
 </div>
 <ol class="steps">
-<li><p>$A\v=(v_1,\,4v_2)^\top$, so $\u^\top A\v=2v_1+4v_2$.</p><p class="why-step">Multiply $A$ into $\v$ first, then take the dot product with $\u$.</p></li>
+<li><p>Multiplying $A$ into $\v$ gives $A\v=(v_1,\,4v_2)^\top$.</p>
+<p>Taking the dot product with $\u$ gives the number $\u^\top A\v=2v_1+4v_2$.</p><p class="why-step">Multiply $A$ into $\v$ first, then take the dot product with $\u$.</p></li>
 <li><p>Conjugacy needs $2v_1+4v_2=0$, which means $v_1=-2v_2$. Choose $v_2=-1$:
 $$\v=(2,-1)^\top.$$</p><p class="why-step">One equation in two unknowns leaves a free choice; any nonzero multiple of this $\v$ also works.</p></li>
 <li><p>Check:
@@ -5366,7 +5372,8 @@ So $\u$ and $\v$ are $A$-conjugate but not perpendicular.</p><p class="why-step"
 $$\begin{aligned}\operatorname{tr}B&=2,\quad \det B=1-9=-8\\ \lambda^2-2\lambda-8&=0 &&\text{(characteristic eq.)}\\ \lambda&=4\ \text{or}\ \lambda=-2\end{aligned}$$
 <p>Test the eigenvector of $-2$, $\x=(1,-1)^\top$:</p>
 $$\x^\top B\x=(1,-1)\begin{pmatrix}-2\\2\end{pmatrix}=-4\lt0.$$
-<p>Conclusion: $B$ is not positive definite. Rule for $2\times2$: positive definite exactly when trace $\gt0$ and determinant $\gt0$.</p>
+<p>Conclusion: $B$ is not positive definite.</p>
+<p>Rule for a symmetric $2\times2$ matrix: it is positive definite exactly when the trace is positive and the determinant is positive.</p>
 </div>
 
 <details class="deeper"><summary>Go deeper: why eigenvectors for different eigenvalues are perpendicular</summary>
@@ -5460,8 +5467,8 @@ So $c=2$. (This is the $\v=(2,-1)^\top$ of the second worked example.)</p></div>
 </div>
 <ol class="takeaways">
 <li>A symmetric matrix $A$ has real eigenvalues and orthonormal eigenvectors. It splits as $A=V\Lambda V^\top$, and the number $\x^\top A\x$ is the eigenvalue-weighted sum $\sum\lambda_i(\v_i^\top\x)^2$.</li>
-<li>$A\succ0$ means all eigenvalues are positive. Then $\x^\top A\x$ is trapped between $m\norm{\x}^2$ and $L\norm{\x}^2$, and the condition number is $\kappa=L/m$.</li>
-<li>The number $\u^\top A\v$ is the $A$-inner product. Two vectors are $A$-conjugate when it is $0$. That differs from ordinary orthogonality, $\u^\top\v=0$, unless $A=I$ or the vectors are eigenvectors.</li>
+<li>$A\succ0$ means all eigenvalues are positive. Then $\x^\top A\x$ is trapped between $m\norm{\x}^2$ and $L\norm{\x}^2$. The condition number is the ratio of the extreme eigenvalues, $\kappa=L/m$.</li>
+<li>The number $\u^\top A\v$ is the $A$-inner product, and two vectors are $A$-conjugate when it is $0$. That differs from ordinary orthogonality, $\u^\top\v=0$, unless $A$ is the identity or the vectors are eigenvectors.</li>
 </ol>
 <div class="quiz" data-id="pm-linalg-quiz">
 <div class="q"><div class="q-text"><p>Which matrix is positive definite?</p></div>
@@ -5602,7 +5609,8 @@ $$f(\x+\d)\approx f(\x)-\varepsilon\norm{\g}^2\lt f(\x).$$</li>
 <ul>
 <li>Gradient: $\grad f=(2x_1,-2x_2)^\top$, which is $\0$ at the origin.</li>
 <li>Hessian: $\operatorname{diag}(2,-2)$.</li>
-<li>Along $x_1$, $f$ rises to $t^2$. Along $x_2$, $f$ falls to $-t^2$.</li>
+<li>Moving a distance $t$ along the $x_1$ axis, $f$ rises to $t^2$.</li>
+<li>Moving a distance $t$ along the $x_2$ axis, $f$ falls to $-t^2$.</li>
 </ul>
 <p>Conclusion: the origin is a saddle.</p>
 </div>
@@ -5615,7 +5623,12 @@ $$f(\x+\d)\approx f(\x)-\varepsilon\norm{\g}^2\lt f(\x).$$</li>
 <li>Linear term: $\b=(1,2)^\top$.</li>
 <li>Starting point: $\x_0=(2,1)^\top$.</li>
 </ul>
-<p>Find the gradient $\g_0$ at $\x_0$, the minimizer $\x^\star$ and the minimum value $f^\star$ of $f(\x)=\tfrac12\x^\top A\x-\b^\top\x$.</p>
+<p>Consider $f(\x)=\tfrac12\x^\top A\x-\b^\top\x$. Find three things.</p>
+<ul>
+<li>The gradient $\g_0$ at the starting point.</li>
+<li>The minimizer $\x^\star$.</li>
+<li>The minimum value $f^\star$.</li>
+</ul>
 </div>
 <ol class="steps">
 <li><p>Matrix–vector product, then subtract $\b$:
@@ -5735,7 +5748,10 @@ The first entry is $0$ but the second is not, so $(1,1)$ is not stationary.</p><
 </div>
 <ol class="takeaways">
 <li>Taylor to second order: $f(\x+\d)\approx f+\g^\top\d+\tfrac12\d^\top\grad^2f\,\d$. The first correction is the slope, the second is the curvature.</li>
-<li>For $f=\tfrac12\x^\top A\x-\b^\top\x$ the gradient is $\g=A\x-\b$ and the Hessian is $A$. When $A\succ0$ the minimizer is $\x^\star=A^{-1}\b$, and the minimum value is $f^\star=-\tfrac12\b^\top A^{-1}\b$.</li>
+<li>For the quadratic $f=\tfrac12\x^\top A\x-\b^\top\x$, the gradient is $\g=A\x-\b$ and the Hessian is $A$. When $A\succ0$ the minimizer is
+$$\x^\star=A^{-1}\b,$$
+and the minimum value is
+$$f^\star=-\tfrac12\b^\top A^{-1}\b.$$</li>
 <li>Necessary for a minimizer: zero gradient ($\g=\0$) and Hessian $\succeq0$. Sufficient: zero gradient and Hessian $\succ0$. An indefinite Hessian at a stationary point means a saddle.</li>
 </ol>
 <div class="quiz" data-id="pm-calculus-quiz">
@@ -5826,7 +5842,8 @@ The sandwich is the two-sided bound of Chapter 1 applied to $\d$.</p>
 <li>Linear term: $\b=(1,0)^\top$.</li>
 <li>Test point for the sandwich: $\y=\0$.</li>
 </ul>
-<p>Find $m$, $L$, $\kappa$, the minimizer $\x^\star$ and the minimum value $f^\star$. Then check the sandwich at $\y=\0$.</p>
+<p>Find the extreme eigenvalues $m$ and $L$, the condition number $\kappa$, the minimizer $\x^\star$ and the minimum value $f^\star$.</p>
+<p>Then check the sandwich inequality at the test point.</p>
 </div>
 <ol class="steps">
 <li><ul>
@@ -5931,11 +5948,11 @@ The eigenvalues are $6$ and $-2$. The smallest is $-2$, so $f$ is not convex.</p
 
 <div class="dodont">
 <ul><li>Use "convex plus stationary implies global minimum" to stop worrying about local traps</li><li>Read $m,L$ off the eigenvalues for a quadratic</li><li>Use $f-f^\star=\tfrac12\norm{\x-\x^\star}_A^2$ to turn function gaps into errors</li></ul>
-<ul><li>Applying "stationary implies global" to nonconvex functions</li><li>Confusing $m$ (strong convexity, a lower curvature bound) with $L$ (smoothness, an upper bound)</li><li>Expecting $\kappa\lt1$. In fact $\kappa\ge1$ always, and $\kappa=1$ only when $A$ is a multiple of the identity</li></ul>
+<ul><li>Applying "stationary implies global" to nonconvex functions</li><li>Confusing $m$ (strong convexity, a lower curvature bound) with $L$ (smoothness, an upper bound)</li><li>Expecting a condition number below one. In fact $\kappa\ge1$ always, and $\kappa=1$ only when $A$ is a multiple of the identity</li></ul>
 </div>
 <ol class="takeaways">
 <li>Convex means the graph stays above every tangent: $f(\y)\ge f(\x)+\g(\x)^\top(\y-\x)$. Hence a stationary point is a global minimizer.</li>
-<li>Every Hessian eigenvalue lies between $m$ and $L$. For the quadratic, $m=\lambda_{\min}(A)$ and $L=\lambda_{\max}(A)$, and the condition number is $\kappa=L/m$.</li>
+<li>Every Hessian eigenvalue lies between $m$ and $L$. For the quadratic, $m$ and $L$ are the smallest and largest eigenvalues of $A$, and the condition number is $\kappa=L/m$.</li>
 <li>On the quadratic, the function gap is half the squared $A$-norm of the error: $f(\x)-f^\star=\tfrac12\norm{\x-\x^\star}_A^2$.</li>
 </ol>
 <div class="quiz" data-id="pm-convex-quiz">
@@ -6015,7 +6032,7 @@ $$\g_{k+1}=A(\x_k+\alpha_k\d_k)-\b=\g_k+\alpha_kA\d_k.$$</li>
 <p><b>What this says.</b> When you stop at the lowest point along a line, the slope along that line is zero there, so the new gradient is perpendicular to the line you walked. This is the fact behind both the zig-zag in Chapter 5 and the "conjugate" idea in Part 8.</p>
 <div class="panel try">
 <span class="label">Try it</span>
-<p class="task">This is $\phi(\alpha)=f(\x_k+\alpha\d)$: the function seen along one ray. Drag the black point $\x_k$ and turn the direction $\d$ (angle measured from $-\grad f$). The small plot shows $\phi$, its slope at $\alpha=0$ (which is $\phi'(0)=\grad f(\x_k)^\top\d$), and the exact minimizer along the ray. Turn $\d$ past $90°$ from $-\grad f$ and watch $\phi'(0)$ turn positive: the direction is no longer downhill.</p>
+<p class="task">The plot shows the function seen along one ray, $\phi(\alpha)=f(\x_k+\alpha\d)$. Drag the black point to move the current point $\x_k$. Turn the direction $\d$; its angle is measured from $-\grad f$. The small plot shows $\phi$, its slope at the start of the ray, and the exact minimizer along the ray. The slope at the start is $\phi'(0)=\grad f(\x_k)^\top\d$. Turn $\d$ past $90°$ from $-\grad f$ and watch $\phi'(0)$ turn positive: the direction is no longer downhill.</p>
 <div class="widget" data-w="p6_slice"></div>
 </div>
 <h3>Inexact searches</h3>
@@ -6032,7 +6049,8 @@ $$\g_{k+1}=A(\x_k+\alpha_k\d_k)-\b=\g_k+\alpha_kA\d_k.$$</li>
 <div class="prose">
 <p><b>Small numbers.</b></p>
 <ul>
-<li>Function: $\phi(\alpha)=(1-2\alpha)^2$. This is $f(x)=x^2$ from $x=1$ along $d=-2$.</li>
+<li>Function along the ray: $\phi(\alpha)=(1-2\alpha)^2$.</li>
+<li>Where it comes from: $f(x)=x^2$, started at $x=1$ and moved in the direction $d=-2$.</li>
 <li>Value at the start: $\phi(0)=1$.</li>
 <li>Slope at the start: $\phi'(0)=-4$.</li>
 </ul>
@@ -6169,11 +6187,13 @@ $$\alpha=\tfrac26=\tfrac13.$$</p></div>
 </ul>
 <p>Which $\alpha$ is the first to satisfy Armijo?</p>
 </div>
-<div class="hint"><p>Armijo asks $f(1+\alpha d)\le1+0.1\,\alpha\,(-4)$. At $\alpha=1$: $f(-1)=1$ versus $0.6$.</p></div>
+<div class="hint"><p>Armijo asks that the new value $f(1+\alpha d)$ be at most $1+0.1\,\alpha\,(-4)$.</p><p>At $\alpha=1$ the new value is $f(-1)=1$, and the bound is $0.6$.</p></div>
 <div class="sol"><p>Test each trial step.</p>
 <ul>
 <li>$\alpha=1$: $1\le0.6$ is false.</li>
-<li>$\alpha=\tfrac12$: here $x=0$, so $f=0$. The bound is $1-0.2=0.8$, and $0\le0.8$ is true.</li>
+<li>$\alpha=\tfrac12$: the new point is $x=0$, so $f=0$.
+The bound is $1-0.2=0.8$.
+Since $0\le0.8$, the test passes.</li>
 </ul>
 <p>The first accepted step is $\tfrac12$.</p></div>
 </div>
@@ -6310,9 +6330,10 @@ Here $\ln$ is the natural logarithm. Both logs are negative, so the ratio is pos
 <p>Quadratic implies superlinear implies linear (near the limit). Sublinear convergence like $e_k=1/k$ is slower than every linear rate.</p>
 <p><b>Small numbers.</b> Three sequences.</p>
 <ul>
-<li>$e_k=2^{-k}$: the ratio $e_{k+1}/e_k$ is always $\tfrac12$. This is linear, with $\rho=\tfrac12$.</li>
+<li>$e_k=2^{-k}$: the ratio of consecutive errors is always $\tfrac12$. This is linear, with $\rho=\tfrac12$.</li>
 <li>$e_k=1/k$: the ratio is $k/(k+1)$, which tends to $1$. Sublinear.</li>
-<li>Start at $e_0=0.1$ and square at every step, $e_{k+1}=e_k^2$. The errors are $0.1,\ 0.01,\ 0.0001,\ 10^{-8}$. The number of correct digits goes $1,2,4,8$.</li>
+<li>Start at $e_0=0.1$ and square at every step, $e_{k+1}=e_k^2$. The errors are $0.1,\ 0.01,\ 0.0001,\ 10^{-8}$.</li>
+<li>The number of correct digits goes $1,2,4,8$.</li>
 </ul>
 </div>
 
@@ -6368,7 +6389,7 @@ $$\g_0^\top\g_0=2\kappa^2,\qquad \g_0^\top A\g_0=\kappa^2(1+\kappa).$$</li>
 $$\alpha_0=\frac{2}{1+\kappa}.$$</li>
 <li>New point:
 $$\x_1=\x_0-\alpha_0\g_0=\frac{\kappa-1}{\kappa+1}\,(\kappa,-1)^\top.$$</li>
-<li>The vector $(\kappa,-1)^\top$ has the same $A$-norm as $(\kappa,1)^\top$, since both have squared $A$-norm $\kappa^2+\kappa$.</li>
+<li>The vectors $(\kappa,-1)^\top$ and $(\kappa,1)^\top$ have the same $A$-norm. Both have squared $A$-norm $\kappa^2+\kappa$.</li>
 </ol>
 <p>Conclusion: the $A$-norm of the error shrinks by exactly $\tfrac{\kappa-1}{\kappa+1}$. The same computation with the sign flipped repeats at every following step. The theorem says no start does worse than this.</p>
 </details>
@@ -6442,7 +6463,7 @@ $$4^{-10}\approx9.5\times10^{-7}\le10^{-6},\qquad 4^{-9}\approx3.8\times10^{-6}\
 <ol class="takeaways">
 <li>Exact steepest descent has $\g_{k+1}\perp\g_k$ and zig-zags. On a quadratic it shrinks the gap $f-f^\star$ by the factor $\big(\tfrac{\kappa-1}{\kappa+1}\big)^2$ per step.</li>
 <li>Large $\kappa=L/m$ means factor near 1: very slow.</li>
-<li>Linear: $e_{k+1}\le\rho e_k$. Superlinear: the ratio $e_{k+1}/e_k$ tends to $0$. Quadratic: $e_{k+1}\le Ce_k^2$, and the correct digits double.</li>
+<li>Linear: the error shrinks by a fixed factor, $e_{k+1}\le\rho e_k$. Superlinear: the ratio $e_{k+1}/e_k$ tends to $0$. Quadratic: $e_{k+1}\le Ce_k^2$, and the correct digits double.</li>
 </ol>
 <div class="quiz" data-id="pm-rates-quiz">
 <div class="q"><div class="q-text"><p>Which sequence converges superlinearly but not quadratically?</p></div>
