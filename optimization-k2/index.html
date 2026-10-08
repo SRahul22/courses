@@ -5287,7 +5287,15 @@ $$\x^\top B\x=(1,-1)\begin{pmatrix}-2\\2\end{pmatrix}=-4\lt0.$$
 </div>
 
 <details class="deeper"><summary>Go deeper: why eigenvectors for different eigenvalues are perpendicular</summary>
-<p>Goal: show $\v_i^\top\v_j=0$ when $A\v_i=\lambda_i\v_i$, $A\v_j=\lambda_j\v_j$, $\lambda_i\ne\lambda_j$ and $A=A^\top$. Compute $\v_i^\top A\v_j$ in two ways.</p>
+<p><b>What we know.</b></p>
+<ul>
+<li>$A$ is symmetric: $A=A^\top$.</li>
+<li>$\v_i$ is an eigenvector with eigenvalue $\lambda_i$: $A\v_i=\lambda_i\v_i$.</li>
+<li>$\v_j$ is an eigenvector with eigenvalue $\lambda_j$: $A\v_j=\lambda_j\v_j$.</li>
+<li>The two eigenvalues are different: $\lambda_i\ne\lambda_j$.</li>
+</ul>
+<p><b>Goal.</b> Show that the two eigenvectors are perpendicular, that is, $\v_i^\top\v_j=0$.</p>
+<p><b>Plan.</b> Work out the single number $\v_i^\top A\v_j$ in two different ways, then compare the answers.</p>
 <ol>
 <li>Use $A\v_j=\lambda_j\v_j$:
 $$\v_i^\top A\v_j=\lambda_j\,\v_i^\top\v_j.$$</li>
