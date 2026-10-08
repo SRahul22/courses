@@ -6968,7 +6968,7 @@ By induction from $r_0\lt\bar r$, this holds for every $k$, and $r_{k+1}\le\frac
 <h3>The idea</h3>
 <p>Every step gives free curvature information. In [FR] notation, with $\g_k=\grad f(\x_k)$, define the <b>step</b> and the <b>gradient change</b> ([FR] (3.2.2)–(3.2.3)):
 $$\boldsymbol\delta_k=\x_{k+1}-\x_k,\qquad\boldsymbol\gamma_k=\g_{k+1}-\g_k .$$
-By Taylor's theorem for the gradient, $\boldsymbol\gamma_k=G\boldsymbol\delta_k+o(\norm{\boldsymbol\delta_k})$, where $G$ is the Hessian ([FR] (3.2.4)) and $o(\norm{\boldsymbol\delta_k})$ is an error that shrinks faster than $\norm{\boldsymbol\delta_k}$. For a quadratic with Hessian $G$ this is <b>exact</b>: $\boldsymbol\gamma_k=G\boldsymbol\delta_k$ ([FR] (3.2.8)). So the true inverse Hessian maps $\boldsymbol\gamma_k$ to $\boldsymbol\delta_k$. In one dimension, $\gamma/\delta$ is just a finite-difference estimate of $f''$: this is the old <b>secant method</b> (Newton's root-finding rule with the derivative replaced by the slope between the last two points).</p>
+By Taylor's theorem for the gradient, $\boldsymbol\gamma_k=G\boldsymbol\delta_k+o(\norm{\boldsymbol\delta_k})$, where $G$ is the Hessian ([FR] (3.2.4)) and $o(\norm{\boldsymbol\delta_k})$ is an error that shrinks faster than $\norm{\boldsymbol\delta_k}$. For a quadratic with Hessian $G$ this is <b>exact</b>: $\boldsymbol\gamma_k=G\boldsymbol\delta_k$ ([FR] (3.2.8)). So the true inverse Hessian maps $\boldsymbol\gamma_k$ to $\boldsymbol\delta_k$. In one dimension, $\gamma/\delta$ is a finite-difference estimate of $f''$: this is the old <b>secant method</b> (Newton's root-finding rule with the derivative replaced by the slope between the last two points).</p>
 </div>
 <dl class="notation"><span class="label">Notation for this chapter ([FR] §3.2)</span>
 <dt>$H_k$</dt><dd>symmetric matrix approximating $[\hess f]^{-1}$, the <b>inverse</b> Hessian; usually $H_1=I$</dd>
@@ -7208,7 +7208,7 @@ $H_2=I+\frac{43}{162}\begin{pmatrix}1&2\\2&4\end{pmatrix}-\frac9{162}\begin{pmat
 </div>
 
 <div class="dodont">
-<ul><li>Compare methods on four axes: information needed, work per step, storage, rate (local and from far away)</li><li>Count derivative evaluations, not just iterations</li><li>Recommend CG for large sparse quadratics, BFGS for moderate $n$ with gradients, damped Newton when Hessians are cheap</li></ul>
+<ul><li>Compare methods on four axes: information needed, work per step, storage, rate (local and from far away)</li><li>Count derivative evaluations, not only iterations</li><li>Recommend CG for large sparse quadratics, BFGS for moderate $n$ with gradients, damped Newton when Hessians are cheap</li></ul>
 <ul><li>Judging a method only by its iteration count</li><li>Recommending Newton or BFGS when $n^2$ numbers cannot even be stored</li><li>Forgetting that every fast local rate needs a globalization (line search) to be trusted from a far start</li></ul>
 </div>
 <ol class="takeaways">
@@ -7225,7 +7225,7 @@ $H_2=I+\frac{43}{162}\begin{pmatrix}1&2\\2&4\end{pmatrix}-\frac9{162}\begin{pmat
 <div class="q"><div class="q-text"><p>Which method has the lowest storage requirement?</p></div>
 <div class="o">BFGS<div class="e">It stores an $n\times n$ matrix $H_k$.</div></div>
 <div class="o">Newton<div class="e">It stores (and factorizes) the $n\times n$ Hessian.</div></div>
-<div class="o ok">Nonlinear CG<div class="e">Just a few vectors: $\x_k$, $\g_k$, $\d_{k-1}$: $O(n)$.</div></div>
+<div class="o ok">Nonlinear CG<div class="e">Only a few vectors: $\x_k$, $\g_k$, $\d_{k-1}$: $O(n)$.</div></div>
 </div>
 <div class="q"><div class="q-text"><p>Pure Newton diverges on $\sqrt{1+x^2}+\sqrt{1+y^2}$ from $(1.3,0.6)$, but BFGS converges. Why can BFGS succeed where Newton fails?</p></div>
 <div class="o">BFGS uses the exact Hessian more cleverly<div class="e">BFGS never computes the Hessian.</div></div>
