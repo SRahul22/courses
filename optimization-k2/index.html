@@ -5175,6 +5175,11 @@ $$r_{k+1}^2\le\Big(1-\frac{2h\mu L}{\mu+L}\Big)r_k^2+h\Big(h-\frac2{\mu+L}\Big)\
 
 <div class="prose">
 <p><b>Intuition.</b> A symmetric matrix acts like this: there is a pair of perpendicular axes (for $n=2$), and $A$ only stretches each axis by its own factor. Rotate your view to those axes and $A$ becomes a plain list of stretch factors. We care because the quadratic $f(\x)=\tfrac12\x^\top A\x-\b^\top\x$ of Parts 8–10 is a bowl whose natural axes are these eigenvectors, and its steepness along each axis is the matching eigenvalue.</p>
+<div class="panel try">
+<span class="label">Try it</span>
+<p class="task">The green dashed lines are the eigen-axes, and the sliders set how much $A$ stretches each one ($\lambda_1$, $\lambda_2$). Drag the blue vector $\v$ and watch $A\v$ (purple). On an eigen-axis, $A\v$ points the same way as $\v$; anywhere else the two parts of $\v$ get different stretches and $A\v$ turns. The grey circle of unit vectors becomes the purple ellipse. Press "Rotate my view" and the readout shows $A$ becoming a diagonal list of stretch factors. Then switch to "The bowl": the contours of $\tfrac12\x^\top A\x$ line up with the same axes, and they sit closer together along the axis with the larger $\lambda$ (steeper).</p>
+<div class="widget" data-w="pm_stretch"></div>
+</div>
 </div>
 <div class="box thm" data-k="Theorem" data-name="Spectral theorem (symmetric matrices)">
 <p>If $A=A^\top$ is $n\times n$, its eigenvalues $\lambda_1,\dots,\lambda_n$ are real and there are orthonormal eigenvectors $\v_1,\dots,\v_n$ (unit length, mutually orthogonal). With $V=[\v_1\ \cdots\ \v_n]$ (so $V^\top V=I$) and $\Lambda=\operatorname{diag}(\lambda_i)$,
@@ -13354,6 +13359,71 @@ So $\sum\norm{\g_k}^2\lt\infty$, hence $\norm{\g_k}\to0$, and $\min_{k\le N}\nor
         "<br><span class='k'>ratio</span> " + DH.fmt(s / Math.max(cg, 1), 1) + "×  (≈ √κ for large κ)" +
         "<br><span class='k'>rules of thumb</span> SD ≈ (κ/2)·ln(1/ε) = " + Math.round(kap / 2 * Math.log(1 / eps)).toLocaleString("en") + ", CG ≈ (√κ/2)·ln(2/ε) = " + Math.round(Math.sqrt(kap) / 2 * Math.log(2 / eps)).toLocaleString("en") +
         "<br>Guarantees on ‖e_k‖_A ≤ ε‖e₀‖_A. In exact arithmetic CG also stops by step n.";
+    };
+    p.redraw();
+  };
+})();
+
+/* ---- w_pm.js ---- */
+/* Widgets for Part M (midterm toolkit): a symmetric matrix as stretches along perpendicular axes. */
+(function () {
+  "use strict";
+  var DH = window.DH, W = DH.W, h = DH.h, col = DH.col;
+
+  W.pm_stretch = function (el) {
+    var l1 = 3, l2 = 1, th = 30, rotView = false, mode = 0, v = [1.2, -0.35];
+    var row = h("div", { class: "wrow" }); el.appendChild(row);
+    var p = new DH.Plot(row, { xmin: -3.4, xmax: 3.4, ymin: -3.4, ymax: 3.4, ratio: 1, equal: true, focusable: true,
+      label: "A symmetric matrix stretches two perpendicular axes; drag the blue vector" });
+    var c = DH.ctrlBox(row);
+    DH.chips(c, ["What $A$ does to vectors", "The bowl $\\tfrac12\\x^\\top A\\x$"], function (i) { mode = i; p.redraw(); }, 0);
+    DH.slider(c, { label: "$\\lambda_1$", min: 0.2, max: 4, step: 0.1, value: l1, digits: 1 }, function (x) { l1 = x; p.redraw(); });
+    DH.slider(c, { label: "$\\lambda_2$", min: 0.2, max: 4, step: 0.1, value: l2, digits: 1 }, function (x) { l2 = x; p.redraw(); });
+    DH.slider(c, { label: "axis angle", min: 0, max: 180, step: 1, value: th, digits: 0, fmt: function (x) { return Math.round(x) + "°"; } }, function (x) { th = x; p.redraw(); });
+    var rb = DH.button(c, "Rotate my view to the eigen-axes", function () { var t0 = th * Math.PI / 180, cs = Math.cos(t0), sn = Math.sin(t0); v = rotView ? [cs * v[0] - sn * v[1], sn * v[0] + cs * v[1]] : [cs * v[0] + sn * v[1], -sn * v[0] + cs * v[1]]; rotView = !rotView; rb.textContent = rotView ? "Back to the standard axes" : "Rotate my view to the eigen-axes"; p.redraw(); });
+    var r = DH.readout(c);
+    c.appendChild(h("div", { class: "legend" }, "<span><i style='background:var(--accent)'></i>vector v (drag it)</span><span><i style='background:var(--plum)'></i>Av</span><span><i style='background:var(--mint)'></i>eigen-axes</span>"));
+    DH.renderMath(c);
+
+    function setV(x, y) { var n = Math.hypot(x, y); if (n > 3) { x *= 3 / n; y *= 3 / n; } v = [x, y]; p.redraw(); }
+    p.on("down", setV).on("drag", setV);
+
+    p.draw = function (p) {
+      var t = th * Math.PI / 180, u1 = [Math.cos(t), Math.sin(t)], u2 = [-Math.sin(t), Math.cos(t)];
+      if (rotView) { u1 = [1, 0]; u2 = [0, 1]; }               // in eigen-coordinates the axes are the coordinate axes
+      var a = l1 * u1[0] * u1[0] + l2 * u2[0] * u2[0], b = l1 * u1[0] * u1[1] + l2 * u2[0] * u2[1], d = l1 * u1[1] * u1[1] + l2 * u2[1] * u2[1];
+      function A(x) { return [a * x[0] + b * x[1], b * x[0] + d * x[1]]; }
+      var ac = col("accent"), pc = col("plum"), mc = col("mint"), mu = col("muted");
+      p.axes({ labels: false });
+      [u1, u2].forEach(function (u, i) {
+        p.line(-4 * u[0], -4 * u[1], 4 * u[0], 4 * u[1], DH.alpha(mc, 0.55), 1.4, [5, 5]);
+        p.text((i ? "λ₂ = " + DH.fmt(l2, 1) : "λ₁ = " + DH.fmt(l1, 1)), 2.1 * u[0], 2.1 * u[1], mc, { bold: true, halo: true, dx: 6, dy: -10 });
+      });
+      if (mode === 0) {
+        var circ = [], img = [];
+        for (var k = 0; k <= 120; k++) { var s = 2 * Math.PI * k / 120, q = [Math.cos(s), Math.sin(s)]; circ.push(q); img.push(A(q)); }
+        p.poly(circ, DH.alpha(mu, 0.7), 1.3);
+        p.poly(img, DH.alpha(pc, 0.8), 2);
+        [u1, u2].forEach(function (u, i) { var lam = i ? l2 : l1; p.arrow(0, 0, u[0], u[1], DH.alpha(mc, 0.9), 2); p.arrow(0, 0, lam * u[0], lam * u[1], DH.alpha(mc, 0.5), 4); });
+        var Av = A(v);
+        p.arrow(0, 0, Av[0], Av[1], pc, 2.6); p.text("Av", Av[0], Av[1], pc, { bold: true, halo: true, dx: 6 });
+        p.arrow(0, 0, v[0], v[1], ac, 2.6); p.dot(v[0], v[1], 6, ac); p.text("v", v[0], v[1], ac, { bold: true, halo: true, dx: 8, dy: 10 });
+      } else {
+        var f = function (x, y) { return 0.5 * (a * x * x + 2 * b * x * y + d * y * y); };
+        p.contours(f, [0.25, 0.75, 1.5, 2.5, 4, 6, 8.5, 11.5], { fill: false, color: DH.alpha(ac, 0.8), width: 1.5 });
+        p.dot(0, 0, 4, ac);
+        [u1, u2].forEach(function (u, i) { var lam = i ? l2 : l1, s = Math.sqrt(2 / lam); p.dot(s * u[0], s * u[1], 4, mc); p.dot(-s * u[0], -s * u[1], 4, mc); });
+      }
+      var vc = [v[0] * u1[0] + v[1] * u1[1], v[0] * u2[0] + v[1] * u2[1]], Av2 = A(v);
+      var cr = v[0] * Av2[1] - v[1] * Av2[0], par = Math.abs(cr) < 0.06 * Math.hypot(v[0], v[1]) * Math.hypot(Av2[0], Av2[1]) + 1e-9;
+      var f2 = function (x) { return DH.fmt(x, 2); };
+      r.innerHTML = "<span class='k'>A in this view</span> = [[" + f2(a) + ", " + f2(b) + "], [" + f2(b) + ", " + f2(d) + "]]" +
+        (rotView ? "  <span class='good'>diagonal: only stretch factors</span>" : "") +
+        "<br><span class='k'>v in eigen-coordinates</span> (c₁, c₂) = (" + f2(vc[0]) + ", " + f2(vc[1]) + ")" +
+        "<br><span class='k'>Av in eigen-coordinates</span> = (λ₁c₁, λ₂c₂) = (" + f2(l1 * vc[0]) + ", " + f2(l2 * vc[1]) + ")" +
+        (mode === 0 ? "<br><span class='k'>Av parallel to v?</span> " + (par ? "<span class='good'>yes: v lies on an eigen-axis</span>" : "no: the two parts get different stretches") :
+          "<br><span class='k'>bowl</span> f = ½(λ₁c₁² + λ₂c₂²); steepness λ₁ = " + f2(l1) + ", λ₂ = " + f2(l2) +
+          "<br><span class='k'>κ = λmax/λmin</span> = " + f2(Math.max(l1, l2) / Math.min(l1, l2)) + "  <span class='k'>axis ratio √κ</span> = " + f2(Math.sqrt(Math.max(l1, l2) / Math.min(l1, l2))));
     };
     p.redraw();
   };
