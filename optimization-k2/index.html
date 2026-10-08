@@ -5781,7 +5781,7 @@ Equivalently $\norm{\x_{k+1}-\x^\star}_A\le\frac{\kappa-1}{\kappa+1}\norm{\x_k-\
 <p class="youneed"><b>Skipped the earlier parts?</b> <a href="#pm-linalg">Part M, the midterm toolkit</a>, teaches everything below in one place.<br><b>You need:</b> Part 0b (eigenvalues, positive definite matrices, the spectral theorem), Part 4 (a stationary point of a convex function is a global minimizer) and Part 5 (gradient descent on quadratics, exact line search, zig-zag, the condition number $\kappa$). Part 9 continues with how fast CG converges when $n$ is huge.</p>
 
 <!-- ============ Chapter 1 ============ -->
-<section class="ch" id="conjugacy" data-level="b" data-min="30" data-title="Conjugacy: orthogonal after stretching" data-src="Lecture 11 (17 Sep); Book Ch. 15 §1–3; [NW] §5.1 (p.101–103); [LD] §9.1 (p.263–265)">
+<section class="ch" id="conjugacy" data-level="b" data-min="45" data-title="Conjugacy: orthogonal after stretching" data-src="Lecture 11 (17 Sep); Book Ch. 15 §1–3; [NW] §5.1 (p.101–103); [LD] §9.1 (p.263–265)">
 <h2>Conjugacy: directions that are orthogonal after stretching</h2>
 <div class="opener">
 <p>Two directions $\d_i,\d_j$ are conjugate with respect to $A$ when $\d_i^\top A\d_j=0$: they are perpendicular once you stretch space so that the elliptical contours of the quadratic become circles.</p>
@@ -5835,7 +5835,7 @@ $$\d_i^\top A\d_j=0\qquad\text{for all }i\ne j.$$
 Equivalently, they are orthogonal in the <b>$A$-inner product</b> $\ip{\u}{\v}_A=\u^\top A\v$, whose norm is $\norm{\u}_A=\sqrt{\u^\top A\u}$. This is a genuine inner product because $A$ is symmetric and $\u^\top A\u\gt0$ for $\u\ne\0$.</p>
 </div>
 <div class="prose">
-<p><b>What this says.</b> Two directions are conjugate when the number $\d_i^\top(A\d_j)$ is zero: first apply $A$ to one of them, then check whether the result is perpendicular to the other. The notation $\ip{\u}{\v}_A$ (read "the $A$-inner product of $u$ and $v$") is just a name for $\u^\top A\v$, and $\norm{\u}_A$ (read "the $A$-norm of $u$") is the length measured with that inner product. The symbol $\perp$ means "perpendicular", so "$\u\perp_A\v$" is a shorthand for $\u^\top A\v=0$. For two nonzero vectors in $\R^2$ this is one linear equation, so for a given $\d_0$ there is exactly one conjugate direction up to scaling.</p>
+<p><b>What this says.</b> Two directions are conjugate when the number $\d_i^\top(A\d_j)$ is zero: first apply $A$ to one of them, then check whether the result is perpendicular to the other. The notation $\ip{\u}{\v}_A$ (read "the $A$-inner product of $u$ and $v$") is a name for $\u^\top A\v$, and $\norm{\u}_A$ (read "the $A$-norm of $u$") is the length measured with that inner product. The symbol $\perp$ means "perpendicular", so "$\u\perp_A\v$" is a shorthand for $\u^\top A\v=0$. For two nonzero vectors in $\R^2$ this is one linear equation, so for a given $\d_0$ there is exactly one conjugate direction up to scaling.</p>
 <p><b>Numeric illustration.</b> Take $A=\begin{pmatrix}2&1\\1&3\end{pmatrix}$, $\u=(1,0)^\top$, $\v=(1,-2)^\top$. Then $A\v=(2-2,\ 1-6)^\top=(0,-5)^\top$, so $\u^\top A\v=0$: conjugate. The ordinary dot product is $\u^\top\v=1\ne0$, so they are not perpendicular. The $A$-norms are $\norm{\u}_A=\sqrt{\u^\top A\u}=\sqrt2$ and $\norm{\v}_A=\sqrt{\v^\top A\v}=\sqrt{10}$.</p>
 </div>
 <div class="callout"><b>Careful:</b> conjugacy is a relation <i>for a particular $A$</i>. The same two vectors can be conjugate for one matrix and not for another (practice problem 2 shows this). Also, "conjugate" is about a <i>pair</i> (or a whole list in which every pair passes the test). A single vector is never "conjugate" by itself, and a vector is never conjugate to itself unless it is $\0$, because $\d^\top A\d\gt0$ for $\d\ne\0$.</div>
@@ -5962,7 +5962,7 @@ Each correction removes the $A$-component along one old direction. This works, b
 </section>
 
 <!-- ============ Chapter 2 ============ -->
-<section class="ch" id="expanding-subspace" data-level="n" data-min="35" data-title="Conjugate directions; expanding subspaces" data-src="Lecture 11 (17 Sep); Book Ch. 15 §4–5; [NW] §5.1 Thm 5.1 (p.103), Thm 5.2 (p.106); [LD] §9.1–9.2 (p.265–268)">
+<section class="ch" id="expanding-subspace" data-level="n" data-min="50" data-title="Conjugate directions; expanding subspaces" data-src="Lecture 11 (17 Sep); Book Ch. 15 §4–5; [NW] §5.1 Thm 5.1 (p.103), Thm 5.2 (p.106); [LD] §9.1–9.2 (p.265–268)">
 <h2>The conjugate direction method and the Expanding Subspace Theorem</h2>
 <div class="opener">
 <p>Do one exact line search along each of $n$ conjugate directions, in any order, and you land exactly on $\x^\star$; along the way, each $\x_k$ is the best point in the whole subspace explored so far.</p>
@@ -5990,7 +5990,7 @@ $$\g_k=A\x_k-\b,\qquad \alpha_k=-\frac{\g_k^\top\d_k}{\d_k^\top A\d_k},\qquad \x
 <div class="callout"><b>Careful:</b> $\alpha_k=-\g_k^\top\d_k/\d_k^\top A\d_k$ is the right formula for <i>any</i> direction, with a minus sign in front, and it uses the gradient $\g_k$ at the <i>current</i> point (not $\g_0$). In the next chapter, for CG's special directions it simplifies to $\norm{\g_k}^2/\d_k^\top A\d_k$. Do not use that simplified form here: it is not valid for general conjugate directions.</div>
 
 <div class="prose">
-<p><b>Intuition first.</b> Along a single line through $\x_k$, the function $f$ is a one-variable parabola opening upward. The lowest point of a parabola is where its slope is zero. The lemma records three consequences of that: the formula for $\alpha_k$, how the gradient changes after the move, and the fact that the new gradient is perpendicular to the line you just walked along (at the bottom of a valley along a line, there is no slope left in that direction). The last two facts drive every proof in this part.</p>
+<p><b>Intuition first.</b> Along a single line through $\x_k$, the function $f$ is a one-variable parabola opening upward. The lowest point of a parabola is where its slope is zero. The lemma records three consequences of that: the formula for $\alpha_k$, how the gradient changes after the move, and the fact that the new gradient is perpendicular to the line you last walked along (at the bottom of a valley along a line, there is no slope left in that direction). The last two facts drive every proof in this part.</p>
 </div>
 <div class="box thm" data-k="Lemma" data-name="The step is an exact line search">
 <p>$\alpha_k$ is the unique minimizer of $\phi(\alpha)=f(\x_k+\alpha\d_k)$. Moreover
@@ -6165,7 +6165,7 @@ $$\g_{k+1}^\top\d_i=\g_k^\top\d_i+\alpha_k\,(A\d_k)^\top\d_i=\g_k^\top\d_i+\alph
 </section>
 
 <!-- ============ Chapter 3 ============ -->
-<section class="ch" id="cg-method" data-level="n" data-min="45" data-title="The conjugate gradient method" data-src="Lecture 12 (22 Sep); Book Ch. 16; [NW] §5.1 Alg 5.1–5.2, Thm 5.3 (p.107–112); [LD] §9.3 (p.268–270)">
+<section class="ch" id="cg-method" data-level="n" data-min="60" data-title="The conjugate gradient method" data-src="Lecture 12 (22 Sep); Book Ch. 16; [NW] §5.1 Alg 5.1–5.2, Thm 5.3 (p.107–112); [LD] §9.3 (p.268–270)">
 <h2>The conjugate gradient method and why it is correct</h2>
 <div class="opener">
 <p>CG builds conjugate directions on the fly: take the steepest descent direction and bend it exactly enough to be conjugate to the previous direction, $\d_k=-\g_k+\beta_k\d_{k-1}$. Conjugacy to all older directions then comes for free.</p>
@@ -6182,7 +6182,7 @@ $$\g_{k+1}^\top\d_i=\g_k^\top\d_i+\alpha_k\,(A\d_k)^\top\d_i=\g_k^\top\d_i+\alph
 
 <div class="prose">
 <h3>Deriving the algorithm</h3>
-<p><b>Intuition first.</b> Chapter 8.2 needs $n$ conjugate directions in advance, and building them (Gram–Schmidt) is expensive. CG builds them one at a time, as it goes, using the information it already has: the current gradient. Start with the steepest descent direction. At each later step, take the new downhill direction $-\g_k$ and mix in some of the previous direction, just enough that the result is conjugate to the previous one. The mixing weight $\beta_k$ is a single number, found by solving a single linear equation.</p>
+<p><b>Intuition first.</b> Chapter 8.2 needs $n$ conjugate directions in advance, and building them (Gram–Schmidt) is expensive. CG builds them one at a time, as it goes, using the information it already has: the current gradient. Start with the steepest descent direction. At each later step, take the new downhill direction $-\g_k$ and mix in the previous direction in exactly the amount that makes the result conjugate to it. The mixing weight $\beta_k$ is a single number, found by solving a single linear equation.</p>
 <p>Chapter 8.2 assumed someone handed us conjugate directions. CG chooses $\d_0=-\g_0$ (a steepest descent step) and then
 $$\d_k=-\g_k+\beta_k\d_{k-1},\qquad\beta_k\text{ chosen so that }\d_k^\top A\d_{k-1}=0.$$
 Substituting: $0=-\g_k^\top A\d_{k-1}+\beta_k\,\d_{k-1}^\top A\d_{k-1}$, so
@@ -6213,7 +6213,7 @@ $$\beta_{k+1}=\frac{\g_{k+1}^\top A\d_k}{\d_k^\top A\d_k},\quad \d_{k+1}=-\g_{k+
 </div>
 
 <div class="prose">
-<p><b>Intuition first.</b> We only forced each new direction to be conjugate to the one just before it. The theorem says much more happens: the new direction is conjugate to all earlier ones, and the gradients are mutually perpendicular. In the language of the story so far: the single bend $\beta$ performs a full Gram–Schmidt for us. The reason is the structure of the Krylov subspaces: they are nested, each is mapped by $A$ into the next, and the new gradient is perpendicular to the previous one. We state the five facts, then prove them together by induction.</p>
+<p><b>Intuition first.</b> We only forced each new direction to be conjugate to the one immediately before it. The theorem says much more happens: the new direction is conjugate to all earlier ones, and the gradients are mutually perpendicular. In the language of the story so far: the single bend $\beta$ performs a full Gram–Schmidt for us. The reason is the structure of the Krylov subspaces: they are nested, each is mapped by $A$ into the next, and the new gradient is perpendicular to the previous one. We state the five facts, then prove them together by induction.</p>
 </div>
 <div class="box thm" data-k="Theorem" data-name="Conjugate Gradient Theorem ([NW] Thm 5.3, p.108; [LD] §9.3, p.270)">
 <p>Run CG from any $\x_0$ and suppose $\g_0,\dots,\g_k$ are all nonzero (the method has not stopped). Then</p>
@@ -6363,6 +6363,16 @@ $$\beta_{k+1}=\frac{\g_{k+1}^\top A\d_k}{\d_k^\top A\d_k},\quad \d_{k+1}=-\g_{k+
 <div class="stem"><p>In deriving $\beta_{k+1}=\norm{\g_{k+1}}^2/\norm{\g_k}^2$ from $\beta_{k+1}=\g_{k+1}^\top A\d_k/\d_k^\top A\d_k$, the numerator becomes $(\norm{\g_{k+1}}^2-\g_{k+1}^\top\g_k)/\alpha_k$. Which fact removes the second term?</p></div>
 <div class="hint"><p>Which part of the CG Theorem is about gradients being perpendicular to each other?</p></div>
 <div class="sol"><p>Part (d), mutual orthogonality of the gradients, gives $\g_{k+1}^\top\g_k=0$. (Part (e) is then used for the denominator.)</p></div>
+</div>
+<div class="prob" data-id="p8x-cg-run" data-ans="2/7;1/49;7/10" data-labels="α₀;β₁;α₁" data-tol="0.005">
+<div class="stem"><p>Run CG on $A=\begin{pmatrix}3&1\\1&2\end{pmatrix}$, $\b=(1,1)^\top$ from $\x_0=\0$. Give $\alpha_0$, $\beta_1$ and $\alpha_1$. (Then $\x_2=(\tfrac15,\tfrac25)^\top$.)</p></div>
+<div class="hint"><p>$\g_0=(-1,-1)^\top$, $\d_0=(1,1)^\top$, $A\d_0=(4,3)^\top$. For step 2, compute $\g_1=\g_0+\alpha_0A\d_0$, then $\d_1$, then $A\d_1$.</p></div>
+<div class="sol"><p>$\norm{\g_0}^2=2$, $\d_0^\top A\d_0=7$, so $\alpha_0=\tfrac27$ and $\x_1=(\tfrac27,\tfrac27)^\top$. $\g_1=(-1,-1)^\top+\tfrac27(4,3)^\top=(\tfrac17,-\tfrac17)^\top$, with $\g_1^\top\g_0=0$ ✓, and $\norm{\g_1}^2=\tfrac2{49}$. So $\beta_1=\tfrac{2/49}{2}=\tfrac1{49}$. $\d_1=(-\tfrac17,\tfrac17)^\top+\tfrac1{49}(1,1)^\top=(-\tfrac6{49},\tfrac8{49})^\top$, $A\d_1=(-\tfrac{10}{49},\tfrac{10}{49})^\top$, $\d_1^\top A\d_1=\tfrac{140}{2401}=\tfrac{20}{343}$. Then $\alpha_1=\tfrac{2/49}{20/343}=\tfrac7{10}$ and $\x_2=\x_1+\tfrac7{10}\d_1=(\tfrac15,\tfrac25)^\top$. Check: $A\x_2=(\tfrac35+\tfrac25,\ \tfrac15+\tfrac45)^\top=(1,1)^\top$. ✓</p></div>
+</div>
+<div class="prob" data-id="p8x-cg-krylov" data-ans="1" data-labels="number of CG steps">
+<div class="stem"><p>$A=\begin{pmatrix}2&1\\1&2\end{pmatrix}$, $\b=(-1,-1)^\top$, $\x_0=\0$. Here $\g_0=(1,1)^\top$ is an eigenvector of $A$. How many CG steps are needed to reach $\x^\star$?</p></div>
+<div class="hint"><p>Compute $A\g_0$ and compare it with $\g_0$. What does that say about $\mathcal K_1$?</p></div>
+<div class="sol"><p>$A\g_0=(3,3)^\top=3\g_0$, so $A\g_0\in\operatorname{span}\{\g_0\}$ and the Krylov space does not grow: $\mathcal K_k$ is one-dimensional for all $k$. Concretely: $\d_0=(-1,-1)^\top$, $A\d_0=(-3,-3)^\top$, $\d_0^\top A\d_0=6$, $\norm{\g_0}^2=2$, so $\alpha_0=\tfrac13$ and $\x_1=(-\tfrac13,-\tfrac13)^\top$. Check $A\x_1=(-1,-1)^\top=\b$ ✓, so $\g_1=\0$ after one step. The answer is 1: fewer than $n=2$.</p></div>
 </div>
 </div>
 
