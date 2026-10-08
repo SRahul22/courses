@@ -6891,24 +6891,45 @@ $$\d_k^\top A\d_k=\norm{\g_k}^2/\alpha_k$$</p></li>
 <p><b>Reading the symbols aloud.</b> $\mathcal K_k(\g_0)$: "the Krylov space", all combinations of $\g_0,\dots,A^k\g_0$. $\min_{Q\in\mathcal Q_k}$: "the smallest value over all polynomials $Q$ in the family". $\max_i|Q(\lambda_i)|$: "the largest absolute value of $Q$ among the eigenvalues". $\deg Q$: the highest power of $t$ in $Q$. The Greek letters are only names: $\xi$ ("xi") for the coordinates of the error, $\lambda$ for eigenvalues, $\gamma$ for polynomial coefficients.</p>
 <h3>Plugging a matrix into a polynomial</h3>
 <p>A polynomial such as $t^2-2t$ takes a number and returns a number. Matrices can be multiplied and added too, so we can feed in a matrix instead: $A^2-2A$. The only rule is that a constant $c$ becomes $cI$. This is the one new idea of the chapter, and the next lemma is why it is useful.</p>
-<p>For a polynomial $P(t)=\gamma_0+\gamma_1t+\dots+\gamma_kt^k$, define $P(A)=\gamma_0I+\gamma_1A+\dots+\gamma_kA^k$. If $A\v=\lambda\v$, then $A^2\v=A(\lambda\v)=\lambda^2\v$, and in general $A^j\v=\lambda^j\v$. Adding up:</p>
+<p>For a polynomial $P(t)=\gamma_0+\gamma_1t+\dots+\gamma_kt^k$, define $P(A)=\gamma_0I+\gamma_1A+\dots+\gamma_kA^k$. If $A\v=\lambda\v$, then
+$$A^2\v=A(\lambda\v)=\lambda^2\v,$$
+and in general $A^j\v=\lambda^j\v$. Adding up:</p>
 </div>
 <div class="box thm" data-k="Lemma" data-name="Polynomials of a symmetric matrix">
 <p>$P(A)\v_i=P(\lambda_i)\,\v_i$ for every eigenpair $(\lambda_i,\v_i)$. So in the eigenbasis, $P(A)$ multiplies the $i$-th coordinate by the number $P(\lambda_i)$.</p>
 </div>
 <div class="prose">
-<p><b>What this says.</b> If $\v$ is an eigenvector, then $P(A)$ acts on $\v$ exactly like multiplication by the number $P(\lambda)$. The proof is one line: $P(A)\v=\gamma_0\v+\gamma_1\lambda\v+\dots+\gamma_k\lambda^k\v=(\gamma_0+\gamma_1\lambda+\dots+\gamma_k\lambda^k)\v=P(\lambda)\v$. A matrix polynomial is therefore a different scaling factor for every eigen-direction.</p>
+<p><b>What this says.</b> If $\v$ is an eigenvector, then $P(A)$ acts on $\v$ exactly like multiplication by the number $P(\lambda)$. The proof is one line:
+$$\begin{aligned}P(A)\v&=\gamma_0\v+\gamma_1\lambda\v+\dots+\gamma_k\lambda^k\v &&\text{(}A^j\v=\lambda^j\v\text{)}\\ &=(\gamma_0+\gamma_1\lambda+\dots+\gamma_k\lambda^k)\v &&\text{(factor out }\v\text{)}\\ &=P(\lambda)\v &&\text{(definition of }P\text{)}\end{aligned}$$
+A matrix polynomial is therefore a different scaling factor for every eigen-direction.</p>
 </div>
 <div class="prose">
-<p>Example: $A=\begin{pmatrix}1&0\\0&4\end{pmatrix}$ and $P(t)=1-\tfrac t2$ give $P(A)=I-\tfrac12A=\begin{pmatrix}1/2&0\\0&-1\end{pmatrix}$: the diagonal entries are $P(1)$ and $P(4)$.</p>
+<p>Example: take $A=\begin{pmatrix}1&0\\0&4\end{pmatrix}$ and $P(t)=1-\tfrac t2$. Then
+$$P(A)=I-\tfrac12A=\begin{pmatrix}1/2&0\\0&-1\end{pmatrix}.$$
+The diagonal entries are $P(1)$ and $P(4)$.</p>
 </div>
 <div class="example">
 <p class="problem">Let $A=\begin{pmatrix}3&1\\1&3\end{pmatrix}$ (eigenvalues $4$ and $2$, unit eigenvectors $\v_1=(1,1)^\top/\sqrt2$ and $\v_2=(1,-1)^\top/\sqrt2$) and $\e_0=(2,0)^\top$. Take $Q(t)=1-\tfrac t3$. Compute $Q(A)\e_0$ in two ways and its $A$-norm.</p>
 <ol class="steps">
-<li><p>Directly: $Q(A)=I-\tfrac13A$, so $Q(A)\e_0=\e_0-\tfrac13A\e_0=(2,0)^\top-\tfrac13(6,2)^\top=(0,-\tfrac23)^\top$.</p><p class="why-step">Replace $t$ by $A$ and the constant $1$ by $I$.</p></li>
-<li><p>Eigen-expansion: $\e_0=\xi_1\v_1+\xi_2\v_2$ with $\xi_1=\v_1^\top\e_0=\sqrt2$ and $\xi_2=\v_2^\top\e_0=\sqrt2$. (Check: $\sqrt2\v_1+\sqrt2\v_2=(1,1)+(1,-1)=(2,0)$.)</p><p class="why-step">Coordinates along orthonormal vectors are inner products (<a href="#pm-linalg">Part M.1</a>).</p></li>
-<li><p>$Q(4)=1-\tfrac43=-\tfrac13$ and $Q(2)=1-\tfrac23=\tfrac13$, so $Q(A)\e_0=-\tfrac13\sqrt2\v_1+\tfrac13\sqrt2\v_2=-\tfrac13(1,1)^\top+\tfrac13(1,-1)^\top=(0,-\tfrac23)^\top$. Same vector.</p><p class="why-step">The lemma: each coordinate is multiplied by $Q(\lambda_i)$.</p></li>
-<li><p>$A$-norm squared by the formula: $\sum_i\lambda_iQ(\lambda_i)^2\xi_i^2=4\cdot\tfrac19\cdot2+2\cdot\tfrac19\cdot2=\tfrac43$. Directly: $\e^\top A\e=(0,-\tfrac23)\cdot(-\tfrac23,-2)^\top=\tfrac43$. ✓ And $\norm{\e_0}_A^2=4\cdot2+2\cdot2=12$, so $\norm{Q(A)\e_0}_A/\norm{\e_0}_A=\sqrt{(4/3)/12}=\tfrac13$.</p><p class="why-step">The $A$-norm formula needs the weights $\lambda_i$; it has no cross terms because the eigenvectors are orthogonal.</p></li>
+<li><p>Directly, $Q(A)=I-\tfrac13A$. Then
+$$Q(A)\e_0=\e_0-\tfrac13A\e_0=\begin{pmatrix}2\\0\end{pmatrix}-\tfrac13\begin{pmatrix}6\\2\end{pmatrix}=\begin{pmatrix}0\\-\tfrac23\end{pmatrix}.$$</p><p class="why-step">Replace $t$ by $A$ and the constant $1$ by $I$.</p></li>
+<li><p>Eigen-expansion: $\e_0=\xi_1\v_1+\xi_2\v_2$ with coordinates
+$$\xi_1=\v_1^\top\e_0=\sqrt2,\qquad \xi_2=\v_2^\top\e_0=\sqrt2.$$
+Check:
+$$\sqrt2\v_1+\sqrt2\v_2=(1,1)^\top+(1,-1)^\top=(2,0)^\top.$$</p><p class="why-step">Coordinates along orthonormal vectors are inner products (<a href="#pm-linalg">Part M.1</a>).</p></li>
+<li><p>Values of $Q$ at the eigenvalues:
+$$Q(4)=1-\tfrac43=-\tfrac13,\qquad Q(2)=1-\tfrac23=\tfrac13.$$
+Multiply each coordinate:
+$$\begin{aligned}Q(A)\e_0&=-\tfrac13\sqrt2\,\v_1+\tfrac13\sqrt2\,\v_2\\ &=-\tfrac13(1,1)^\top+\tfrac13(1,-1)^\top\\ &=(0,-\tfrac23)^\top.\end{aligned}$$
+Same vector as in step 1.</p><p class="why-step">The lemma: each coordinate is multiplied by $Q(\lambda_i)$.</p></li>
+<li><p>$A$-norm squared by the formula:
+$$\sum_i\lambda_iQ(\lambda_i)^2\xi_i^2=4\cdot\tfrac19\cdot2+2\cdot\tfrac19\cdot2=\tfrac43.$$
+Directly, with $\e=Q(A)\e_0$:
+$$\e^\top A\e=(0,-\tfrac23)\begin{pmatrix}-\tfrac23\\-2\end{pmatrix}=\tfrac43. \quad ✓$$
+Starting error:
+$$\norm{\e_0}_A^2=4\cdot2+2\cdot2=12.$$
+Ratio:
+$$\frac{\norm{Q(A)\e_0}_A}{\norm{\e_0}_A}=\sqrt{\frac{4/3}{12}}=\tfrac13.$$</p><p class="why-step">The $A$-norm formula needs the weights $\lambda_i$; it has no cross terms because the eigenvectors are orthogonal.</p></li>
 </ol>
 </div>
 <div class="prose">
@@ -6917,19 +6938,40 @@ $$\d_k^\top A\d_k=\norm{\g_k}^2/\alpha_k$$</p></li>
 <p>Since $\x_{k+1}=\x_0+\alpha_0\d_0+\dots+\alpha_k\d_k$ and the $\d_i$ span $\mathcal K_k(\g_0)$, there are numbers $\gamma_0,\dots,\gamma_k$ with
 $$\x_{k+1}=\x_0+\gamma_0\g_0+\gamma_1A\g_0+\dots+\gamma_kA^k\g_0=\x_0+P_k(A)\,\g_0,\qquad P_k\in\mathcal P_k .$$
 This is [NW] (5.25) and [LD] §9.4 (24).</p>
-<p><b>Why this is true.</b> Each CG step adds a multiple of the current direction: $\x_{k+1}=\x_k+\alpha_k\d_k$. Adding them up gives the first equation. Part 8's CG Theorem says each $\d_j$ is a combination of $\g_0,A\g_0,\dots,A^j\g_0$. Collecting terms by powers of $A$ gives numbers $\gamma_0,\dots,\gamma_k$ (the $\gamma_j$ collect the coefficients of $A^j\g_0$), which is the polynomial $P_k(t)=\gamma_0+\gamma_1t+\dots+\gamma_kt^k$. Smallest case: after one step, $\x_1=\x_0-\alpha_0\g_0$, so $P_0$ is the constant $-\alpha_0$.</p>
+<p><b>Why this is true.</b></p>
+<ol>
+<li>Each CG step adds a multiple of the current direction, $\x_{k+1}=\x_k+\alpha_k\d_k$. Adding them up gives the first equation.</li>
+<li>Part 8's CG Theorem says each $\d_j$ is a combination of $\g_0,A\g_0,\dots,A^j\g_0$.</li>
+<li>Collect terms by powers of $A$. The number $\gamma_j$ collects the coefficients of $A^j\g_0$. This is the polynomial
+$$P_k(t)=\gamma_0+\gamma_1t+\dots+\gamma_kt^k.$$</li>
+</ol>
+<p>Smallest case: after one step, $\x_1=\x_0-\alpha_0\g_0$, so $P_0$ is the constant $-\alpha_0$.</p>
 
 <h3>Step 2: the error is $Q(A)\e_0$ with $Q(0)=1$</h3>
 <p>Because $\b=A\x^\star$, the first gradient is $\g_0=A\x_0-A\x^\star=A\e_0$. Subtract $\x^\star$ from Step 1:
-$$\e_{k+1}=\e_0+P_k(A)A\e_0=\big[I+AP_k(A)\big]\e_0=Q_{k+1}(A)\,\e_0,\qquad Q_{k+1}(t):=1+t\,P_k(t).$$
-$Q_{k+1}$ has degree at most $k+1$ and $Q_{k+1}(0)=1$. Conversely, any $Q$ of degree $\le k+1$ with $Q(0)=1$ arises this way: $Q(t)-1$ vanishes at $t=0$, so $P(t)=(Q(t)-1)/t$ is a polynomial of degree $\le k$.</p>
+$$\begin{aligned}\e_{k+1}&=\e_0+P_k(A)A\e_0 &&\text{(substitute }\g_0\text{)}\\ &=\big[I+AP_k(A)\big]\e_0 &&\text{(factor out }\e_0\text{)}\\ &=Q_{k+1}(A)\,\e_0 &&\text{(define }Q_{k+1}\text{)}\end{aligned}$$
+with
+$$Q_{k+1}(t):=1+t\,P_k(t).$$
+$Q_{k+1}$ has degree at most $k+1$ and $Q_{k+1}(0)=1$.</p>
+<p>Conversely, any $Q$ of degree $\le k+1$ with $Q(0)=1$ arises this way. The polynomial $Q(t)-1$ vanishes at $t=0$, so
+$$P(t)=\frac{Q(t)-1}{t}$$
+is a polynomial of degree $\le k$.</p>
 <p><b>The derivation, line by line.</b></p>
 <ol>
 <li>Start from $\x_{k+1}=\x_0+P_k(A)\g_0$ (Step 1).</li>
-<li>Subtract $\x^\star$ from both sides: $\e_{k+1}=\x_0-\x^\star+P_k(A)\g_0=\e_0+P_k(A)\g_0$. (The left side is the definition of $\e_{k+1}$; the first two terms on the right are the definition of $\e_0$.)</li>
-<li>Replace $\g_0$ by $A\e_0$, using $\b=A\x^\star$: $\g_0=A\x_0-\b=A\x_0-A\x^\star=A\e_0$.</li>
-<li>Now $\e_{k+1}=\e_0+P_k(A)A\e_0$. Write $\e_0=I\e_0$ and factor out $\e_0$ on the right: $\e_{k+1}=[I+P_k(A)A]\e_0$. (Matrix polynomials in the same $A$ commute, so $P_k(A)A=AP_k(A)$.)</li>
-<li>The bracket is the polynomial $1+tP_k(t)$ evaluated at $A$. Call that polynomial $Q_{k+1}$. Then $\e_{k+1}=Q_{k+1}(A)\e_0$, $\deg Q_{k+1}\le k+1$ because $t$ times a degree-$k$ polynomial has degree $k+1$, and $Q_{k+1}(0)=1+0\cdot P_k(0)=1$.</li>
+<li>Subtract $\x^\star$ from both sides:
+$$\e_{k+1}=\x_0-\x^\star+P_k(A)\g_0=\e_0+P_k(A)\g_0.$$
+The left side is the definition of $\e_{k+1}$. The first two terms on the right are the definition of $\e_0$.</li>
+<li>Replace $\g_0$ by $A\e_0$, using $\b=A\x^\star$:
+$$\g_0=A\x_0-\b=A\x_0-A\x^\star=A\e_0.$$</li>
+<li>Now $\e_{k+1}=\e_0+P_k(A)A\e_0$. Write $\e_0=I\e_0$ and factor out $\e_0$ on the right:
+$$\e_{k+1}=\big[I+P_k(A)A\big]\e_0.$$
+Matrix polynomials in the same $A$ commute, so $P_k(A)A=AP_k(A)$.</li>
+<li>The bracket is the polynomial $1+tP_k(t)$ evaluated at $A$. Call that polynomial $Q_{k+1}$. Then $\e_{k+1}=Q_{k+1}(A)\e_0$. Two checks:
+<ul>
+<li>$\deg Q_{k+1}\le k+1$, because $t$ times a degree-$k$ polynomial has degree $k+1$.</li>
+<li>$Q_{k+1}(0)=1+0\cdot P_k(0)=1$.</li>
+</ul></li>
 </ol>
 <p><b>Check on the smallest case.</b> With $P_0=-\alpha_0$ we get $Q_1(t)=1-\alpha_0t$: one CG step multiplies the error component along $\v_i$ by $1-\alpha_0\lambda_i$, the familiar steepest-descent step.</p>
 </div>
@@ -6939,8 +6981,10 @@ $Q_{k+1}$ has degree at most $k+1$ and $Q_{k+1}(0)=1$. Conversely, any $Q$ of de
 <div class="callout"><b>Careful with indices:</b> the point $\x_{k+1}$ uses a "position" polynomial $P_k$ of degree $k$ but an error polynomial $Q_{k+1}$ of degree $k+1$. Off-by-one slips here are the most common mistake in this topic. Also, the constraint is $Q(0)=1$, not "$Q$ is monic" (leading coefficient 1).</div>
 
 <div class="story"><span class="label">Gradient descent is a polynomial too</span>
-<p>Take gradient descent with any step sizes: $\y_0=\x_0$, $\y_{j+1}=\y_j-h_j\grad f(\y_j)$. Since $\grad f(\y_j)=A(\y_j-\x^\star)$,
-$$\y_{j+1}-\x^\star=(I-h_jA)(\y_j-\x^\star)\quad\Longrightarrow\quad \y_k-\x^\star=Q(A)\e_0,\qquad Q(t)=\prod_{j=0}^{k-1}(1-h_jt).$$
+<p>Take gradient descent with any step sizes: $\y_0=\x_0$ and $\y_{j+1}=\y_j-h_j\grad f(\y_j)$. Since $\grad f(\y_j)=A(\y_j-\x^\star)$, each step multiplies the error by $I-h_jA$:
+$$\y_{j+1}-\x^\star=(I-h_jA)(\y_j-\x^\star).$$
+After $k$ steps:
+$$\y_k-\x^\star=Q(A)\e_0,\qquad Q(t)=\prod_{j=0}^{k-1}(1-h_jt).$$
 This $Q$ has degree $k$ and $Q(0)=1$. Each step size $h_j$ places a root of $Q$ at $t=1/h_j$. A constant step $h$ gives $Q(t)=(1-ht)^k$: all $k$ roots stacked at the same place. So gradient descent, CG and many other methods all produce errors of the form $Q(A)\e_0$. What differs is <i>which</i> $Q$.</p>
 </div>
 
@@ -6953,7 +6997,16 @@ $$\norm{\e_{k+1}}_A=\min_{P\in\mathcal P_k}\norm{\x_0+P(A)\g_0-\x^\star}_A=\min_
 Among all points of $\x_0+\mathcal K_k(\g_0)$, the CG iterate is the closest to $\x^\star$ in the $A$-norm, and therefore has the smallest value of $f$.</p>
 </div>
 <div class="prose">
-<p><b>Proof.</b> The set $\{\x_0+P(A)\g_0:P\in\mathcal P_k\}$ is exactly $\x_0+\mathcal K_k(\g_0)=\x_0+\operatorname{span}\{\d_0,\dots,\d_k\}$. By the Expanding Subspace Theorem, $\x_{k+1}$ minimizes $f$ over this set, hence minimizes $f-f^\star=\tfrac12\norm{\cdot-\x^\star}_A^2$. That is the first equality. The second follows from $\x_0+P(A)\g_0-\x^\star=[I+AP(A)]\e_0=Q(A)\e_0$ and the correspondence $P\leftrightarrow Q$. $\blacksquare$</p>
+<p><b>Proof.</b> Goal: show that CG's iterate has the smallest $A$-norm error in $\x_0+\mathcal K_k(\g_0)$.</p>
+<ol>
+<li>The set $\{\x_0+P(A)\g_0:P\in\mathcal P_k\}$ is exactly
+$$\x_0+\mathcal K_k(\g_0)=\x_0+\operatorname{span}\{\d_0,\dots,\d_k\}.$$</li>
+<li>By the Expanding Subspace Theorem, $\x_{k+1}$ minimizes $f$ over this set. Hence it minimizes $f-f^\star=\tfrac12\norm{\cdot-\x^\star}_A^2$. That is the first equality.</li>
+<li>For the second equality, rewrite the error:
+$$\x_0+P(A)\g_0-\x^\star=\big[I+AP(A)\big]\e_0=Q(A)\e_0.$$
+Then use the correspondence $P\leftrightarrow Q$.</li>
+</ol>
+<p>Conclusion: CG's iterate is the closest point to $\x^\star$ in the $A$-norm. $\blacksquare$</p>
 <p><b>What this says.</b> Imagine all the ways to choose $k+1$ numbers $\gamma_0,\dots,\gamma_k$. Each choice gives a point in $\x_0+\mathcal K_k(\g_0)$, with error $Q(A)\e_0$ for the matching $Q$. CG's choice is the one with the smallest $A$-norm of error. Any other choice, such as gradient descent's step sizes, is at least as far from $\x^\star$.</p>
 
 <h3>Step 3: eigenvalues turn the matrix problem into a scalar one</h3>
@@ -6962,7 +7015,14 @@ $$\Big\lVert\sum_ic_i\v_i\Big\rVert_A^2=\sum_{i,j}c_ic_j\,\v_i^\top A\v_j=\sum_i
 because $\v_i^\top A\v_j=\lambda_j\v_i^\top\v_j$ is $0$ for $i\ne j$ and $\lambda_i$ for $i=j$. Therefore
 $$\norm{Q(A)\e_0}_A^2=\sum_{i=1}^n\lambda_i\,Q(\lambda_i)^2\,\xi_i^2,\qquad \norm{\e_0}_A^2=\sum_{i=1}^n\lambda_i\,\xi_i^2 .$$
 Read it like this: <b>the error component along $\v_i$ gets multiplied by the number $Q(\lambda_i)$</b>.</p>
-<p><b>Why the cross terms vanish.</b> Expand $\big(\sum_ic_i\v_i\big)^\top A\big(\sum_jc_j\v_j\big)$ into all pairs $(i,j)$. For $i\ne j$, $\v_i^\top A\v_j=\lambda_j\v_i^\top\v_j=0$ because the eigenvectors are orthogonal. Only $i=j$ survives, with $\v_i^\top\v_i=1$. Apply this with $c_i=Q(\lambda_i)\xi_i$ for the first formula and $c_i=\xi_i$ for the second (see the numeric check above).</p>
+<p><b>Why the cross terms vanish.</b></p>
+<ol>
+<li>Expand $\big(\sum_ic_i\v_i\big)^\top A\big(\sum_jc_j\v_j\big)$ into all pairs $(i,j)$.</li>
+<li>For $i\ne j$ the cross term is zero, because the eigenvectors are orthogonal:
+$$\v_i^\top A\v_j=\lambda_j\v_i^\top\v_j=0.$$</li>
+<li>Only $i=j$ survives, with $\v_i^\top\v_i=1$.</li>
+<li>Apply this with $c_i=Q(\lambda_i)\xi_i$ for the first formula and $c_i=\xi_i$ for the second (see the numeric check above).</li>
+</ol>
 </div>
 <div class="prose">
 <p><b>Intuition.</b> The error is a mixture of components, each scaled by $Q(\lambda_i)$. If every scale factor has size at most $\rho$, the total cannot exceed $\rho$ times the original. So the problem becomes: find a polynomial that is small at the eigenvalues. We do not need to know CG's polynomial; any polynomial we can exhibit gives a guarantee.</p>
@@ -6973,16 +7033,22 @@ $$\norm{\e_{k+1}}_A^2\le\max_{1\le i\le n}Q(\lambda_i)^2\;\norm{\e_0}_A^2 .$$
 Hence, after $k$ steps, $\displaystyle\norm{\e_k}_A\le\Big(\min_{Q\in\mathcal Q_k}\ \max_{i}\,|Q(\lambda_i)|\Big)\norm{\e_0}_A$.</p>
 </div>
 <div class="prose">
-<p><b>What this says.</b> Pick any polynomial of degree $\le k$ with $Q(0)=1$. Look at its largest absolute value $\rho$ over the eigenvalues of $A$. Then CG's $k$-th error is at most $\rho$ times the initial one, in the $A$-norm. Small numbers: for eigenvalues $\{1,4\}$ and $Q(t)=1-\tfrac25t$, $Q(1)=0.6$ and $Q(4)=-0.6$, so $\norm{\e_1}_A\le0.6\norm{\e_0}_A$ for every start. Because the bound uses the same number for every $\e_0$, it also holds for the worst $\e_0$.</p>
+<p><b>What this says.</b> Pick any polynomial of degree $\le k$ with $Q(0)=1$. Look at its largest absolute value $\rho$ over the eigenvalues of $A$. Then CG's $k$-th error is at most $\rho$ times the initial one, in the $A$-norm. </p>
+<p>Small numbers: take eigenvalues $\{1,4\}$ and $Q(t)=1-\tfrac25t$. Then
+$$Q(1)=0.6,\qquad Q(4)=-0.6.$$
+So $\norm{\e_1}_A\le0.6\norm{\e_0}_A$ for every start. Because the bound uses the same number for every $\e_0$, it also holds for the worst $\e_0$.</p>
 </div>
 
 <div class="example">
 <p class="problem">Prove the min–max bound from the eigen-expansion formula. (A classic short exam proof.)</p>
 <ol class="steps">
 <li><p>Fix any $Q\in\mathcal Q_{k+1}$. By the optimality theorem, $\norm{\e_{k+1}}_A^2\le\norm{Q(A)\e_0}_A^2$.</p><p class="why-step">CG achieves the minimum over all of $\mathcal Q_{k+1}$, so any particular $Q$ can only do worse or equal.</p></li>
-<li><p>Expand: $\norm{Q(A)\e_0}_A^2=\sum_i\lambda_iQ(\lambda_i)^2\xi_i^2$.</p><p class="why-step">This is the eigen-expansion formula of Step 3.</p></li>
-<li><p>$\sum_i\lambda_iQ(\lambda_i)^2\xi_i^2\le\big(\max_jQ(\lambda_j)^2\big)\sum_i\lambda_i\xi_i^2$.</p><p class="why-step">Every weight $\lambda_i\xi_i^2$ is $\ge0$ (here $A\succ0$ is used), so replacing each $Q(\lambda_i)^2$ by the largest one can only increase the sum.</p></li>
-<li><p>$\sum_i\lambda_i\xi_i^2=\norm{\e_0}_A^2$, which gives the bound. The left side does not depend on $Q$, so we may take the minimum over $Q$ on the right; square roots give the second form.</p><p class="why-step">The bound holds for every $Q$ simultaneously, so it holds for the best one.</p></li>
+<li><p>Expand:
+$$\norm{Q(A)\e_0}_A^2=\sum_i\lambda_iQ(\lambda_i)^2\xi_i^2.$$</p><p class="why-step">This is the eigen-expansion formula of Step 3.</p></li>
+<li><p>Bound each $Q(\lambda_i)^2$ by the largest one:
+$$\sum_i\lambda_iQ(\lambda_i)^2\xi_i^2\le\Big(\max_jQ(\lambda_j)^2\Big)\sum_i\lambda_i\xi_i^2.$$</p><p class="why-step">Every weight $\lambda_i\xi_i^2$ is $\ge0$ (here $A\succ0$ is used), so replacing each $Q(\lambda_i)^2$ by the largest one can only increase the sum.</p></li>
+<li><p>The last sum is $\sum_i\lambda_i\xi_i^2=\norm{\e_0}_A^2$, which gives the bound.</p>
+<p>The left side does not depend on $Q$, so we may take the minimum over $Q$ on the right. Square roots give the second form.</p><p class="why-step">The bound holds for every $Q$ simultaneously, so it holds for the best one.</p></li>
 </ol>
 </div>
 
