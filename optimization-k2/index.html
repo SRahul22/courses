@@ -5615,6 +5615,13 @@ Equivalently $\norm{\x_{k+1}-\x^\star}_A\le\frac{\kappa-1}{\kappa+1}\norm{\x_k-\
 <p>Gradient descent zig-zags because each step partly undoes the previous one. Conjugate directions are exactly the directions that never undo each other, and they are the foundation of both theorems in this part.</p>
 <p>Tidying a room one shelf at a time works only if putting books on shelf 2 never knocks books off shelf 1. Conjugate directions are shelves that don't interfere.</p>
 </div>
+<div class="box plain" data-k="In plain words">
+<p><b>The problem.</b> Minimize $f(\x)=\tfrac12\x^\top A\x-\b^\top\x$, where $A$ is symmetric positive definite (all eigenvalues positive; <a href="#pm-linalg">Part M.1</a>). The gradient is $\g=A\x-\b$, which is zero only at $\x^\star=A^{-1}\b$, so minimizing $f$ and solving $A\x=\b$ are one and the same task (<a href="#pm-calculus">Part M.2</a>).</p>
+<p><b>The trouble with gradient descent.</b> Each step along $-\g$ partly undoes the previous one, so on a stretched bowl the path zig-zags and never lands exactly on $\x^\star$ (<a href="#pm-rates">Part M.5</a>).</p>
+<p><b>The fix.</b> Use directions that cannot undo each other. Ordinary perpendicular means $\d_i^\top\d_j=0$; <b>conjugate</b> means $\d_i^\top A\d_j=0$, with $A$ placed in the middle.</p>
+<p><b>Why that helps.</b> With $n$ conjugate directions, the answer is $\x^\star=\sum_j\frac{\d_j^\top\b}{\d_j^\top A\d_j}\d_j$. Each coefficient is computed on its own, and no inverse of $A$ is needed.</p>
+<p><b>Be able to:</b> test whether two vectors are conjugate (compute $A\d_j$ first, then dot it with $\d_i$); find a direction conjugate to a given one; prove that conjugate vectors are independent (multiply by $\d_j^\top A$).</p>
+</div>
 
 <div class="prose">
 <h3>The problem for this whole part</h3>
@@ -5626,7 +5633,7 @@ Because $A\succ0$, $f$ is strictly convex with the unique minimizer $\x^\star=A^
 
 <div class="prose">
 <h3>Why something better than gradient descent?</h3>
-<p>Recall from Part 5: gradient descent with exact line search on this $f$ makes consecutive gradients orthogonal ($\g_{k+1}^\top\g_k=0$), so on a stretched bowl it zig-zags, and the error shrinks only by a factor tied to $\kappa=L/m$ each step. Even on a $2\times2$ problem it generally <i>never</i> lands exactly on $\x^\star$.</p>
+<p>Recall (<a href="#pm-rates">Part M.5</a>): gradient descent with exact line search on this $f$ makes consecutive gradients orthogonal ($\g_{k+1}^\top\g_k=0$), so on a stretched bowl it zig-zags, and the error shrinks only by a factor tied to $\kappa=L/m$ each step ($\kappa$ is the condition number: largest eigenvalue of $A$ divided by smallest, so a large $\kappa$ means a long, thin bowl). Even on a $2\times2$ problem it generally <i>never</i> lands exactly on $\x^\star$.</p>
 <p>Here is a hint of what could work. If $A$ were diagonal, $f$ would be a sum of separate one-variable parabolas, $f=\sum_i(\tfrac12a_{ii}x_i^2-b_ix_i)$. Minimizing exactly along $x_1$, then $x_2$, …, then $x_n$ would finish in $n$ steps, because fixing $x_2$ can't spoil the choice of $x_1$. The contours are ellipses whose axes line up with the coordinate axes. For a general $A$ the ellipses are tilted, and line searches along the coordinate axes interfere. The fix: find $n$ directions that behave, for this $A$, the way the coordinate axes behave for a diagonal matrix.</p>
 </div>
 
@@ -5758,6 +5765,13 @@ Each correction removes the $A$-component along one old direction. This works, b
 <p>Do one exact line search along each of $n$ conjugate directions, in any order, and you land exactly on $\x^\star$; along the way, each $\x_k$ is the best point in the whole subspace explored so far.</p>
 <p>These two theorems ([NW] Thm 5.1 and 5.2) are the backbone of CG. The Expanding Subspace Theorem's three-line induction is the most reused proof in this block of the course and a standard exam question.</p>
 <p>Exploring a building floor by floor: once you've found the best spot on floors 1 and 2, adding floor 3 means you only need to search the new floor, never re-search the old ones.</p>
+</div>
+<div class="box plain" data-k="In plain words">
+<p><b>The recipe.</b> Walk along each conjugate direction once. On each line, go to the bottom of the parabola: $\alpha_k=-\frac{\g_k^\top\d_k}{\d_k^\top A\d_k}$ (the exact line search of <a href="#pm-linesearch">Part M.4</a>). After $n$ steps you are exactly at $\x^\star$, whatever the starting point.</p>
+<p><b>Two facts to carry everywhere.</b> First, the gradient updates as $\g_{k+1}=\g_k+\alpha_kA\d_k$. Second, after an exact line search the new gradient is perpendicular to the direction just used: $\g_{k+1}^\top\d_k=0$.</p>
+<p><b>Expanding Subspace Theorem, in words.</b> After $k$ steps the gradient is perpendicular to every direction used so far. So $\x_k$ is the best point in the whole region explored, $\x_0+\operatorname{span}\{\d_0,\dots,\d_{k-1}\}$, and later steps never spoil earlier progress.</p>
+<p><b>Why the proof works.</b> The newest direction is handled by the line search; all older directions are handled by conjugacy.</p>
+<p><b>Be able to:</b> state the theorem precisely, prove part (i) by induction, and run the method by hand on a $2\times2$ example.</p>
 </div>
 
 <div class="box alg" data-k="Algorithm" data-name="Conjugate direction method ([NW] (5.5)–(5.6); [LD] §9.1)">
@@ -5905,6 +5919,13 @@ $$\g_{k+1}^\top\d_i=\g_k^\top\d_i+\alpha_k\,\d_k^\top A\d_i.$$</p><p class="why-
 <p>CG builds conjugate directions on the fly: take the steepest descent direction and bend it just enough to be conjugate to the previous direction, $\d_k=-\g_k+\beta_k\d_{k-1}$. Conjugacy to all older directions then comes for free.</p>
 <p>That makes CG cost about the same per step as gradient descent (one matrix–vector product, a few vectors of storage) while finishing in at most $n$ steps. It is the standard method for large sparse positive definite systems, and the CG Theorem's proof and a by-hand run are classic exam questions.</p>
 <p>Steering a boat in a crosswind: you don't point straight at the target (the gradient); you keep a bit of your previous heading so you stop drifting back and forth.</p>
+</div>
+<div class="box plain" data-k="In plain words">
+<p><b>What CG is.</b> CG is the conjugate direction method of Chapter 8.2, but it builds the directions as it goes. It starts with steepest descent, $\d_0=-\g_0$. Each later direction is the new downhill direction plus a little of the old heading: $\d_{k+1}=-\g_{k+1}+\beta_{k+1}\d_k$.</p>
+<p><b>The surprise.</b> $\beta$ is chosen only to make $\d_{k+1}$ conjugate to the previous direction $\d_k$. The CG Theorem shows that it is then automatically conjugate to all earlier directions, and all the gradients come out mutually perpendicular. Since $\R^n$ holds at most $n$ perpendicular nonzero vectors, CG stops in at most $n$ steps.</p>
+<p><b>The two formulas to memorize:</b> $\alpha_k=\dfrac{\norm{\g_k}^2}{\d_k^\top A\d_k}$ and $\beta_{k+1}=\dfrac{\norm{\g_{k+1}}^2}{\norm{\g_k}^2}$.</p>
+<p><b>Krylov subspace</b> $\mathcal K_k=\operatorname{span}\{\g_0,A\g_0,\dots,A^k\g_0\}$: everything you can build from $\g_0$ by multiplying by $A$ up to $k$ times. CG's iterate $\x_{k+1}$ always lies in $\x_0+\mathcal K_k$, and Part 9 builds on this.</p>
+<p><b>Be able to:</b> run 2–3 CG steps by hand, checking $\g_1^\top\g_0=0$ and $\d_1^\top A\d_0=0$; derive the practical formulas; reproduce the proof skeleton (Expanding Subspace, then Krylov growth, then $A\mathcal K_i\subseteq\mathcal K_{i+1}$).</p>
 </div>
 
 <div class="prose">
