@@ -5143,9 +5143,469 @@ $$r_{k+1}^2\le\Big(1-\frac{2h\mu L}{\mu+L}\Big)r_k^2+h\Big(h-\frac2{\mu+L}\Big)\
 </div>
 </article>
 
+<article class="part" data-id="pm" data-num="M" data-title="Midterm toolkit: what Parts 8–10 assume" data-min="100">
+<p class="part-lede">A compact bridge to Parts 8–10 (conjugate gradients, the polynomial view of CG, Newton and quasi-Newton). It teaches only the earlier ideas those parts use: vectors and symmetric matrices, gradient and Hessian, the quadratic $f(\x)=\tfrac12\x^\top A\x-\b^\top\x$, convexity, line searches, and what convergence rates mean. Each idea is stated plainly, used once on a small example, and drilled with a few numeric problems.</p>
+<p class="youneed"><b>You need:</b> school algebra and the habit of reading $\x^\top A\x$ as a number. Parts 0a–7 are not required: this part covers what Parts 8–10 use from them.</p>
+
+<!-- ============ Chapter 1 ============ -->
+<section class="ch" id="pm-linalg" data-level="b" data-min="25" data-title="Vectors, symmetric matrices, eigenvalues" data-src="Parts 0b and 3 condensed; Book Ch. 2–3">
+<h2>Vectors, symmetric matrices and eigenvalues</h2>
+<div class="opener">
+<p>A symmetric matrix $A$ has real eigenvalues and a full set of mutually perpendicular eigenvectors; if all eigenvalues are positive, then $\x^\top A\x\gt0$ for every nonzero $\x$ and $A$ defines a new, stretched way of measuring angles.</p>
+<p>Every later chapter reads $\x^\top A\x$, and Part 8's conjugacy is orthogonality in that stretched measure. If this chapter is solid, the rest is calculus applied to a bowl.</p>
+<p>Picture a rubber sheet pulled harder in one direction than another: lengths measured on the stretched sheet differ from lengths on the flat one, but along the two pull directions the measuring stays clean.</p>
+</div>
+
+<div class="prose">
+<h3>Vectors, inner product, norm, orthogonality</h3>
+<p>A vector $\x\in\R^n$ is a list of $n$ numbers. The <b>inner product</b> of $\u$ and $\v$ is $\u^\top\v=\sum_i u_iv_i$. The <b>norm</b> (length) is $\norm{\u}=\sqrt{\u^\top\u}$. Two vectors are <b>orthogonal</b> (perpendicular) when $\u^\top\v=0$. For any angle $\theta$ between them, $\u^\top\v=\norm{\u}\norm{\v}\cos\theta$, so the inner product is positive for an angle below $90^\circ$ and negative above. The Cauchy–Schwarz inequality $|\u^\top\v|\le\norm{\u}\norm{\v}$ follows.</p>
+<p>Vectors $\v_1,\dots,\v_k$ are <b>linearly independent</b> if $c_1\v_1+\dots+c_k\v_k=\0$ forces every $c_i=0$: none of them can be built from the others. Their <b>span</b> is the set of all combinations $c_1\v_1+\dots+c_k\v_k$, a <b>subspace</b> (a flat set through the origin: a line, a plane, and so on). In $\R^n$ at most $n$ vectors are independent, and $n$ independent vectors span all of $\R^n$ (they form a <b>basis</b>). Nonzero mutually orthogonal vectors are always independent.</p>
+<h3>Symmetric matrices and eigenvalues</h3>
+<p>A matrix is <b>symmetric</b> if $A=A^\top$. A number $\lambda$ and a nonzero vector $\v$ with $A\v=\lambda\v$ are an <b>eigenvalue</b> and <b>eigenvector</b>: $A$ only stretches $\v$, by the factor $\lambda$. For a $2\times2$ matrix the eigenvalues are the roots of $\lambda^2-(\operatorname{trace}A)\lambda+\det A=0$.</p>
+</div>
+
+<div class="box thm" data-k="Theorem" data-name="Spectral theorem (symmetric matrices)">
+<p>If $A=A^\top$ is $n\times n$, its eigenvalues $\lambda_1,\dots,\lambda_n$ are real and there are orthonormal eigenvectors $\v_1,\dots,\v_n$ (unit length, mutually orthogonal). With $V=[\v_1\ \cdots\ \v_n]$ (so $V^\top V=I$) and $\Lambda=\operatorname{diag}(\lambda_i)$,
+$$A=V\Lambda V^\top,\qquad \x^\top A\x=\sum_i\lambda_i\,(\v_i^\top\x)^2 .$$</p>
+</div>
+
+<div class="box def" data-k="Definition" data-name="Positive definite, the A-inner product, m and L">
+<p>A symmetric $A$ is <b>positive definite</b> ($A\succ0$) if $\x^\top A\x\gt0$ for all $\x\ne\0$, and <b>positive semidefinite</b> ($A\succeq0$) if $\x^\top A\x\ge0$. By the formula above, $A\succ0$ exactly when <b>all eigenvalues are positive</b> (semidefinite: all $\ge0$; a negative eigenvalue makes $A$ indefinite). The smallest and largest eigenvalues are written $m=\lambda_{\min}$ and $L=\lambda_{\max}$, and the <b>condition number</b> is $\kappa=L/m$. They give the two-sided bound
+$$m\norm{\x}^2\le\x^\top A\x\le L\norm{\x}^2 .$$
+For $A\succ0$, $\ip{\u}{\v}_A=\u^\top A\v$ is again an inner product, with norm $\norm{\u}_A=\sqrt{\u^\top A\u}$. Vectors with $\u^\top A\v=0$ are called <b>$A$-orthogonal</b> or <b>$A$-conjugate</b>.</p>
+</div>
+<div class="callout"><b>Careful:</b> orthogonal and $A$-conjugate are different conditions. Eigenvectors of $A$ (for different eigenvalues) are both, because $\v_i^\top A\v_j=\lambda_j\v_i^\top\v_j=0$. Most other perpendicular pairs are not conjugate.</div>
+
+<div class="example">
+<p class="problem">Let $A=\begin{pmatrix}3&1\\1&3\end{pmatrix}$. Find its eigenvalues and eigenvectors, decide whether $A\succ0$, and compute $\ip{\u}{\v}_A$ for $\u=(1,0)^\top$, $\v=(1,-1)^\top$.</p>
+<ol class="steps">
+<li><p>trace $=6$, $\det=9-1=8$, so $\lambda^2-6\lambda+8=0$, giving $\lambda=2$ and $\lambda=4$.</p><p class="why-step">The characteristic equation of a $2\times2$ matrix needs only trace and determinant.</p></li>
+<li><p>$A(1,1)^\top=(4,4)^\top$, so $(1,1)^\top$ has $\lambda=4$; $A(1,-1)^\top=(2,-2)^\top$, so $(1,-1)^\top$ has $\lambda=2$. These are orthogonal, as the spectral theorem promises.</p><p class="why-step">Always verify an eigenpair by one matrix–vector product.</p></li>
+<li><p>Both eigenvalues are positive, so $A\succ0$, with $m=2$, $L=4$, $\kappa=2$.</p><p class="why-step">Positive definiteness is a statement about eigenvalues.</p></li>
+<li><p>$A\v=(2,-2)^\top$, so $\u^\top A\v=1\cdot2+0\cdot(-2)=2$. Since this is not 0, $\u$ and $\v$ are not $A$-conjugate, even though they were chosen close to the eigen-directions.</p><p class="why-step">Compute $A\v$ once, then take an ordinary dot product.</p></li>
+</ol>
+</div>
+
+<div class="practice">
+<div class="prob" data-id="pm-la-p1" data-ans="1/2" data-labels="c">
+<div class="stem"><p>Find $c$ so that $(c,2)^\top$ is orthogonal to $(4,-1)^\top$.</p></div>
+<div class="hint"><p>Set the inner product $4c-2$ equal to zero.</p></div>
+<div class="sol"><p>$(c,2)\cdot(4,-1)=4c-2=0$, so $c=\tfrac12$.</p></div>
+</div>
+<div class="prob" data-id="pm-la-p2" data-ans="1;3" data-labels="m;L">
+<div class="stem"><p>Find the smallest and largest eigenvalues $m$ and $L$ of $A=\begin{pmatrix}2&1\\1&2\end{pmatrix}$.</p></div>
+<div class="hint"><p>trace $=4$, $\det=3$: solve $\lambda^2-4\lambda+3=0$.</p></div>
+<div class="sol"><p>$\lambda^2-4\lambda+3=(\lambda-1)(\lambda-3)$, so $m=1$ and $L=3$ (eigenvectors $(1,-1)$ and $(1,1)$).</p></div>
+</div>
+<div class="prob" data-id="pm-la-p3" data-ans="3" data-labels="⟨u,v⟩_A">
+<div class="stem"><p>For $A=\begin{pmatrix}2&1\\1&2\end{pmatrix}$, compute $\u^\top A\v$ with $\u=(1,2)^\top$ and $\v=(2,-1)^\top$.</p></div>
+<div class="hint"><p>First $A\v=(2\cdot2+1\cdot(-1),\;2-2)^\top$.</p></div>
+<div class="sol"><p>$A\v=(3,0)^\top$, so $\u^\top A\v=1\cdot3+2\cdot0=3$. (Note $\u^\top\v=0$: orthogonal, yet not conjugate.)</p></div>
+</div>
+</div>
+
+<div class="dodont">
+<ul><li>Check an eigenpair with one product $A\v=\lambda\v$</li><li>Use trace and determinant for $2\times2$ eigenvalues</li><li>Read $A\succ0$ as "all eigenvalues positive"</li></ul>
+<ul><li>Treating orthogonal and $A$-conjugate as the same condition</li><li>Testing positive definiteness from the diagonal entries alone ($\begin{pmatrix}1&2\\2&1\end{pmatrix}$ has a negative eigenvalue)</li><li>Forgetting that the spectral theorem needs $A=A^\top$</li></ul>
+</div>
+<ol class="takeaways">
+<li>A symmetric $A$ has real eigenvalues and orthonormal eigenvectors: $A=V\Lambda V^\top$ and $\x^\top A\x=\sum\lambda_i(\v_i^\top\x)^2$.</li>
+<li>$A\succ0$ means all eigenvalues are positive; then $m\norm{\x}^2\le\x^\top A\x\le L\norm{\x}^2$ and $\kappa=L/m$.</li>
+<li>$\u^\top A\v$ is the $A$-inner product; $A$-conjugate means $\u^\top A\v=0$, which differs from $\u^\top\v=0$ unless $A=I$ (or the vectors are eigenvectors).</li>
+</ol>
+<div class="quiz" data-id="pm-linalg-quiz">
+<div class="q"><div class="q-text"><p>Which matrix is positive definite?</p></div>
+<div class="o">$\begin{pmatrix}1&2\\2&1\end{pmatrix}$<div class="e">Its trace is 2 and its determinant is $-3$, so one eigenvalue is negative.</div></div>
+<div class="o ok">$\begin{pmatrix}2&1\\1&2\end{pmatrix}$<div class="e">Eigenvalues 1 and 3, both positive.</div></div>
+<div class="o">$\begin{pmatrix}1&0\\0&-1\end{pmatrix}$<div class="e">The diagonal entry $-1$ is an eigenvalue.</div></div>
+</div>
+<div class="q"><div class="q-text"><p>If $A$ is symmetric with eigenvalues $2$ and $8$, then $\x^\top A\x$ for $\norm{\x}=1$ always lies in…</p></div>
+<div class="o">$[2,8]$ only for eigenvectors<div class="e">The bounds hold for every unit vector, not only eigenvectors.</div></div>
+<div class="o">$[4,16]$<div class="e">Look at $m\norm{\x}^2\le\x^\top A\x\le L\norm{\x}^2$ with $\norm{\x}=1$.</div></div>
+<div class="o ok">$[2,8]$ for every unit $\x$<div class="e">$\sum\lambda_i(\v_i^\top\x)^2$ is a weighted average of $\lambda_1,\lambda_2$ since the weights $(\v_i^\top\x)^2$ sum to $\norm{\x}^2=1$.</div></div>
+</div>
+<div class="q"><div class="q-text"><p>Two eigenvectors of a symmetric $A$ with different eigenvalues are…</p></div>
+<div class="o">orthogonal but never $A$-conjugate<div class="e">Compute $\v_i^\top A\v_j=\lambda_j\v_i^\top\v_j$.</div></div>
+<div class="o ok">both orthogonal and $A$-conjugate<div class="e">The spectral theorem gives orthogonality, and then $\v_i^\top A\v_j=\lambda_j\cdot0=0$.</div></div>
+<div class="o">$A$-conjugate but never orthogonal<div class="e">Orthogonality is part of the spectral theorem.</div></div>
+</div>
+</div>
+</section>
+
+<!-- ============ Chapter 2 ============ -->
+<section class="ch" id="pm-calculus" data-level="b" data-min="25" data-title="Gradient, Hessian, the quadratic, optimality" data-src="Parts 0b and 3 condensed; Book Ch. 3–6">
+<h2>Gradient, Hessian, the quadratic and optimality conditions</h2>
+<div class="opener">
+<p>The gradient $\grad f$ points uphill and vanishes at a minimizer; the Hessian $\grad^2 f$ says how the surface curves; for the quadratic $f(\x)=\tfrac12\x^\top A\x-\b^\top\x$ these are $A\x-\b$ and $A$, so the minimizer solves $A\x=\b$.</p>
+<p>Parts 8–10 all work on this one function: CG solves $A\x=\b$ through it, and Newton's method is "approximate $f$ by its quadratic and jump to that quadratic's minimizer".</p>
+<p>On a hillside, the gradient is the direction in which a ball would be pushed back up, and the Hessian describes whether you stand in a bowl, on a ridge or on a saddle.</p>
+</div>
+
+<div class="prose">
+<h3>Gradient and Hessian</h3>
+<p>For $f:\R^n\to\R$, the <b>gradient</b> $\grad f(\x)$ is the vector of partial derivatives $\partial f/\partial x_i$. It points in the direction of steepest increase, and $-\grad f$ in the direction of steepest decrease. The <b>Hessian</b> $\grad^2f(\x)$ is the matrix of second partials $\partial^2f/\partial x_i\partial x_j$, symmetric when $f$ is smooth. We write $\g_k=\grad f(\x_k)$.</p>
+<p><b>Taylor expansion to second order</b> (the rest of the course is built on it): for a small step $\d$,
+$$f(\x+\d)\approx f(\x)+\grad f(\x)^\top\d+\tfrac12\d^\top\grad^2f(\x)\,\d .$$
+The linear term is the slope; the quadratic term is the curvature. Dropping the quadratic term gives the first-order model used by gradient descent; keeping it gives the model that Newton's method minimizes.</p>
+<h3>The quadratic</h3>
+<p>With $A=A^\top$, the function $f(\x)=\tfrac12\x^\top A\x-\b^\top\x$ has
+$$\grad f(\x)=A\x-\b,\qquad \grad^2f(\x)=A .$$
+For this $f$ the Taylor expansion is exact: $f(\x+\d)=f(\x)+\g^\top\d+\tfrac12\d^\top A\d$. When $A\succ0$ the unique minimizer is $\x^\star=A^{-1}\b$ with $f^\star=-\tfrac12\b^\top A^{-1}\b$. So <b>minimizing $f$ and solving $A\x=\b$ are the same task</b>.</p>
+</div>
+
+<div class="box thm" data-k="Theorem" data-name="Optimality conditions">
+<p><b>First-order necessary:</b> if $\x^\star$ is a local minimizer of a differentiable $f$, then $\grad f(\x^\star)=\0$ (a <i>stationary point</i>).</p>
+<p><b>Second-order necessary:</b> additionally $\grad^2f(\x^\star)\succeq0$.</p>
+<p><b>Second-order sufficient:</b> if $\grad f(\x^\star)=\0$ and $\grad^2f(\x^\star)\succ0$, then $\x^\star$ is a strict local minimizer.</p>
+</div>
+<div class="prose">
+<p>Why: expand at a stationary point, $f(\x^\star+\d)\approx f(\x^\star)+\tfrac12\d^\top\grad^2f\,\d$. If the Hessian is positive definite every step raises $f$; if it has a negative eigenvalue, stepping along that eigenvector lowers $f$ (a <b>saddle</b> if it also has a positive one). A zero eigenvalue makes the test inconclusive.</p>
+</div>
+
+<div class="example">
+<p class="problem">Take $A=\begin{pmatrix}4&1\\1&3\end{pmatrix}$, $\b=(1,2)^\top$. Find $\g$ at $\x_0=(2,1)^\top$, the minimizer $\x^\star$ and $f^\star$.</p>
+<ol class="steps">
+<li><p>$A\x_0=(8+1,\,2+3)^\top=(9,5)^\top$, so $\g_0=A\x_0-\b=(8,3)^\top$.</p><p class="why-step">The gradient is a matrix–vector product minus $\b$.</p></li>
+<li><p>The Hessian is $A$ itself: trace 7, det 11, so $\lambda=\frac{7\pm\sqrt5}2\approx2.38,\,4.62$, both positive.</p><p class="why-step">A positive definite Hessian everywhere means a bowl.</p></li>
+<li><p>Solve $A\x=\b$: $A^{-1}=\tfrac1{11}\begin{pmatrix}3&-1\\-1&4\end{pmatrix}$, so $\x^\star=\tfrac1{11}(3-2,\,-1+8)^\top=\tfrac1{11}(1,7)^\top$.</p><p class="why-step">Inverse of a $2\times2$: swap the diagonal, negate the off-diagonal, divide by the determinant.</p></li>
+<li><p>$f^\star=-\tfrac12\b^\top\x^\star=-\tfrac12\cdot\tfrac{1+14}{11}=-\tfrac{15}{22}\approx-0.682$.</p><p class="why-step">At $\x^\star$ we have $A\x^\star=\b$, so $f^\star=\tfrac12\b^\top\x^\star-\b^\top\x^\star$.</p></li>
+</ol>
+</div>
+
+<div class="practice">
+<div class="prob" data-id="pm-calc-p1" data-ans="5;7" data-labels="∂f/∂x₁;∂f/∂x₂">
+<div class="stem"><p>For $f(x_1,x_2)=x_1^2+3x_1x_2+2x_2^2$, find $\grad f(1,1)$.</p></div>
+<div class="hint"><p>$\partial f/\partial x_1=2x_1+3x_2$ and $\partial f/\partial x_2=3x_1+4x_2$.</p></div>
+<div class="sol"><p>At $(1,1)$: $(2+3,\;3+4)=(5,7)$.</p></div>
+</div>
+<div class="prob" data-id="pm-calc-p2" data-ans="Saddle point" data-choices="Local minimum|Local maximum|Saddle point|Cannot tell">
+<div class="stem"><p>The same $f$ has $\grad f(\0)=\0$. Its Hessian is $\begin{pmatrix}2&3\\3&4\end{pmatrix}$ (trace 6, det $-1$). What is $\0$?</p></div>
+<div class="hint"><p>A negative determinant for a $2\times2$ symmetric matrix means one positive and one negative eigenvalue.</p></div>
+<div class="sol"><p>$\det=8-9=-1\lt0$, so the eigenvalues have opposite signs: the Hessian is indefinite and $\0$ is a saddle point.</p></div>
+</div>
+<div class="prob" data-id="pm-calc-p3" data-ans="1;1" data-labels="x₁⋆;x₂⋆">
+<div class="stem"><p>Minimize $\tfrac12\x^\top A\x-\b^\top\x$ with $A=\begin{pmatrix}2&1\\1&2\end{pmatrix}$, $\b=(3,3)^\top$. Find $\x^\star$.</p></div>
+<div class="hint"><p>Solve $A\x=\b$; try the vector $(t,t)$.</p></div>
+<div class="sol"><p>$A(t,t)^\top=(3t,3t)^\top=(3,3)^\top$ gives $t=1$. $A\succ0$ (eigenvalues 1, 3), so $\x^\star=(1,1)^\top$.</p></div>
+</div>
+</div>
+
+<div class="dodont">
+<ul><li>Write $\g=A\x-\b$ and check it vanishes at $\x^\star$</li><li>Use trace and determinant to classify a $2\times2$ Hessian</li><li>Remember the quadratic's Taylor expansion has no remainder</li></ul>
+<ul><li>Dropping the $\tfrac12$ in $f$ (then $\grad f=2A\x-\b$)</li><li>Claiming a stationary point is a minimum without looking at the Hessian</li><li>Using $\grad f=\0$ alone when the Hessian has a zero eigenvalue</li></ul>
+</div>
+<ol class="takeaways">
+<li>$f(\x+\d)\approx f+\g^\top\d+\tfrac12\d^\top\grad^2f\,\d$; the first term is slope, the second curvature.</li>
+<li>For $f=\tfrac12\x^\top A\x-\b^\top\x$: $\g=A\x-\b$, Hessian $=A$, and for $A\succ0$ the minimizer is $\x^\star=A^{-1}\b$ with $f^\star=-\tfrac12\b^\top A^{-1}\b$.</li>
+<li>Necessary: $\g=\0$ (and Hessian $\succeq0$). Sufficient: $\g=\0$ and Hessian $\succ0$. Indefinite Hessian at a stationary point means a saddle.</li>
+</ol>
+<div class="quiz" data-id="pm-calculus-quiz">
+<div class="q"><div class="q-text"><p>What is the gradient of $f(\x)=\tfrac12\x^\top A\x-\b^\top\x$ with $A=A^\top$?</p></div>
+<div class="o">$A\x+\b$<div class="e">Differentiate $-\b^\top\x$: the sign is negative.</div></div>
+<div class="o">$2A\x-\b$<div class="e">The factor $\tfrac12$ cancels the 2 from differentiating $\x^\top A\x$.</div></div>
+<div class="o ok">$A\x-\b$<div class="e">The quadratic term gives $A\x$ (using symmetry); the linear term gives $-\b$.</div></div>
+</div>
+<div class="q"><div class="q-text"><p>At a stationary point, the Hessian has eigenvalues $3$ and $-1$. The point is…</p></div>
+<div class="o">a strict local minimizer<div class="e">That needs both eigenvalues positive.</div></div>
+<div class="o ok">a saddle point<div class="e">Stepping along the eigenvector for $-1$ lowers $f$; along the one for $3$ raises it.</div></div>
+<div class="o">a local maximizer<div class="e">That needs both eigenvalues negative.</div></div>
+</div>
+<div class="q"><div class="q-text"><p>The second-order sufficient condition for a strict local minimizer is…</p></div>
+<div class="o">$\g=\0$ only<div class="e">A saddle also has $\g=\0$.</div></div>
+<div class="o">Hessian $\succ0$ only<div class="e">The point must also be stationary.</div></div>
+<div class="o ok">$\g=\0$ and Hessian $\succ0$<div class="e">Both parts are needed.</div></div>
+</div>
+</div>
+</section>
+
+<!-- ============ Chapter 3 ============ -->
+<section class="ch" id="pm-convex" data-level="n" data-min="20" data-title="Convexity, strong convexity, smoothness" data-src="Part 4 condensed; Book Ch. 7–9">
+<h2>Convexity, strong convexity $m$ and smoothness $L$</h2>
+<div class="opener">
+<p>A function is convex when its graph lies above every tangent; then any stationary point is a global minimizer, and curvature bounds $m\le\lambda(\grad^2f)\le L$ control how the function behaves.</p>
+<p>Part 8 uses "stationary means optimal" to prove CG finishes, and Parts 9–10 use $m$ and $L$ in every rate.</p>
+<p>A smooth bowl has no dents where a ball could get stuck away from the bottom; $m$ and $L$ say how steep the bowl's gentlest and sharpest directions are.</p>
+</div>
+
+<div class="prose">
+<p>A differentiable $f$ is <b>convex</b> if for all $\x,\y$
+$$f(\y)\ge f(\x)+\grad f(\x)^\top(\y-\x),$$
+that is, every tangent plane lies below the graph. For twice-differentiable $f$ this is equivalent to $\grad^2f(\x)\succeq0$ everywhere.</p>
+</div>
+<div class="box thm" data-k="Theorem" data-name="Stationary point of a convex function">
+<p>If $f$ is convex and $\grad f(\x^\star)=\0$, then $\x^\star$ is a global minimizer.</p>
+</div>
+<div class="prose">
+<p>Proof: put $\x=\x^\star$ in the inequality: $f(\y)\ge f(\x^\star)+\0^\top(\y-\x^\star)=f(\x^\star)$ for every $\y$. $\square$ This is why, on the quadratic with $A\succ0$, solving $A\x=\b$ is the whole job: $\g=\0$ cannot be a trap.</p>
+<h3>Strong convexity and smoothness</h3>
+<p>For the quadratic these are eigenvalue bounds. In general, $f$ is <b>$m$-strongly convex</b> and <b>$L$-smooth</b> when $mI\preceq\grad^2f(\x)\preceq LI$ at every $\x$ (the curvature in every direction lies between $m\gt0$ and $L$). Then $\kappa=L/m\ge1$ measures how stretched the contours are. For $f=\tfrac12\x^\top A\x-\b^\top\x$ with $A\succ0$: $m=\lambda_{\min}(A)$, $L=\lambda_{\max}(A)$, and an exact identity holds,
+$$f(\y)-f^\star=\tfrac12(\y-\x^\star)^\top A(\y-\x^\star)=\tfrac12\norm{\y-\x^\star}_A^2 ,$$
+so $\tfrac m2\norm{\y-\x^\star}^2\le f(\y)-f^\star\le\tfrac L2\norm{\y-\x^\star}^2$. Minimizing $f$ is the same as minimizing the $A$-norm of the error.</p>
+</div>
+
+<div class="example">
+<p class="problem">Let $A=\begin{pmatrix}5&2\\2&2\end{pmatrix}$, $\b=(1,0)^\top$. Find $m,L,\kappa,\x^\star,f^\star$ and check the sandwich at $\y=\0$.</p>
+<ol class="steps">
+<li><p>trace $7$, det $6$: $\lambda^2-7\lambda+6=0$, so $\lambda=1,6$. Hence $m=1$, $L=6$, $\kappa=6$, and $A\succ0$.</p><p class="why-step">$m\gt0$ makes $f$ strongly convex, so there is exactly one minimizer.</p></li>
+<li><p>$\x^\star=A^{-1}\b=\tfrac16\begin{pmatrix}2&-2\\-2&5\end{pmatrix}(1,0)^\top=(\tfrac13,-\tfrac13)^\top$ and $f^\star=-\tfrac12\b^\top\x^\star=-\tfrac16$.</p><p class="why-step">Same recipe as in Chapter 2.</p></li>
+<li><p>At $\y=\0$: $f(\0)=0$, so $f(\0)-f^\star=\tfrac16$. The error is $\norm{\0-\x^\star}^2=\tfrac29$, and $\tfrac m2\cdot\tfrac29=\tfrac19\le\tfrac16\le\tfrac L2\cdot\tfrac29=\tfrac23$. ✓</p><p class="why-step">The function gap is squeezed between $m$ and $L$ times half the squared distance.</p></li>
+</ol>
+</div>
+
+<div class="practice">
+<div class="prob" data-id="pm-cvx-p1" data-ans="2;7" data-labels="m;L">
+<div class="stem"><p>Find $m$ and $L$ for the quadratic with $A=\begin{pmatrix}6&2\\2&3\end{pmatrix}$.</p></div>
+<div class="hint"><p>trace $9$, det $14$.</p></div>
+<div class="sol"><p>$\lambda^2-9\lambda+14=(\lambda-2)(\lambda-7)$, so $m=2$ and $L=7$.</p></div>
+</div>
+<div class="prob" data-id="pm-cvx-p2" data-ans="3.5" data-labels="κ">
+<div class="stem"><p>What is the condition number $\kappa$ of that same matrix?</p></div>
+<div class="hint"><p>$\kappa=L/m$.</p></div>
+<div class="sol"><p>$\kappa=7/2=3.5$.</p></div>
+</div>
+<div class="prob" data-id="pm-cvx-p3" data-ans="-3" data-labels="f⋆">
+<div class="stem"><p>Find the minimum value of $\tfrac12\x^\top A\x-\b^\top\x$ with $A=\begin{pmatrix}2&0\\0&4\end{pmatrix}$, $\b=(2,4)^\top$.</p></div>
+<div class="hint"><p>$\x^\star=A^{-1}\b$, then $f^\star=-\tfrac12\b^\top\x^\star$.</p></div>
+<div class="sol"><p>$\x^\star=(1,1)^\top$, so $f^\star=-\tfrac12(2+4)=-3$. Check directly: $\tfrac12(2+4)-(2+4)=-3$.</p></div>
+</div>
+</div>
+
+<div class="dodont">
+<ul><li>Use "convex plus stationary implies global minimum" to stop worrying about local traps</li><li>Read $m,L$ off the eigenvalues for a quadratic</li><li>Use $f-f^\star=\tfrac12\norm{\x-\x^\star}_A^2$ to turn function gaps into errors</li></ul>
+<ul><li>Applying "stationary implies global" to nonconvex functions</li><li>Confusing $m$ (strong convexity, a lower curvature bound) with $L$ (smoothness, an upper bound)</li><li>Expecting $\kappa\lt1$: always $\kappa\ge1$, with $\kappa=1$ for $A=cI$</li></ul>
+</div>
+<ol class="takeaways">
+<li>Convex means $f(\y)\ge f(\x)+\g(\x)^\top(\y-\x)$; hence stationary implies global minimizer.</li>
+<li>$m\le$ every Hessian eigenvalue $\le L$; for the quadratic $m=\lambda_{\min}(A)$, $L=\lambda_{\max}(A)$, $\kappa=L/m$.</li>
+<li>On the quadratic, $f(\x)-f^\star=\tfrac12\norm{\x-\x^\star}_A^2$.</li>
+</ol>
+<div class="quiz" data-id="pm-convex-quiz">
+<div class="q"><div class="q-text"><p>For which functions does $\grad f(\x^\star)=\0$ guarantee a global minimizer?</p></div>
+<div class="o">Every differentiable function<div class="e">A saddle of a non-convex function is stationary but not a minimizer.</div></div>
+<div class="o ok">Convex differentiable functions<div class="e">The tangent inequality with $\g=\0$ gives $f(\y)\ge f(\x^\star)$.</div></div>
+<div class="o">Only functions with $m\gt0$<div class="e">Strong convexity gives uniqueness; plain convexity already gives a global minimizer.</div></div>
+</div>
+<div class="q"><div class="q-text"><p>For the quadratic with $A\succ0$, the error measure that equals $2(f(\x)-f^\star)$ is…</p></div>
+<div class="o">$\norm{\x-\x^\star}^2$<div class="e">That is the Euclidean squared error; $A$ is missing.</div></div>
+<div class="o">$\norm{\g(\x)}^2$<div class="e">The gradient norm is $\norm{A(\x-\x^\star)}$, a different quantity.</div></div>
+<div class="o ok">$\norm{\x-\x^\star}_A^2$<div class="e">Expanding $f$ about $\x^\star$ gives exactly $\tfrac12(\x-\x^\star)^\top A(\x-\x^\star)$.</div></div>
+</div>
+<div class="q"><div class="q-text"><p>A quadratic has Hessian eigenvalues $0.5$ and $20$. Then…</p></div>
+<div class="o">$m=20$, $L=0.5$<div class="e">$m$ is the smaller one.</div></div>
+<div class="o ok">$m=0.5$, $L=20$, $\kappa=40$<div class="e">$\kappa=L/m=20/0.5$.</div></div>
+<div class="o">$\kappa=0.025$<div class="e">$\kappa$ is at least 1; you divided the wrong way.</div></div>
+</div>
+</div>
+</section>
+
+<!-- ============ Chapter 4 ============ -->
+<section class="ch" id="pm-linesearch" data-level="n" data-min="25" data-title="Descent directions and line searches" data-src="Parts 5–6 condensed; Book Ch. 10–12">
+<h2>Descent directions, exact line search, Armijo and Wolfe</h2>
+<div class="opener">
+<p>An iteration chooses a direction $\d_k$ with $\g_k^\top\d_k\lt0$ and a step length $\alpha_k$, and sets $\x_{k+1}=\x_k+\alpha_k\d_k$; the step is found by a line search on the one-variable function $\phi(\alpha)=f(\x_k+\alpha\d_k)$.</p>
+<p>CG uses exact line search on a quadratic (Part 8), while Newton and BFGS use inexact Armijo/Wolfe searches, and the Wolfe curvature condition is exactly what keeps the BFGS update well defined (Part 10).</p>
+<p>Walking downhill along a straight path: first you decide the path, then you decide how far to go before turning.</p>
+</div>
+
+<div class="prose">
+<p>A direction $\d$ is a <b>descent direction</b> at $\x$ if $\g^\top\d\lt0$: the slope along $\d$ is negative, so a small enough step lowers $f$ (since $\phi'(0)=\g^\top\d$). The steepest-descent choice is $\d=-\g$.</p>
+<h3>Exact line search on a quadratic</h3>
+<p>For the quadratic, $\phi(\alpha)=f(\x+\alpha\d)=f(\x)+\alpha\,\g^\top\d+\tfrac12\alpha^2\,\d^\top A\d$ is a parabola. Setting $\phi'(\alpha)=0$:
+$$\alpha=-\frac{\g^\top\d}{\d^\top A\d},\qquad\text{and for }\d=-\g:\quad \alpha=\frac{\g^\top\g}{\g^\top A\g}.$$
+After an exact step the new gradient is orthogonal to the direction used in that step: $\g_{k+1}^\top\d_k=0$ (because $\phi'(\alpha_k)=\g_{k+1}^\top\d_k=0$). The gradient also updates cheaply, $\g_{k+1}=\g_k+\alpha_kA\d_k$.</p>
+<h3>Inexact searches</h3>
+<p>For general $f$ an exact minimizer along the line is too costly, so we accept steps satisfying conditions with constants $0\lt c_1\lt c_2\lt1$:</p>
+</div>
+<div class="box def" data-k="Definition" data-name="Armijo (sufficient decrease) and Wolfe conditions">
+<p><b>Armijo:</b> $f(\x_k+\alpha\d_k)\le f(\x_k)+c_1\alpha\,\g_k^\top\d_k$. The decrease must be at least a fraction $c_1$ of what the initial slope promises. It rules out steps that are too long. <b>Backtracking</b> starts at a trial $\alpha$ and multiplies it by a factor like $\tfrac12$ until Armijo holds.</p>
+<p><b>Curvature (Wolfe):</b> $\grad f(\x_k+\alpha\d_k)^\top\d_k\ge c_2\,\g_k^\top\d_k$. The slope along $\d_k$ must have risen to at least $c_2$ times the initial (negative) slope. It rules out steps that are too short. Armijo plus curvature are the <b>Wolfe conditions</b>.</p>
+</div>
+<div class="box thm" data-k="Lemma" data-name="Wolfe implies s^T y positive">
+<p>Let $\s_k=\x_{k+1}-\x_k=\alpha_k\d_k$ and $\y_k=\g_{k+1}-\g_k$. If $\d_k$ is a descent direction and $\alpha_k$ satisfies the curvature condition, then $\s_k^\top\y_k\gt0$.</p>
+</div>
+<div class="prose">
+<p>Proof: $\y_k^\top\s_k=\alpha_k(\g_{k+1}^\top\d_k-\g_k^\top\d_k)\ge\alpha_k(c_2-1)\,\g_k^\top\d_k$. Here $\alpha_k\gt0$, $c_2-1\lt0$ and $\g_k^\top\d_k\lt0$, so the product is positive. $\square$ In Part 10 the quasi-Newton update uses $\s_k$ and $\y_k$ and needs $\s_k^\top\y_k\gt0$ to keep the inverse-Hessian approximation positive definite. On a quadratic, $\y_k=A\s_k$ so $\s_k^\top\y_k=\s_k^\top A\s_k\gt0$ automatically.</p>
+</div>
+
+<div class="example">
+<p class="problem">Let $f=\tfrac12\x^\top A\x$ with $A=\operatorname{diag}(1,3)$ and $\x_0=(3,1)^\top$. Take one exact steepest-descent step, then verify orthogonality and test Armijo with $c_1=0.1$.</p>
+<ol class="steps">
+<li><p>$\g_0=A\x_0=(3,3)^\top$, so $\d_0=-\g_0$, $f(\x_0)=\tfrac12(9+3)=6$.</p><p class="why-step">Here $\b=\0$, so $\g=A\x$.</p></li>
+<li><p>$\g_0^\top\g_0=18$, $A\g_0=(3,9)^\top$, $\g_0^\top A\g_0=9+27=36$, so $\alpha_0=\tfrac{18}{36}=\tfrac12$.</p><p class="why-step">Use $\alpha=\g^\top\g/\g^\top A\g$.</p></li>
+<li><p>$\x_1=(3,1)-\tfrac12(3,3)=(\tfrac32,-\tfrac12)^\top$, $f(\x_1)=\tfrac12(\tfrac94+\tfrac34)=\tfrac32$, $\g_1=(\tfrac32,-\tfrac32)^\top$.</p><p class="why-step">The function value dropped from 6 to 1.5.</p></li>
+<li><p>$\g_1^\top\g_0=\tfrac92-\tfrac92=0$: orthogonal, as the theory predicts.</p><p class="why-step">This is the property that causes zig-zagging in the next chapter.</p></li>
+<li><p>Armijo: $f(\x_0)+c_1\alpha_0\g_0^\top\d_0=6+0.1\cdot\tfrac12\cdot(-18)=5.1\ge1.5$. ✓</p><p class="why-step">Armijo is a mild requirement: the actual decrease (4.5) far exceeds the required one (0.9).</p></li>
+</ol>
+</div>
+
+<div class="practice">
+<div class="prob" data-id="pm-ls-p1" data-ans="1/3" data-labels="α">
+<div class="stem"><p>On a quadratic with $A=\begin{pmatrix}3&1\\1&1\end{pmatrix}$ the gradient at $\x_k$ is $\g=(1,1)^\top$. Find the exact steepest-descent step $\alpha=\g^\top\g/\g^\top A\g$.</p></div>
+<div class="hint"><p>$A\g=(4,2)^\top$, so $\g^\top A\g=6$.</p></div>
+<div class="sol"><p>$\g^\top\g=2$, $\g^\top A\g=4+2=6$, so $\alpha=\tfrac26=\tfrac13$.</p></div>
+</div>
+<div class="prob" data-id="pm-ls-p2" data-ans="0.5" data-labels="accepted α">
+<div class="stem"><p>$f(x)=x^2$ at $x=1$ with $d=-2$ (so $g=2$, $g\,d=-4$), $c_1=0.1$. Backtracking tries $\alpha=1,\tfrac12,\tfrac14,\dots$ in this order. Which $\alpha$ is the first to satisfy Armijo?</p></div>
+<div class="hint"><p>Armijo asks $f(1+\alpha d)\le1+0.1\,\alpha\,(-4)$. At $\alpha=1$: $f(-1)=1$ versus $0.6$.</p></div>
+<div class="sol"><p>$\alpha=1$: $1\le0.6$ is false. $\alpha=\tfrac12$: $x=0$, $f=0\le1-0.2=0.8$ is true. The first accepted step is $\tfrac12$.</p></div>
+</div>
+<div class="prob" data-id="pm-ls-p3" data-ans="3" data-labels="sᵀy">
+<div class="stem"><p>On the quadratic with $A=\begin{pmatrix}2&1\\1&3\end{pmatrix}$ a step is $\s=(1,-1)^\top$. Compute $\s^\top\y$ where $\y=A\s$.</p></div>
+<div class="hint"><p>$A\s=(2-1,\,1-3)^\top$.</p></div>
+<div class="sol"><p>$\y=(1,-2)^\top$, so $\s^\top\y=1+2=3\gt0$, as $A\succ0$ requires.</p></div>
+</div>
+</div>
+
+<div class="dodont">
+<ul><li>Check $\g^\top\d\lt0$ before searching along $\d$</li><li>Use $\alpha=-\g^\top\d/\d^\top A\d$ for any direction on a quadratic</li><li>Name Armijo as "not too long" and curvature as "not too short"</li></ul>
+<ul><li>Using the curvature condition as a decrease test (it does not ensure $f$ goes down)</li><li>Expecting $\g_{k+1}^\top\d_k=0$ after an inexact search</li><li>Forgetting $\alpha\gt0$ and $c_2\lt1$ in the proof of $\s^\top\y\gt0$</li></ul>
+</div>
+<ol class="takeaways">
+<li>Descent means $\g^\top\d\lt0$; on a quadratic the exact step is $\alpha=-\g^\top\d/\d^\top A\d$ and it forces $\g_{k+1}^\top\d_k=0$.</li>
+<li>Armijo gives sufficient decrease (rejects long steps); the Wolfe curvature condition rejects short steps.</li>
+<li>Curvature condition plus descent gives $\s_k^\top\y_k\gt0$, which quasi-Newton updates need.</li>
+</ol>
+<div class="quiz" data-id="pm-linesearch-quiz">
+<div class="q"><div class="q-text"><p>After an exact line search along $\d_k$ on a quadratic, which holds?</p></div>
+<div class="o">$\g_{k+1}^\top\g_{k+1}=0$<div class="e">That would mean you are at the minimizer.</div></div>
+<div class="o ok">$\g_{k+1}^\top\d_k=0$<div class="e">It is $\phi'(\alpha_k)=0$.</div></div>
+<div class="o">$\g_{k+1}=\g_k$<div class="e">The gradient changes by $\alpha_kA\d_k$.</div></div>
+</div>
+<div class="q"><div class="q-text"><p>Which condition prevents the step from being too small?</p></div>
+<div class="o">Armijo<div class="e">Very small steps satisfy Armijo readily.</div></div>
+<div class="o ok">Wolfe curvature condition<div class="e">It demands the slope along $\d_k$ has risen towards zero.</div></div>
+<div class="o">Descent condition $\g^\top\d\lt0$<div class="e">That concerns the direction, not the step length.</div></div>
+</div>
+<div class="q"><div class="q-text"><p>Why must $\s_k^\top\y_k\gt0$ hold in quasi-Newton methods?</p></div>
+<div class="o">To make $f$ decrease<div class="e">Decrease comes from Armijo.</div></div>
+<div class="o">To make $\alpha_k$ exact<div class="e">Exactness is not required.</div></div>
+<div class="o ok">To keep the updated Hessian approximation positive definite<div class="e">The BFGS update remains positive definite only when $\s^\top\y\gt0$.</div></div>
+</div>
+</div>
+</section>
+
+<!-- ============ Chapter 5 ============ -->
+<section class="ch" id="pm-rates" data-level="n" data-min="25" data-title="Zig-zag, condition number, convergence rates" data-src="Parts 5 and 7 condensed; Book Ch. 10–13">
+<h2>Gradient descent zig-zag, $\kappa$, and what convergence orders mean</h2>
+<div class="opener">
+<p>Steepest descent with exact steps on a quadratic satisfies $f(\x_{k+1})-f^\star\le\big(\tfrac{\kappa-1}{\kappa+1}\big)^2\,(f(\x_k)-f^\star)$: it converges linearly, slowly when $\kappa$ is large, and its consecutive steps are perpendicular.</p>
+<p>This is the baseline that CG beats (Part 8 and 9) and that Newton beats again (Part 10, quadratic convergence), so you need the formula and the vocabulary of rates.</p>
+<p>Walking down a long narrow valley, a hiker who always heads straight downhill bounces from wall to wall while barely progressing along the valley.</p>
+</div>
+
+<div class="prose">
+<h3>Why zig-zag</h3>
+<p>With exact steps, $\g_{k+1}^\top\g_k=0$ (Chapter 4 with $\d_k=-\g_k$). In a narrow valley the steepest direction points almost across it, so the iterates cross back and forth. When contours are circles ($\kappa=1$) the first step lands on the minimizer. The more stretched the ellipses, the worse the zig-zag.</p>
+</div>
+<div class="box thm" data-k="Theorem" data-name="Steepest descent rate on a quadratic">
+<p>For $f=\tfrac12\x^\top A\x-\b^\top\x$, $A\succ0$, exact line search and $\d_k=-\g_k$,
+$$f(\x_{k+1})-f^\star\le\left(\frac{\kappa-1}{\kappa+1}\right)^2\big(f(\x_k)-f^\star\big),\qquad \kappa=\frac Lm .$$
+Equivalently $\norm{\x_{k+1}-\x^\star}_A\le\frac{\kappa-1}{\kappa+1}\norm{\x_k-\x^\star}_A$.</p>
+</div>
+<div class="prose">
+<p>For $\kappa=1$ the factor is 0; for $\kappa=100$ it is $(99/101)^2\approx0.961$, so about 60 steps are needed to gain one decimal digit of accuracy ($0.961^{58}\approx0.1$).</p>
+<h3>Orders of convergence</h3>
+<p>Let $e_k\ge0$ be an error (such as $\norm{\x_k-\x^\star}$) tending to 0.</p>
+<ul>
+<li><b>Linear:</b> $e_{k+1}\le\rho\,e_k$ for a fixed $\rho\in(0,1)$. The error shrinks by a constant factor each step, i.e. a constant number of digits gained per step. Steepest descent, and CG's worst-case bound, are of this type.</li>
+<li><b>Superlinear:</b> $e_{k+1}/e_k\to0$. The factor itself improves; quasi-Newton (BFGS) is superlinear.</li>
+<li><b>Quadratic:</b> $e_{k+1}\le C\,e_k^2$. The number of correct digits roughly doubles each step; Newton's method near a minimizer with positive definite Hessian is of this type.</li>
+</ul>
+<p>Quadratic implies superlinear implies linear (near the limit). Sublinear convergence like $e_k=1/k$ is slower than every linear rate.</p>
+</div>
+
+<div class="example">
+<p class="problem">Use $A$ with $m=1$, $L=6$ ($\kappa=6$, the matrix of Chapter 3). How many exact steepest-descent steps guarantee that $f-f^\star$ falls below $10^{-6}$ of its initial value?</p>
+<ol class="steps">
+<li><p>$\rho=\big(\tfrac{\kappa-1}{\kappa+1}\big)^2=\big(\tfrac57\big)^2=\tfrac{25}{49}\approx0.5102$.</p><p class="why-step">This is the guaranteed factor on the function gap per step.</p></li>
+<li><p>We need $\rho^k\le10^{-6}$, i.e. $k\ge\dfrac{\ln10^{-6}}{\ln\rho}=\dfrac{-13.816}{-0.6730}\approx20.53$.</p><p class="why-step">Take logarithms; both are negative so the inequality direction is kept after dividing.</p></li>
+<li><p>Round up: $k=21$ steps.</p><p class="why-step">The bound is a guarantee; the actual error may be smaller.</p></li>
+</ol>
+</div>
+
+<div class="practice">
+<div class="prob" data-id="pm-rate-p1" data-ans="0.64" data-labels="ρ">
+<div class="stem"><p>Find the guaranteed per-step factor $\big(\tfrac{\kappa-1}{\kappa+1}\big)^2$ on $f-f^\star$ for $\kappa=9$.</p></div>
+<div class="hint"><p>$\tfrac{9-1}{9+1}=0.8$.</p></div>
+<div class="sol"><p>$0.8^2=0.64$.</p></div>
+</div>
+<div class="prob" data-id="pm-rate-p2" data-ans="16" data-labels="steps">
+<div class="stem"><p>With $\kappa=9$ (factor $0.64$), what is the smallest $k$ with $0.64^k\le10^{-3}$?</p></div>
+<div class="hint"><p>$k\ge\ln(10^{-3})/\ln0.64$; $\ln0.64\approx-0.4463$.</p></div>
+<div class="sol"><p>$k\ge6.9078/0.4463\approx15.48$, so $k=16$.</p></div>
+</div>
+<div class="prob" data-id="pm-rate-p3" data-ans="8" data-labels="digits correct">
+<div class="stem"><p>A method with $e_{k+1}=e_k^2$ starts at $e_0=0.1$. Then $e_3=10^{-d}$; find $d$.</p></div>
+<div class="hint"><p>Square repeatedly: $e_1=10^{-2}$.</p></div>
+<div class="sol"><p>$e_1=10^{-2}$, $e_2=10^{-4}$, $e_3=10^{-8}$, so $d=8$. The exponent doubles each step.</p></div>
+</div>
+</div>
+
+<div class="dodont">
+<ul><li>Connect slow descent to large $\kappa$ (stretched contours)</li><li>Square the factor $\tfrac{\kappa-1}{\kappa+1}$ for function values, not for $A$-norm errors</li><li>Classify a sequence by looking at the ratio $e_{k+1}/e_k$ or $e_{k+1}/e_k^2$</li></ul>
+<ul><li>Calling any fast-looking method "quadratic" without the square in $e_{k+1}\le Ce_k^2$</li><li>Treating the rate as a statement about one step on a given problem (it is a worst-case guarantee)</li><li>Forgetting that a linear rate near 1 is very slow</li></ul>
+</div>
+<ol class="takeaways">
+<li>Exact steepest descent has $\g_{k+1}\perp\g_k$ and zig-zags; on a quadratic it gains the factor $\big(\tfrac{\kappa-1}{\kappa+1}\big)^2$ on $f-f^\star$ per step.</li>
+<li>Large $\kappa=L/m$ means factor near 1: very slow.</li>
+<li>Linear: $e_{k+1}\le\rho e_k$. Superlinear: $e_{k+1}/e_k\to0$. Quadratic: $e_{k+1}\le Ce_k^2$ (digits double).</li>
+</ol>
+<div class="quiz" data-id="pm-rates-quiz">
+<div class="q"><div class="q-text"><p>Which sequence converges superlinearly but not quadratically?</p></div>
+<div class="o">$e_k=2^{-k}$<div class="e">The ratio $e_{k+1}/e_k$ is constantly $\tfrac12$.</div></div>
+<div class="o ok">$e_k=1/k!$<div class="e">$e_{k+1}/e_k=1/(k+1)\to0$, but $e_{k+1}/e_k^2=k!/(k+1)!\cdot k!\to\infty$.</div></div>
+<div class="o">$e_k=10^{-2^k}$<div class="e">Here $e_{k+1}=e_k^2$: quadratic.</div></div>
+</div>
+<div class="q"><div class="q-text"><p>Steepest descent with exact steps converges slowly when…</p></div>
+<div class="o">$\kappa$ is close to 1<div class="e">Then the factor is near 0, which is fast.</div></div>
+<div class="o">$A$ is diagonal<div class="e">Diagonal $A$ with equal entries gives $\kappa=1$; diagonal alone says nothing.</div></div>
+<div class="o ok">$\kappa$ is large<div class="e">The factor $\big(\tfrac{\kappa-1}{\kappa+1}\big)^2$ approaches 1.</div></div>
+</div>
+<div class="q"><div class="q-text"><p>Quadratic convergence of Newton's method means, roughly…</p></div>
+<div class="o">the error is divided by a constant each step<div class="e">That is linear convergence.</div></div>
+<div class="o ok">the number of correct digits doubles each step<div class="e">$e_{k+1}\le Ce_k^2$.</div></div>
+<div class="o">the iterates are orthogonal<div class="e">Orthogonality of gradients belongs to exact line searches.</div></div>
+</div>
+<div class="q"><div class="q-text"><p>On a 2-variable quadratic with $\kappa=1$, steepest descent with exact line search lands on $\x^\star$…</p></div>
+<div class="o">after infinitely many steps<div class="e">Round contours point every gradient straight at the centre.</div></div>
+<div class="o ok">after one step<div class="e">The factor $\big(\tfrac{\kappa-1}{\kappa+1}\big)^2=0$.</div></div>
+<div class="o">after two steps<div class="e">One exact step already reaches the centre.</div></div>
+</div>
+</div>
+</section>
+
+<div class="quiz review" data-id="pm-review" data-title="Midterm toolkit review">
+<div class="q" data-from="Ch. 1"><div class="q-text"><p>For symmetric $A\succ0$ with eigenvalues $1$ and $9$, what is $\kappa$ and what does it say?</p></div>
+<div class="o">$\kappa=1/9$<div class="e">$\kappa=L/m\ge1$.</div></div>
+<div class="o ok">$\kappa=9$; contours are ellipses with axis ratio $\sqrt9=3$<div class="e">Level sets $\x^\top A\x=c$ have semi-axes $\sqrt{c/\lambda_i}$.</div></div>
+<div class="o">$\kappa=8$<div class="e">It is a ratio, not a difference.</div></div>
+</div>
+<div class="q" data-from="Ch. 2"><div class="q-text"><p>Newton's method minimizes which model of $f$ at $\x_k$?</p></div>
+<div class="o">The linear Taylor model<div class="e">A linear model has no minimizer.</div></div>
+<div class="o ok">The quadratic Taylor model $f+\g^\top\d+\tfrac12\d^\top\grad^2f\,\d$<div class="e">Its minimizer solves $\grad^2f\,\d=-\g$.</div></div>
+<div class="o">The exact function along $-\g$<div class="e">That is exact line search.</div></div>
+</div>
+<div class="q" data-from="Ch. 3"><div class="q-text"><p>Why can CG stop when $\g_k=\0$ on the quadratic?</p></div>
+<div class="o">Because the iterates have run out of directions<div class="e">That is a separate fact about $n$ steps.</div></div>
+<div class="o ok">Because $f$ is convex, so a stationary point is the global minimizer<div class="e">The tangent inequality gives $f(\y)\ge f(\x_k)$.</div></div>
+<div class="o">Because $\kappa=1$<div class="e">$\kappa$ plays no role here.</div></div>
+</div>
+<div class="q" data-from="Ch. 4"><div class="q-text"><p>An exact step on a quadratic from $\x_k$ along $\d_k$ has $\alpha_k=$…</p></div>
+<div class="o">$\g_k^\top\d_k/\d_k^\top A\d_k$<div class="e">The sign is wrong: $\alpha$ must be positive along a descent direction.</div></div>
+<div class="o ok">$-\g_k^\top\d_k/\d_k^\top A\d_k$<div class="e">Zero of $\phi'(\alpha)=\g_k^\top\d_k+\alpha\,\d_k^\top A\d_k$.</div></div>
+<div class="o">$\d_k^\top A\d_k/\g_k^\top\d_k$<div class="e">Inverted.</div></div>
+</div>
+<div class="q" data-from="Ch. 5"><div class="q-text"><p>BFGS is superlinear, steepest descent linear, Newton quadratic. Order from slowest to fastest asymptotically.</p></div>
+<div class="o ok">Steepest descent, BFGS, Newton<div class="e">Linear, superlinear, quadratic.</div></div>
+<div class="o">BFGS, steepest descent, Newton<div class="e">Superlinear beats linear.</div></div>
+<div class="o">Newton, BFGS, steepest descent<div class="e">That is fastest to slowest.</div></div>
+</div>
+</div>
+</article>
+
 <article class="part" data-id="p8" data-num="8" data-title="Conjugate directions and conjugate gradients" data-min="110">
 <p class="part-lede">Lectures 11 and 12 (17 and 22 September): how to beat gradient descent's zig-zag on a quadratic by choosing search directions that never undo each other. You will meet conjugacy (orthogonality in the geometry of $A$), prove that $n$ such directions solve an $n$-variable quadratic in exactly $n$ exact line searches, prove the Expanding Subspace Theorem, and then build and prove correct the conjugate gradient (CG) method, one of the most important algorithms in scientific computing.</p>
-<p class="youneed"><b>You need:</b> Part 0b (eigenvalues, positive definite matrices, the spectral theorem), Part 4 (a stationary point of a convex function is a global minimizer) and Part 5 (gradient descent on quadratics, exact line search, zig-zag, the condition number $\kappa$). Part 9 continues with how fast CG converges when $n$ is huge.</p>
+<p class="youneed"><b>Skipped the earlier parts?</b> <a href="#pm-linalg">Part M, the midterm toolkit</a>, teaches everything below in one place.<br><b>You need:</b> Part 0b (eigenvalues, positive definite matrices, the spectral theorem), Part 4 (a stationary point of a convex function is a global minimizer) and Part 5 (gradient descent on quadratics, exact line search, zig-zag, the condition number $\kappa$). Part 9 continues with how fast CG converges when $n$ is huge.</p>
 
 <!-- ============ Chapter 1 ============ -->
 <section class="ch" id="conjugacy" data-level="b" data-min="30" data-title="Conjugacy: orthogonal after stretching" data-src="Lecture 11 (17 Sep); Book Ch. 15 §1–3; [NW] §5.1 (p.101–103); [LD] §9.1 (p.263–265)">
@@ -5655,7 +6115,7 @@ $$\beta_{k+1}=\frac{\g_{k+1}^\top A\d_k}{\d_k^\top A\d_k},\quad \d_{k+1}=-\g_{k+
 
 <article class="part" data-id="p9" data-num="9" data-title="Why CG is fast: the polynomial view" data-min="100">
 <p class="part-lede">Lecture 13 (24 Sep): the polynomial interpretation of the conjugate gradient method. After $k$ steps, CG's error is a polynomial in $A$ applied to the starting error, and CG picks the best such polynomial. From that one idea come all of CG's convergence results: few distinct eigenvalues means few steps, clusters are almost as good, CG beats every gradient method, and the famous $\sqrt\kappa$ rate.</p>
-<p class="youneed"><b>You need:</b> Part 8 (CG algorithm, Krylov subspaces, Expanding Subspace Theorem), Part 5 (the steepest descent rate $\frac{\kappa-1}{\kappa+1}$ on quadratics), Part 0b (eigenvalues and the spectral theorem).</p>
+<p class="youneed"><b>Skipped the earlier parts?</b> <a href="#pm-linalg">Part M, the midterm toolkit</a>, teaches everything below in one place.<br><b>You need:</b> Part 8 (CG algorithm, Krylov subspaces, Expanding Subspace Theorem), Part 5 (the steepest descent rate $\frac{\kappa-1}{\kappa+1}$ on quadratics), Part 0b (eigenvalues and the spectral theorem).</p>
 
 <!-- ============ Chapter 1 ============ -->
 <section class="ch" id="cgp-polynomial" data-level="n" data-min="35" data-title="CG picks the best polynomial" data-src="Lecture 13 (24 Sep); Book Ch. 17 §1–3; [NW] §5.1 Rate of Convergence (5.24)–(5.33), p.112–114; [LD] §9.4 Theorems 1–2 (p.271–273)">
@@ -6147,7 +6607,7 @@ By the closed form, dropping the positive second term, $T_k(z_0)\ge\tfrac12q^{-k
 
 <article class="part" data-id="p10" data-num="10" data-title="Newton and quasi-Newton methods" data-min="135">
 <p class="part-lede">Lecture 14 (29 Sep): Newton's method (tangent lines, quadratic models, one-step convergence on quadratics), Nesterov's local quadratic convergence theorem and his example of divergence, how practical codes tame Newton, and the quasi-Newton methods SR1, DFP and BFGS that learn curvature from gradients alone. The part ends with every method of the course racing on the same functions.</p>
-<p class="youneed"><b>You need:</b> Part 0b (gradient, Hessian, Taylor, positive definite matrices), Part 3 (optimality conditions; saddle points), Part 5 (gradient descent and the condition number $\kappa$), the Armijo and Wolfe line searches (Part 6, Lecture 7), and Parts 8–9 (conjugate directions and CG) for the comparisons.</p>
+<p class="youneed"><b>Skipped the earlier parts?</b> <a href="#pm-linalg">Part M, the midterm toolkit</a>, teaches everything below in one place.<br><b>You need:</b> Part 0b (gradient, Hessian, Taylor, positive definite matrices), Part 3 (optimality conditions; saddle points), Part 5 (gradient descent and the condition number $\kappa$), the Armijo and Wolfe line searches (Part 6, Lecture 7), and Parts 8–9 (conjugate directions and CG) for the comparisons.</p>
 
 <!-- ============ Chapter 1 ============ -->
 <section class="ch" id="p10-newton-idea" data-level="b" data-min="35" data-title="Newton's method: tangents and quadratic models" data-src="Lecture 14 (29 Sep); Book Ch. 18 §2; [Y] §1.2.4 (p.32–34); [FR] §3.1 (p.44)">
