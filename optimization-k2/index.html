@@ -5148,7 +5148,7 @@ $$r_{k+1}^2\le\Big(1-\frac{2h\mu L}{\mu+L}\Big)r_k^2+h\Big(h-\frac2{\mu+L}\Big)\
 <p class="youneed"><b>You need:</b> school algebra and the habit of reading $\x^\top A\x$ as a number. Parts 0a–7 are not required: this part covers what Parts 8–10 use from them.</p>
 
 <!-- ============ Chapter 1 ============ -->
-<section class="ch" id="pm-linalg" data-level="b" data-min="25" data-title="Vectors, symmetric matrices, eigenvalues" data-src="Parts 0b and 3 condensed; Book Ch. 2–3">
+<section class="ch" id="pm-linalg" data-level="b" data-min="40" data-title="Vectors, symmetric matrices, eigenvalues" data-src="Parts 0b and 3 condensed; Book Ch. 2–3">
 <h2>Vectors, symmetric matrices and eigenvalues</h2>
 <div class="opener">
 <p>A symmetric matrix $A$ has real eigenvalues and a full set of mutually perpendicular eigenvectors; if all eigenvalues are positive, then $\x^\top A\x\gt0$ for every nonzero $\x$ and $A$ defines a new, stretched way of measuring angles.</p>
@@ -5157,24 +5157,50 @@ $$r_{k+1}^2\le\Big(1-\frac{2h\mu L}{\mu+L}\Big)r_k^2+h\Big(h-\frac2{\mu+L}\Big)\
 </div>
 
 <div class="prose">
+<p>Optimization in many variables is bookkeeping with lists of numbers. A point on a hillside is a list (how far east, how far north). A step you take is also a list. A matrix is a machine that turns one list into another. This chapter sets up the reading skills you need: what a list, a matrix and the number $\x^\top A\x$ mean, and which matrices describe a bowl. Parts 8, 9 and 10 use these facts on nearly every page.</p>
 <h3>Vectors, inner product, norm, orthogonality</h3>
 <p>A vector $\x\in\R^n$ is a list of $n$ numbers. The <b>inner product</b> of $\u$ and $\v$ is $\u^\top\v=\sum_i u_iv_i$. The <b>norm</b> (length) is $\norm{\u}=\sqrt{\u^\top\u}$. Two vectors are <b>orthogonal</b> (perpendicular) when $\u^\top\v=0$. For any angle $\theta$ between them, $\u^\top\v=\norm{\u}\norm{\v}\cos\theta$, so the inner product is positive for an angle below $90^\circ$ and negative above. The Cauchy–Schwarz inequality $|\u^\top\v|\le\norm{\u}\norm{\v}$ follows.</p>
+<p><b>Reading the symbols aloud.</b> $\x\in\R^n$ reads "$\x$ belongs to R-n": $\x$ is a list of $n$ real numbers. The small $\top$ in $\u^\top$ is the <b>transpose</b>: it turns a column into a row. So $\u^\top\v$ is a row times a column, which is a single number. The sign $\sum_i$ reads "add up the terms for every position $i$". The double bars $\norm{\u}$ mean the length of $\u$, and $|\cdot|$ is the absolute value.</p>
+<p><b>Small numbers.</b> For $\u=(1,2)^\top$ and $\v=(3,-1)^\top$: $\u^\top\v=1\cdot3+2\cdot(-1)=1$. The length of $(3,4)^\top$ is $\sqrt{9+16}=5$. The vectors $(1,2)^\top$ and $(2,-1)^\top$ have inner product $2-2=0$, so they are orthogonal.</p>
+<p><b>What this says.</b> The inner product measures how much two arrows point the same way. Positive means they lean together, zero means a right angle, negative means they lean apart. The formula with $\cos\theta$ is why: $\norm{\u}\norm{\v}$ is never negative, so the sign comes from $\cos\theta$ alone.</p>
 <p>Vectors $\v_1,\dots,\v_k$ are <b>linearly independent</b> if $c_1\v_1+\dots+c_k\v_k=\0$ forces every $c_i=0$: none of them can be built from the others. Their <b>span</b> is the set of all combinations $c_1\v_1+\dots+c_k\v_k$, a <b>subspace</b> (a flat set through the origin: a line, a plane, and so on). In $\R^n$ at most $n$ vectors are independent, and $n$ independent vectors span all of $\R^n$ (they form a <b>basis</b>). Nonzero mutually orthogonal vectors are always independent.</p>
+<p><b>Why orthogonal implies independent.</b> Suppose $c_1\v_1+\dots+c_k\v_k=\0$ with the $\v_i$ mutually orthogonal. Take the inner product of both sides with $\v_j$. Every cross term $\v_j^\top\v_i$ with $i\ne j$ is $0$ by orthogonality, leaving $c_j\norm{\v_j}^2=0$. Since $\v_j\ne\0$, $c_j=0$. This holds for each $j$.</p>
+<p><b>Small numbers.</b> $(1,2)^\top$ and $(2,4)^\top$ are dependent, because $2\cdot(1,2)^\top-(2,4)^\top=\0$; their span is only the line through the origin in direction $(1,2)$. The vectors $(1,0)^\top$ and $(0,1)^\top$ are independent and span the whole plane $\R^2$. In Part 8 you will build a list of $n$ search directions; independence is what guarantees they cover the whole space.</p>
 <h3>Symmetric matrices and eigenvalues</h3>
 <p>A matrix is <b>symmetric</b> if $A=A^\top$. A number $\lambda$ and a nonzero vector $\v$ with $A\v=\lambda\v$ are an <b>eigenvalue</b> and <b>eigenvector</b>: $A$ only stretches $\v$, by the factor $\lambda$. For a $2\times2$ matrix the eigenvalues are the roots of $\lambda^2-(\operatorname{trace}A)\lambda+\det A=0$.</p>
+<p><b>Intuition.</b> Feed a vector $\x$ into $A$ and a new vector $A\x$ comes out. Most vectors get both turned and stretched. An eigenvector is a special direction that is only stretched (or flipped, if $\lambda\lt0$), never turned. "Symmetric" means entry $(i,j)$ equals entry $(j,i)$: $\begin{pmatrix}3&1\\1&3\end{pmatrix}$ is symmetric, $\begin{pmatrix}1&2\\0&1\end{pmatrix}$ is not. Symmetric matrices are the ones that appear as Hessians, so this is the only kind we need.</p>
+<p><b>Small numbers.</b> For $A=\begin{pmatrix}2&0\\0&5\end{pmatrix}$ we get $A(1,0)^\top=(2,0)^\top=2\,(1,0)^\top$, so $(1,0)^\top$ is an eigenvector with $\lambda=2$. Likewise $(0,1)^\top$ has $\lambda=5$.</p>
+<p><b>Where the $2\times2$ formula comes from.</b> $A\v=\lambda\v$ means $(A-\lambda I)\v=\0$ for a nonzero $\v$. That can happen only when $A-\lambda I$ squashes some direction to zero, i.e. when $\det(A-\lambda I)=0$. For $A=\begin{pmatrix}a&b\\b&d\end{pmatrix}$ this reads $(a-\lambda)(d-\lambda)-b^2=\lambda^2-(a+d)\lambda+(ad-b^2)=0$. Here $a+d$ is the <b>trace</b> (sum of the diagonal) and $ad-b^2$ is the <b>determinant</b>.</p>
 </div>
 
+<div class="prose">
+<p><b>Intuition.</b> A symmetric matrix acts like this: there is a pair of perpendicular axes (for $n=2$), and $A$ only stretches each axis by its own factor. Rotate your view to those axes and $A$ becomes a plain list of stretch factors. We care because the quadratic $f(\x)=\tfrac12\x^\top A\x-\b^\top\x$ of Parts 8–10 is a bowl whose natural axes are these eigenvectors, and its steepness along each axis is the matching eigenvalue.</p>
+</div>
 <div class="box thm" data-k="Theorem" data-name="Spectral theorem (symmetric matrices)">
 <p>If $A=A^\top$ is $n\times n$, its eigenvalues $\lambda_1,\dots,\lambda_n$ are real and there are orthonormal eigenvectors $\v_1,\dots,\v_n$ (unit length, mutually orthogonal). With $V=[\v_1\ \cdots\ \v_n]$ (so $V^\top V=I$) and $\Lambda=\operatorname{diag}(\lambda_i)$,
 $$A=V\Lambda V^\top,\qquad \x^\top A\x=\sum_i\lambda_i\,(\v_i^\top\x)^2 .$$</p>
 </div>
+<div class="prose">
+<p><b>What this says.</b> "Orthonormal" means each $\v_i$ has length 1 and different ones are perpendicular. $\Lambda=\operatorname{diag}(\lambda_i)$ is the matrix with the eigenvalues on the diagonal and zeros elsewhere. The number $\v_i^\top\x$ is how much of $\x$ lies along axis $\v_i$. So $\x^\top A\x$ adds up the squared pieces of $\x$ along each axis, each weighted by its eigenvalue.</p>
+<p><b>Why the second formula follows from the first.</b> Put $A=V\Lambda V^\top$ into $\x^\top A\x$ to get $(V^\top\x)^\top\Lambda\,(V^\top\x)$. The vector $V^\top\x$ has entries $\v_i^\top\x$, and a diagonal $\Lambda$ multiplies the $i$th entry squared by $\lambda_i$.</p>
+<p><b>Small numbers.</b> $A=\begin{pmatrix}3&1\\1&3\end{pmatrix}$ has $\v_1=(1,1)^\top/\sqrt2$ with $\lambda_1=4$ and $\v_2=(1,-1)^\top/\sqrt2$ with $\lambda_2=2$. For $\x=(2,0)^\top$: $\v_1^\top\x=\sqrt2$ and $\v_2^\top\x=\sqrt2$, so $\x^\top A\x=4\cdot2+2\cdot2=12$. Directly: $A\x=(6,2)^\top$ and $\x^\top A\x=2\cdot6+0\cdot2=12$. ✓</p>
+</div>
 
+<div class="prose">
+<p><b>Intuition.</b> Think of $\x^\top A\x$ as the height of a surface above the point $\x$. If it is above zero in every direction, the surface is a bowl with its bottom at the origin. That is what "positive definite" means. The smallest and largest eigenvalues are the gentlest and the sharpest curvature of the bowl, and their ratio $\kappa$ says how lopsided it is. Convergence rates in Parts 8–10 are written in $m$, $L$ and $\kappa$.</p>
+</div>
 <div class="box def" data-k="Definition" data-name="Positive definite, the A-inner product, m and L">
 <p>A symmetric $A$ is <b>positive definite</b> ($A\succ0$) if $\x^\top A\x\gt0$ for all $\x\ne\0$, and <b>positive semidefinite</b> ($A\succeq0$) if $\x^\top A\x\ge0$. By the formula above, $A\succ0$ exactly when <b>all eigenvalues are positive</b> (semidefinite: all $\ge0$; a negative eigenvalue makes $A$ indefinite). The smallest and largest eigenvalues are written $m=\lambda_{\min}$ and $L=\lambda_{\max}$, and the <b>condition number</b> is $\kappa=L/m$. They give the two-sided bound
 $$m\norm{\x}^2\le\x^\top A\x\le L\norm{\x}^2 .$$
 For $A\succ0$, $\ip{\u}{\v}_A=\u^\top A\v$ is again an inner product, with norm $\norm{\u}_A=\sqrt{\u^\top A\u}$. Vectors with $\u^\top A\v=0$ are called <b>$A$-orthogonal</b> or <b>$A$-conjugate</b>.</p>
 </div>
+<div class="prose">
+<p><b>What this says.</b> $A\succ0$ reads "$A$ is positive definite". $\ip{\u}{\v}_A$ reads "the $A$-inner product of $\u$ and $\v$": it is the old inner product, but with $A$ placed in the middle. $\norm{\u}_A$ is the length measured this way. Conjugate vectors are "perpendicular after the bowl's stretching is accounted for". Part 8's conjugate gradient method picks its search directions to be conjugate; that is where the name comes from.</p>
+<p><b>Why the two-sided bound holds.</b> From the spectral theorem, $\x^\top A\x=\sum_i\lambda_i(\v_i^\top\x)^2$. Each $\lambda_i$ lies between $m$ and $L$, and the squares $(\v_i^\top\x)^2$ add up to $\norm{\x}^2$ (the pieces of $\x$ along perpendicular axes rebuild its length, by Pythagoras). So the sum is between $m\norm{\x}^2$ and $L\norm{\x}^2$.</p>
+<p><b>Small numbers.</b> $A=\begin{pmatrix}3&1\\1&3\end{pmatrix}$ has $m=2$, $L=4$. For $\x=(1,0)^\top$: $\x^\top A\x=3$, which is between $2\cdot1$ and $4\cdot1$. ✓</p>
+</div>
 <div class="callout"><b>Careful:</b> orthogonal and $A$-conjugate are different conditions. Eigenvectors of $A$ (for different eigenvalues) are both, because $\v_i^\top A\v_j=\lambda_j\v_i^\top\v_j=0$. Most other perpendicular pairs are not conjugate.</div>
+<div class="callout"><b>Careful:</b> $\u^\top\v$ and $\u\v^\top$ are different objects. The first (row times column) is a single number. The second (column times row) is a whole $n\times n$ matrix. Check shapes: in $\x^\top A\x$ we multiply $1\times n$, $n\times n$, $n\times1$, so the result is $1\times1$, a number. Also, $\x^\top A\x\gt0$ is a statement about every nonzero $\x$, not about one $\x$.</div>
 
 <div class="example">
 <p class="problem">Let $A=\begin{pmatrix}3&1\\1&3\end{pmatrix}$. Find its eigenvalues and eigenvectors, decide whether $A\succ0$, and compute $\ip{\u}{\v}_A$ for $\u=(1,0)^\top$, $\v=(1,-1)^\top$.</p>
@@ -5185,6 +5211,24 @@ For $A\succ0$, $\ip{\u}{\v}_A=\u^\top A\v$ is again an inner product, with norm 
 <li><p>$A\v=(2,-2)^\top$, so $\u^\top A\v=1\cdot2+0\cdot(-2)=2$. Since this is not 0, $\u$ and $\v$ are not $A$-conjugate, even though they were chosen close to the eigen-directions.</p><p class="why-step">Compute $A\v$ once, then take an ordinary dot product.</p></li>
 </ol>
 </div>
+
+<div class="example">
+<p class="problem">Let $A=\operatorname{diag}(1,4)$ and $\u=(2,1)^\top$. Find a nonzero $\v$ that is $A$-conjugate to $\u$, and check whether it is also orthogonal to $\u$.</p>
+<ol class="steps">
+<li><p>$A\v=(v_1,\,4v_2)^\top$, so $\u^\top A\v=2v_1+4v_2$.</p><p class="why-step">Multiply $A$ into $\v$ first, then take the dot product with $\u$.</p></li>
+<li><p>Conjugacy needs $2v_1+4v_2=0$, so $v_1=-2v_2$. Taking $v_2=-1$ gives $\v=(2,-1)^\top$.</p><p class="why-step">One equation in two unknowns leaves a free choice; any nonzero multiple of this $\v$ also works.</p></li>
+<li><p>Check: $A\v=(2,-4)^\top$ and $\u^\top A\v=4-4=0$. ✓</p><p class="why-step">Always verify with one product.</p></li>
+<li><p>Ordinary inner product: $\u^\top\v=4-1=3\ne0$. So $\u$ and $\v$ are $A$-conjugate but not perpendicular.</p><p class="why-step">This is the picture to remember: conjugate directions look skewed on paper, because the bowl is stretched.</p></li>
+</ol>
+</div>
+
+<div class="prose">
+<p><b>A matrix that fails the test.</b> Is $B=\begin{pmatrix}1&3\\3&1\end{pmatrix}$ positive definite? Trace $2$ and determinant $1-9=-8$ give $\lambda^2-2\lambda-8=0$, so $\lambda=4$ and $\lambda=-2$. The eigenvalue $-2$ has eigenvector $\x=(1,-1)^\top$, and $\x^\top B\x=(1,-1)\cdot(-2,2)=-4\lt0$. So $B$ is not positive definite, even though every entry is positive. The rule for $2\times2$: positive definite exactly when trace $\gt0$ and determinant $\gt0$.</p>
+</div>
+
+<details class="deeper"><summary>Go deeper: why eigenvectors for different eigenvalues are perpendicular</summary>
+<p>Let $A\v_i=\lambda_i\v_i$ and $A\v_j=\lambda_j\v_j$ with $\lambda_i\ne\lambda_j$ and $A=A^\top$. Compute $\v_i^\top A\v_j$ in two ways. Using $A\v_j=\lambda_j\v_j$ gives $\lambda_j\,\v_i^\top\v_j$. Moving $A$ to the left (this is where $A=A^\top$ is used: $\v_i^\top A=(A\v_i)^\top$) gives $\lambda_i\,\v_i^\top\v_j$. So $(\lambda_i-\lambda_j)\,\v_i^\top\v_j=0$. Since $\lambda_i\ne\lambda_j$, the inner product $\v_i^\top\v_j$ must be $0$.</p>
+</details>
 
 <div class="practice">
 <div class="prob" data-id="pm-la-p1" data-ans="1/2" data-labels="c">
@@ -5201,6 +5245,11 @@ For $A\succ0$, $\ip{\u}{\v}_A=\u^\top A\v$ is again an inner product, with norm 
 <div class="stem"><p>For $A=\begin{pmatrix}2&1\\1&2\end{pmatrix}$, compute $\u^\top A\v$ with $\u=(1,2)^\top$ and $\v=(2,-1)^\top$.</p></div>
 <div class="hint"><p>First $A\v=(2\cdot2+1\cdot(-1),\;2-2)^\top$.</p></div>
 <div class="sol"><p>$A\v=(3,0)^\top$, so $\u^\top A\v=1\cdot3+2\cdot0=3$. (Note $\u^\top\v=0$: orthogonal, yet not conjugate.)</p></div>
+</div>
+<div class="prob" data-id="pm-la-p4" data-ans="2" data-labels="c">
+<div class="stem"><p>Let $A=\operatorname{diag}(1,4)$. Find $c$ so that $(c,-1)^\top$ is $A$-conjugate to $(2,1)^\top$.</p></div>
+<div class="hint"><p>$A(c,-1)^\top=(c,-4)^\top$. Set $2c+1\cdot(-4)=0$.</p></div>
+<div class="sol"><p>$\u^\top A\v=2c-4=0$, so $c=2$. (This is the $\v=(2,-1)^\top$ of the second worked example.)</p></div>
 </div>
 </div>
 
@@ -5233,7 +5282,7 @@ For $A\succ0$, $\ip{\u}{\v}_A=\u^\top A\v$ is again an inner product, with norm 
 </section>
 
 <!-- ============ Chapter 2 ============ -->
-<section class="ch" id="pm-calculus" data-level="b" data-min="25" data-title="Gradient, Hessian, the quadratic, optimality" data-src="Parts 0b and 3 condensed; Book Ch. 3–6">
+<section class="ch" id="pm-calculus" data-level="b" data-min="40" data-title="Gradient, Hessian, the quadratic, optimality" data-src="Parts 0b and 3 condensed; Book Ch. 3–6">
 <h2>Gradient, Hessian, the quadratic and optimality conditions</h2>
 <div class="opener">
 <p>The gradient $\grad f$ points uphill and vanishes at a minimizer; the Hessian $\grad^2 f$ says how the surface curves; for the quadratic $f(\x)=\tfrac12\x^\top A\x-\b^\top\x$ these are $A\x-\b$ and $A$, so the minimizer solves $A\x=\b$.</p>
@@ -5242,17 +5291,31 @@ For $A\succ0$, $\ip{\u}{\v}_A=\u^\top A\v$ is again an inner product, with norm 
 </div>
 
 <div class="prose">
+<p>In one variable, the derivative $f'(x)$ is the slope of the graph. With several variables, there is one slope per direction you could move in. The <b>gradient</b> collects those slopes into one vector. The <b>Hessian</b> does the same for the curvature: how each slope itself changes. Everything in Parts 8–10 is built from these two objects.</p>
 <h3>Gradient and Hessian</h3>
 <p>For $f:\R^n\to\R$, the <b>gradient</b> $\grad f(\x)$ is the vector of partial derivatives $\partial f/\partial x_i$. It points in the direction of steepest increase, and $-\grad f$ in the direction of steepest decrease. The <b>Hessian</b> $\grad^2f(\x)$ is the matrix of second partials $\partial^2f/\partial x_i\partial x_j$, symmetric when $f$ is smooth. We write $\g_k=\grad f(\x_k)$.</p>
+<p><b>Reading the symbols.</b> $f:\R^n\to\R$ reads "$f$ takes a list of $n$ numbers and returns one number". $\partial f/\partial x_i$ is the <b>partial derivative</b>: differentiate with respect to $x_i$ while treating all other variables as constants. The symbol $\grad$ ("nabla" or "grad") produces the gradient, and $\grad^2$ ("Hessian") produces the matrix of second derivatives.</p>
+<p><b>Small numbers.</b> Take $f(x_1,x_2)=x_1^2+x_1x_2$. Then $\partial f/\partial x_1=2x_1+x_2$ and $\partial f/\partial x_2=x_1$, so $\grad f(1,1)=(3,1)^\top$. The second partials are $\partial^2f/\partial x_1^2=2$, $\partial^2f/\partial x_1\partial x_2=1$, $\partial^2f/\partial x_2\partial x_1=1$, $\partial^2f/\partial x_2^2=0$, so $\grad^2f=\begin{pmatrix}2&1\\1&0\end{pmatrix}$. The two mixed entries agree, which is why the Hessian is symmetric.</p>
+<p><b>Why the gradient points uphill.</b> The slope of $f$ in a direction $\d$ is $\grad f^\top\d=\norm{\grad f}\norm{\d}\cos\theta$ (the inner-product formula from Chapter 1, with $\theta$ the angle between $\grad f$ and $\d$). For a fixed step length this is largest when $\cos\theta=1$, i.e. when $\d$ points along $\grad f$, and most negative when $\d$ points along $-\grad f$.</p>
+<p><b>Intuition.</b> Zoom in far enough on any smooth curve and it looks like a straight line. Zoom in a little less and it looks like a parabola. Taylor's expansion writes this down: a straight-line part plus a parabola part. Gradient descent trusts only the straight line. Newton's method trusts the parabola and jumps to its bottom. The expansion is the reason both methods exist.</p>
 <p><b>Taylor expansion to second order</b> (the rest of the course is built on it): for a small step $\d$,
 $$f(\x+\d)\approx f(\x)+\grad f(\x)^\top\d+\tfrac12\d^\top\grad^2f(\x)\,\d .$$
 The linear term is the slope; the quadratic term is the curvature. Dropping the quadratic term gives the first-order model used by gradient descent; keeping it gives the model that Newton's method minimizes.</p>
+<p><b>What this says.</b> The sign $\approx$ means the two sides differ by something much smaller than $\norm{\d}^2$ when $\d$ is small (written $o(\norm{\d}^2)$, "little-o"). The term $\grad f(\x)^\top\d$ is the predicted change from the slope. The term $\tfrac12\d^\top\grad^2f(\x)\,\d$ is the correction from curvature.</p>
+<p><b>Small numbers (one variable).</b> $f(x)=x^3$ at $x=1$ with $d=0.1$: here $f'=3$ and $f''=6$, so the model gives $1+3(0.1)+\tfrac12\cdot6\cdot(0.1)^2=1.33$, while the true value is $1.1^3=1.331$.</p>
 <h3>The quadratic</h3>
+<p>The quadratic function is the simplest bowl, and the only function for which we can finish every calculation by hand. Real problems look like a quadratic near their minimum, so what works for the quadratic is the template for everything else. In $f(\x)=\tfrac12\x^\top A\x-\b^\top\x$, the first term is the bowl and the second tilts it.</p>
 <p>With $A=A^\top$, the function $f(\x)=\tfrac12\x^\top A\x-\b^\top\x$ has
 $$\grad f(\x)=A\x-\b,\qquad \grad^2f(\x)=A .$$
 For this $f$ the Taylor expansion is exact: $f(\x+\d)=f(\x)+\g^\top\d+\tfrac12\d^\top A\d$. When $A\succ0$ the unique minimizer is $\x^\star=A^{-1}\b$ with $f^\star=-\tfrac12\b^\top A^{-1}\b$. So <b>minimizing $f$ and solving $A\x=\b$ are the same task</b>.</p>
+<p><b>Why $\grad f=A\x-\b$.</b> Check it for $n=2$ with $A=\begin{pmatrix}a&c\\c&d\end{pmatrix}$. Multiplying out, $\tfrac12\x^\top A\x=\tfrac12(ax_1^2+2c\,x_1x_2+dx_2^2)$. Then $\partial/\partial x_1$ gives $ax_1+cx_2$ and $\partial/\partial x_2$ gives $cx_1+dx_2$. That is exactly the vector $A\x$. The linear term $-\b^\top\x=-b_1x_1-b_2x_2$ contributes $-\b$. The factor $\tfrac12$ cancels the 2 that comes from differentiating a square. In one variable this is the familiar $f=\tfrac12ax^2-bx$, $f'=ax-b$.</p>
+<p><b>Why the minimizer is $A^{-1}\b$.</b> At the bottom of the bowl the gradient is zero: $A\x-\b=\0$. Multiply by $A^{-1}$ to get $\x=A^{-1}\b$. Substituting back, $f^\star=\tfrac12\b^\top A^{-1}\b-\b^\top A^{-1}\b=-\tfrac12\b^\top A^{-1}\b$.</p>
 </div>
+<div class="callout"><b>Careful:</b> to read $A$ and $\b$ off a polynomial, remember the $\tfrac12$. In $\tfrac12\x^\top A\x$ the diagonal entry $A_{11}$ multiplies $\tfrac12x_1^2$, so a term $x_1^2$ in the polynomial means $A_{11}=2$. The cross term is $A_{12}\,x_1x_2$ (the two off-diagonal entries each give $\tfrac12A_{12}x_1x_2$). Example: $x_1^2+x_1x_2+x_2^2-3x_1$ has $A=\begin{pmatrix}2&1\\1&2\end{pmatrix}$ and $\b=(3,0)^\top$.</div>
 
+<div class="prose">
+<p><b>Intuition.</b> At the bottom of a valley the ground is flat: no direction goes downhill. That is the first-order condition, and it is how CG and Newton know when to stop. Flat ground is not enough, though. The top of a hill and the middle of a saddle are also flat. The second-order conditions use curvature to tell valley bottoms from the other two.</p>
+</div>
 <div class="box thm" data-k="Theorem" data-name="Optimality conditions">
 <p><b>First-order necessary:</b> if $\x^\star$ is a local minimizer of a differentiable $f$, then $\grad f(\x^\star)=\0$ (a <i>stationary point</i>).</p>
 <p><b>Second-order necessary:</b> additionally $\grad^2f(\x^\star)\succeq0$.</p>
@@ -5260,6 +5323,9 @@ For this $f$ the Taylor expansion is exact: $f(\x+\d)=f(\x)+\g^\top\d+\tfrac12\d
 </div>
 <div class="prose">
 <p>Why: expand at a stationary point, $f(\x^\star+\d)\approx f(\x^\star)+\tfrac12\d^\top\grad^2f\,\d$. If the Hessian is positive definite every step raises $f$; if it has a negative eigenvalue, stepping along that eigenvector lowers $f$ (a <b>saddle</b> if it also has a positive one). A zero eigenvalue makes the test inconclusive.</p>
+<p><b>What the theorem says in words.</b> To be a minimizer you must have zero gradient and no downhill curvature. To be sure you have a minimizer, zero gradient and strictly upward curvature in every direction is enough.</p>
+<p><b>Why a nonzero gradient cannot sit at a minimizer.</b> Suppose $\g=\grad f(\x)\ne\0$. Step by $\d=-\varepsilon\g$ with a tiny $\varepsilon\gt0$. The Taylor expansion gives $f(\x+\d)\approx f(\x)-\varepsilon\norm{\g}^2$, which is smaller than $f(\x)$. So $\x$ was not a minimizer.</p>
+<p><b>Small numbers.</b> $f(x_1,x_2)=x_1^2-x_2^2$ has $\grad f=(2x_1,-2x_2)^\top$, which is $\0$ at the origin. The Hessian is $\operatorname{diag}(2,-2)$. Moving along $x_1$ raises $f$ (to $t^2$), moving along $x_2$ lowers it (to $-t^2$): a saddle.</p>
 </div>
 
 <div class="example">
@@ -5269,6 +5335,16 @@ For this $f$ the Taylor expansion is exact: $f(\x+\d)=f(\x)+\g^\top\d+\tfrac12\d
 <li><p>The Hessian is $A$ itself: trace 7, det 11, so $\lambda=\frac{7\pm\sqrt5}2\approx2.38,\,4.62$, both positive.</p><p class="why-step">A positive definite Hessian everywhere means a bowl.</p></li>
 <li><p>Solve $A\x=\b$: $A^{-1}=\tfrac1{11}\begin{pmatrix}3&-1\\-1&4\end{pmatrix}$, so $\x^\star=\tfrac1{11}(3-2,\,-1+8)^\top=\tfrac1{11}(1,7)^\top$.</p><p class="why-step">Inverse of a $2\times2$: swap the diagonal, negate the off-diagonal, divide by the determinant.</p></li>
 <li><p>$f^\star=-\tfrac12\b^\top\x^\star=-\tfrac12\cdot\tfrac{1+14}{11}=-\tfrac{15}{22}\approx-0.682$.</p><p class="why-step">At $\x^\star$ we have $A\x^\star=\b$, so $f^\star=\tfrac12\b^\top\x^\star-\b^\top\x^\star$.</p></li>
+</ol>
+</div>
+
+<div class="example">
+<p class="problem">Minimize $f(x_1,x_2)=x_1^2+x_1x_2+x_2^2-3x_1$. Write it as $\tfrac12\x^\top A\x-\b^\top\x$, find $\x^\star$ and $f^\star$, and confirm it is a minimum.</p>
+<ol class="steps">
+<li><p>Match terms: $x_1^2\to A_{11}=2$, $x_2^2\to A_{22}=2$, $x_1x_2\to A_{12}=A_{21}=1$, and $-3x_1\to\b=(3,0)^\top$. So $A=\begin{pmatrix}2&1\\1&2\end{pmatrix}$.</p><p class="why-step">Use the callout rule: squares need a factor 2, the cross term does not.</p></li>
+<li><p>The gradient is $A\x-\b=(2x_1+x_2-3,\;x_1+2x_2)^\top$. Set it to $\0$: from the second equation $x_1=-2x_2$; the first gives $-4x_2+x_2=3$, so $x_2=-1$ and $x_1=2$. Thus $\x^\star=(2,-1)^\top$.</p><p class="why-step">Stationary means $\g=\0$ (first-order condition); here it is a pair of linear equations.</p></li>
+<li><p>The Hessian is $A$, with trace $4$ and determinant $3$, so $\lambda=1,3$, both positive. Hence $A\succ0$ and $\x^\star$ is the strict minimizer.</p><p class="why-step">Second-order sufficient condition: $\g=\0$ and Hessian $\succ0$.</p></li>
+<li><p>$f^\star=-\tfrac12\b^\top\x^\star=-\tfrac12(3\cdot2+0)=-3$. Direct check: $4-2+1-6=-3$. ✓</p><p class="why-step">Always check with the original polynomial.</p></li>
 </ol>
 </div>
 
@@ -5287,6 +5363,11 @@ For this $f$ the Taylor expansion is exact: $f(\x+\d)=f(\x)+\g^\top\d+\tfrac12\d
 <div class="stem"><p>Minimize $\tfrac12\x^\top A\x-\b^\top\x$ with $A=\begin{pmatrix}2&1\\1&2\end{pmatrix}$, $\b=(3,3)^\top$. Find $\x^\star$.</p></div>
 <div class="hint"><p>Solve $A\x=\b$; try the vector $(t,t)$.</p></div>
 <div class="sol"><p>$A(t,t)^\top=(3t,3t)^\top=(3,3)^\top$ gives $t=1$. $A\succ0$ (eigenvalues 1, 3), so $\x^\star=(1,1)^\top$.</p></div>
+</div>
+<div class="prob" data-id="pm-calc-p4" data-ans="0;3" data-labels="∂f/∂x₁;∂f/∂x₂">
+<div class="stem"><p>For $f(x_1,x_2)=x_1^2+x_1x_2+x_2^2-3x_1$, find $\grad f(1,1)$.</p></div>
+<div class="hint"><p>$\partial f/\partial x_1=2x_1+x_2-3$ and $\partial f/\partial x_2=x_1+2x_2$.</p></div>
+<div class="sol"><p>At $(1,1)$: $(2+1-3,\;1+2)=(0,3)$. The first entry is $0$ but the second is not, so $(1,1)$ is not stationary.</p></div>
 </div>
 </div>
 
@@ -5319,7 +5400,7 @@ For this $f$ the Taylor expansion is exact: $f(\x+\d)=f(\x)+\g^\top\d+\tfrac12\d
 </section>
 
 <!-- ============ Chapter 3 ============ -->
-<section class="ch" id="pm-convex" data-level="n" data-min="20" data-title="Convexity, strong convexity, smoothness" data-src="Part 4 condensed; Book Ch. 7–9">
+<section class="ch" id="pm-convex" data-level="n" data-min="35" data-title="Convexity, strong convexity, smoothness" data-src="Part 4 condensed; Book Ch. 7–9">
 <h2>Convexity, strong convexity $m$ and smoothness $L$</h2>
 <div class="opener">
 <p>A function is convex when its graph lies above every tangent; then any stationary point is a global minimizer, and curvature bounds $m\le\lambda(\grad^2f)\le L$ control how the function behaves.</p>
@@ -5328,19 +5409,28 @@ For this $f$ the Taylor expansion is exact: $f(\x+\d)=f(\x)+\g^\top\d+\tfrac12\d
 </div>
 
 <div class="prose">
+<p><b>Intuition.</b> A convex function is a bowl with no bumps. Lay a flat sheet tangent to it anywhere, and the whole bowl stays above the sheet. The consequence matters: if the sheet is horizontal (zero gradient), the bowl lies above that height everywhere, so the touching point is the lowest point of the whole function, not only a local dip. For methods like CG this means there is nothing to get stuck on.</p>
 <p>A differentiable $f$ is <b>convex</b> if for all $\x,\y$
 $$f(\y)\ge f(\x)+\grad f(\x)^\top(\y-\x),$$
 that is, every tangent plane lies below the graph. For twice-differentiable $f$ this is equivalent to $\grad^2f(\x)\succeq0$ everywhere.</p>
+<p><b>What this says.</b> The right side $f(\x)+\grad f(\x)^\top(\y-\x)$ is the height of the tangent plane at $\x$, evaluated at the point $\y$. The inequality says the graph at $\y$ is not below it. The symbol $\succeq0$ reads "positive semidefinite": curvature is never negative.</p>
+<p><b>Small numbers.</b> $f(x)=x^2$ at $x=1$: the tangent is $1+2(y-1)$, and $f(y)-[1+2(y-1)]=y^2-2y+1=(y-1)^2\ge0$. ✓ For $f(x)=-x^2$ the gap is $-(y-1)^2\le0$: the graph is below its tangent, so it is not convex.</p>
+<p><b>The quadratic case.</b> For $f=\tfrac12\x^\top A\x-\b^\top\x$ the Taylor expansion is exact, so $f(\y)-[f(\x)+\g^\top(\y-\x)]=\tfrac12(\y-\x)^\top A(\y-\x)$. This is $\ge0$ for all $\y$ exactly when $A\succeq0$.</p>
 </div>
 <div class="box thm" data-k="Theorem" data-name="Stationary point of a convex function">
 <p>If $f$ is convex and $\grad f(\x^\star)=\0$, then $\x^\star$ is a global minimizer.</p>
 </div>
 <div class="prose">
 <p>Proof: put $\x=\x^\star$ in the inequality: $f(\y)\ge f(\x^\star)+\0^\top(\y-\x^\star)=f(\x^\star)$ for every $\y$. $\square$ This is why, on the quadratic with $A\succ0$, solving $A\x=\b$ is the whole job: $\g=\0$ cannot be a trap.</p>
+<p><b>Reading the proof.</b> The inequality holds for every pair $\x,\y$, so we may choose $\x=\x^\star$. The term $\grad f(\x^\star)^\top(\y-\x^\star)$ is a zero vector dotted with something, hence $0$. What is left says $f(\y)\ge f(\x^\star)$ for every $\y$. That is the definition of a global minimizer.</p>
 <h3>Strong convexity and smoothness</h3>
+<p><b>Intuition.</b> Convexity says the bowl has no bumps. It does not say how deep the curve is. Two numbers fill that gap. $m$ is a floor on the curvature: the bowl is at least this curved in every direction, so it cannot be nearly flat. $L$ is a ceiling: no direction is sharper than this. The ratio $\kappa=L/m$ compares the sharpest to the gentlest direction. A large $\kappa$ is a long, narrow valley, and that is the situation that makes gradient descent slow (Chapter 5) and that CG and Newton are designed to handle.</p>
 <p>For the quadratic these are eigenvalue bounds. In general, $f$ is <b>$m$-strongly convex</b> and <b>$L$-smooth</b> when $mI\preceq\grad^2f(\x)\preceq LI$ at every $\x$ (the curvature in every direction lies between $m\gt0$ and $L$). Then $\kappa=L/m\ge1$ measures how stretched the contours are. For $f=\tfrac12\x^\top A\x-\b^\top\x$ with $A\succ0$: $m=\lambda_{\min}(A)$, $L=\lambda_{\max}(A)$, and an exact identity holds,
 $$f(\y)-f^\star=\tfrac12(\y-\x^\star)^\top A(\y-\x^\star)=\tfrac12\norm{\y-\x^\star}_A^2 ,$$
 so $\tfrac m2\norm{\y-\x^\star}^2\le f(\y)-f^\star\le\tfrac L2\norm{\y-\x^\star}^2$. Minimizing $f$ is the same as minimizing the $A$-norm of the error.</p>
+<p><b>What this says.</b> The symbol $\preceq$ is the reverse of $\succeq$: $mI\preceq H$ means $H-mI\succeq0$, i.e. every eigenvalue of $H$ is at least $m$. So "$mI\preceq\grad^2f\preceq LI$" says every Hessian eigenvalue lies in $[m,L]$. The distance from the minimizer, measured in the $A$-norm, gives the function gap exactly.</p>
+<p><b>Why the identity holds.</b> Write $\y=\x^\star+\d$. The Taylor expansion of the quadratic is exact: $f(\x^\star+\d)=f(\x^\star)+\g(\x^\star)^\top\d+\tfrac12\d^\top A\d$. At the minimizer $\g(\x^\star)=\0$, leaving $f(\y)-f^\star=\tfrac12\d^\top A\d$. The sandwich is the two-sided bound of Chapter 1 applied to $\d$.</p>
+<p><b>Picture of $\kappa$.</b> The level set $\{\x:\tfrac12\x^\top A\x=c\}$ is an ellipse whose semi-axes are $\sqrt{2c/\lambda_i}$ along the eigenvectors. The longest axis is $\sqrt{L/m}=\sqrt\kappa$ times the shortest. For $A=\operatorname{diag}(2,8)$, $\kappa=4$ and the ellipse is twice as long as it is wide.</p>
 </div>
 
 <div class="example">
@@ -5349,6 +5439,18 @@ so $\tfrac m2\norm{\y-\x^\star}^2\le f(\y)-f^\star\le\tfrac L2\norm{\y-\x^\star}
 <li><p>trace $7$, det $6$: $\lambda^2-7\lambda+6=0$, so $\lambda=1,6$. Hence $m=1$, $L=6$, $\kappa=6$, and $A\succ0$.</p><p class="why-step">$m\gt0$ makes $f$ strongly convex, so there is exactly one minimizer.</p></li>
 <li><p>$\x^\star=A^{-1}\b=\tfrac16\begin{pmatrix}2&-2\\-2&5\end{pmatrix}(1,0)^\top=(\tfrac13,-\tfrac13)^\top$ and $f^\star=-\tfrac12\b^\top\x^\star=-\tfrac16$.</p><p class="why-step">Same recipe as in Chapter 2.</p></li>
 <li><p>At $\y=\0$: $f(\0)=0$, so $f(\0)-f^\star=\tfrac16$. The error is $\norm{\0-\x^\star}^2=\tfrac29$, and $\tfrac m2\cdot\tfrac29=\tfrac19\le\tfrac16\le\tfrac L2\cdot\tfrac29=\tfrac23$. ✓</p><p class="why-step">The function gap is squeezed between $m$ and $L$ times half the squared distance.</p></li>
+</ol>
+</div>
+
+<div class="callout"><b>Careful:</b> convex, strongly convex and positive definite are different strengths. $f(x)=x^4$ is convex, but its second derivative $12x^2$ is $0$ at $x=0$, so no $m\gt0$ works. For a quadratic with an eigenvalue $0$ (say $f=\tfrac12x_1^2$ in two variables) the function is convex, but the whole line $x_1=0$ minimizes it: no unique minimizer. Only $m\gt0$ guarantees one.</div>
+
+<div class="example">
+<p class="problem">Decide whether $f_1=x_1^2+x_1x_2+x_2^2$ and $f_2=x_1^2+4x_1x_2+x_2^2$ are convex, and give $m$ and $L$ where they are strongly convex.</p>
+<ol class="steps">
+<li><p>$f_1$ has Hessian $\begin{pmatrix}2&1\\1&2\end{pmatrix}$: trace $4$, determinant $3$, eigenvalues $1$ and $3$.</p><p class="why-step">Diagonal entries come from the squares (twice the coefficient), off-diagonals from the cross term.</p></li>
+<li><p>Both eigenvalues are positive, so $f_1$ is convex, strongly convex with $m=1$, $L=3$, $\kappa=3$.</p><p class="why-step">The Hessian is constant, so the bounds hold at every point.</p></li>
+<li><p>$f_2$ has Hessian $\begin{pmatrix}2&4\\4&2\end{pmatrix}$: trace $4$, determinant $4-16=-12$, eigenvalues $6$ and $-2$.</p><p class="why-step">Roots of $\lambda^2-4\lambda-12=(\lambda-6)(\lambda+2)$.</p></li>
+<li><p>One eigenvalue is negative, so $f_2$ is not convex. Along the eigenvector $(1,-1)^\top$, $f_2(t,-t)=-2t^2$ dips downward, so its stationary point $\0$ is a saddle, not a minimizer.</p><p class="why-step">A negative-curvature direction breaks the "stationary implies global minimum" argument.</p></li>
 </ol>
 </div>
 
@@ -5367,6 +5469,11 @@ so $\tfrac m2\norm{\y-\x^\star}^2\le f(\y)-f^\star\le\tfrac L2\norm{\y-\x^\star}
 <div class="stem"><p>Find the minimum value of $\tfrac12\x^\top A\x-\b^\top\x$ with $A=\begin{pmatrix}2&0\\0&4\end{pmatrix}$, $\b=(2,4)^\top$.</p></div>
 <div class="hint"><p>$\x^\star=A^{-1}\b$, then $f^\star=-\tfrac12\b^\top\x^\star$.</p></div>
 <div class="sol"><p>$\x^\star=(1,1)^\top$, so $f^\star=-\tfrac12(2+4)=-3$. Check directly: $\tfrac12(2+4)-(2+4)=-3$.</p></div>
+</div>
+<div class="prob" data-id="pm-cvx-p4" data-ans="-2" data-labels="smallest eigenvalue">
+<div class="stem"><p>$f(x_1,x_2)=x_1^2+4x_1x_2+x_2^2$ has Hessian $\begin{pmatrix}2&4\\4&2\end{pmatrix}$. Find its smallest eigenvalue. (A negative value means $f$ is not convex.)</p></div>
+<div class="hint"><p>trace $4$, determinant $4-16=-12$: solve $\lambda^2-4\lambda-12=0$.</p></div>
+<div class="sol"><p>$(\lambda-6)(\lambda+2)=0$, so the eigenvalues are $6$ and $-2$. The smallest is $-2$, so $f$ is not convex.</p></div>
 </div>
 </div>
 
@@ -5399,7 +5506,7 @@ so $\tfrac m2\norm{\y-\x^\star}^2\le f(\y)-f^\star\le\tfrac L2\norm{\y-\x^\star}
 </section>
 
 <!-- ============ Chapter 4 ============ -->
-<section class="ch" id="pm-linesearch" data-level="n" data-min="25" data-title="Descent directions and line searches" data-src="Parts 5–6 condensed; Book Ch. 10–12">
+<section class="ch" id="pm-linesearch" data-level="n" data-min="40" data-title="Descent directions and line searches" data-src="Parts 5–6 condensed; Book Ch. 10–12">
 <h2>Descent directions, exact line search, Armijo and Wolfe</h2>
 <div class="opener">
 <p>An iteration chooses a direction $\d_k$ with $\g_k^\top\d_k\lt0$ and a step length $\alpha_k$, and sets $\x_{k+1}=\x_k+\alpha_k\d_k$; the step is found by a line search on the one-variable function $\phi(\alpha)=f(\x_k+\alpha\d_k)$.</p>
@@ -5408,23 +5515,40 @@ so $\tfrac m2\norm{\y-\x^\star}^2\le f(\y)-f^\star\le\tfrac L2\norm{\y-\x^\star}
 </div>
 
 <div class="prose">
+<p><b>Intuition.</b> Every method in Parts 8–10 is the same loop. Stand at $\x_k$. Choose a direction $\d_k$. Decide how far to walk along it. Arrive at $\x_{k+1}$. The methods differ in how they choose the direction (negative gradient, conjugate direction, Newton direction). The step length is a second question, and this chapter answers it. Fix the direction and look at your altitude as you walk along it: that is a function $\phi(\alpha)$ of one variable, the distance walked.</p>
+<p>Notation: $\x_k$ is the $k$th point, $\g_k=\grad f(\x_k)$ its gradient, $\d_k$ the direction, $\alpha_k\gt0$ the step length (a number). By the chain rule, $\phi'(\alpha)=\grad f(\x+\alpha\d)^\top\d$.</p>
 <p>A direction $\d$ is a <b>descent direction</b> at $\x$ if $\g^\top\d\lt0$: the slope along $\d$ is negative, so a small enough step lowers $f$ (since $\phi'(0)=\g^\top\d$). The steepest-descent choice is $\d=-\g$.</p>
+<p><b>What this says.</b> $\g^\top\d\lt0$ means $\d$ makes an angle of more than $90^\circ$ with the uphill direction $\g$, so it points at least partly downhill. For $\d=-\g$, $\g^\top\d=-\norm{\g}^2\lt0$ unless $\g=\0$. Small numbers: $\g=(3,1)^\top$ and $\d=(-1,0)^\top$ give $\g^\top\d=-3\lt0$, a descent direction, even though it is not $-\g$.</p>
 <h3>Exact line search on a quadratic</h3>
+<p>If the walk is along a straight line through a bowl, your altitude first falls and then rises again. The exact step stops at the lowest point of that path. For a quadratic, this lowest point has a formula, so no trial and error is needed.</p>
 <p>For the quadratic, $\phi(\alpha)=f(\x+\alpha\d)=f(\x)+\alpha\,\g^\top\d+\tfrac12\alpha^2\,\d^\top A\d$ is a parabola. Setting $\phi'(\alpha)=0$:
 $$\alpha=-\frac{\g^\top\d}{\d^\top A\d},\qquad\text{and for }\d=-\g:\quad \alpha=\frac{\g^\top\g}{\g^\top A\g}.$$
 After an exact step the new gradient is orthogonal to the direction used in that step: $\g_{k+1}^\top\d_k=0$ (because $\phi'(\alpha_k)=\g_{k+1}^\top\d_k=0$). The gradient also updates cheaply, $\g_{k+1}=\g_k+\alpha_kA\d_k$.</p>
+<p><b>Where each fact comes from.</b> For the quadratic, Taylor is exact with $\d$ replaced by $\alpha\d$, giving the parabola in $\alpha$ shown above. Its derivative is $\phi'(\alpha)=\g^\top\d+\alpha\,\d^\top A\d$; setting it to zero gives the formula for $\alpha$. This is a minimum because $\d^\top A\d\gt0$ (parabola opens upward) and the step is positive because $\g^\top\d\lt0$. The orthogonality comes from the chain rule: $\phi'(\alpha_k)=\g_{k+1}^\top\d_k$, and we set it to zero. The gradient update comes from $\g_{k+1}=A(\x_k+\alpha_k\d_k)-\b=\g_k+\alpha_kA\d_k$.</p>
+<p><b>What this says.</b> When you stop at the lowest point along a line, the slope along that line is zero there, so the new gradient is perpendicular to the line you walked. This is the fact behind both the zig-zag in Chapter 5 and the "conjugate" idea in Part 8.</p>
 <h3>Inexact searches</h3>
+<p>For a general function, finding the exact lowest point along the line means solving an equation at every step. That cost is wasted, since the next step will move us anyway. So we only require a step that is "good enough". Two simple tests define "good enough".</p>
 <p>For general $f$ an exact minimizer along the line is too costly, so we accept steps satisfying conditions with constants $0\lt c_1\lt c_2\lt1$:</p>
+</div>
+<div class="prose">
+<p><b>Picture.</b> Plot $\phi(\alpha)$. Draw the tangent at $\alpha=0$, which slopes down. Armijo draws a second line from the same start, less steep (slope $c_1\g_k^\top\d_k$). A step is accepted only if the graph is below this second line: it must pay back at least a fraction of what the tangent promised. The curvature condition looks at the slope at the new point: it must not still be steeply downhill, otherwise we stopped too early.</p>
 </div>
 <div class="box def" data-k="Definition" data-name="Armijo (sufficient decrease) and Wolfe conditions">
 <p><b>Armijo:</b> $f(\x_k+\alpha\d_k)\le f(\x_k)+c_1\alpha\,\g_k^\top\d_k$. The decrease must be at least a fraction $c_1$ of what the initial slope promises. It rules out steps that are too long. <b>Backtracking</b> starts at a trial $\alpha$ and multiplies it by a factor like $\tfrac12$ until Armijo holds.</p>
 <p><b>Curvature (Wolfe):</b> $\grad f(\x_k+\alpha\d_k)^\top\d_k\ge c_2\,\g_k^\top\d_k$. The slope along $\d_k$ must have risen to at least $c_2$ times the initial (negative) slope. It rules out steps that are too short. Armijo plus curvature are the <b>Wolfe conditions</b>.</p>
 </div>
+<div class="prose">
+<p><b>Small numbers.</b> Take $\phi(\alpha)=(1-2\alpha)^2$, which is $f(x)=x^2$ from $x=1$ along $d=-2$. Here $\phi(0)=1$, $\phi'(0)=-4$. With $c_1=0.1$ Armijo asks $\phi(\alpha)\le1-0.4\alpha$. At $\alpha=0.9$, $\phi=0.64\le0.64$ holds with equality. At $\alpha=1$, $\phi=1\gt0.6$: too long. With $c_2=0.9$ the curvature test asks $\phi'(\alpha)\ge-3.6$. Since $\phi'(\alpha)=-4(1-2\alpha)$, the test holds when $\alpha\ge0.05$, so a tiny step such as $\alpha=0.01$ (slope $-3.92$) fails it: too short.</p>
+</div>
 <div class="box thm" data-k="Lemma" data-name="Wolfe implies sᵀy &gt; 0">
 <p>Let $\s_k=\x_{k+1}-\x_k=\alpha_k\d_k$ and $\y_k=\g_{k+1}-\g_k$. If $\d_k$ is a descent direction and $\alpha_k$ satisfies the curvature condition, then $\s_k^\top\y_k\gt0$.</p>
 </div>
 <div class="prose">
+<p><b>What this says.</b> $\s_k$ is the step actually taken and $\y_k$ is how much the gradient changed over that step. Their inner product $\s_k^\top\y_k$ measures the curvature seen along the step: the slope along $\s_k$ went from $\g_k^\top\s_k$ to $\g_{k+1}^\top\s_k$, and positive means it increased, as in a bowl. Quasi-Newton methods (Part 10) learn the Hessian from pairs $(\s_k,\y_k)$, so they need this number to be positive.</p>
+</div>
+<div class="prose">
 <p>Proof: $\y_k^\top\s_k=\alpha_k(\g_{k+1}^\top\d_k-\g_k^\top\d_k)\ge\alpha_k(c_2-1)\,\g_k^\top\d_k$. Here $\alpha_k\gt0$, $c_2-1\lt0$ and $\g_k^\top\d_k\lt0$, so the product is positive. $\square$ In Part 10 the quasi-Newton update uses $\s_k$ and $\y_k$ and needs $\s_k^\top\y_k\gt0$ to keep the inverse-Hessian approximation positive definite. On a quadratic, $\y_k=A\s_k$ so $\s_k^\top\y_k=\s_k^\top A\s_k\gt0$ automatically.</p>
+<p><b>The proof, line by line.</b> (1) $\y_k^\top\s_k=(\g_{k+1}-\g_k)^\top\alpha_k\d_k=\alpha_k(\g_{k+1}^\top\d_k-\g_k^\top\d_k)$, by distributing. (2) The curvature condition says $\g_{k+1}^\top\d_k\ge c_2\g_k^\top\d_k$; substitute it for the first term (allowed since $\alpha_k\gt0$), giving the bound $\alpha_k(c_2-1)\g_k^\top\d_k$. (3) Sign check: positive times negative times negative is positive.</p>
 </div>
 
 <div class="example">
@@ -5435,6 +5559,17 @@ After an exact step the new gradient is orthogonal to the direction used in that
 <li><p>$\x_1=(3,1)-\tfrac12(3,3)=(\tfrac32,-\tfrac12)^\top$, $f(\x_1)=\tfrac12(\tfrac94+\tfrac34)=\tfrac32$, $\g_1=(\tfrac32,-\tfrac32)^\top$.</p><p class="why-step">The function value dropped from 6 to 1.5.</p></li>
 <li><p>$\g_1^\top\g_0=\tfrac92-\tfrac92=0$: orthogonal, as the theory predicts.</p><p class="why-step">This is the property that causes zig-zagging in the next chapter.</p></li>
 <li><p>Armijo: $f(\x_0)+c_1\alpha_0\g_0^\top\d_0=6+0.1\cdot\tfrac12\cdot(-18)=5.1\ge1.5$. ✓</p><p class="why-step">Armijo is a mild requirement: the actual decrease (4.5) far exceeds the required one (0.9).</p></li>
+</ol>
+</div>
+
+<div class="example">
+<p class="problem">Let $A=\begin{pmatrix}2&1\\1&2\end{pmatrix}$, $\b=\0$, and at $\x_k$ let $\g_k=(3,1)^\top$. Take the direction $\d_k=(-1,0)^\top$ (not steepest descent). Find the exact step, the new gradient, and check $\g_{k+1}^\top\d_k=0$ and $\s_k^\top\y_k\gt0$.</p>
+<ol class="steps">
+<li><p>$\g_k^\top\d_k=-3\lt0$, so $\d_k$ is a descent direction.</p><p class="why-step">Always test the direction first.</p></li>
+<li><p>$A\d_k=(-2,-1)^\top$, so $\d_k^\top A\d_k=2$.</p><p class="why-step">Compute $A\d_k$ once; it is reused in the gradient update.</p></li>
+<li><p>$\alpha_k=-\dfrac{\g_k^\top\d_k}{\d_k^\top A\d_k}=\dfrac{3}{2}$.</p><p class="why-step">The exact-step formula for any direction.</p></li>
+<li><p>$\g_{k+1}=\g_k+\alpha_kA\d_k=(3,1)^\top+\tfrac32(-2,-1)^\top=(0,-\tfrac12)^\top$, and $\g_{k+1}^\top\d_k=0\cdot(-1)+(-\tfrac12)\cdot0=0$. ✓</p><p class="why-step">Orthogonality to the direction used in the step is the signature of an exact search.</p></li>
+<li><p>$\s_k=\alpha_k\d_k=(-\tfrac32,0)^\top$ and $\y_k=\g_{k+1}-\g_k=(-3,-\tfrac32)^\top$, so $\s_k^\top\y_k=\tfrac92\gt0$. This equals $\s_k^\top A\s_k=\tfrac94\cdot2$. ✓</p><p class="why-step">On a quadratic $\y_k=A\s_k$, so positivity is automatic.</p></li>
 </ol>
 </div>
 
@@ -5453,6 +5588,11 @@ After an exact step the new gradient is orthogonal to the direction used in that
 <div class="stem"><p>On the quadratic with $A=\begin{pmatrix}2&1\\1&3\end{pmatrix}$ a step is $\s=(1,-1)^\top$. Compute $\s^\top\y$ where $\y=A\s$.</p></div>
 <div class="hint"><p>$A\s=(2-1,\,1-3)^\top$.</p></div>
 <div class="sol"><p>$\y=(1,-2)^\top$, so $\s^\top\y=1+2=3\gt0$, as $A\succ0$ requires.</p></div>
+</div>
+<div class="prob" data-id="pm-ls-p4" data-ans="1.25" data-labels="α">
+<div class="stem"><p>On the quadratic with $A=\operatorname{diag}(2,6)$, the gradient is $\g=(4,6)^\top$ and the direction is $\d=(-1,-1)^\top$. Find the exact step $\alpha=-\g^\top\d/\d^\top A\d$.</p></div>
+<div class="hint"><p>$\g^\top\d=-10$. Compute $A\d=(-2,-6)^\top$.</p></div>
+<div class="sol"><p>$\d^\top A\d=2+6=8$, so $\alpha=10/8=1.25$.</p></div>
 </div>
 </div>
 
@@ -5485,7 +5625,7 @@ After an exact step the new gradient is orthogonal to the direction used in that
 </section>
 
 <!-- ============ Chapter 5 ============ -->
-<section class="ch" id="pm-rates" data-level="n" data-min="25" data-title="Zig-zag, condition number, convergence rates" data-src="Parts 5 and 7 condensed; Book Ch. 10–13">
+<section class="ch" id="pm-rates" data-level="n" data-min="40" data-title="Zig-zag, condition number, convergence rates" data-src="Parts 5 and 7 condensed; Book Ch. 10–13">
 <h2>Gradient descent zig-zag, $\kappa$, and what convergence orders mean</h2>
 <div class="opener">
 <p>Steepest descent with exact steps on a quadratic satisfies $f(\x_{k+1})-f^\star\le\big(\tfrac{\kappa-1}{\kappa+1}\big)^2\,(f(\x_k)-f^\star)$: it converges linearly, slowly when $\kappa$ is large, and its consecutive steps are perpendicular.</p>
@@ -5494,8 +5634,14 @@ After an exact step the new gradient is orthogonal to the direction used in that
 </div>
 
 <div class="prose">
+<p>Chapter 4 showed that an exact step ends at a point where the new gradient is perpendicular to the old step. This chapter asks what that costs. The answer is a number, $\kappa$, that decides how many steps gradient descent needs. It is the bar that CG and Newton are measured against, so this is where the course turns from "what is a bowl" to "how fast can we reach its bottom".</p>
 <h3>Why zig-zag</h3>
 <p>With exact steps, $\g_{k+1}^\top\g_k=0$ (Chapter 4 with $\d_k=-\g_k$). In a narrow valley the steepest direction points almost across it, so the iterates cross back and forth. When contours are circles ($\kappa=1$) the first step lands on the minimizer. The more stretched the ellipses, the worse the zig-zag.</p>
+<p><b>Why a circle gives one step.</b> With $A=cI$, $\g=c(\x-\x^\star)$ points straight at the minimizer. The exact step along $-\g$ is $\alpha=\g^\top\g/\g^\top A\g=1/c$, which moves exactly from $\x$ to $\x^\star$.</p>
+<p><b>Small numbers.</b> For $A=\operatorname{diag}(1,3)$ from $\x_0=(3,1)^\top$, Chapter 4 gave $\x_1=(1.5,-0.5)^\top$ with $\g_0=(3,3)^\top$ and $\g_1=(1.5,-1.5)^\top$: the direction of travel switched from "down-left" to "down-right". Next step goes back the other way.</p>
+</div>
+<div class="prose">
+<p><b>Intuition.</b> We would like a promise of the form "each step removes at least this fraction of the remaining error". For steepest descent, the fraction depends only on $\kappa$. Round bowl ($\kappa=1$): everything is removed. Very stretched bowl: almost nothing is removed per step.</p>
 </div>
 <div class="box thm" data-k="Theorem" data-name="Steepest descent rate on a quadratic">
 <p>For $f=\tfrac12\x^\top A\x-\b^\top\x$, $A\succ0$, exact line search and $\d_k=-\g_k$,
@@ -5503,7 +5649,13 @@ $$f(\x_{k+1})-f^\star\le\left(\frac{\kappa-1}{\kappa+1}\right)^2\big(f(\x_k)-f^\
 Equivalently $\norm{\x_{k+1}-\x^\star}_A\le\frac{\kappa-1}{\kappa+1}\norm{\x_k-\x^\star}_A$.</p>
 </div>
 <div class="prose">
+<p><b>What this says.</b> The "gap" $f(\x_k)-f^\star$ is how far above the bottom we still are. Each exact step multiplies the gap by at most the number $\rho=\big(\tfrac{\kappa-1}{\kappa+1}\big)^2$, which lies in $[0,1)$. The second form is the same fact for the $A$-norm of the error; recall from Chapter 3 that gap $=\tfrac12\norm{\text{error}}_A^2$, so squaring the second form gives the first.</p>
+<p><b>Small numbers.</b> $A=\operatorname{diag}(1,3)$ has $\kappa=3$, so $\rho=(2/4)^2=\tfrac14$. In the example of Chapter 4 the gap went from $6$ to $1.5$, which is a factor exactly $\tfrac14$. (The factor is a worst-case bound; here it is attained.)</p>
+</div>
+<div class="prose">
 <p>For $\kappa=1$ the factor is 0; for $\kappa=100$ it is $(99/101)^2\approx0.961$, so about 60 steps are needed to gain one decimal digit of accuracy ($0.961^{58}\approx0.1$).</p>
+<p>Each "decimal digit" means the gap shrinks by a factor of $10$. If $\rho$ is the factor per step, $k$ steps shrink the gap by $\rho^k$, so we need $\rho^k\le10^{-1}$, i.e. $k\ge\ln(0.1)/\ln\rho$. Here $\ln$ is the natural logarithm; both logs are negative, so the ratio is positive.</p>
+<p><b>Intuition for the orders.</b> Think about how many correct digits you gain per step. Linear: a fixed number of new digits each step (say $0.3$). Superlinear: the gain per step keeps growing. Quadratic: the number of correct digits doubles. The error $e_k$ is whatever distance you track; the symbol $\rho$ is read "rho" and $C$ is some constant.</p>
 <h3>Orders of convergence</h3>
 <p>Let $e_k\ge0$ be an error (such as $\norm{\x_k-\x^\star}$) tending to 0.</p>
 <ul>
@@ -5512,6 +5664,7 @@ Equivalently $\norm{\x_{k+1}-\x^\star}_A\le\frac{\kappa-1}{\kappa+1}\norm{\x_k-\
 <li><b>Quadratic:</b> $e_{k+1}\le C\,e_k^2$. The number of correct digits roughly doubles each step; Newton's method near a minimizer with positive definite Hessian is of this type.</li>
 </ul>
 <p>Quadratic implies superlinear implies linear (near the limit). Sublinear convergence like $e_k=1/k$ is slower than every linear rate.</p>
+<p><b>Small numbers.</b> For $e_k=2^{-k}$ the ratio $e_{k+1}/e_k$ is always $\tfrac12$: linear with $\rho=\tfrac12$. For $e_k=1/k$ the ratio is $k/(k+1)$, which tends to $1$: sublinear. For $e_0=0.1$ and $e_{k+1}=e_k^2$: $0.1,\,0.01,\,0.0001,\,10^{-8}$, so the digits go $1,2,4,8$.</p>
 </div>
 
 <div class="example">
@@ -5522,6 +5675,21 @@ Equivalently $\norm{\x_{k+1}-\x^\star}_A\le\frac{\kappa-1}{\kappa+1}\norm{\x_k-\
 <li><p>Round up: $k=21$ steps.</p><p class="why-step">The bound is a guarantee; the actual error may be smaller.</p></li>
 </ol>
 </div>
+
+<div class="callout"><b>Careful:</b> the factor $\big(\tfrac{\kappa-1}{\kappa+1}\big)^2$ is for the function gap $f-f^\star$. For the $A$-norm of the error it is $\tfrac{\kappa-1}{\kappa+1}$ without the square. And "linear" convergence is a statement about the shape of the error curve on a log scale (a straight line), not about the iterates moving in a straight line.</div>
+
+<div class="example">
+<p class="problem">Classify the error sequences (a) $e_k=3^{-k}$, (b) $e_k=1/(k+1)$, (c) $e_0=0.5$ and $e_{k+1}=e_k^2$.</p>
+<ol class="steps">
+<li><p>(a) $e_{k+1}/e_k=\tfrac13$ for every $k$: linear with $\rho=\tfrac13$.</p><p class="why-step">A constant ratio below 1 is the definition of linear.</p></li>
+<li><p>(b) $e_{k+1}/e_k=\dfrac{k+1}{k+2}\to1$: sublinear. It is slower than every linear rate, since no fixed $\rho\lt1$ bounds the ratio.</p><p class="why-step">The ratio test: a ratio that approaches 1 means the digits come ever more slowly.</p></li>
+<li><p>(c) $e_1=0.25$, $e_2=0.0625$, $e_3\approx0.0039$, $e_4\approx1.5\times10^{-5}$, $e_5\approx2.3\times10^{-10}$: quadratic ($e_{k+1}/e_k^2=1$). The exponent roughly doubles each step.</p><p class="why-step">Check the ratio against $e_k^2$, not $e_k$.</p></li>
+</ol>
+</div>
+
+<details class="deeper"><summary>Go deeper: why the factor is exactly $\frac{\kappa-1}{\kappa+1}$ in a worst case</summary>
+<p>Take $A=\operatorname{diag}(1,\kappa)$ and $\x_0=(\kappa,1)^\top$, so $\x^\star=\0$ and $\g_0=A\x_0=(\kappa,\kappa)^\top$. Then $\g_0^\top\g_0=2\kappa^2$ and $\g_0^\top A\g_0=\kappa^2(1+\kappa)$, so $\alpha_0=2/(1+\kappa)$. This gives $\x_1=\x_0-\alpha_0\g_0=\tfrac{\kappa-1}{\kappa+1}\,(\kappa,-1)^\top$. The vector $(\kappa,-1)^\top$ has the same $A$-norm as $(\kappa,1)^\top$ (both have $\norm{\cdot}_A^2=\kappa^2+\kappa$), so the $A$-norm of the error shrinks by exactly $\tfrac{\kappa-1}{\kappa+1}$. By the same computation with the sign flipped, every following step does the same. The theorem says no start does worse than this.</p>
+</details>
 
 <div class="practice">
 <div class="prob" data-id="pm-rate-p1" data-ans="0.64" data-labels="ρ">
@@ -5538,6 +5706,11 @@ Equivalently $\norm{\x_{k+1}-\x^\star}_A\le\frac{\kappa-1}{\kappa+1}\norm{\x_k-\
 <div class="stem"><p>A method with $e_{k+1}=e_k^2$ starts at $e_0=0.1$. Then $e_3=10^{-d}$; find $d$.</p></div>
 <div class="hint"><p>Square repeatedly: $e_1=10^{-2}$.</p></div>
 <div class="sol"><p>$e_1=10^{-2}$, $e_2=10^{-4}$, $e_3=10^{-8}$, so $d=8$. The exponent doubles each step.</p></div>
+</div>
+<div class="prob" data-id="pm-rate-p4" data-ans="10" data-labels="steps">
+<div class="stem"><p>With $\kappa=3$ the guaranteed gap factor is $\big(\tfrac{2}{4}\big)^2=\tfrac14$ per step. What is the smallest $k$ with $(\tfrac14)^k\le10^{-6}$?</p></div>
+<div class="hint"><p>$k\ge6\ln10/\ln4$; $\ln10\approx2.3026$ and $\ln4\approx1.3863$.</p></div>
+<div class="sol"><p>$k\ge13.8155/1.3863\approx9.97$, so $k=10$. Check: $4^{-10}\approx9.5\times10^{-7}\le10^{-6}$ while $4^{-9}\approx3.8\times10^{-6}$ is not.</p></div>
 </div>
 </div>
 
@@ -5628,6 +5801,8 @@ Equivalently $\norm{\x_{k+1}-\x^\star}_A\le\frac{\kappa-1}{\kappa+1}\norm{\x_k-\
 <p>Throughout, $A$ is a symmetric positive definite $n\times n$ matrix ($A=A^\top\succ0$, Part 0b) and
 $$f(\x)=\tfrac12\x^\top A\x-\b^\top\x,\qquad \g(\x)=\grad f(\x)=A\x-\b.$$
 Because $A\succ0$, $f$ is strictly convex with the unique minimizer $\x^\star=A^{-1}\b$ (the point where $\g=\0$). So <b>minimizing $f$ and solving the linear system $A\x=\b$ are the same problem</b>. We write $\x_k$ for the iterates and $\g_k=\g(\x_k)=A\x_k-\b$.</p>
+<p><b>Reading the symbols aloud.</b> $\x^\top A\x$ is read "$x$ transpose $A$ $x$": multiply the matrix $A$ by the column $\x$, then take the dot product of $\x$ with the result. It is a single number (a scalar). $A\succ0$ is read "$A$ is positive definite" and means $\x^\top A\x\gt0$ for every nonzero $\x$ (<a href="#pm-linalg">Part M.1</a>). $\R^n$ is the space of all vectors with $n$ real entries. $\grad f$ is read "gradient of $f$", the vector of partial derivatives (<a href="#pm-calculus">Part M.2</a>). Finally $\x^\star$ (read "x star") is the minimizer.</p>
+<p><b>Tiny example to keep in mind.</b> $A=\begin{pmatrix}4&1\\1&3\end{pmatrix}$, $\b=(1,2)^\top$. Then $\g(\x)=A\x-\b$ and $\x^\star=A^{-1}\b=(\tfrac1{11},\tfrac7{11})^\top$, because $A\x^\star=(\tfrac4{11}+\tfrac7{11},\ \tfrac1{11}+\tfrac{21}{11})^\top=(1,2)^\top$. This same $A$ and $\b$ appear in several examples below.</p>
 </div>
 <div class="callout"><b>Careful with signs and letters across books.</b> [NW] calls $A\x_k-\b$ the <i>residual</i> $\r_k$ and uses $\p_k$ for directions, so [NW]'s $\r_k$ is our $\g_k$. [LD] writes $\g_k$ (as we do) and $Q$ for $A$. Many numerical linear algebra texts instead define the residual as $\b-A\x_k=-\g_k$, the opposite sign. If a formula from another source has the "wrong" sign, check which convention it uses before anything else.</div>
 
@@ -5651,17 +5826,27 @@ Because $A\succ0$, $f$ is strictly convex with the unique minimizer $\x^\star=A^
 </div>
 </div>
 
+<div class="prose">
+<p><b>Intuition first.</b> Ordinary perpendicular directions are the ones that do not interfere when the bowl is perfectly round. When the bowl is a tilted ellipse, "perpendicular" is the wrong test: a move along one perpendicular direction changes the slope along the other. The right test is the one that measures angles with the curvature matrix $A$ built in. That test is the next definition. Everything in this part is a consequence of choosing directions that pass it.</p>
+</div>
 <div class="box def" data-k="Definition" data-name="A-conjugate directions; the A-inner product">
 <p>Let $A\succ0$. Nonzero vectors $\d_0,\dots,\d_{m-1}\in\R^n$ are <b>$A$-conjugate</b> (or <b>$A$-orthogonal</b>) if
 $$\d_i^\top A\d_j=0\qquad\text{for all }i\ne j.$$
 Equivalently, they are orthogonal in the <b>$A$-inner product</b> $\ip{\u}{\v}_A=\u^\top A\v$, whose norm is $\norm{\u}_A=\sqrt{\u^\top A\u}$. This is a genuine inner product because $A$ is symmetric and $\u^\top A\u\gt0$ for $\u\ne\0$.</p>
 </div>
 <div class="prose">
+<p><b>What this says.</b> Two directions are conjugate when the number $\d_i^\top(A\d_j)$ is zero: first apply $A$ to one of them, then check whether the result is perpendicular to the other. The notation $\ip{\u}{\v}_A$ (read "the $A$-inner product of $u$ and $v$") is just a name for $\u^\top A\v$, and $\norm{\u}_A$ (read "the $A$-norm of $u$") is the length measured with that inner product. The symbol $\perp$ means "perpendicular", so "$\u\perp_A\v$" is a shorthand for $\u^\top A\v=0$. For two nonzero vectors in $\R^2$ this is one linear equation, so for a given $\d_0$ there is exactly one conjugate direction up to scaling.</p>
+<p><b>Numeric illustration.</b> Take $A=\begin{pmatrix}2&1\\1&3\end{pmatrix}$, $\u=(1,0)^\top$, $\v=(1,-2)^\top$. Then $A\v=(2-2,\ 1-6)^\top=(0,-5)^\top$, so $\u^\top A\v=0$: conjugate. The ordinary dot product is $\u^\top\v=1\ne0$, so they are not perpendicular. The $A$-norms are $\norm{\u}_A=\sqrt{\u^\top A\u}=\sqrt2$ and $\norm{\v}_A=\sqrt{\v^\top A\v}=\sqrt{10}$.</p>
+</div>
+<div class="callout"><b>Careful:</b> conjugacy is a relation <i>for a particular $A$</i>. The same two vectors can be conjugate for one matrix and not for another (practice problem 2 shows this). Also, "conjugate" is about a <i>pair</i> (or a whole list in which every pair passes the test). A single vector is never "conjugate" by itself, and a vector is never conjugate to itself unless it is $\0$, because $\d^\top A\d\gt0$ for $\d\ne\0$.</div>
+<div class="prose">
 <p>With $A=I$, conjugate means orthogonal. For any other $A$ the two ideas differ. For $A=\begin{pmatrix}4&1\\1&3\end{pmatrix}$, the vectors $\d_0=(1,0)^\top$ and $\d_1=(-\tfrac14,1)^\top$ are conjugate: $A\d_1=(-1+1,\,-\tfrac14+3)^\top=(0,\tfrac{11}4)^\top$, so $\d_0^\top A\d_1=0$. But $\d_0^\top\d_1=-\tfrac14\ne0$: they are not perpendicular.</p>
 <h3>The picture: stretch the ellipses into circles</h3>
+<p><b>Plan.</b> We want to see conjugacy as ordinary perpendicularity in disguise. The idea: find a change of variables that turns the elliptical contours of $\x^\top A\x$ into circles. In the new variables, the $A$-inner product becomes the usual dot product. The tool is the square root of $A$, which exists because $A$ is symmetric positive definite.</p>
 <p>Write $A=V\Lambda V^\top$ (spectral theorem) and let $A^{1/2}=V\Lambda^{1/2}V^\top$, the symmetric positive definite matrix with $A^{1/2}A^{1/2}=A$. Change variables to $\y=A^{1/2}\x$. Then
 $$\u^\top A\v=(A^{1/2}\u)^\top(A^{1/2}\v),\qquad \x^\top A\x=\norm{\y}^2.$$
 So the level sets $\x^\top A\x=c$ (ellipses) become circles $\norm{\y}^2=c$, and <b>$\u,\v$ are $A$-conjugate exactly when their stretched images $A^{1/2}\u$, $A^{1/2}\v$ are perpendicular</b>. Conjugacy is ordinary orthogonality, seen through the lens that makes the bowl round.</p>
+<p><b>Numeric check.</b> Take the diagonal matrix $A=\mathrm{diag}(4,1)$, so $A^{1/2}=\mathrm{diag}(2,1)$. The vectors $\u=(1,2)^\top$ and $\v=(1,-2)^\top$ have $\u^\top A\v=4\cdot1\cdot1+1\cdot2\cdot(-2)=0$: conjugate. Their dot product is $1-4=-3\ne0$, so they are not perpendicular. After stretching, $A^{1/2}\u=(2,2)^\top$ and $A^{1/2}\v=(2,-2)^\top$, whose dot product is $4-4=0$: perpendicular. The stretch turned a "slanted" pair into a right angle.</p>
 <p>A second picture you can draw by hand: take the ellipse $\x^\top A\x=c$ through the tip of $\d_0$. The gradient of $\x^\top A\x$ at that tip is $2A\d_0$, which is perpendicular to the tangent. So the tangent direction $\v$ satisfies $\v^\top A\d_0=0$: <b>the direction conjugate to $\d_0$ is parallel to the tangent of the ellipse where $\d_0$ meets it</b>. In $\R^2$ that pins it down up to scaling; in $\R^n$ the vectors conjugate to $\d_0$ form an $(n-1)$-dimensional subspace, $\{\v:\v^\top(A\d_0)=0\}$.</p>
 </div>
 
@@ -5671,25 +5856,38 @@ So the level sets $\x^\top A\x=c$ (ellipses) become circles $\norm{\y}^2=c$, and
 <div class="widget" data-w="p8_conjdraw"></div>
 </div>
 
+<div class="prose">
+<p><b>Intuition first.</b> If you have several directions that never interfere, none of them can be built out of the others: building one from the others would mean it interferes with them. The lemma makes this precise, and it has a useful consequence: $n$ conjugate directions in $\R^n$ are enough to describe every point, because they form a basis. "Linearly independent" means no vector in the list is a combination of the others; equivalently, the only way to combine them into $\0$ is with all coefficients zero.</p>
+</div>
 <div class="box thm" data-k="Lemma" data-name="Conjugate vectors are linearly independent">
 <p>If $\d_0,\dots,\d_{m-1}$ are nonzero and $A$-conjugate with $A\succ0$, they are linearly independent. In particular $m\le n$: there are at most $n$ nonzero mutually conjugate vectors in $\R^n$.</p>
 </div>
 <div class="prose">
-<p><b>Proof</b> (examinable). Suppose $\sum_{i=0}^{m-1}c_i\d_i=\0$. Multiply on the left by $\d_j^\top A$. Every term with $i\ne j$ vanishes by conjugacy, leaving $c_j\,\d_j^\top A\d_j=0$. Since $\d_j\ne\0$ and $A\succ0$, $\d_j^\top A\d_j\gt0$, so $c_j=0$. This holds for every $j$, so the only combination giving $\0$ is the trivial one. $\blacksquare$</p>
+<p><b>Proof skeleton to remember.</b> Assume a combination equals $\0$; multiply by $\d_j^\top A$; conjugacy kills every term but one; positive definiteness lets you divide.</p>
+<p><b>Proof</b> (examinable). Suppose $\sum_{i=0}^{m-1}c_i\d_i=\0$ for some numbers $c_0,\dots,c_{m-1}$. We must show that all $c_i=0$.</p>
+<p><i>Step 1.</i> Multiply the equation on the left by the row vector $\d_j^\top A$, for one fixed index $j$. The right side stays $\0$ (a scalar zero). The left side becomes $\sum_i c_i\,\d_j^\top A\d_i$.</p>
+<p><i>Step 2.</i> For every $i\ne j$, $\d_j^\top A\d_i=0$ by the definition of conjugacy. Only the term $i=j$ survives: $c_j\,\d_j^\top A\d_j=0$.</p>
+<p><i>Step 3.</i> Since $\d_j\ne\0$ and $A\succ0$ (definition of positive definite), $\d_j^\top A\d_j\gt0$. A product of $c_j$ and a nonzero number is zero only if $c_j=0$.</p>
+<p><i>Step 4.</i> The index $j$ was arbitrary, so every $c_j=0$. Hence the only combination giving $\0$ is the trivial one: the vectors are linearly independent. Finally, $\R^n$ cannot contain more than $n$ independent vectors, so $m\le n$. $\blacksquare$</p>
+<p><b>What this says, with numbers.</b> For $A=\begin{pmatrix}2&1\\1&3\end{pmatrix}$, the conjugate pair $(1,0)^\top,(1,-2)^\top$ is independent: the matrix with these columns, $\begin{pmatrix}1&1\\0&-2\end{pmatrix}$, has determinant $-2\ne0$. So the pair is a basis of $\R^2$.</p>
 <p>The proof is the "multiply by $\d_j^\top A$ to kill every term but one" trick. You'll use it again three times in this part.</p>
 
 <h3>Expanding $\x^\star$ in a conjugate basis</h3>
+<p><b>Intuition first.</b> Suppose we knew $n$ conjugate directions. Then we could write the answer $\x^\star$ as a combination of them, the way a point on a map is described by coordinates along two axes. The usual problem with coordinates is that finding them requires knowing the point. Conjugacy removes this problem: the coefficient along each direction can be computed from the data $A,\b$ alone. The plan: write $\x^\star=\sum_ia_i\d_i$ and use the same "multiply by $\d_j^\top A$" trick to isolate $a_j$.</p>
 <p>Let $\d_0,\dots,\d_{n-1}$ be $A$-conjugate. By the lemma they form a basis of $\R^n$, so $\x^\star=\sum_ia_i\d_i$ for some numbers $a_i$. Multiply by $\d_j^\top A$:
 $$\d_j^\top A\x^\star=a_j\,\d_j^\top A\d_j\quad\Longrightarrow\quad a_j=\frac{\d_j^\top A\x^\star}{\d_j^\top A\d_j}=\frac{\d_j^\top\b}{\d_j^\top A\d_j},$$
 using $A\x^\star=\b$. The last expression needs only $\b$, <b>not the unknown $\x^\star$</b>. That is the whole point of $A$-orthogonality. With an ordinary orthogonal basis the coefficient would be $\d_j^\top\x^\star/\norm{\d_j}^2$, which needs $\x^\star$, the thing we're trying to find. ([LD] §9.1 p.264.)</p>
+<p><b>What this says.</b> To find the $j$-th coordinate of the answer, compute two numbers: $\d_j^\top\b$ (how much $\b$ points along $\d_j$) and $\d_j^\top A\d_j$ (the curvature of the bowl along $\d_j$), and divide. Each direction is handled independently of the others. Numerically, for $A=\begin{pmatrix}2&1\\1&3\end{pmatrix}$, $\b=(3,4)^\top$ and the conjugate pair $(1,0)^\top,(1,-2)^\top$, the coefficients are $\tfrac32$ and $-\tfrac12$, as the worked example below shows step by step.</p>
+<div class="callout"><b>Careful:</b> the formula needs $A\x^\star=\b$. That is where "minimizing $f$" and "solving $A\x=\b$" are used as the same thing. Do not confuse $a_j$ (coefficient of $\x^\star$ in the basis, a fixed number) with the step lengths $\alpha_k$ of Chapter 8.2; the proof there shows that, starting from $\x_0=\0$, they turn out to be equal.</div>
 
 <h3>Where do conjugate directions come from?</h3>
 <ul>
 <li><b>Eigenvectors.</b> The orthonormal eigenvectors $\v_1,\dots,\v_n$ of $A$ satisfy $\v_i^\top A\v_j=\lambda_j\v_i^\top\v_j=0$ for $i\ne j$: both orthogonal and conjugate. But computing them is harder than solving $A\x=\b$.</li>
-<li><b>Gram–Schmidt in the $A$-inner product.</b> From any basis $\u_0,\dots,\u_{n-1}$: $\d_0=\u_0$ and
+<li><b>Gram–Schmidt in the $A$-inner product.</b> <i>Idea:</i> take the vectors one at a time and remove from each one its "$A$-shadow" on the earlier directions, exactly as ordinary Gram–Schmidt removes ordinary shadows. From any basis $\u_0,\dots,\u_{n-1}$: $\d_0=\u_0$ and
 $$\d_k=\u_k-\sum_{i\lt k}\frac{\u_k^\top A\d_i}{\d_i^\top A\d_i}\,\d_i .$$
 Each correction removes the $A$-component along one old direction. This works, but it stores all old directions and costs $O(n^3)$ for dense $A$. The conjugate gradient method of Chapter 8.3 is a way to do it almost for free.</li>
 </ul>
+<p><b>Numeric illustration.</b> $A=\begin{pmatrix}2&1\\1&3\end{pmatrix}$, $\u_0=\e_1$, $\u_1=\e_2$. Then $\d_0=\e_1$, $A\d_0=(2,1)^\top$, $\d_0^\top A\d_0=2$, and $\u_1^\top A\d_0=1$. So $\d_1=\e_2-\tfrac12\e_1=(-\tfrac12,1)^\top$. Check: $A\d_1=(-1+1,\ -\tfrac12+3)^\top=(0,\tfrac52)^\top$ and $\d_0^\top A\d_1=0$. ✓</p>
 </div>
 
 <div class="example">
@@ -5722,6 +5920,11 @@ Each correction removes the $A$-component along one old direction. This works, b
 <div class="stem"><p>What is the largest number of nonzero, mutually $A$-conjugate vectors that can exist in $\R^4$ (for a given $A\succ0$)?</p></div>
 <div class="hint"><p>What does the lemma say about conjugate vectors and linear independence?</p></div>
 <div class="sol"><p>Nonzero conjugate vectors are linearly independent, and $\R^4$ holds at most 4 linearly independent vectors. Four are achievable (for example the eigenvectors). So the answer is 4.</p></div>
+</div>
+<div class="prob" data-id="p8x-conj-norm" data-ans="sqrt(7)" data-labels="A-norm of (1,1)" data-tol="0.005">
+<div class="stem"><p>For $A=\begin{pmatrix}2&1\\1&3\end{pmatrix}$, compute the $A$-norm $\norm{\u}_A=\sqrt{\u^\top A\u}$ of $\u=(1,1)^\top$.</p></div>
+<div class="hint"><p>Compute $A\u$ first, then take its dot product with $\u$, then the square root.</p></div>
+<div class="sol"><p>$A\u=(2+1,\ 1+3)^\top=(3,4)^\top$, and $\u^\top A\u=3+4=7$. So $\norm{\u}_A=\sqrt7\approx2.646$. Compare the ordinary length $\norm{\u}=\sqrt2$: the $A$-norm measures length with the curvature of the bowl built in.</p></div>
 </div>
 </div>
 
@@ -5774,41 +5977,72 @@ Each correction removes the $A$-component along one old direction. This works, b
 <p><b>Be able to:</b> state the theorem precisely, prove part (i) by induction, and run the method by hand on a $2\times2$ example.</p>
 </div>
 
+<div class="prose">
+<p><b>Intuition first.</b> Suppose someone hands us $n$ conjugate directions. The method is then as plain as it sounds: stand at the current point, pick the next direction on the list, walk along that line to its lowest point, and repeat. Each walk is a one-variable problem (a parabola), so it has a closed-form answer. The surprise, proved below, is that the lowest points along the $n$ lines add up to the exact minimizer of the whole $n$-dimensional problem.</p>
+</div>
 <div class="box alg" data-k="Algorithm" data-name="Conjugate direction method ([NW] (5.5)–(5.6); [LD] §9.1)">
 <p>Given $A$-conjugate directions $\d_0,\dots,\d_{n-1}$ and any $\x_0$, for $k=0,1,\dots,n-1$:
 $$\g_k=A\x_k-\b,\qquad \alpha_k=-\frac{\g_k^\top\d_k}{\d_k^\top A\d_k},\qquad \x_{k+1}=\x_k+\alpha_k\d_k.$$</p>
 </div>
+<div class="prose">
+<p><b>What this says.</b> Line 1 computes the slope information at the current point. Line 2 is the bottom of the parabola along $\d_k$: the numerator $-\g_k^\top\d_k$ is the (negated) slope of $f$ along $\d_k$, and the denominator $\d_k^\top A\d_k$ is the curvature along $\d_k$, so $\alpha_k$ is "slope divided by curvature", the same recipe as Newton's step in one variable. Line 3 moves there. Numerically, at $\x_0=(2,1)^\top$ with $A=\begin{pmatrix}4&1\\1&3\end{pmatrix}$, $\b=(1,2)^\top$, $\d_0=(1,0)^\top$: $\g_0=(8,3)^\top$, slope along $\d_0$ is $8$, curvature is $4$, so $\alpha_0=-8/4=-2$ and $\x_1=(0,1)^\top$.</p>
+</div>
+<div class="callout"><b>Careful:</b> $\alpha_k=-\g_k^\top\d_k/\d_k^\top A\d_k$ is the right formula for <i>any</i> direction, with a minus sign in front, and it uses the gradient $\g_k$ at the <i>current</i> point (not $\g_0$). In the next chapter, for CG's special directions it simplifies to $\norm{\g_k}^2/\d_k^\top A\d_k$. Do not use that simplified form here: it is not valid for general conjugate directions.</div>
 
+<div class="prose">
+<p><b>Intuition first.</b> Along a single line through $\x_k$, the function $f$ is a one-variable parabola opening upward. The lowest point of a parabola is where its slope is zero. The lemma records three consequences of that: the formula for $\alpha_k$, how the gradient changes after the move, and the fact that the new gradient is perpendicular to the line you just walked along (at the bottom of a valley along a line, there is no slope left in that direction). The last two facts drive every proof in this part.</p>
+</div>
 <div class="box thm" data-k="Lemma" data-name="The step is an exact line search">
 <p>$\alpha_k$ is the unique minimizer of $\phi(\alpha)=f(\x_k+\alpha\d_k)$. Moreover
 $$\g_{k+1}=\g_k+\alpha_kA\d_k\qquad\text{and}\qquad\g_{k+1}^\top\d_k=0.$$</p>
 </div>
 <div class="prose">
-<p><b>Proof</b> (examinable). Expanding, $\phi(\alpha)=f(\x_k)+\alpha\,\g_k^\top\d_k+\tfrac{\alpha^2}2\d_k^\top A\d_k$, a parabola in $\alpha$ with positive leading coefficient. $\phi'(\alpha)=\g_k^\top\d_k+\alpha\,\d_k^\top A\d_k=0$ gives $\alpha_k$. Next, $\g_{k+1}=A(\x_k+\alpha_k\d_k)-\b=\g_k+\alpha_kA\d_k$. Finally, by the chain rule $\phi'(\alpha_k)=\g_{k+1}^\top\d_k$, and this is 0 at the minimizer. $\blacksquare$</p>
+<p><b>Proof skeleton to remember.</b> Expand $f(\x_k+\alpha\d_k)$ into a parabola in $\alpha$; set its derivative to zero; plug the new point into $A\x-\b$; use the chain rule to read off $\g_{k+1}^\top\d_k$.</p>
+<p><b>Proof</b> (examinable).</p>
+<p><i>Step 1 (the parabola).</i> Substitute $\x_k+\alpha\d_k$ into $f$:
+$$\phi(\alpha)=\tfrac12(\x_k+\alpha\d_k)^\top A(\x_k+\alpha\d_k)-\b^\top(\x_k+\alpha\d_k).$$
+Multiply out. The cross terms are $\tfrac12\alpha\,\x_k^\top A\d_k+\tfrac12\alpha\,\d_k^\top A\x_k=\alpha\,\d_k^\top A\x_k$, which uses $A=A^\top$ (so the two cross terms are equal). Collect:
+$$\phi(\alpha)=f(\x_k)+\alpha\,(A\x_k-\b)^\top\d_k+\tfrac{\alpha^2}2\d_k^\top A\d_k=f(\x_k)+\alpha\,\g_k^\top\d_k+\tfrac{\alpha^2}2\d_k^\top A\d_k.$$
+The coefficient of $\alpha^2$ is positive because $A\succ0$ and $\d_k\ne\0$, so this is an upward-opening parabola with exactly one minimizer.</p>
+<p><i>Step 2 (the formula for $\alpha_k$).</i> $\phi'(\alpha)=\g_k^\top\d_k+\alpha\,\d_k^\top A\d_k$. Setting it to $0$ and solving for $\alpha$ gives $\alpha_k=-\g_k^\top\d_k/\d_k^\top A\d_k$.</p>
+<p><i>Step 3 (the gradient update).</i> $\g_{k+1}=A\x_{k+1}-\b=A(\x_k+\alpha_k\d_k)-\b=(A\x_k-\b)+\alpha_kA\d_k=\g_k+\alpha_kA\d_k$.</p>
+<p><i>Step 4 (perpendicularity).</i> By the chain rule, $\phi'(\alpha)=\grad f(\x_k+\alpha\d_k)^\top\d_k$. At $\alpha=\alpha_k$ this reads $\phi'(\alpha_k)=\g_{k+1}^\top\d_k$. Since $\alpha_k$ is the minimizer, $\phi'(\alpha_k)=0$ (Step 2), so $\g_{k+1}^\top\d_k=0$. $\blacksquare$</p>
 <p>In words: after an exact line search, the new gradient is perpendicular to the direction you last searched. (You met this in Part 5 for $\d_k=-\g_k$.) Note that $\alpha_k$ may be negative: the method walks along the <i>line</i>, in whichever sense goes down.</p>
+<p><b>What this says, with numbers.</b> With $A=\begin{pmatrix}4&1\\1&3\end{pmatrix}$, $\b=(1,2)^\top$, $\x_0=(2,1)^\top$, $\d_0=(1,0)^\top$: $f(\x_0)=7.5$ and $\phi(\alpha)=7.5+8\alpha+2\alpha^2$. Its derivative $8+4\alpha$ vanishes at $\alpha_0=-2$, where $\phi=7.5-16+8=-0.5=f((0,1))$. The new gradient is $\g_0+\alpha_0A\d_0=(8,3)+(-2)(4,1)=(0,1)$, and $\g_1^\top\d_0=0$. ✓</p>
 </div>
 
+<div class="prose">
+<p><b>Intuition first.</b> Imagine the problem written in the conjugate directions as coordinates. There the bowl is aligned with the axes, and minimizing along one axis never disturbs the others. So each direction needs to be visited once, and the amount moved along it is exactly the amount the answer requires. The proof below makes this precise by comparing two things: how much of each direction the answer $\x^\star-\x_0$ contains, and how much the algorithm actually walks along it.</p>
+</div>
 <div class="box thm" data-k="Theorem" data-name="Conjugate Direction Theorem ([NW] Thm 5.1, p.103; [LD] §9.1)">
 <p>For any $\x_0\in\R^n$, the conjugate direction method reaches the minimizer in at most $n$ steps: $\x_n=\x^\star$.</p>
+</div>
+<div class="prose">
+<p><b>What this says.</b> Pick any starting point and any list of $n$ mutually conjugate directions. Do one exact line search along each, in the order given. After the $n$-th search you are exactly at the minimizer, with no rounding or limit involved. In $\R^2$ that means two line searches. (Compare gradient descent, which on this problem never lands exactly.)</p>
+<p><b>Proof skeleton to remember.</b> (1) Expand $\x^\star-\x_0=\sum\sigma_i\d_i$. (2) Isolate $\sigma_k$ with $\d_k^\top A$. (3) Show the part $\x_k-\x_0$ contributes nothing to that formula, by conjugacy. (4) What remains is exactly $\alpha_k$, so $\sigma_k=\alpha_k$ for all $k$.</p>
 </div>
 <div class="example">
 <p class="problem">Prove the Conjugate Direction Theorem.</p>
 <ol class="steps">
-<li><p>The $\d_i$ form a basis, so $\x^\star-\x_0=\sum_{i=0}^{n-1}\sigma_i\d_i$ for some numbers $\sigma_i$, and multiplying by $\d_k^\top A$ gives $\sigma_k=\dfrac{\d_k^\top A(\x^\star-\x_0)}{\d_k^\top A\d_k}$.</p><p class="why-step">The independence lemma and the "multiply by $\d_k^\top A$" trick from Chapter 8.1.</p></li>
-<li><p>Unrolling the iteration, $\x_k-\x_0=\sum_{i\lt k}\alpha_i\d_i$, so by conjugacy $\d_k^\top A(\x_k-\x_0)=0$.</p><p class="why-step">Every term is $\alpha_i\d_k^\top A\d_i$ with $i\ne k$.</p></li>
-<li><p>Therefore $\d_k^\top A(\x^\star-\x_0)=\d_k^\top A(\x^\star-\x_k)+\d_k^\top A(\x_k-\x_0)=\d_k^\top(\b-A\x_k)=-\d_k^\top\g_k$.</p><p class="why-step">Insert $\pm\x_k$, use step 2 for the second piece and $A\x^\star=\b$ for the first.</p></li>
-<li><p>So $\sigma_k=-\g_k^\top\d_k/\d_k^\top A\d_k=\alpha_k$ for every $k$, and $\x_n=\x_0+\sum_{i\lt n}\alpha_i\d_i=\x_0+\sum_{i\lt n}\sigma_i\d_i=\x^\star$. $\blacksquare$</p><p class="why-step">Each step adds exactly the right amount of its own direction, and later steps never change that amount.</p></li>
+<li><p>The $\d_i$ form a basis, so $\x^\star-\x_0=\sum_{i=0}^{n-1}\sigma_i\d_i$ for some numbers $\sigma_i$. Multiply both sides on the left by $\d_k^\top A$. Every term with $i\ne k$ vanishes, leaving $\d_k^\top A(\x^\star-\x_0)=\sigma_k\,\d_k^\top A\d_k$, so $\sigma_k=\dfrac{\d_k^\top A(\x^\star-\x_0)}{\d_k^\top A\d_k}$.</p><p class="why-step">Reason: $n$ nonzero conjugate vectors are independent (lemma of Chapter 8.1), hence a basis of $\R^n$. The terms with $i\ne k$ vanish by the definition of conjugacy. We divide by $\d_k^\top A\d_k\gt0$, which holds since $A\succ0$.</p></li>
+<li><p>Each iteration adds one step, so $\x_k-\x_0=\sum_{i\lt k}\alpha_i\d_i$ (unrolling $\x_{i+1}=\x_i+\alpha_i\d_i$ from $i=0$ to $k-1$). Multiply by $\d_k^\top A$: $\d_k^\top A(\x_k-\x_0)=\sum_{i\lt k}\alpha_i\,\d_k^\top A\d_i=0$.</p><p class="why-step">Every term has $i\lt k$, so $i\ne k$, and $\d_k^\top A\d_i=0$ by conjugacy. This is the step where "later directions do not see earlier moves" is used.</p></li>
+<li><p>Split $\x^\star-\x_0=(\x^\star-\x_k)+(\x_k-\x_0)$. Then $\d_k^\top A(\x^\star-\x_0)=\d_k^\top(A\x^\star-A\x_k)+0=\d_k^\top(\b-A\x_k)=-\d_k^\top\g_k$.</p><p class="why-step">The second piece is the zero from step 2. For the first piece we use $A\x^\star=\b$ (the minimizer solves the system) and then the definition $\g_k=A\x_k-\b$. The unknown $\x^\star$ has disappeared.</p></li>
+<li><p>Combine with step 1: $\sigma_k=\dfrac{-\g_k^\top\d_k}{\d_k^\top A\d_k}=\alpha_k$ for every $k$. Therefore $\x_n=\x_0+\sum_{i\lt n}\alpha_i\d_i=\x_0+\sum_{i\lt n}\sigma_i\d_i=\x_0+(\x^\star-\x_0)=\x^\star$. $\blacksquare$</p><p class="why-step">Each step adds exactly the right amount of its own direction, and later steps never change that amount.</p></li>
 </ol>
 </div>
 
 <div class="prose">
 <h3>Why it works: coordinate descent in disguise</h3>
+<p><b>Plan.</b> A second way to see the theorem: change coordinates so that the conjugate directions become the coordinate axes. In those coordinates $A$ becomes diagonal, and we know diagonal problems are solved axis by axis (Chapter 8.1).</p>
 <p>Put the directions in the columns of $S=[\d_0|\cdots|\d_{n-1}]$ and write $\x=S\hat\x$. Then $f(S\hat\x)=\tfrac12\hat\x^\top(S^\top AS)\hat\x-(S^\top\b)^\top\hat\x$, and $S^\top AS=\mathrm{diag}(\d_0^\top A\d_0,\dots,\d_{n-1}^\top A\d_{n-1})$ by conjugacy. In the $\hat\x$ coordinates the function is a sum of $n$ separate parabolas, and step $k$ minimizes exactly along the $k$-th coordinate axis. That's the diagonal case from Chapter 8.1: no later move can disturb an earlier one. When $A$ is already diagonal, the coordinate axes themselves are conjugate.</p>
+<p><b>Numeric check.</b> For $A=\begin{pmatrix}4&1\\1&3\end{pmatrix}$ with $\d_0=(1,0)^\top$, $\d_1=(-\tfrac14,1)^\top$: $A\d_0=(4,1)^\top$, $A\d_1=(0,\tfrac{11}4)^\top$, so $S^\top AS=\begin{pmatrix}\d_0^\top A\d_0&\d_0^\top A\d_1\\\d_1^\top A\d_0&\d_1^\top A\d_1\end{pmatrix}=\begin{pmatrix}4&0\\0&\tfrac{11}4\end{pmatrix}$. The off-diagonal zeros are the conjugacy conditions. The tilted ellipse of $A$ is an axis-aligned ellipse in the $\hat\x$ coordinates.</p>
 </div>
 
 <div class="prose">
 <h3>What is true at every intermediate step</h3>
-<p>Let $\mathcal B_k=\operatorname{span}\{\d_0,\dots,\d_{k-1}\}$ (with $\mathcal B_0=\{\0\}$). These subspaces grow by one dimension per step, $\mathcal B_1\subset\mathcal B_2\subset\cdots\subset\mathcal B_n=\R^n$, and $\x_k$ lies in the affine set $\x_0+\mathcal B_k$ ("$\x_0$ plus anything in $\mathcal B_k$"; [LD] calls it a linear variety).</p>
+<p><b>Intuition first.</b> The Conjugate Direction Theorem only talks about the end ($k=n$). The next theorem says the method is also doing something sensible in the middle: after $k$ steps you have found the best point you could possibly reach using only the $k$ directions used so far. To state this we need a name for "everything reachable with the first $k$ directions".</p>
+<p><b>Notation.</b> $\operatorname{span}\{\d_0,\dots,\d_{k-1}\}$ (read "the span of $d_0$ to $d_{k-1}$") is the set of all linear combinations $c_0\d_0+\cdots+c_{k-1}\d_{k-1}$. For $k=1$ it is a line through the origin, for $k=2$ in $\R^3$ a plane through the origin. Let $\mathcal B_k=\operatorname{span}\{\d_0,\dots,\d_{k-1}\}$ (with $\mathcal B_0=\{\0\}$). These subspaces grow by one dimension per step, $\mathcal B_1\subset\mathcal B_2\subset\cdots\subset\mathcal B_n=\R^n$, and $\x_k$ lies in the affine set $\x_0+\mathcal B_k$ ("$\x_0$ plus anything in $\mathcal B_k$"; [LD] calls it a linear variety).</p>
+<p>In words: $\x_0+\mathcal B_k$ is the subspace $\mathcal B_k$ slid so that it passes through the starting point $\x_0$ instead of the origin. For $k=1$ it is the line $\{\x_0+c\,\d_0\}$; for $k=2$ in $\R^3$ it is the plane through $\x_0$ spanned by $\d_0,\d_1$; for $k=n$ it is all of $\R^n$. The shift by $\x_0$ matters: the iterates start at $\x_0$, not at the origin.</p>
 </div>
 <div class="box thm" data-k="Theorem" data-name="Expanding Subspace Theorem ([NW] Thm 5.2, p.106; [LD] §9.2, p.266)">
 <p>Let $\d_0,\dots,\d_{n-1}$ be $A$-conjugate, $\x_0$ arbitrary, and $\x_k$ generated by the conjugate direction method. Then for each $k=1,\dots,n$:</p>
@@ -5817,24 +6051,36 @@ $$\g_{k+1}=\g_k+\alpha_kA\d_k\qquad\text{and}\qquad\g_{k+1}^\top\d_k=0.$$</p>
 <li>$\x_k$ is the unique minimizer of $f$ over the affine set $\x_0+\mathcal B_k$ (and also over the line $\{\x_{k-1}+\alpha\d_{k-1}\}$).</li>
 </ol>
 </div>
+<div class="prose">
+<p><b>What this says.</b> (i) After $k$ steps the gradient has zero component along each of the $k$ directions used, so you cannot gain anything by revisiting them; exact line search alone only guarantees this for the <i>latest</i> direction, and conjugacy extends it to <i>all</i> of them. (ii) Therefore $\x_k$ is the best point of the whole $k$-dimensional flat $\x_0+\mathcal B_k$, not merely the best on the last line. Numerically, in the worked example below ($\R^2$, $k=1$): $\g_1=(0,1)^\top$ is perpendicular to $\d_0=(1,0)^\top$ and $\x_1=(0,1)^\top$ is the lowest point of $f$ on the line through $\x_0=(2,1)^\top$ in direction $(1,0)$. At $k=2=n$: $\mathcal B_2=\R^2$, so (i) says $\g_2$ is perpendicular to every vector in $\R^2$, i.e. $\g_2=\0$.</p>
+<p><b>Proof skeleton to remember.</b> (i): induction on $k$. New direction: exact line search. Old directions: $\g_{k+1}=\g_k+\alpha_kA\d_k$ and conjugacy. (ii): rewrite $f$ on the flat as a convex function of $k$ coefficients; (i) says its gradient is $\0$ at $\x_k$; stationary and convex means minimizer.</p>
+</div>
+<div class="callout"><b>Careful:</b> "$\g_k\perp\mathcal B_k$" means $\g_k$ is perpendicular to <i>every vector</i> of $\mathcal B_k$. It is enough to check the $k$ basis vectors $\d_0,\dots,\d_{k-1}$, because any $\v\in\mathcal B_k$ is $\sum c_i\d_i$, and then $\g_k^\top\v=\sum c_i\,\g_k^\top\d_i=0$. Also, the statement is about $\g_k$ and the <i>directions</i> $\d_i$. It does not say that gradients are perpendicular to each other; for general conjugate directions that is false, and only CG (Chapter 8.3) has it.</div>
 
 <div class="example">
 <p class="problem">Prove part (i) of the Expanding Subspace Theorem by induction on $k$.</p>
 <ol class="steps">
-<li><p><b>Base case $k=1$:</b> $\g_1^\top\d_0=0$ by the exact-line-search lemma.</p><p class="why-step">The first step is an exact line search along $\d_0$, so the new gradient is perpendicular to $\d_0$.</p></li>
-<li><p><b>Inductive step.</b> Assume $\g_k^\top\d_i=0$ for all $i\lt k$. From the lemma, $\g_{k+1}=\g_k+\alpha_kA\d_k$, so for any $i\le k$:
-$$\g_{k+1}^\top\d_i=\g_k^\top\d_i+\alpha_k\,\d_k^\top A\d_i.$$</p><p class="why-step">The gradient update is the engine of the proof: the new gradient is the old one plus a multiple of $A\d_k$ (using $A^\top=A$ to write $(A\d_k)^\top\d_i=\d_k^\top A\d_i$).</p></li>
-<li><p><b>Case $i=k$:</b> $\g_{k+1}^\top\d_k=0$ directly by the lemma (exact line search along $\d_k$).</p><p class="why-step">The newest direction is handled by the line search itself.</p></li>
-<li><p><b>Case $i\lt k$:</b> $\g_k^\top\d_i=0$ by the induction hypothesis, and $\d_k^\top A\d_i=0$ by conjugacy. So $\g_{k+1}^\top\d_i=0$.</p><p class="why-step">The older directions are protected by conjugacy: moving along $\d_k$ changes the gradient by $\alpha_kA\d_k$, which has no component along any old $\d_i$ in the dot product. This is exactly where orthogonal-but-not-conjugate directions fail.</p></li>
-<li><p>So $\g_{k+1}\perp\d_0,\dots,\d_k$, i.e. $\g_{k+1}\perp\mathcal B_{k+1}$, completing the induction. $\blacksquare$</p><p class="why-step">Write the conclusion in the subspace language, because part (ii) uses it in that form.</p></li>
+<li><p><b>What is being proved.</b> $P(k)$: $\g_k^\top\d_i=0$ for all $i=0,\dots,k-1$. We prove $P(1)$ and then $P(k)\Rightarrow P(k+1)$.</p><p class="why-step">Induction is the right tool because $\g_{k+1}$ is built from $\g_k$ by one explicit update, so a property of $\g_k$ can be passed on.</p></li>
+<li><p><b>Base case $k=1$:</b> $\g_1^\top\d_0=0$ by the exact-line-search lemma.</p><p class="why-step">The first step is an exact line search along $\d_0$, so the new gradient is perpendicular to $\d_0$ (Lemma, Step 4).</p></li>
+<li><p><b>Inductive step.</b> Assume $\g_k^\top\d_i=0$ for all $i\lt k$. From the lemma, $\g_{k+1}=\g_k+\alpha_kA\d_k$, so for any $i\le k$ (dotting with $\d_i$):
+$$\g_{k+1}^\top\d_i=\g_k^\top\d_i+\alpha_k\,(A\d_k)^\top\d_i=\g_k^\top\d_i+\alpha_k\,\d_k^\top A\d_i.$$</p><p class="why-step">The gradient update is the engine of the proof: the new gradient is the old one plus a multiple of $A\d_k$. We used $(A\d_k)^\top\d_i=\d_k^\top A^\top\d_i=\d_k^\top A\d_i$ because $A$ is symmetric.</p></li>
+<li><p><b>Case $i=k$ (newest direction):</b> $\g_{k+1}^\top\d_k=0$ directly by the lemma (exact line search along $\d_k$).</p><p class="why-step">The newest direction is handled by the line search itself. Note that the formula above is not needed for this case.</p></li>
+<li><p><b>Case $i\lt k$ (old directions):</b> the first term $\g_k^\top\d_i=0$ by the induction hypothesis $P(k)$, and the second term has $\d_k^\top A\d_i=0$ by conjugacy ($i\ne k$). So $\g_{k+1}^\top\d_i=0+\alpha_k\cdot0=0$.</p><p class="why-step">The older directions are protected by conjugacy: moving along $\d_k$ changes the gradient by $\alpha_kA\d_k$, which is perpendicular to every old $\d_i$. This is exactly where orthogonal-but-not-conjugate directions fail (practice problem 1 below shows it).</p></li>
+<li><p>So $\g_{k+1}\perp\d_0,\dots,\d_k$, i.e. $\g_{k+1}\perp\mathcal B_{k+1}$. This is $P(k+1)$, completing the induction. $\blacksquare$</p><p class="why-step">Write the conclusion in the subspace language, because part (ii) uses it in that form.</p></li>
 </ol>
 </div>
 
 <div class="prose">
-<p><b>Proof of (ii).</b> Write points of $\x_0+\mathcal B_k$ as $\x_0+D_k\y$ with $D_k=[\d_0|\cdots|\d_{k-1}]$ and $\y\in\R^k$, and let $h(\y)=f(\x_0+D_k\y)$. This is a quadratic in $\y$ with Hessian $D_k^\top AD_k=\mathrm{diag}(\d_i^\top A\d_i)\succ0$, so it is strictly convex. By the chain rule $\grad h(\y)=D_k^\top\grad f(\x_0+D_k\y)$. The iterate $\x_k=\x_0+\sum_{i\lt k}\alpha_i\d_i$ corresponds to $\y=(\alpha_0,\dots,\alpha_{k-1})$, where $\grad h=D_k^\top\g_k=\0$ by part (i). A stationary point of a convex function is a global minimizer (Part 4), and strict convexity makes it unique. The line through $\x_{k-1}$ along $\d_{k-1}$ lies inside $\x_0+\mathcal B_k$ and contains $\x_k$, so $\x_k$ minimizes over that line too. $\blacksquare$</p>
+<p><b>Proof of (ii).</b> <i>Plan:</i> turn "minimize $f$ over a $k$-dimensional flat" into an ordinary unconstrained problem in $k$ unknowns, then use part (i) to show the gradient of that problem vanishes at $\x_k$.</p>
+<p><i>Step 1 (coordinates on the flat).</i> Write points of $\x_0+\mathcal B_k$ as $\x_0+D_k\y$ with $D_k=[\d_0|\cdots|\d_{k-1}]$ (the directions as columns) and $\y\in\R^k$ (the coefficients), and let $h(\y)=f(\x_0+D_k\y)$. Because the $\d_i$ are independent, each point of the flat has exactly one $\y$.</p>
+<p><i>Step 2 (h is strictly convex).</i> $h$ is a quadratic in $\y$ with Hessian $D_k^\top AD_k$. By conjugacy the off-diagonal entries $\d_i^\top A\d_j$ vanish, so $D_k^\top AD_k=\mathrm{diag}(\d_i^\top A\d_i)$, whose diagonal entries are positive. A diagonal matrix with positive entries is positive definite, so $h$ is strictly convex.</p>
+<p><i>Step 3 (the gradient of h).</i> By the chain rule, $\grad h(\y)=D_k^\top\grad f(\x_0+D_k\y)$. The iterate $\x_k=\x_0+\sum_{i\lt k}\alpha_i\d_i$ corresponds to $\y=(\alpha_0,\dots,\alpha_{k-1})^\top$, and there $\grad h=D_k^\top\g_k$. The $i$-th entry of this vector is $\d_i^\top\g_k$, which is $0$ by part (i). So $\grad h=\0$ at this $\y$.</p>
+<p><i>Step 4 (conclude).</i> A stationary point of a convex function is a global minimizer (<a href="#pm-convex">Part M.3</a>, Part 4), and strict convexity makes it the only one. So $\x_k$ is the unique minimizer of $f$ over $\x_0+\mathcal B_k$. The line through $\x_{k-1}$ along $\d_{k-1}$ lies inside $\x_0+\mathcal B_k$ and contains $\x_k$, so $\x_k$ minimizes over that line too. $\blacksquare$</p>
 <p>Taking $k=n$: $\x_n$ minimizes $f$ over $\x_0+\R^n=\R^n$, so $\x_n=\x^\star$. That's a second proof of the Conjugate Direction Theorem.</p>
 <h3>Another reading: the closest point in the $A$-norm</h3>
+<p><b>Intuition first.</b> "Lowest point of $f$" and "nearest point to $\x^\star$" sound like different goals, but for a quadratic they coincide once distance is measured with the $A$-norm $\norm{\v}_A=\sqrt{\v^\top A\v}$ (the length that makes the ellipses round). This view turns part (ii) into a familiar statement: the best approximation from a subspace is an orthogonal projection.</p>
 <p>Using $A\x^\star=\b$, a short expansion gives $f(\x)-f(\x^\star)=\tfrac12\norm{\x-\x^\star}_A^2$. So minimizing $f$ is the same as minimizing the $A$-norm distance to the solution, and the theorem says: <b>$\x_k$ is the point of $\x_0+\mathcal B_k$ closest to $\x^\star$ in the $A$-norm</b>. Since $\g_k=A(\x_k-\x^\star)$, part (i) reads $\ip{\x_k-\x^\star}{\d_i}_A=0$: the error is $A$-orthogonal to the explored subspace, like "the best approximation from a subspace is the orthogonal projection". Part 9 builds its convergence analysis on this view.</p>
+<p><b>Numeric check.</b> In the worked example below, $\x_1=(0,1)^\top$ and $\x^\star=(\tfrac1{11},\tfrac7{11})^\top$. The error is $\x_1-\x^\star=(-\tfrac1{11},\tfrac4{11})^\top$ and $A(\x_1-\x^\star)=(0,1)^\top=\g_1$ (so $\g=A\cdot$error, as claimed). Then $\tfrac12\norm{\x_1-\x^\star}_A^2=\tfrac12\cdot\tfrac4{11}\cdot1=\tfrac2{11}$, and indeed $f(\x_1)-f^\star=-\tfrac12-(-\tfrac{15}{22})=\tfrac2{11}$. ✓</p>
 </div>
 <details class="deeper"><summary>Go deeper: checking $f(\x)-f^\star=\tfrac12\norm{\x-\x^\star}_A^2$</summary>
 <p>$\tfrac12(\x-\x^\star)^\top A(\x-\x^\star)=\tfrac12\x^\top A\x-\x^\top A\x^\star+\tfrac12\x^{\star\top}A\x^\star=\tfrac12\x^\top A\x-\b^\top\x+\tfrac12\b^\top\x^\star$. And $f^\star=f(\x^\star)=\tfrac12\b^\top\x^\star-\b^\top\x^\star=-\tfrac12\b^\top\x^\star$. So the right side is $f(\x)-f^\star$. ([LD] §9.2, Fig. 9.2.)</p>
@@ -5847,6 +6093,7 @@ $$\g_{k+1}^\top\d_i=\g_k^\top\d_i+\alpha_k\,\d_k^\top A\d_i.$$</p><p class="why-
 <li><p>$\g_1=A\x_1-\b=(1,3)^\top-(1,2)^\top=(0,1)^\top$. Check $\g_1^\top\d_0=0$. ✓</p><p class="why-step">Expanding Subspace (i) at $k=1$.</p></li>
 <li><p>$A\d_1=(0,\tfrac{11}4)^\top$, so $\d_1^\top A\d_1=\tfrac{11}4$; $\g_1^\top\d_1=1$; $\alpha_1=-\tfrac4{11}$.</p><p class="why-step">Same formula, next direction.</p></li>
 <li><p>$\x_2=(0,1)^\top-\tfrac4{11}(-\tfrac14,1)^\top=(\tfrac1{11},\tfrac7{11})^\top=\x^\star$, and $\g_2=\0$. Done in $n=2$ steps.</p><p class="why-step">Compare the coordinate axes from the same start, which end at $(0,\tfrac23)$ (the predict question above).</p></li>
+<li><p>Check the two theorems on these numbers. Part (i) at $k=2$: $\g_2=\0$ is perpendicular to everything. Conjugate Direction Theorem: the amounts walked, $\alpha_0=-2$ and $\alpha_1=-\tfrac4{11}$, are the coefficients of $\x^\star-\x_0=(-\tfrac{21}{11},-\tfrac4{11})^\top$ in the basis $\d_0,\d_1$: $-2\cdot(1,0)^\top-\tfrac4{11}\cdot(-\tfrac14,1)^\top=(-2+\tfrac1{11},\,-\tfrac4{11})^\top$. ✓</p><p class="why-step">This is $\sigma_k=\alpha_k$ from the proof, seen with actual numbers.</p></li>
 </ol>
 </div>
 
@@ -5876,6 +6123,11 @@ $$\g_{k+1}^\top\d_i=\g_k^\top\d_i+\alpha_k\,\d_k^\top A\d_i.$$</p><p class="why-
 <div class="stem"><p>In the inductive step of Expanding Subspace (i), $\g_{k+1}^\top\d_i=\g_k^\top\d_i+\alpha_k\d_k^\top A\d_i$ for $i\lt k$. The induction hypothesis kills the first term. What kills the second?</p></div>
 <div class="hint"><p>Which property fails for the coordinate axes in practice problem 1?</p></div>
 <div class="sol"><p>Conjugacy: $\d_k^\top A\d_i=0$ for $i\ne k$. (The exact line search handles only the case $i=k$.)</p></div>
+</div>
+<div class="prob" data-id="p8x-es-gap" data-ans="5/4" data-labels="f(x₁) − f*" data-tol="0.005">
+<div class="stem"><p>Take $A=\begin{pmatrix}2&1\\1&3\end{pmatrix}$, $\b=(3,4)^\top$, $\x_0=\0$ and $\d_0=(1,0)^\top$. After one exact line search, $\x_1=(\tfrac32,0)^\top$ (see practice problem 2). Using $\x^\star=(1,1)^\top$, compute $f(\x_1)-f^\star=\tfrac12\norm{\x_1-\x^\star}_A^2$.</p></div>
+<div class="hint"><p>The error is $\x_1-\x^\star=(\tfrac12,-1)^\top$. Compute $A$ times it, then dot with the error, then halve.</p></div>
+<div class="sol"><p>$A(\tfrac12,-1)^\top=(1-1,\ \tfrac12-3)^\top=(0,-\tfrac52)^\top$. Dot with the error: $\tfrac12\cdot0+(-1)(-\tfrac52)=\tfrac52$. Half of that is $\tfrac54$. Direct check: $f(\x_1)=\tfrac12\cdot2\cdot\tfrac94-3\cdot\tfrac32=-\tfrac94$ and $f^\star=-\tfrac12\b^\top\x^\star=-\tfrac72$, so the gap is $-\tfrac94+\tfrac72=\tfrac54$.</p></div>
 </div>
 </div>
 
@@ -5930,11 +6182,13 @@ $$\g_{k+1}^\top\d_i=\g_k^\top\d_i+\alpha_k\,\d_k^\top A\d_i.$$</p><p class="why-
 
 <div class="prose">
 <h3>Deriving the algorithm</h3>
+<p><b>Intuition first.</b> Chapter 8.2 needs $n$ conjugate directions in advance, and building them (Gram–Schmidt) is expensive. CG builds them one at a time, as it goes, using the information it already has: the current gradient. Start with the steepest descent direction. At each later step, take the new downhill direction $-\g_k$ and mix in some of the previous direction, just enough that the result is conjugate to the previous one. The mixing weight $\beta_k$ is a single number, found by solving a single linear equation.</p>
 <p>Chapter 8.2 assumed someone handed us conjugate directions. CG chooses $\d_0=-\g_0$ (a steepest descent step) and then
 $$\d_k=-\g_k+\beta_k\d_{k-1},\qquad\beta_k\text{ chosen so that }\d_k^\top A\d_{k-1}=0.$$
 Substituting: $0=-\g_k^\top A\d_{k-1}+\beta_k\,\d_{k-1}^\top A\d_{k-1}$, so
 $$\beta_k=\frac{\g_k^\top A\d_{k-1}}{\d_{k-1}^\top A\d_{k-1}}.$$
 The step size is the exact line search from Chapter 8.2. The term $\beta_k\d_{k-1}$ is a memory of the previous heading, the very thing gradient descent lacks.</p>
+<p><b>Check with numbers.</b> Suppose $\g_k=(1,0)^\top$, $\d_{k-1}=(1,1)^\top$ and $A=\begin{pmatrix}2&1\\1&2\end{pmatrix}$. Then $A\d_{k-1}=(3,3)^\top$, so $\beta_k=\g_k^\top A\d_{k-1}/\d_{k-1}^\top A\d_{k-1}=3/6=\tfrac12$ and $\d_k=(-1,0)^\top+\tfrac12(1,1)^\top=(-\tfrac12,\tfrac12)^\top$. Test: $\d_k^\top A\d_{k-1}=(-\tfrac12)(3)+\tfrac12(3)=0$. ✓</p>
 </div>
 <div class="box alg" data-k="Algorithm" data-name="CG, preliminary form ([NW] Alg 5.1; [LD] §9.3)">
 <p>Given $\x_0$: $\g_0=A\x_0-\b$, $\d_0=-\g_0$. For $k=0,1,\dots$ while $\g_k\ne\0$:
@@ -5942,14 +6196,25 @@ $$\alpha_k=-\frac{\g_k^\top\d_k}{\d_k^\top A\d_k},\quad \x_{k+1}=\x_k+\alpha_k\d
 $$\beta_{k+1}=\frac{\g_{k+1}^\top A\d_k}{\d_k^\top A\d_k},\quad \d_{k+1}=-\g_{k+1}+\beta_{k+1}\d_k.$$</p>
 </div>
 <div class="prose">
+<p><b>What this says.</b> Line 1: take a step of exact line search along the current direction. Line 2: compute the new gradient and the weight $\beta_{k+1}$ that makes the new direction conjugate to the old. Then $\d_{k+1}$ is the new downhill direction corrected by a multiple of the old direction.</p>
+</div>
+<div class="callout"><b>Careful:</b> $\g_0=A\x_0-\b$ equals $-\b$ <i>only</i> when $\x_0=\0$. Many examples start at the origin, which hides this; from any other start, $\g_0$ and $\d_0=-\g_0$ must be computed from $\x_0$. Also, the indexing: $\beta_{k+1}$ mixes the <i>new</i> gradient $\g_{k+1}$ with the <i>old</i> direction $\d_k$.</div>
+<div class="prose">
 <p>We only forced $\d_{k+1}$ to be conjugate to $\d_k$. Why would it be conjugate to $\d_{k-1},\d_{k-2},\dots$? That is the content of the CG Theorem, and its proof uses one more idea.</p>
 <h3>Krylov subspaces: what CG can "see"</h3>
+<p><b>Intuition first.</b> CG only ever uses $A$ through multiplication. Starting from the vector $\g_0$, the only new vectors it can create are $A\g_0$, then $A(A\g_0)=A^2\g_0$, and so on, plus combinations of these. The set of everything reachable this way is a Krylov subspace. It is the bookkeeping device that lets us prove the old directions stay conjugate to the new one.</p>
 <p>After one step you've moved along $\g_0$, and the new gradient $\g_1=\g_0+\alpha_0A\d_0$ involves $A\g_0$. After two steps, the new gradient involves $A^2\g_0$. Each step applies $A$ once more.</p>
 </div>
 <div class="box def" data-k="Definition" data-name="Krylov subspace">
 <p>$\mathcal K_k(\g_0)=\operatorname{span}\{\g_0,A\g_0,A^2\g_0,\dots,A^k\g_0\}$, the Krylov subspace of degree $k$ (at most $k+1$ dimensions). We write $\mathcal K_k$. Note $A\,\mathcal K_k\subseteq\mathcal K_{k+1}$. (This is [NW]'s $\mathcal K(\r_0;k)$, eq. (5.14), with $\r_0=\g_0$.)</p>
 </div>
+<div class="prose">
+<p><b>What this says.</b> $\operatorname{span}\{\g_0,A\g_0,\dots,A^k\g_0\}$ is read "all linear combinations of $g_0$, $Ag_0$, up to $A^kg_0$". The inclusion $A\mathcal K_k\subseteq\mathcal K_{k+1}$ holds because multiplying the generator $A^j\g_0$ by $A$ gives $A^{j+1}\g_0$, which is the next generator (and $A$ acts linearly on combinations). Numerically, with $A=\begin{pmatrix}4&1\\1&3\end{pmatrix}$ and $\g_0=(-1,-2)^\top$: $A\g_0=(-6,-7)^\top$. $\mathcal K_0$ is the line through $\g_0$. $\mathcal K_1=\operatorname{span}\{\g_0,A\g_0\}$ has dimension $2$ because $\det\begin{pmatrix}-1&-6\\-2&-7\end{pmatrix}=7-12=-5\ne0$, so $\mathcal K_1=\R^2$.</p>
+</div>
 
+<div class="prose">
+<p><b>Intuition first.</b> We only forced each new direction to be conjugate to the one just before it. The theorem says much more happens: the new direction is conjugate to all earlier ones, and the gradients are mutually perpendicular. In the language of the story so far: the single bend $\beta$ performs a full Gram–Schmidt for us. The reason is the structure of the Krylov subspaces: they are nested, each is mapped by $A$ into the next, and the new gradient is perpendicular to the previous one. We state the five facts, then prove them together by induction.</p>
+</div>
 <div class="box thm" data-k="Theorem" data-name="Conjugate Gradient Theorem ([NW] Thm 5.3, p.108; [LD] §9.3, p.270)">
 <p>Run CG from any $\x_0$ and suppose $\g_0,\dots,\g_k$ are all nonzero (the method has not stopped). Then</p>
 <ol type="a">
@@ -5963,27 +6228,41 @@ $$\beta_{k+1}=\frac{\g_{k+1}^\top A\d_k}{\d_k^\top A\d_k},\quad \d_{k+1}=-\g_{k+
 </div>
 <div class="prose">
 <p>Read it before proving it. (c) is the surprise: one condition imposed, all conditions obtained. (d) gives a second view of termination: there's room for at most $n$ nonzero orthogonal vectors in $\R^n$, so some $\g_k$ with $k\le n$ must be $\0$. Compare gradient descent, which only guarantees $\g_{k+1}\perp\g_k$. (e) makes $\alpha_k\gt0$ and gives cheaper formulas.</p>
+<p><b>What this says.</b> (a), (b): the directions and the gradients both generate the same growing family of subspaces $\mathcal K_0\subset\mathcal K_1\subset\cdots$, one new dimension per step. (c): all directions are conjugate, so the Conjugate Direction Theorem applies. (d): each new gradient is perpendicular to all previous ones. (e): each direction points downhill, with $\g_k^\top\d_k=-\norm{\g_k}^2$. Numerically, for $A=\begin{pmatrix}4&1\\1&3\end{pmatrix}$, $\b=(1,2)^\top$, $\x_0=\0$ (full run below): $\g_0=(-1,-2)^\top$, $\g_1=(\tfrac12,-\tfrac14)^\top$ with $\g_1^\top\g_0=-\tfrac12+\tfrac12=0$ (d); $\d_0=(1,2)^\top$, $\d_1=(-\tfrac7{16},\tfrac38)^\top$ with $\d_1^\top A\d_0=0$ (c); $\g_1^\top\d_1=-\tfrac7{32}-\tfrac3{32}=-\tfrac5{16}=-\norm{\g_1}^2$ (e).</p>
+<div class="callout"><b>Careful:</b> the hypothesis "$\g_0,\dots,\g_k$ are all nonzero" is not decoration. If some $\g_j=\0$ you are already at $\x^\star$ and the method stops (there is no next direction to talk about). Also (d) is special to CG: for the general conjugate direction method of Chapter 8.2, gradients are not mutually perpendicular. And do not mix the two index ranges: $\mathcal K_k$ has generators up to $A^k\g_0$ (so up to $k+1$ vectors), and goes with $\g_0,\dots,\g_k$.</div>
 </div>
 
+<div class="prose">
+<p><b>Proof skeleton to remember.</b> Induction on $k$. Hypothesis: (a)–(e) hold up to index $k$. Then: <b>(1)</b> by (c), CG so far is a conjugate direction method, so Expanding Subspace gives $\g_{k+1}\perp\d_0,\dots,\d_k$. <b>(2)</b> Since $\g_{k+1}=\g_k+\alpha_kA\d_k$, it lies in $\mathcal K_{k+1}$, and by (1) it is a genuinely new vector, so (a) holds at $k+1$. <b>(3)</b> (b) and (e) follow from the definition of $\d_{k+1}$. <b>(4)</b> For (c), the term $\g_{k+1}^\top A\d_i$ with $i\lt k$ vanishes because $A\d_i$ stays inside the space $\g_{k+1}$ is perpendicular to. <b>(5)</b> (d) follows from (1) and (a).</p>
+<p><b>Why this order.</b> The facts feed each other: (1) needs (c) at the previous stage; (c) at the new stage needs (1); (a) needs (1). Induction lets us use all five at stage $k$ while proving them at stage $k+1$.</p>
+</div>
 <div class="example">
-<p class="problem">Prove the CG Theorem by induction on $k$ (following [LD]). Write $\mathcal D_k=\operatorname{span}\{\d_0,\dots,\d_k\}$ and $\mathcal G_k=\operatorname{span}\{\g_0,\dots,\g_k\}$.</p>
+<p class="problem">Prove the CG Theorem by induction on $k$ (following [LD]). Write $\mathcal D_k=\operatorname{span}\{\d_0,\dots,\d_k\}$ (read "the span of the first $k+1$ directions") and $\mathcal G_k=\operatorname{span}\{\g_0,\dots,\g_k\}$.</p>
 <ol class="steps">
-<li><p><b>Base $k=0$.</b> $\mathcal G_0=\mathcal D_0=\operatorname{span}\{\g_0\}=\mathcal K_0$, one-dimensional since $\g_0\ne\0$. (c), (d) say nothing yet. (e): $\g_0^\top\d_0=-\norm{\g_0}^2$. Now assume (a)–(e) up to $k$ and $\g_{k+1}\ne\0$.</p><p class="why-step">Everything is checked directly from $\d_0=-\g_0$.</p></li>
-<li><p><b>Step 1: $\g_{k+1}\perp\mathcal D_k$.</b> By (c), $\d_0,\dots,\d_k$ are nonzero and mutually conjugate, and CG used exact line searches along them. So $\x_0,\dots,\x_{k+1}$ are conjugate direction iterates, and Expanding Subspace (i) gives $\g_{k+1}^\top\d_i=0$ for all $i\le k$.</p><p class="why-step">This is where Chapter 8.2 plugs in. Everything else is bookkeeping about spans.</p></li>
-<li><p><b>Step 2: (a) at $k+1$.</b> $\g_{k+1}=\g_k+\alpha_kA\d_k$ with $\g_k\in\mathcal K_k$ and $\d_k\in\mathcal K_k$, so $A\d_k\in\mathcal K_{k+1}$ and $\g_{k+1}\in\mathcal K_{k+1}$. Also $\g_{k+1}\notin\mathcal K_k$: otherwise $\g_{k+1}\in\mathcal D_k$ and Step 1 would make it orthogonal to itself, i.e. $\0$. So $\dim\mathcal G_{k+1}=k+2$, and $\mathcal G_{k+1}\subseteq\mathcal K_{k+1}$ with $\dim\mathcal K_{k+1}\le k+2$. Equal dimensions and inclusion give $\mathcal G_{k+1}=\mathcal K_{k+1}$.</p><p class="why-step">"Not in the old span" needs $\g_{k+1}\ne\0$; that's why the theorem assumes the method hasn't stopped.</p></li>
-<li><p><b>Step 3: (b) at $k+1$.</b> $\d_{k+1}=-\g_{k+1}+\beta_{k+1}\d_k$, so $\mathcal D_{k+1}=\operatorname{span}(\mathcal D_k\cup\{\g_{k+1}\})=\operatorname{span}(\mathcal G_k\cup\{\g_{k+1}\})=\mathcal G_{k+1}=\mathcal K_{k+1}$.</p><p class="why-step">Adding $\g_{k+1}$ or adding $-\g_{k+1}+\beta\d_k$ to a span that already contains $\d_k$ gives the same span.</p></li>
-<li><p><b>Step 4: (e) at $k+1$.</b> $\g_{k+1}^\top\d_{k+1}=-\norm{\g_{k+1}}^2+\beta_{k+1}\g_{k+1}^\top\d_k=-\norm{\g_{k+1}}^2$, since $\g_{k+1}^\top\d_k=0$ (Step 1). This is nonzero, so $\d_{k+1}\ne\0$.</p><p class="why-step">A nonzero direction is needed for it to count as a conjugate direction.</p></li>
-<li><p><b>Step 5 (the key step): (c) at $k+1$.</b> For $i\le k$: $\d_{k+1}^\top A\d_i=-\g_{k+1}^\top A\d_i+\beta_{k+1}\d_k^\top A\d_i$. If $i=k$, this is 0 by the choice of $\beta_{k+1}$. If $i\lt k$: the second term is 0 by (c) at stage $k$; for the first, $\d_i\in\mathcal K_i$, so $A\d_i\in\mathcal K_{i+1}\subseteq\mathcal K_k=\mathcal D_k$, and $\g_{k+1}\perp\mathcal D_k$ by Step 1.</p><p class="why-step">Conjugacy to old directions is free because $A\d_i$ stays inside the Krylov space that the new gradient is already orthogonal to.</p></li>
-<li><p><b>Step 6: (d) at $k+1$.</b> For $i\le k$, $\g_i\in\mathcal G_k=\mathcal D_k$, and $\g_{k+1}\perp\mathcal D_k$ (Step 1), so $\g_{k+1}^\top\g_i=0$. Induction complete. Since at most $n$ nonzero conjugate directions exist, some $\g_k$ with $k\le n$ is $\0$, i.e. $\x_k=\x^\star$. $\blacksquare$</p><p class="why-step">Skeleton to memorize: (1) Expanding Subspace gives $\g_{k+1}\perp\mathcal D_k$; (2) $\g_{k+1}=\g_k+\alpha A\d_k$ grows the Krylov space by one; (3) $A\mathcal K_i\subseteq\mathcal K_{i+1}$ gives conjugacy to old directions.</p></li>
+<li><p><b>Base $k=0$.</b> $\d_0=-\g_0$, so $\mathcal G_0=\mathcal D_0=\operatorname{span}\{\g_0\}=\mathcal K_0$, which is one-dimensional because $\g_0\ne\0$. This gives (a) and (b). For (e): $\g_0^\top\d_0=-\g_0^\top\g_0=-\norm{\g_0}^2$. Statements (c) and (d) involve pairs $i\lt k$ and are empty at $k=0$. <b>Inductive hypothesis:</b> assume (a)–(e) hold up to index $k$, and that $\g_{k+1}\ne\0$. We prove them at index $k+1$.</p><p class="why-step">Everything at $k=0$ is checked directly from the definition $\d_0=-\g_0$.</p></li>
+<li><p><b>Step 1: $\g_{k+1}\perp\mathcal D_k$.</b> By (c) and (e) at stage $k$, the directions $\d_0,\dots,\d_k$ are nonzero and mutually conjugate. CG moved from $\x_i$ to $\x_{i+1}$ by an exact line search along $\d_i$ (the formula for $\alpha_i$ is the one from Chapter 8.2). So $\x_0,\dots,\x_{k+1}$ are iterates of the conjugate direction method with these directions, and Expanding Subspace (i) gives $\g_{k+1}^\top\d_i=0$ for all $i\le k$.</p><p class="why-step">This is where Chapter 8.2 plugs in. We could not apply it earlier, since we did not yet know the directions were conjugate; the induction hypothesis supplies that. Everything else is bookkeeping about spans.</p></li>
+<li><p><b>Step 2: (a) at $k+1$.</b> The update is $\g_{k+1}=\g_k+\alpha_kA\d_k$. By (a) and (b) at stage $k$, both $\g_k$ and $\d_k$ lie in $\mathcal K_k$. Since $A\mathcal K_k\subseteq\mathcal K_{k+1}$ we get $A\d_k\in\mathcal K_{k+1}$, and also $\g_k\in\mathcal K_k\subseteq\mathcal K_{k+1}$. So $\g_{k+1}\in\mathcal K_{k+1}$. Next, $\g_{k+1}\notin\mathcal K_k$: otherwise $\g_{k+1}\in\mathcal K_k=\mathcal D_k$ (by (b)), and by Step 1 it would be perpendicular to itself, forcing $\g_{k+1}=\0$, contrary to assumption. Hence $\mathcal G_{k+1}$ is $\mathcal G_k=\mathcal K_k$ (dimension $k+1$) plus one new independent vector: $\dim\mathcal G_{k+1}=k+2$. We showed $\mathcal G_{k+1}\subseteq\mathcal K_{k+1}$, and $\dim\mathcal K_{k+1}\le k+2$ (it has $k+2$ generators). A subspace of dimension $k+2$ inside a space of dimension at most $k+2$ is the whole space: $\mathcal G_{k+1}=\mathcal K_{k+1}$ and $\dim\mathcal K_{k+1}=k+2$.</p><p class="why-step">"Not in the old span" needs $\g_{k+1}\ne\0$; that is why the theorem assumes the method has not stopped. The dimension count is the standard way to prove two subspaces are equal: one inside the other, same dimension.</p></li>
+<li><p><b>Step 3: (b) at $k+1$.</b> Since $\d_{k+1}=-\g_{k+1}+\beta_{k+1}\d_k$ and $\d_k\in\mathcal D_k$, we have $\mathcal D_{k+1}=\operatorname{span}(\mathcal D_k\cup\{\g_{k+1}\})$. Now $\mathcal D_k=\mathcal K_k=\mathcal G_k$ (stage $k$), so $\mathcal D_{k+1}=\operatorname{span}(\mathcal G_k\cup\{\g_{k+1}\})=\mathcal G_{k+1}=\mathcal K_{k+1}$ by Step 2.</p><p class="why-step">Adding $\g_{k+1}$ to a span, or adding $-\g_{k+1}+\beta\d_k$ to a span that already contains $\d_k$, gives the same span: you can add or subtract $\beta\d_k$ freely.</p></li>
+<li><p><b>Step 4: (e) at $k+1$.</b> $\g_{k+1}^\top\d_{k+1}=-\g_{k+1}^\top\g_{k+1}+\beta_{k+1}\g_{k+1}^\top\d_k=-\norm{\g_{k+1}}^2+0$, since $\g_{k+1}^\top\d_k=0$ (Step 1 with $i=k$). This is negative because $\g_{k+1}\ne\0$, hence $\d_{k+1}\ne\0$ (a zero vector would give $0$).</p><p class="why-step">A nonzero direction is needed for it to count as a conjugate direction. Also, the Step 4 identity is what later turns $\alpha_k$ into $\norm{\g_k}^2/\d_k^\top A\d_k$.</p></li>
+<li><p><b>Step 5 (the key step): (c) at $k+1$.</b> We must show $\d_{k+1}^\top A\d_i=0$ for every $i\le k$. Expand: $\d_{k+1}^\top A\d_i=-\g_{k+1}^\top A\d_i+\beta_{k+1}\d_k^\top A\d_i$. <i>Case $i=k$:</i> the whole expression is $0$ by the very choice of $\beta_{k+1}$ (that is how it was defined). <i>Case $i\lt k$:</i> the second term is $0$ by (c) at stage $k$. For the first term, (b) at stage $i$ gives $\d_i\in\mathcal D_i=\mathcal K_i$, so $A\d_i\in A\mathcal K_i\subseteq\mathcal K_{i+1}\subseteq\mathcal K_k=\mathcal D_k$ (using $i+1\le k$). By Step 1, $\g_{k+1}$ is perpendicular to everything in $\mathcal D_k$, in particular to $A\d_i$. So $\g_{k+1}^\top A\d_i=0$.</p><p class="why-step">Conjugacy to old directions is free because $A\d_i$ stays inside the Krylov space that the new gradient is already perpendicular to. This is the only place where the Krylov structure is essential, and where $i\lt k$ (not $i\le k$) is used.</p></li>
+<li><p><b>Step 6: (d) at $k+1$.</b> For $i\le k$, $\g_i\in\mathcal G_k=\mathcal D_k$ (stage $k$ for the equality, using (a) and (b)). By Step 1, $\g_{k+1}$ is perpendicular to all of $\mathcal D_k$, so $\g_{k+1}^\top\g_i=0$. This completes the induction. <b>Termination:</b> nonzero conjugate vectors are independent, so at most $n$ of them exist, hence some $\g_k$ with $k\le n$ is $\0$ (at that point $\x_k=\x^\star$). $\blacksquare$</p><p class="why-step">Skeleton to memorize: (1) Expanding Subspace gives $\g_{k+1}\perp\mathcal D_k$; (2) $\g_{k+1}=\g_k+\alpha A\d_k$ grows the Krylov space by one; (3) $A\mathcal K_i\subseteq\mathcal K_{i+1}$ gives conjugacy to old directions.</p></li>
 </ol>
 </div>
 
+<div class="prose">
+<p><b>Intuition first.</b> The preliminary algorithm computes $A\d_k$ and $A\x_{k+1}$ more than once and uses dot products with $A\d_k$. The theorem lets us replace these by cheaper quantities built from the gradients only. The idea: the gradient update $\g_{k+1}=\g_k+\alpha_kA\d_k$ lets us express $A\d_k$ through gradients, and orthogonality (d) then collapses the expressions.</p>
+</div>
 <div class="box thm" data-k="Corollary" data-name="The practical formulas ([NW] Alg 5.2; [LD] CG Theorem)">
 <p>While $\g_k\ne\0$: $\qquad\alpha_k=\dfrac{\g_k^\top\g_k}{\d_k^\top A\d_k}\gt0,\qquad\beta_{k+1}=\dfrac{\g_{k+1}^\top\g_{k+1}}{\g_k^\top\g_k}.$</p>
 </div>
 <div class="prose">
-<p><b>Proof</b> (examinable). For $\alpha_k$: $-\g_k^\top\d_k=\norm{\g_k}^2$ by (e). For $\beta_{k+1}$: from $\g_{k+1}=\g_k+\alpha_kA\d_k$, $A\d_k=(\g_{k+1}-\g_k)/\alpha_k$. The numerator of the preliminary $\beta_{k+1}$ is $\g_{k+1}^\top A\d_k=(\norm{\g_{k+1}}^2-\g_{k+1}^\top\g_k)/\alpha_k=\norm{\g_{k+1}}^2/\alpha_k$ by (d). The denominator is $\d_k^\top A\d_k=\norm{\g_k}^2/\alpha_k$ by the new $\alpha_k$ formula. Divide; $\alpha_k$ cancels. $\blacksquare$</p>
+<p><b>Proof skeleton to remember.</b> $\alpha$: use (e). $\beta$: write $A\d_k=(\g_{k+1}-\g_k)/\alpha_k$ in the numerator, use (d) to drop $\g_{k+1}^\top\g_k$, use the new $\alpha$ for the denominator, divide.</p>
+<p><b>Proof</b> (examinable). <i>For $\alpha_k$:</i> the line-search formula is $\alpha_k=-\g_k^\top\d_k/\d_k^\top A\d_k$, and by (e) $-\g_k^\top\d_k=\norm{\g_k}^2$. Substitute. It is positive because the denominator is positive ($A\succ0$, $\d_k\ne\0$). <i>For $\beta_{k+1}$:</i> the gradient update gives $A\d_k=(\g_{k+1}-\g_k)/\alpha_k$ (solve $\g_{k+1}=\g_k+\alpha_kA\d_k$ for $A\d_k$; $\alpha_k\ne0$ since $\alpha_k\gt0$). The numerator of the preliminary $\beta_{k+1}$ is therefore $\g_{k+1}^\top A\d_k=(\norm{\g_{k+1}}^2-\g_{k+1}^\top\g_k)/\alpha_k=\norm{\g_{k+1}}^2/\alpha_k$, because $\g_{k+1}^\top\g_k=0$ by (d). The denominator is $\d_k^\top A\d_k=\norm{\g_k}^2/\alpha_k$, by rearranging the new $\alpha_k$ formula. Divide; $\alpha_k$ cancels. $\blacksquare$</p>
+<p><b>Numeric check.</b> In the run below: $\g_1=(\tfrac12,-\tfrac14)^\top$, $A\d_0=(6,7)^\top$, $\d_0^\top A\d_0=20$. The preliminary $\beta_1=\g_1^\top A\d_0/20=(3-\tfrac74)/20=\tfrac54/20=\tfrac1{16}$, and the practical $\beta_1=\norm{\g_1}^2/\norm{\g_0}^2=\tfrac5{16}/5=\tfrac1{16}$. They agree. ✓</p>
 <p>If an exam asks you to <i>derive</i> CG, start from the preliminary $\beta$ and the line-search $\alpha$, then simplify using (d) and (e). The cheap formulas are consequences of the theorem, not definitions.</p>
+</div>
+<div class="prose">
+<p><b>Intuition first.</b> Here is the algorithm you would actually code or run by hand. It differs from the preliminary form only in how $\alpha$, $\beta$ and $\g$ are computed: nothing is recomputed from scratch, and a single matrix–vector product per iteration feeds all of it.</p>
 </div>
 <div class="box alg" data-k="Algorithm" data-name="CG, practical form ([NW] Alg 5.2)">
 <p>$\g_0\gets A\x_0-\b$; $\d_0\gets-\g_0$; $k\gets0$. While $\norm{\g_k}\gt\text{tol}$:</p>
@@ -5993,6 +6272,9 @@ $$\beta_{k+1}=\frac{\g_{k+1}^\top A\d_k}{\d_k^\top A\d_k},\quad \d_{k+1}=-\g_{k+
 <li>$\x_{k+1}\gets\x_k+\alpha_k\d_k$; $\ \g_{k+1}\gets\g_k+\alpha_k\mathbf w$</li>
 <li>$\beta_{k+1}\gets\norm{\g_{k+1}}^2/\norm{\g_k}^2$; $\ \d_{k+1}\gets-\g_{k+1}+\beta_{k+1}\d_k$; $\ k\gets k+1$</li>
 </ol>
+</div>
+<div class="prose">
+<p><b>What this says.</b> Step 1 is the only place $A$ is used. Step 2 sets how far to go (squared gradient length divided by curvature along $\d_k$). Step 3 moves the point and updates the gradient without multiplying by $A$ again. Step 4 sets how much of the old direction to keep: the ratio of the new squared gradient length to the old one, and builds the next direction. Tip for hand computation: keep $\norm{\g_k}^2$ from the previous iteration, it is reused as the denominator of $\beta$ and the numerator of $\alpha$.</p>
 </div>
 <div class="table-wrap"><table>
 <thead><tr><th>Method</th><th>Work per iteration</th><th>Storage</th></tr></thead>
@@ -6019,6 +6301,18 @@ $$\beta_{k+1}=\frac{\g_{k+1}^\top A\d_k}{\d_k^\top A\d_k},\quad \d_{k+1}=-\g_{k+
 <li><p>$\beta_1=\norm{\g_1}^2/\norm{\g_0}^2=\tfrac{5/16}{5}=\tfrac1{16}$, and $\d_1=-\g_1+\tfrac1{16}\d_0=(-\tfrac7{16},\tfrac38)^\top$. Check (c): $\d_1^\top A\d_0=-\tfrac{42}{16}+\tfrac{21}8=0$. ✓</p><p class="why-step">A small $\beta$ means only a slight bend away from $-\g_1$.</p></li>
 <li><p>$A\d_1=(-\tfrac{11}8,\tfrac{11}{16})^\top$, $\d_1^\top A\d_1=\tfrac{77}{128}+\tfrac{33}{128}=\tfrac{55}{64}$, so $\alpha_1=\tfrac{5/16}{55/64}=\tfrac4{11}$.</p><p class="why-step">Practical $\alpha$: numerator $\norm{\g_1}^2$.</p></li>
 <li><p>$\x_2=(\tfrac14,\tfrac12)^\top+\tfrac4{11}(-\tfrac7{16},\tfrac38)^\top=(\tfrac1{11},\tfrac7{11})^\top=\x^\star$, and $\g_2=\0$. Stop after $n=2$ steps.</p><p class="why-step">Gradient descent from the same start is still about $2.6\times10^{-6}$ away after 10 steps.</p></li>
+</ol>
+</div>
+
+<div class="example">
+<p class="problem">A full CG run from a nonzero start. $A=\begin{pmatrix}2&1\\1&2\end{pmatrix}$, $\b=(0,1)^\top$, $\x_0=(1,0)^\top$. Find $\x^\star$ by CG, showing every number and checking the theorem.</p>
+<ol class="steps">
+<li><p><b>Start.</b> $A\x_0=(2\cdot1+1\cdot0,\ 1\cdot1+2\cdot0)^\top=(2,1)^\top$, so $\g_0=A\x_0-\b=(2,0)^\top$ and $\d_0=-\g_0=(-2,0)^\top$.</p><p class="why-step">Not $-\b$: the start is not the origin, so $\g_0$ must be computed from $\x_0$. The first direction is steepest descent.</p></li>
+<li><p><b>First step.</b> $A\d_0=(-4,-2)^\top$, $\d_0^\top A\d_0=(-2)(-4)+0=8$, $\norm{\g_0}^2=4$. So $\alpha_0=\tfrac48=\tfrac12$ and $\x_1=(1,0)^\top+\tfrac12(-2,0)^\top=(0,0)^\top$.</p><p class="why-step">Practical formula $\alpha_k=\norm{\g_k}^2/\d_k^\top A\d_k$. Here the step happens to land on the origin; this is a coincidence of the numbers, not a rule.</p></li>
+<li><p><b>New gradient.</b> $\g_1=\g_0+\alpha_0A\d_0=(2,0)^\top+\tfrac12(-4,-2)^\top=(0,-1)^\top$. Cross-check directly: $A\x_1-\b=(0,0)^\top-(0,1)^\top=(0,-1)^\top$. ✓ Also $\g_1^\top\d_0=0$ and $\g_1^\top\g_0=0$.</p><p class="why-step">The update reuses $A\d_0$ and avoids a second product. The two checks are the exact line search property and part (d).</p></li>
+<li><p><b>Bend the direction.</b> $\norm{\g_1}^2=1$, so $\beta_1=\tfrac{1}{4}$ and $\d_1=-\g_1+\tfrac14\d_0=(0,1)^\top+\tfrac14(-2,0)^\top=(-\tfrac12,1)^\top$. Check conjugacy: $\d_1^\top A\d_0=(-\tfrac12)(-4)+(1)(-2)=2-2=0$. ✓</p><p class="why-step">$\beta_1=\norm{\g_1}^2/\norm{\g_0}^2$. A modest $\beta$ keeps only a quarter of the old heading.</p></li>
+<li><p><b>Second step.</b> $A\d_1=(2(-\tfrac12)+1,\ -\tfrac12+2)^\top=(0,\tfrac32)^\top$, $\d_1^\top A\d_1=\tfrac32$, so $\alpha_1=\tfrac{\norm{\g_1}^2}{\d_1^\top A\d_1}=\tfrac{1}{3/2}=\tfrac23$. Then $\x_2=(0,0)^\top+\tfrac23(-\tfrac12,1)^\top=(-\tfrac13,\tfrac23)^\top$.</p><p class="why-step">Same two formulas, next index.</p></li>
+<li><p><b>Finish.</b> $\g_2=\g_1+\alpha_1A\d_1=(0,-1)^\top+\tfrac23(0,\tfrac32)^\top=(0,0)^\top$, so stop. Verify: $A\x_2=(2(-\tfrac13)+\tfrac23,\ -\tfrac13+\tfrac43)^\top=(0,1)^\top=\b$. ✓ Two steps for $n=2$. Also (e): $\g_1^\top\d_1=-1=-\norm{\g_1}^2$. ✓</p><p class="why-step">The theorem promises $\g_n=\0$ at the latest. Compare with the origin start in the previous example: different path, same exact finish.</p></li>
 </ol>
 </div>
 
