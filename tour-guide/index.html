@@ -4,21 +4,21 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Tour Guide</title>
-<meta name="description" content="An interactive course companion for SL 225 Logistics and Freight Modelling at IISc. It starts from school algebra and builds up to linear programming, integer programming, branch and bound, the travelling salesman problem and vehicle routing, with draggable widgets and self-checked practice.">
+<meta name="description" content="An interactive course companion for SL 225 Logistics and Freight Modelling at IISc. It builds up linear programming, integer programming, branch and bound, the travelling salesman problem and vehicle routing, with draggable widgets and self-checked practice.">
 <meta name="theme-color" content="#F3F5F7" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#0E1319" media="(prefers-color-scheme: dark)">
 <meta property="og:type" content="website">
-<meta property="og:title" content="Tour Guide: Logistics and freight modelling, from school algebra to vehicle routing">
-<meta property="og:description" content="An interactive course companion for SL 225 Logistics and Freight Modelling at IISc. It starts from school algebra and builds up to linear programming, integer programming, branch and bound, the travelling salesman problem and vehicle routing, with draggable widgets and self-checked practice.">
+<meta property="og:title" content="Tour Guide: Logistics and freight modelling, from linear programs to vehicle routing">
+<meta property="og:description" content="An interactive course companion for SL 225 Logistics and Freight Modelling at IISc. It builds up linear programming, integer programming, branch and bound, the travelling salesman problem and vehicle routing, with draggable widgets and self-checked practice.">
 <meta property="og:site_name" content="Tour Guide">
 <meta property="og:url" content="https://courses.rahuldevsharma.com/tour-guide/">
 <meta property="og:image" content="https://courses.rahuldevsharma.com/tour-guide/preview.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Tour Guide: Logistics and freight modelling, from school algebra to vehicle routing">
+<meta property="og:image:alt" content="Tour Guide: Logistics and freight modelling, from linear programs to vehicle routing">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Tour Guide: Logistics and freight modelling, from school algebra to vehicle routing">
-<meta name="twitter:description" content="An interactive course companion for SL 225 Logistics and Freight Modelling at IISc. It starts from school algebra and builds up to linear programming, integer programming, branch and bound, the travelling salesman problem and vehicle routing, with draggable widgets and self-checked practice.">
+<meta name="twitter:title" content="Tour Guide: Logistics and freight modelling, from linear programs to vehicle routing">
+<meta name="twitter:description" content="An interactive course companion for SL 225 Logistics and Freight Modelling at IISc. It builds up linear programming, integer programming, branch and bound, the travelling salesman problem and vehicle routing, with draggable widgets and self-checked practice.">
 <meta name="twitter:image" content="https://courses.rahuldevsharma.com/tour-guide/preview.png">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 26 26'%3E%3Ccircle cx='13' cy='13' r='10' fill='%23C2570C'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -499,11 +499,11 @@ dialog.cert::backdrop { background: rgba(10, 15, 20, .6); }
 
   <main id="top">
     <header class="hero" id="welcome">
-      <span class="eyebrow">Logistics and freight modelling, from school algebra to vehicle routing</span>
-      <h1>Learn how deliveries, depots and routes are planned with mathematics, starting from school algebra</h1>
-      <p class="lede">This is a companion to SL 225 Logistics and Freight Modeling. The course assumes linear programming, integer programming and algorithms. Here those are taught first, from scratch, and then the course itself: facility location, assignment, branch and bound, the travelling salesman problem and vehicle routing.</p>
+      <span class="eyebrow">Logistics and freight modelling, from linear programs to vehicle routing</span>
+      <h1>Learn how deliveries, depots and routes are planned with mathematics</h1>
+      <p class="lede">This is a companion to SL 225 Logistics and Freight Modeling. The course assumes linear programming, integer programming and algorithms. Here those are built up first, and then the course itself: facility location, assignment, branch and bound, the travelling salesman problem and vehicle routing.</p>
       <div class="promise">
-        <span>Starts from zero</span>
+        <span>Self-contained</span>
         <span>Intuition first, then the formal details</span>
         <span>Draggable maps, trees and routes</span>
         <span>Every answer explains itself</span>
@@ -511,18 +511,18 @@ dialog.cert::backdrop { background: rgba(10, 15, 20, .6); }
       <div class="howto">
         <div><b>Read, then do</b><span>Each chapter explains an idea in plain words, shows a picture, then lets you try it.</span></div>
         <div><b>You grade yourself</b><span>Nobody else sees your answers. The questions are real, so if you can answer them, you understand the topic.</span></div>
-        <div><b>Stuck? That's normal</b><span>A wrong answer gives a hint. A second one, or one click, shows the full solution.</span></div>
+        <div><b>Hints, then solutions</b><span>A wrong answer gives a hint. A second one, or one click, shows the full solution.</span></div>
         <div><b>"Go deeper" is optional</b><span>Extras sit in dashed boxes; everything essential stays in the main path.</span></div>
       </div>
       <p class="stack">Based on SL 225 Logistics and Freight Modeling at IISc, taught by Prof. Tarun Rambha. An independent study resource: <a href="#about">see the acknowledgement</a>.</p>
-      <div class="plan-head"><h3>What's inside</h3><p>Four short prerequisite parts (numbered −4 to −1), then Parts 0 to 6 following the lectures. Go at your own pace; your progress is saved in this browser.</p></div>
+      <div class="plan-head"><h3>What's inside</h3><p>Four short foundation parts (A to D), then Parts 0 to 6 following the lectures. Go at your own pace; your progress is saved in this browser.</p></div>
       <div class="plan" id="plan"></div>
     </header>
 
     <div id="parts">
-<article class="part" data-id="pm4" data-num="−4" data-title="Maths toolkit" data-min="90" data-kind="prereq">
-<p class="part-lede">The lectures use a compact language: sums, subsets, vectors, matrices and systems of equations. This part teaches that language from school algebra, using small delivery examples. It supports Lectures 1 to 6, where every formula is written in it.</p>
-<p class="youneed"><b>You need:</b> school algebra (solving one equation, plotting a line). Nothing else.</p>
+<article class="part" data-id="pm4" data-num="A" data-title="Maths toolkit" data-min="90" data-kind="prereq">
+<p class="part-lede">The lectures use a compact language: sums, subsets, vectors, matrices and systems of equations. This part sets out that language with small delivery examples. It supports Lectures 1 to 6, where every formula is written in it.</p>
+<p class="youneed"><b>You need:</b> solving one equation and plotting a line.</p>
 
 <section class="ch" id="pm4-symbols" data-level="b" data-min="25" data-title="Symbols and sums" data-src="Notation used throughout Lectures 1–6">
 <h2>Symbols and sums: reading the language of the slides</h2>
@@ -711,17 +711,17 @@ This one line stands for three separate constraints: $x_{11}+x_{12}=1$, $x_{21}+
 </div>
 </section>
 
-<div class="quiz review" data-id="pm4-review" data-title="Part −4 review">
-<div class="q" data-from="Ch. −4.1"><div class="q-text"><p>Parcel values are $c=(3,6,4)$ and the decisions are $x=(0,1,1)$. What is $\sum c_jx_j$?</p></div><div class="o">13<div class="e">That adds every value; parcel 1 has $x_1=0$.</div></div><div class="o ok">10<div class="e">$0+6+4=10$.</div></div><div class="o">9<div class="e">Re-add the two active parcels.</div></div></div>
-<div class="q" data-from="Ch. −4.2"><div class="q-text"><p>A model has $A$ with 4 rows and 6 columns. How many constraints and variables does $Ax\le b$ involve?</p></div><div class="o">6 constraints, 4 variables<div class="e">Rows are constraints, columns are variables.</div></div><div class="o ok">4 constraints, 6 variables<div class="e">One constraint per row, one variable per column.</div></div><div class="o">24 constraints, 6 variables<div class="e">The rows are not multiplied by the columns.</div></div></div>
-<div class="q" data-from="Ch. −4.3"><div class="q-text"><p>If $Bx=b$ and $B$ is invertible, what is $x$?</p></div><div class="o">$bB^{-1}$ in any order<div class="e">The order of matrix multiplication matters.</div></div><div class="o ok">$B^{-1}b$<div class="e">Multiply both sides on the left by $B^{-1}$.</div></div><div class="o">$b/B$<div class="e">Matrices have no division symbol; use the inverse.</div></div></div>
-<div class="q" data-from="Ch. −4.3"><div class="q-text"><p>Two lines are parallel but not identical. What does the system of their equations have?</p></div><div class="o">One solution<div class="e">One solution needs the lines to cross.</div></div><div class="o ok">No solution<div class="e">Parallel and distinct lines never meet.</div></div><div class="o">Infinitely many solutions<div class="e">That happens only when the lines coincide.</div></div></div>
+<div class="quiz review" data-id="pm4-review" data-title="Part A review">
+<div class="q" data-from="Ch. A.1"><div class="q-text"><p>Parcel values are $c=(3,6,4)$ and the decisions are $x=(0,1,1)$. What is $\sum c_jx_j$?</p></div><div class="o">13<div class="e">That adds every value; parcel 1 has $x_1=0$.</div></div><div class="o ok">10<div class="e">$0+6+4=10$.</div></div><div class="o">9<div class="e">Re-add the two active parcels.</div></div></div>
+<div class="q" data-from="Ch. A.2"><div class="q-text"><p>A model has $A$ with 4 rows and 6 columns. How many constraints and variables does $Ax\le b$ involve?</p></div><div class="o">6 constraints, 4 variables<div class="e">Rows are constraints, columns are variables.</div></div><div class="o ok">4 constraints, 6 variables<div class="e">One constraint per row, one variable per column.</div></div><div class="o">24 constraints, 6 variables<div class="e">The rows are not multiplied by the columns.</div></div></div>
+<div class="q" data-from="Ch. A.3"><div class="q-text"><p>If $Bx=b$ and $B$ is invertible, what is $x$?</p></div><div class="o">$bB^{-1}$ in any order<div class="e">The order of matrix multiplication matters.</div></div><div class="o ok">$B^{-1}b$<div class="e">Multiply both sides on the left by $B^{-1}$.</div></div><div class="o">$b/B$<div class="e">Matrices have no division symbol; use the inverse.</div></div></div>
+<div class="q" data-from="Ch. A.3"><div class="q-text"><p>Two lines are parallel but not identical. What does the system of their equations have?</p></div><div class="o">One solution<div class="e">One solution needs the lines to cross.</div></div><div class="o ok">No solution<div class="e">Parallel and distinct lines never meet.</div></div><div class="o">Infinitely many solutions<div class="e">That happens only when the lines coincide.</div></div></div>
 </div>
 </article>
 
-<article class="part" data-id="pm3" data-num="−3" data-title="Modelling and LP basics" data-min="95" data-kind="prereq">
-<p class="part-lede">Before any algorithm, someone has to turn a messy request ("get the parcels out, cheaply, with the vans we have") into a precise model. This part shows how, from school algebra, and then draws the simplest linear programmes on paper so you can see what the lectures later prove. It supports Lecture 0 (requirements as constraints), Lecture 1 (the feasible region) and the integer problems of Lectures 3 and 4.</p>
-<p class="youneed"><b>You need:</b> school algebra (plotting a line, solving two equations). The sums of Part −4 help but are not required.</p>
+<article class="part" data-id="pm3" data-num="B" data-title="Modelling and LP basics" data-min="95" data-kind="prereq">
+<p class="part-lede">Before any algorithm, someone has to turn a messy request ("get the parcels out, cheaply, with the vans we have") into a precise model. This part shows how, and then draws the simplest linear programmes on paper so you can see what the lectures later prove. It supports Lecture 0 (requirements as constraints), Lecture 1 (the feasible region) and the integer problems of Lectures 3 and 4.</p>
+<p class="youneed"><b>You need:</b> plotting a line and solving two equations. The sums of Part A help but are not required.</p>
 
 <section class="ch" id="pm3-words" data-level="b" data-min="30" data-title="From words to a model" data-src="Lecture 0 (requirements as constraints); Lecture 3 intro (knapsack and assignment described in words)">
 <h2>From words to a model: variables, objective, constraints</h2>
@@ -761,7 +761,7 @@ Here "s.t." means "subject to". The last line is easy to forget, and it is a rea
 
 <div class="prose">
 <h3>Yes/no decisions</h3>
-<p>Some decisions are not quantities but choices: take this parcel or leave it, open this depot or not. For these we use a <b>binary variable</b>: $x_j=1$ means yes and $x_j=0$ means no. A sum such as $\sum_j w_jx_j$ then adds up only the weights of the items you took (as in Part −4). Binary variables turn many "either/or" rules into short inequalities. For example, "at most one of consignments $A$ and $C$" is $x_A+x_C\le 1$, because $1+1=2$ is excluded while $1+0$, $0+1$ and $0+0$ are allowed.</p>
+<p>Some decisions are not quantities but choices: take this parcel or leave it, open this depot or not. For these we use a <b>binary variable</b>: $x_j=1$ means yes and $x_j=0$ means no. A sum such as $\sum_j w_jx_j$ then adds up only the weights of the items you took (as in Part A). Binary variables turn many "either/or" rules into short inequalities. For example, "at most one of consignments $A$ and $C$" is $x_A+x_C\le 1$, because $1+1=2$ is excluded while $1+0$, $0+1$ and $0+0$ are allowed.</p>
 </div>
 
 <div class="example"><p class="problem">A truck can carry $100$ boxes. Consignment $A$ has $40$ boxes and pays <span class="nomath">₹900</span>, $B$ has $35$ boxes and pays <span class="nomath">₹700</span>, $C$ has $50$ boxes and pays <span class="nomath">₹1000</span>, $D$ has $30$ boxes and pays <span class="nomath">₹500</span>. Each is taken whole or not at all. $A$ and $C$ go to the same dock, and the dock accepts only one of them. Write the model and find the best choice.</p>
@@ -775,7 +775,7 @@ Here "s.t." means "subject to". The last line is easy to forget, and it is a rea
 
 <div class="callout"><b>Careful:</b> make the variable match the unit in the data. If the costs are "per trip" then $x$ must count trips, not parcels and not vans. If $x_1$ counted parcels carried, "$500x_1$" would charge <span class="nomath">₹500</span> per parcel. Also check that every term of one constraint has the same unit: parcels with parcels, hours with hours.</div>
 
-<details class="deeper"><summary>Go deeper: hidden constraints</summary><p>Real problems hide rules in the words. "Each trip uses one driver" produced the driver constraint. "Four large vans exist" capped $x_2$. Whole trips only ($x_1,x_2$ integers) is another hidden rule, which Chapter −3.3 shows can change the answer. A good habit is to read the paragraph once more after writing the model and ask of every sentence: "which line of my model says this?"</p></details>
+<details class="deeper"><summary>Go deeper: hidden constraints</summary><p>Real problems hide rules in the words. "Each trip uses one driver" produced the driver constraint. "Four large vans exist" capped $x_2$. Whole trips only ($x_1,x_2$ integers) is another hidden rule, which Chapter B.3 shows can change the answer. A good habit is to read the paragraph once more after writing the model and ask of every sentence: "which line of my model says this?"</p></details>
 
 <div class="practice">
 <div class="prob" data-id="pm3-words-p1" data-ans="5500" data-labels="cost in ₹"><div class="stem"><p>In the depot model, what is the cost of running $x_1=3$ small trips and $x_2=4$ large trips?</p></div><div class="hint"><p>Multiply each cost per trip by the number of trips and add.</p></div><div class="sol"><p>$500\cdot 3+1000\cdot 4=1500+4000=5500$ rupees.</p></div></div>
@@ -885,7 +885,7 @@ $$\max\ 3x_1+4x_2\quad\text{s.t.}\quad x_1+2x_2\le 16,\ \ 3x_1+x_2\le 18,\ \ x_1
 <div class="prose">
 <h3>Continuous or integer?</h3>
 <p>A <b>continuous</b> variable can take any real value in its range (litres of fuel, hours worked). An <b>integer</b> variable must be a whole number (vans, trips, parcels), and a binary variable is an integer variable limited to $0$ and $1$. A model with integer variables is an <b>integer programme</b> (IP); if every variable is continuous it is an LP. The LP obtained by dropping the integer requirement from an IP is its <b>LP relaxation</b>.</p>
-<p>Because the relaxation allows more points, its best value is never worse than the IP's. For a maximisation problem, $\text{LP value}\ge\text{IP value}$; for minimisation, $\text{LP value}\le\text{IP value}$. In the depot model of Chapter −3.1 the LP relaxation says run $2\tfrac23$ small trips and $4$ large trips, at cost $5333.33$. Whole trips need $3$ small trips and cost <span class="nomath">₹5500</span>.</p>
+<p>Because the relaxation allows more points, its best value is never worse than the IP's. For a maximisation problem, $\text{LP value}\ge\text{IP value}$; for minimisation, $\text{LP value}\le\text{IP value}$. In the depot model of Chapter B.1 the LP relaxation says run $2\tfrac23$ small trips and $4$ large trips, at cost $5333.33$. Whole trips need $3$ small trips and cost <span class="nomath">₹5500</span>.</p>
 <h3>Why not just round?</h3>
 <p>It is tempting to solve the LP and round the answer. Two things go wrong, and both appear in Lecture 4: the rounded point can break a constraint (infeasible), or it can be feasible but far from the best integer plan. Look at an example. A depot chooses how many refrigerated vans ($x_1$) and open vans ($x_2$) to dispatch. Dock hours and driver hours are each limited to $25$, and the profit is $7$ and $5$ units per van:
 $$\max\ 7x_1+5x_2\quad\text{s.t.}\quad 4x_1+6x_2\le25,\ \ 6x_1+4x_2\le25,\ \ x_1,x_2\ge0\ \text{integer}.$$</p>
@@ -934,26 +934,26 @@ $$\max\ 7x_1+5x_2\quad\text{s.t.}\quad 4x_1+6x_2\le25,\ \ 6x_1+4x_2\le25,\ \ x_1
 </div>
 </section>
 
-<div class="quiz review" data-id="pm3-review" data-title="Part −3 review (with Part −4)">
-<div class="q" data-from="Ch. −3.1"><div class="q-text"><p>A team defines $x$ as "parcels delivered by vans", but the cost data is <span class="nomath">₹500</span> per trip. What is wrong with writing the cost as $500x$?</p></div>
+<div class="quiz review" data-id="pm3-review" data-title="Part B review (with Part A)">
+<div class="q" data-from="Ch. B.1"><div class="q-text"><p>A team defines $x$ as "parcels delivered by vans", but the cost data is <span class="nomath">₹500</span> per trip. What is wrong with writing the cost as $500x$?</p></div>
 <div class="o ok">The variable counts parcels but the cost is per trip, so the units do not match.<div class="e">The variable must count trips for $500x$ to be a cost.</div></div>
 <div class="o">Nothing, since cost is always proportional to parcels.<div class="e">Check what the 500 multiplies.</div></div>
 <div class="o">The cost should be subtracted.<div class="e">The sign is not the issue; the unit is.</div></div></div>
-<div class="q" data-from="Ch. −3.2"><div class="q-text"><p>Is $(4,4)$ feasible for $x_1+x_2\le8$ and $2x_1+x_2\le12$ with $x\ge0$?</p></div><div class="o">No, since $x_1+x_2=8$ is not strictly below 8.<div class="e">The boundary value is allowed in an "at most" constraint.</div></div><div class="o ok">Yes, since $4+4=8\le8$ and $8+4=12\le12$.<div class="e">Both constraints hold with equality, so it lies on both lines: a corner.</div></div><div class="o">No, since $2x_1+x_2=12$ exceeds 8.<div class="e">That is a different constraint with its own limit of 12.</div></div></div>
-<div class="q" data-from="Ch. −3.3"><div class="q-text"><p>For a maximisation problem, how do the LP relaxation value and the integer optimum compare?</p></div>
+<div class="q" data-from="Ch. B.2"><div class="q-text"><p>Is $(4,4)$ feasible for $x_1+x_2\le8$ and $2x_1+x_2\le12$ with $x\ge0$?</p></div><div class="o">No, since $x_1+x_2=8$ is not strictly below 8.<div class="e">The boundary value is allowed in an "at most" constraint.</div></div><div class="o ok">Yes, since $4+4=8\le8$ and $8+4=12\le12$.<div class="e">Both constraints hold with equality, so it lies on both lines: a corner.</div></div><div class="o">No, since $2x_1+x_2=12$ exceeds 8.<div class="e">That is a different constraint with its own limit of 12.</div></div></div>
+<div class="q" data-from="Ch. B.3"><div class="q-text"><p>For a maximisation problem, how do the LP relaxation value and the integer optimum compare?</p></div>
 <div class="o">The integer optimum is at least the LP value.<div class="e">The relaxation has more points to choose from.</div></div>
 <div class="o">They are always equal after rounding.<div class="e">Rounding can break feasibility.</div></div>
 <div class="o ok">The LP value is at least the integer optimum.<div class="e">Dropping a restriction cannot lower the best achievable profit.</div></div></div>
-<div class="q" data-from="Ch. −4.2"><div class="q-text"><p>A model has 3 constraints (besides $x\ge0$) in 2 variables, written $Ax\le b$. What is the shape of $A$?</p></div>
+<div class="q" data-from="Ch. A.2"><div class="q-text"><p>A model has 3 constraints (besides $x\ge0$) in 2 variables, written $Ax\le b$. What is the shape of $A$?</p></div>
 <div class="o ok">$3\times2$<div class="e">One row for each of the 3 constraints, one column for each of the 2 variables.</div></div>
 <div class="o">$2\times3$<div class="e">Rows are constraints, columns are variables.</div></div>
 <div class="o">$3\times3$<div class="e">The number of columns equals the number of variables.</div></div></div>
 </div>
 </article>
 
-<article class="part" data-id="pm2" data-num="−2" data-title="Graphs and algorithms" data-min="110" data-kind="prereq">
-<p class="part-lede">Lectures 3, 5 and 6 speak about graphs, cuts, matchings, tours and "NP-hard" problems as if everyone already knew them. This part teaches that background from scratch: what a graph is and how to read the cut notation $\delta(S)$ and $E(S)$, how two classic algorithms (shortest paths and cheapest spanning trees) work and why they are fast, and why a problem like the travelling salesman problem is a different kind of beast.</p>
-<p class="youneed"><b>You need:</b> Part −4 (sums and sets, in particular $\sum$, $\in$ and $\subseteq$). No programming and no earlier optimisation theory.</p>
+<article class="part" data-id="pm2" data-num="C" data-title="Graphs and algorithms" data-min="110" data-kind="prereq">
+<p class="part-lede">Lectures 3, 5 and 6 speak about graphs, cuts, matchings, tours and "NP-hard" problems as if everyone already knew them. This part covers that background: what a graph is and how to read the cut notation $\delta(S)$ and $E(S)$, how two classic algorithms (shortest paths and cheapest spanning trees) work and why they are fast, and why a problem like the travelling salesman problem is a different kind of beast.</p>
+<p class="youneed"><b>You need:</b> Part A (sums and sets, in particular $\sum$, $\in$ and $\subseteq$). No programming and no earlier optimisation theory.</p>
 
 <section class="ch" id="pm2-graphs" data-level="b" data-min="35" data-title="Graphs and networks" data-src="Lecture 3 (matching and node cover, 28 Aug notes); Lecture 5 (E–δ notation, Hamilton and Euler); Lecture 0 (flow, routing)">
 <h2>Graphs and networks: the picture behind every routing model</h2>
@@ -1065,7 +1065,7 @@ $$\max\ 7x_1+5x_2\quad\text{s.t.}\quad 4x_1+6x_2\le25,\ \ 6x_1+4x_2\le25,\ \ x_1
 
 <section class="ch" id="pm2-paths" data-level="b" data-min="35" data-title="Shortest paths and spanning trees" data-src="Lecture 0 (flow problems solvable in polynomial time); NetworkX algorithms used in the labs">
 <h2>Shortest paths and cheapest spanning trees: two problems with fast answers</h2>
-<div class="opener"><p>Two questions on a weighted graph have simple greedy algorithms that always give the true optimum: the shortest route between two places (Dijkstra) and the cheapest way to link every place (a minimum spanning tree).</p><p>Navigation software, cable laying and the distance tables that feed routing models all use them, and they show what an "easy" optimisation problem looks like before Chapter −2.3 turns to the hard ones.</p><p>It is like asking a local for directions: keep the best-known time to each junction, always finalise the nearest one, and update its neighbours.</p></div>
+<div class="opener"><p>Two questions on a weighted graph have simple greedy algorithms that always give the true optimum: the shortest route between two places (Dijkstra) and the cheapest way to link every place (a minimum spanning tree).</p><p>Navigation software, cable laying and the distance tables that feed routing models all use them, and they show what an "easy" optimisation problem looks like before Chapter C.3 turns to the hard ones.</p><p>It is like asking a local for directions: keep the best-known time to each junction, always finalise the nearest one, and update its neighbours.</p></div>
 
 <div class="prose">
 <h3>Shortest paths</h3>
@@ -1268,17 +1268,17 @@ $$\max\ 7x_1+5x_2\quad\text{s.t.}\quad 4x_1+6x_2\le25,\ \ 6x_1+4x_2\le25,\ \ x_1
 </div>
 </section>
 
-<div class="quiz review" data-id="pm2-review" data-title="Part −2 review (with Part −4)">
-<div class="q" data-from="Ch. −4.1 and −2.1"><div class="q-text"><p>A tour on the road map uses edges $01,13,35,54,42,20$, so $x_e=1$ for those edges and $x_e=0$ for all others. For $S=\{0,1,2\}$, what is $x(\delta(S))=\sum_{e\in\delta(S)}x_e$?</p></div><div class="o">3<div class="e">Only edges with exactly one end in $S$ count, and $01,02,12$ are inside $S$.</div></div><div class="o ok">2<div class="e">$\delta(S)=\{13,24\}$, and both are in the tour: $1+1=2$, as every tour must leave a group and return.</div></div><div class="o">6<div class="e">That counts all tour edges; the sum runs only over the cut.</div></div></div>
-<div class="q" data-from="Ch. −2.2"><div class="q-text"><p>You need cable linking all six places at the least total length, and also the quickest route from the depot to each place. Which statement is right?</p></div><div class="o">Dijkstra solves both jobs.<div class="e">Dijkstra's tree is shortest per journey and totals 20, not the cheapest total of 16.</div></div><div class="o ok">Kruskal answers the cable question and Dijkstra the routes question.<div class="e">The questions differ, and the trees have different total lengths (16 and 20).</div></div><div class="o">Both jobs are NP-hard.<div class="e">Both problems have fast polynomial algorithms.</div></div></div>
-<div class="q" data-from="Ch. −2.3"><div class="q-text"><p>How many different tours (symmetric distances) visit a depot and 9 customers, ten cities in all?</p></div><div class="o">$10!/2$<div class="e">One city is fixed as the start, so there are $9!$ orders.</div></div><div class="o ok">$9!/2=181{,}440$<div class="e">$(n-1)!/2$ with $n=10$.</div></div><div class="o">$9!=362{,}880$<div class="e">Each tour is counted twice (once per direction), so halve.</div></div></div>
-<div class="q" data-from="Ch. −2.3"><div class="q-text"><p>Which is true of NP-hardness?</p></div><div class="o">An NP-hard problem has a polynomial algorithm for small instances only.<div class="e">The definition concerns how hard the problem is relative to others, not instance size.</div></div><div class="o ok">If someone found a polynomial-time algorithm for one NP-complete problem, all problems in NP could be solved in polynomial time.<div class="e">That is the meaning of NP-complete: they are the hardest in NP.</div></div><div class="o">Any problem solved by a heuristic is NP-hard.<div class="e">Heuristics are used on easy problems too.</div></div></div>
+<div class="quiz review" data-id="pm2-review" data-title="Part C review (with Part A)">
+<div class="q" data-from="Ch. A.1 and C.1"><div class="q-text"><p>A tour on the road map uses edges $01,13,35,54,42,20$, so $x_e=1$ for those edges and $x_e=0$ for all others. For $S=\{0,1,2\}$, what is $x(\delta(S))=\sum_{e\in\delta(S)}x_e$?</p></div><div class="o">3<div class="e">Only edges with exactly one end in $S$ count, and $01,02,12$ are inside $S$.</div></div><div class="o ok">2<div class="e">$\delta(S)=\{13,24\}$, and both are in the tour: $1+1=2$, as every tour must leave a group and return.</div></div><div class="o">6<div class="e">That counts all tour edges; the sum runs only over the cut.</div></div></div>
+<div class="q" data-from="Ch. C.2"><div class="q-text"><p>You need cable linking all six places at the least total length, and also the quickest route from the depot to each place. Which statement is right?</p></div><div class="o">Dijkstra solves both jobs.<div class="e">Dijkstra's tree is shortest per journey and totals 20, not the cheapest total of 16.</div></div><div class="o ok">Kruskal answers the cable question and Dijkstra the routes question.<div class="e">The questions differ, and the trees have different total lengths (16 and 20).</div></div><div class="o">Both jobs are NP-hard.<div class="e">Both problems have fast polynomial algorithms.</div></div></div>
+<div class="q" data-from="Ch. C.3"><div class="q-text"><p>How many different tours (symmetric distances) visit a depot and 9 customers, ten cities in all?</p></div><div class="o">$10!/2$<div class="e">One city is fixed as the start, so there are $9!$ orders.</div></div><div class="o ok">$9!/2=181{,}440$<div class="e">$(n-1)!/2$ with $n=10$.</div></div><div class="o">$9!=362{,}880$<div class="e">Each tour is counted twice (once per direction), so halve.</div></div></div>
+<div class="q" data-from="Ch. C.3"><div class="q-text"><p>Which is true of NP-hardness?</p></div><div class="o">An NP-hard problem has a polynomial algorithm for small instances only.<div class="e">The definition concerns how hard the problem is relative to others, not instance size.</div></div><div class="o ok">If someone found a polynomial-time algorithm for one NP-complete problem, all problems in NP could be solved in polynomial time.<div class="e">That is the meaning of NP-complete: they are the hardest in NP.</div></div><div class="o">Any problem solved by a heuristic is NP-hard.<div class="e">Heuristics are used on easy problems too.</div></div></div>
 </div>
 </article>
 
-<article class="part" data-id="pm1" data-num="−1" data-title="Sets, logic and code" data-min="110" data-kind="prereq">
+<article class="part" data-id="pm1" data-num="D" data-title="Sets, logic and code" data-min="110" data-kind="prereq">
 <p class="part-lede">Lecture 3 turns routing and location questions into integer programmes. That needs three small skills: describing choices with sets and 0/1 tables, expressing "if", "or" and "at most" with binary variables, and reading the Python and Gurobi files used in the labs. This part teaches those three skills with tiny examples you can check by hand. It prepares Lecture 3 and the Gurobi labs.</p>
-<p class="youneed"><b>You need:</b> Part −4 (sums, subsets, binary variables, matrices and $Ax$). The idea of an LP relaxation is explained here from scratch; no Python experience is assumed.</p>
+<p class="youneed"><b>You need:</b> Part A (sums, subsets, binary variables, matrices and $Ax$). The idea of an LP relaxation is explained here, and the code needs no prior Python.</p>
 
 <section class="ch" id="pm1-sets" data-level="b" data-min="30" data-title="Sets and incidence matrices" data-src="Lecture 3 (Example 3: set cover, packing, partitioning; matchings and node covers); Notes/Set_Cover_Packing_Partitioning">
 <h2>Sets, subsets and incidence matrices: covering a list of customers</h2>
@@ -1647,10 +1647,10 @@ print(list(G.neighbors("C")), G.number_of_nodes(), G.number_of_edges())</code></
 <li><p>Line 1: three binary variables, $y_j\in\{0,1\}$ for $j=1,2,3$.</p><p class="why-step">The number inside <code>addVars</code> is the count, and <code>GRB.BINARY</code> gives the $\{0,1\}$ restriction.</p></li>
 <li><p>Line 2: $\min\sum_{j=1}^{3}f_jy_j$.</p><p class="why-step"><code>quicksum</code> over <code>j</code> is a sum, and <code>GRB.MINIMIZE</code> is the direction.</p></li>
 <li><p>Line 3: $\sum_{j=1}^{3}a_{ij}y_j\ge1$ for $i=1,\dots,4$, four constraints.</p><p class="why-step"><code>addConstrs</code> with a generator <code>for i in range(4)</code> is the "$\forall i$"; the comparison inside is the rule that is repeated.</p></li>
-<li><p>Together this is the minimum-weight set cover of Chapter −1.1 with 4 elements and 3 subsets, with $f_j$ in the role of the weights $w_j$ and $A$ the incidence matrix.</p><p class="why-step">Recognising the pattern ($\ge1$ rows, a cost vector, binary variables) is what lets you read a long file quickly.</p></li>
+<li><p>Together this is the minimum-weight set cover of Chapter D.1 with 4 elements and 3 subsets, with $f_j$ in the role of the weights $w_j$ and $A$ the incidence matrix.</p><p class="why-step">Recognising the pattern ($\ge1$ rows, a cost vector, binary variables) is what lets you read a long file quickly.</p></li>
 </ol></div>
 
-<details class="deeper"><summary>Go deeper: what the solver does with <code>optimize()</code></summary><p>For a model with binary variables Gurobi runs <b>branch and bound</b> (Lecture 4): it solves the LP relaxation, picks a fractional variable, splits into two sub-problems, and uses the LP bounds to discard sub-problems that cannot beat the best integer solution found. The tighter the relaxation (Chapter −1.2), the fewer sub-problems. Parameters such as <code>TimeLimit</code> or <code>MIPGap</code> stop the search early and <code>m.NodeCount</code> reports how many sub-problems were explored.</p></details>
+<details class="deeper"><summary>Go deeper: what the solver does with <code>optimize()</code></summary><p>For a model with binary variables Gurobi runs <b>branch and bound</b> (Lecture 4): it solves the LP relaxation, picks a fractional variable, splits into two sub-problems, and uses the LP bounds to discard sub-problems that cannot beat the best integer solution found. The tighter the relaxation (Chapter D.2), the fewer sub-problems. Parameters such as <code>TimeLimit</code> or <code>MIPGap</code> stop the search early and <code>m.NodeCount</code> reports how many sub-problems were explored.</p></details>
 
 <div class="practice">
 <div class="prob" data-id="pm1-code-p1" data-ans="12" data-labels="variables"><div class="stem"><p>How many variables does <code>m.addVars(3, 4, vtype=GRB.BINARY)</code> create?</p></div><div class="hint"><p>With two counts there is one variable for each pair $(i,j)$.</p></div><div class="sol"><p>$3\times4=12$ variables, <code>x[0,0]</code> up to <code>x[2,3]</code>.</p></div></div>
@@ -1670,17 +1670,17 @@ print(list(G.neighbors("C")), G.number_of_nodes(), G.number_of_edges())</code></
 </div>
 </section>
 
-<div class="quiz review" data-id="pm1-review" data-title="Part −1 review (with Part −4)">
-<div class="q" data-from="Ch. −1.1"><div class="q-text"><p>Four elements and routes $R_1=\{1,2\}$, $R_2=\{2,3\}$, $R_3=\{3,4\}$. Which choice is a partition of $\{1,2,3,4\}$?</p></div><div class="o">$\{R_1,R_2,R_3\}$<div class="e">Element 2 appears in two chosen sets.</div></div><div class="o ok">$\{R_1,R_3\}$<div class="e">$\{1,2\}\cup\{3,4\}$ covers everything exactly once.</div></div><div class="o">$\{R_2\}$<div class="e">Elements 1 and 4 are missed, so it is not even a cover.</div></div></div>
-<div class="q" data-from="Ch. −1.2"><div class="q-text"><p>Which pair of constraints models "if $x$ or $y$ is chosen, then $z$ must be chosen"?</p></div><div class="o">$z\le x$ and $z\le y$<div class="e">That says $z$ can be chosen only if both are, which is a different rule.</div></div><div class="o">$x+y\le z$<div class="e">With $x=y=1$, $z$ would need to be 2.</div></div><div class="o ok">$x\le z$ and $y\le z$<div class="e">If either is 1, then $z$ is forced to 1.</div></div></div>
-<div class="q" data-from="Ch. −1.3"><div class="q-text"><p>Which line of a Gurobi file builds the objective $\min\sum_{j}c_jx_j$ over 5 items?</p></div><div class="o">m.addConstr(gp.quicksum(c[j] * x[j] for j in range(5)), GRB.MINIMIZE)<div class="e">Constraints are not given a direction like that.</div></div><div class="o">m.optimize(gp.quicksum(c[j] * x[j] for j in range(5)))<div class="e">optimize takes no objective; it just solves what is stored.</div></div><div class="o ok">m.setObjective(gp.quicksum(c[j] * x[j] for j in range(5)), GRB.MINIMIZE)<div class="e">setObjective stores the expression and the direction.</div></div></div>
-<div class="q" data-from="Ch. −4.1 and −1.1"><div class="q-text"><p>With $A=\begin{pmatrix}1&0&1\\1&1&0\end{pmatrix}$ and $x=(1,1,0)$, $Ax=(1,2)$. What does this say about the chosen subsets?</p></div><div class="o">It is a packing, because the first entry is 1.<div class="e">A packing needs every entry at most 1.</div></div><div class="o ok">It is a cover but not a packing: element 2 is in two chosen subsets.<div class="e">Both entries are at least 1, and the entry 2 means a double cover.</div></div><div class="o">It is a partition.<div class="e">A partition needs every entry equal to 1.</div></div></div>
+<div class="quiz review" data-id="pm1-review" data-title="Part D review (with Part A)">
+<div class="q" data-from="Ch. D.1"><div class="q-text"><p>Four elements and routes $R_1=\{1,2\}$, $R_2=\{2,3\}$, $R_3=\{3,4\}$. Which choice is a partition of $\{1,2,3,4\}$?</p></div><div class="o">$\{R_1,R_2,R_3\}$<div class="e">Element 2 appears in two chosen sets.</div></div><div class="o ok">$\{R_1,R_3\}$<div class="e">$\{1,2\}\cup\{3,4\}$ covers everything exactly once.</div></div><div class="o">$\{R_2\}$<div class="e">Elements 1 and 4 are missed, so it is not even a cover.</div></div></div>
+<div class="q" data-from="Ch. D.2"><div class="q-text"><p>Which pair of constraints models "if $x$ or $y$ is chosen, then $z$ must be chosen"?</p></div><div class="o">$z\le x$ and $z\le y$<div class="e">That says $z$ can be chosen only if both are, which is a different rule.</div></div><div class="o">$x+y\le z$<div class="e">With $x=y=1$, $z$ would need to be 2.</div></div><div class="o ok">$x\le z$ and $y\le z$<div class="e">If either is 1, then $z$ is forced to 1.</div></div></div>
+<div class="q" data-from="Ch. D.3"><div class="q-text"><p>Which line of a Gurobi file builds the objective $\min\sum_{j}c_jx_j$ over 5 items?</p></div><div class="o">m.addConstr(gp.quicksum(c[j] * x[j] for j in range(5)), GRB.MINIMIZE)<div class="e">Constraints are not given a direction like that.</div></div><div class="o">m.optimize(gp.quicksum(c[j] * x[j] for j in range(5)))<div class="e">optimize takes no objective; it just solves what is stored.</div></div><div class="o ok">m.setObjective(gp.quicksum(c[j] * x[j] for j in range(5)), GRB.MINIMIZE)<div class="e">setObjective stores the expression and the direction.</div></div></div>
+<div class="q" data-from="Ch. A.1 and D.1"><div class="q-text"><p>With $A=\begin{pmatrix}1&0&1\\1&1&0\end{pmatrix}$ and $x=(1,1,0)$, $Ax=(1,2)$. What does this say about the chosen subsets?</p></div><div class="o">It is a packing, because the first entry is 1.<div class="e">A packing needs every entry at most 1.</div></div><div class="o ok">It is a cover but not a packing: element 2 is in two chosen subsets.<div class="e">Both entries are at least 1, and the entry 2 means a double cover.</div></div><div class="o">It is a partition.<div class="e">A partition needs every entry equal to 1.</div></div></div>
 </div>
 </article>
 
 <article class="part" data-id="p0" data-num="0" data-title="Welcome: what this course is about" data-min="60">
 <p class="part-lede">Lecture 0 introduces the course: what logistics and freight modelling is, the four families of problems it studies (routing, assignment, location and flow), why we model them as optimisation problems instead of simply calling a solver, and how linear programming, integer programming and branch and bound fit together. It ends with a roadmap of the other six parts, so you know where each idea is used later. Along the way we follow one small, fictional firm, Kaveri Courier of Bengaluru, whose owner makes the decisions the later parts learn to solve.</p>
-<p class="youneed"><b>You need:</b> nothing beyond curiosity. Part −4 (sums and $Ax\ge b$) helps you read the few formulas here, and Part −3 (modelling) is the longer version of the modelling step; both are optional for this part.</p>
+<p class="youneed"><b>You need:</b> nothing beyond curiosity. Part A (sums and $Ax\ge b$) helps you read the few formulas here, and Part B (modelling) is the longer version of the modelling step; both are optional for this part.</p>
 
 <section class="ch" id="p0-scope" data-level="b" data-min="30" data-title="What logistics modelling covers" data-src="Lecture 0 (Overview, Scope)">
 <h2>What logistics and freight modelling covers: four families of problems</h2>
@@ -1863,7 +1863,7 @@ Ignoring whole numbers, the cheapest LP plan hires $x_1=4/3$ and $x_2=8/3$ truck
 
 <div class="table-wrap"><table>
 <tr><th>Part</th><th>Lecture</th><th>What you learn</th></tr>
-<tr><td>−4 to −1</td><td>prerequisites</td><td>maths toolkit, modelling and LP basics, graphs and algorithms, sets, logic and code</td></tr>
+<tr><td>A to D</td><td>foundations</td><td>maths toolkit, modelling and LP basics, graphs and algorithms, sets, logic and code</td></tr>
 <tr><td>1</td><td>Lecture 1</td><td>geometry of LPs and the simplex method</td></tr>
 <tr><td>2</td><td>Lecture 2</td><td>simplex in detail and LP duality</td></tr>
 <tr><td>3</td><td>Lecture 3</td><td>integer programming and strong formulations</td></tr>
@@ -1893,10 +1893,10 @@ Ignoring whole numbers, the cheapest LP plan hires $x_1=4/3$ and $x_2=8/3$ truck
 </div>
 </section>
 
-<div class="quiz review" data-id="p0-review" data-title="Part 0 review (with Part −4)">
+<div class="quiz review" data-id="p0-review" data-title="Part 0 review (with Part A)">
 <div class="q" data-from="Ch. 0.1"><div class="q-text"><p>Which family is the TSP in, and what is its unknown?</p></div><div class="o">Location; where to put the depot.<div class="e">In the TSP the depot is already given.</div></div><div class="o ok">Routing; the order in which the customers are visited.<div class="e">The unknown is the sequence of the tour.</div></div><div class="o">Flow; the number of tonnes on each road.<div class="e">The TSP does not decide quantities on links.</div></div></div>
 <div class="q" data-from="Ch. 0.1"><div class="q-text"><p>With $f=(5,9)$ and customers' serving costs $c_{i1}=(1,4)$, $c_{i2}=(3,1)$ for two customers, which plan is cheapest?</p></div><div class="o">Only site 2, cost 13.<div class="e">Site 2 costs $9+3+1=13$ in total; compare every plan, including the one with the cheaper opening cost.</div></div><div class="o ok">Only site 1, cost 10.<div class="e">$5+1+4=10$, against $9+3+1=13$ for site 2 alone and $5+9+1+1=16$ for both.</div></div><div class="o">Both sites, cost 16.<div class="e">Both pays $5+9=14$ in fixed costs, which outweighs the small saving on serving costs.</div></div></div>
-<div class="q" data-from="Ch. −4.1"><div class="q-text"><p>With $a=(2,5,4)$, $x=(1,0,1)$, what is $\sum_j a_jx_j$?</p></div><div class="o">11<div class="e">That adds all three entries of $a$. Parcels with $x_j=0$ are left out.</div></div><div class="o ok">6<div class="e">$2+0+4=6$.</div></div><div class="o">8<div class="e">Re-check which entries of $x$ equal 1.</div></div></div>
+<div class="q" data-from="Ch. A.1"><div class="q-text"><p>With $a=(2,5,4)$, $x=(1,0,1)$, what is $\sum_j a_jx_j$?</p></div><div class="o">11<div class="e">That adds all three entries of $a$. Parcels with $x_j=0$ are left out.</div></div><div class="o ok">6<div class="e">$2+0+4=6$.</div></div><div class="o">8<div class="e">Re-check which entries of $x$ equal 1.</div></div></div>
 <div class="q" data-from="Ch. 0.2"><div class="q-text"><p>Which statement about an LP relaxation of a minimisation IP is correct?</p></div><div class="o">Its optimal value is an upper bound on the IP optimum.<div class="e">The relaxation has more choices, so its minimum is not larger.</div></div><div class="o ok">Its optimal value is a lower bound on the IP optimum.<div class="e">It minimises over a set containing every feasible plan of the IP.</div></div><div class="o">Its optimum is always the optimum of the IP after rounding.<div class="e">Rounding can give an infeasible or poor plan.</div></div></div>
 <div class="q" data-from="Ch. 0.2"><div class="q-text"><p>The incumbent cost is 40. A node has LP value 37.5 (fractional). What should branch and bound do?</p></div><div class="o">Prune the node.<div class="e">Pruning needs the LP value to be at least 40.</div></div><div class="o ok">Branch on a fractional variable of the node.<div class="e">A plan costing between 37.5 and 40 may be inside, so the node cannot be discarded.</div></div><div class="o">Accept the LP point as a new incumbent.<div class="e">It is fractional, so it is not a valid plan.</div></div></div>
 </div>
@@ -1904,7 +1904,7 @@ Ignoring whole numbers, the cheapest LP plan hires $x_1=4/3$ and $x_2=8/3$ truck
 
 <article class="part" data-id="p1" data-num="1" data-title="Linear programming I: geometry and simplex" data-min="130">
 <p class="part-lede">Lecture 1 reviews linear programming: how an LP is written, what its feasible region looks like, what a corner point is in matrix language, and how the simplex method walks from corner to corner. Every later lecture (integer programs, branch and bound, even TSP) calls an LP solver as a building block, so this part is the engine room. For the fictional Kaveri Courier of Part 0, an LP is the kind of plan the owner can compute each day, and the running examples below (including the staff canteen) are small stand-ins for it.</p>
-<p class="youneed"><b>You need:</b> Part −4 (sums, $Ax\ge b$, solving $Bx=b$, rank and independence) and Part −3 (turning a word problem into variables, objective and constraints, and drawing a two-variable LP).</p>
+<p class="youneed"><b>You need:</b> Part A (sums, $Ax\ge b$, solving $Bx=b$, rank and independence) and Part B (turning a word problem into variables, objective and constraints, and drawing a two-variable LP).</p>
 
 <section class="ch" id="p1-forms" data-level="b" data-min="30" data-title="Writing an LP: canonical and standard form" data-src="Lecture 1 (canonical and standard form, diet example)">
 <h2>Writing an LP in canonical and standard form</h2>
@@ -2040,7 +2040,7 @@ $$\min\ 3x_1+2x_2\quad\text{s.t.}\quad 2x_1+x_2\ge 8,\quad x_1+x_2\ge 6,\quad x_
 <h3>Row view and column view</h3>
 <p>Take the running example and write it in standard form with slack variables $s_1,s_2,s_3$ for the three constraints:
 $$x_1+x_2+s_1=8,\qquad x_1+3x_2+s_2=18,\qquad 2x_1+x_2+s_3=12.$$ The matrix has $m=3$ rows and $n=5$ columns, $A=\begin{pmatrix}1&1&1&0&0\\1&3&0&1&0\\2&1&0&0&1\end{pmatrix}$.</p>
-<p>The <b>row view</b> reads each equation as a halfspace boundary in the $(x_1,x_2)$ picture: that is the polygon of the last chapter. The <b>column view</b> reads $Ax=b$ as "mix the five columns of $A$ in amounts $x_j$ to produce the target $b$" (as in Part −4). Simplex works in the column view.</p>
+<p>The <b>row view</b> reads each equation as a halfspace boundary in the $(x_1,x_2)$ picture: that is the polygon of the last chapter. The <b>column view</b> reads $Ax=b$ as "mix the five columns of $A$ in amounts $x_j$ to produce the target $b$" (as in Part A). Simplex works in the column view.</p>
 </div>
 
 <div class="box def" data-k="Definition" data-name="Basis, basic solution, basic feasible solution">
@@ -2060,7 +2060,7 @@ $$x_1+x_2+s_1=8,\qquad x_1+3x_2+s_2=18,\qquad 2x_1+x_2+s_3=12.$$ The matrix has 
 <div class="example"><p class="problem">Compute the basic solution for the basis $\{x_1,x_2,s_2\}$, and decide whether it is feasible.</p>
 <ol class="steps">
 <li><p>Non-basic variables $s_1=s_3=0$. The equations become $x_1+x_2=8$, $\ x_1+3x_2+s_2=18$, $\ 2x_1+x_2=12$.</p><p class="why-step">Setting the non-basic variables to zero deletes their columns.</p></li>
-<li><p>The first and third equations give $x_1=4$ (subtract: $x_1=12-8$), so $x_2=4$.</p><p class="why-step">Two equations in two unknowns, solved as in Part −4.</p></li>
+<li><p>The first and third equations give $x_1=4$ (subtract: $x_1=12-8$), so $x_2=4$.</p><p class="why-step">Two equations in two unknowns, solved as in Part A.</p></li>
 <li><p>The second equation gives $s_2=18-4-12=2$.</p><p class="why-step">The remaining variable is determined by the remaining equation.</p></li>
 <li><p>All values $(4,4,0,2,0)$ are $\ge0$: it is a BFS, the corner $(4,4)$.</p><p class="why-step">Feasible means non-negative; basic means built from a basis.</p></li>
 </ol></div>
@@ -2155,7 +2155,7 @@ $$z=c_B^\top B^{-1}b+\big(c_N^\top-c_B^\top B^{-1}N\big)x_N.$$ The first term is
 </div>
 </section>
 
-<div class="quiz review" data-id="p1-review" data-title="Part 1 review (with Part −4)">
+<div class="quiz review" data-id="p1-review" data-title="Part 1 review (with Part A)">
 <div class="q" data-from="Ch. 1.1"><div class="q-text"><p>Converting $2x_1+x_2\ge8$ to standard form gives:</p></div><div class="o">$2x_1+x_2+s=8$<div class="e">That is the form for "at most".</div></div><div class="o ok">$2x_1+x_2-s=8$ with $s\ge0$<div class="e">$s$ measures the excess over 8.</div></div><div class="o">$2x_1+x_2=8+s$ with $s\le0$<div class="e">Slack and surplus variables are non-negative by convention.</div></div></div>
 <div class="q" data-from="Ch. 1.2"><div class="q-text"><p>A region is the overlap of finitely many halfspaces. What is it called?</p></div><div class="o">A cone<div class="e">A cone has its tip at the origin and is closed under positive scaling.</div></div><div class="o ok">A polyhedron<div class="e">An intersection of finitely many halfspaces.</div></div><div class="o">A basis<div class="e">A basis is a set of columns, not a region.</div></div></div>
 <div class="q" data-from="Ch. 1.3"><div class="q-text"><p>$Bx_B=b$ with $B=\begin{pmatrix}2&1\\5&3\end{pmatrix}$ and $b=(4,9)$. What is $x_B$?</p></div><div class="o">$(3,2)$<div class="e">Check the sign of the second entry.</div></div><div class="o ok">$(3,-2)$<div class="e">$B^{-1}b$: the second entry is negative, so this basic solution would not be feasible.</div></div><div class="o">$(-3,2)$<div class="e">Substitute back into $2x_1+x_2=4$.</div></div></div>
@@ -2165,7 +2165,7 @@ $$z=c_B^\top B^{-1}b+\big(c_N^\top-c_B^\top B^{-1}N\big)x_N.$$ The first term is
 
 <article class="part" data-id="p2" data-num="2" data-title="Linear programming II: duality and sensitivity" data-min="165">
 <p class="part-lede">Lecture 2 finishes the LP toolkit. It shows how simplex copes with upper and lower bounds on variables, how every LP has a mirror-image dual LP whose prices certify optimality, how the dual simplex method repairs a solution after the data change, and how to read from the final answer what happens when costs or right-hand sides move. Integer programming (Parts 3 and 4) re-solves LPs thousands of times, and these tools are why that is affordable.</p>
-<p class="youneed"><b>You need:</b> Part 1 (standard form, basic feasible solutions, reduced costs, the simplex step and ratio test, and the running LP $\max 5x_1+3x_2$ whose optimum is $32$ at $(4,4)$), and Part −4 (solving small linear systems and reading $B^{-1}b$).</p>
+<p class="youneed"><b>You need:</b> Part 1 (standard form, basic feasible solutions, reduced costs, the simplex step and ratio test, and the running LP $\max 5x_1+3x_2$ whose optimum is $32$ at $(4,4)$), and Part A (solving small linear systems and reading $B^{-1}b$).</p>
 
 <section class="ch" id="p2-bounded" data-level="n" data-min="35" data-title="Simplex with bounds on variables" data-src="Lecture 2 (simplex with bounds: optimality conditions, search directions, step size)">
 <h2>Simplex with upper and lower bounds</h2>
@@ -2517,19 +2517,19 @@ $$\begin{array}{c|ccccc|c}&x_1&x_2&s_1&s_2&s_3&\text{RHS}\\\hline \text{RC}&0&0&
 </div>
 </section>
 
-<div class="quiz review" data-id="p2-review" data-title="Part 2 review (with Parts −4, −3 and 1)">
+<div class="quiz review" data-id="p2-review" data-title="Part 2 review (with Parts A, B and 1)">
 <div class="q" data-from="Ch. 2.2"><div class="q-text"><p>Primal: $\min4x_1+3x_2$ s.t. $x_1+2x_2\ge6$, $3x_1+x_2\ge6$, $x\ge0$. The point $x=(2,2)$ is feasible with cost $14$. The dual is $\max6y_1+6y_2$ s.t. $y_1+3y_2\le4$, $2y_1+y_2\le3$, $y\ge0$, and $y=(1,1)$ is dual feasible. What is guaranteed?</p></div><div class="o">The optimal cost is exactly $14$.<div class="e">$14$ is the cost of one feasible plan, an upper bound only.</div></div><div class="o">The optimal cost is exactly $12$.<div class="e">$12$ is a lower bound from weak duality; equality needs more evidence.</div></div><div class="o ok">The optimal cost lies between $12$ and $14$.<div class="e">The dual value $6+6=12$ is a lower bound, the primal plan an upper bound.</div></div></div>
 <div class="q" data-from="Ch. 2.3"><div class="q-text"><p>At the optimum of an LP, the first constraint has slack $3$ and the first variable is positive. Which statements must hold?</p></div><div class="o ok">$y_1=0$ and the first dual row is tight.<div class="e">Price times slack is $0$; variable times excess is $0$.</div></div><div class="o">$y_1\gt0$ and the first dual row has slack.<div class="e">Both conclusions are the opposite of what is required.</div></div><div class="o">$y_1=0$ and the first dual row has slack.<div class="e">A positive variable forces its dual row to be tight.</div></div></div>
 <div class="q" data-from="Ch. 2.4"><div class="q-text"><p>The running LP has $y_1=1$ for the first constraint and range $b_1\in[6,8.4]$. The planner raises $b_1$ from $8$ to $10$. What is the correct statement?</p></div><div class="o">Profit rises by exactly $2$.<div class="e">$10$ is beyond the range, so the price may no longer apply.</div></div><div class="o ok">Profit rises by at most $0.4$ at price $1$ within the range; beyond $8.4$ the basis changes and the price must be recomputed.<div class="e">Up to $8.4$ the slope is $1$; after that, the slope drops (to $0$ for this LP).</div></div><div class="o">Profit is unchanged.<div class="e">Up to $8.4$ the price $1$ does apply.</div></div></div>
 <div class="q" data-from="Ch. 2.1"><div class="q-text"><p>In a minimisation with bounds, which non-basic variable satisfies the optimality condition?</p></div><div class="o">At its lower bound with $\bar c=-2$.<div class="e">Raising it would improve the cost.</div></div><div class="o ok">At its upper bound with $\bar c=-2$.<div class="e">It can only decrease, and the cost would rise by $2$ per unit.</div></div><div class="o">At its upper bound with $\bar c=+2$.<div class="e">Lowering it would improve the cost.</div></div></div>
 <div class="q" data-from="Ch. 1.4"><div class="q-text"><p>In a primal simplex ratio test the basic values are $(6,4,9)$ and the direction entries are $d_B=(-3,2,-1)$. Which basic variable leaves, and what is the step length?</p></div><div class="o">The second, step $2$.<div class="e">The second entry is positive: that variable grows and never blocks the step.</div></div><div class="o ok">The first, step $2$.<div class="e">Ratios: $6/3=2$ and $9/1=9$. The smaller one, $2$, belongs to the first variable.</div></div><div class="o">The third, step $9$.<div class="e">The step is the smallest ratio, not the largest.</div></div></div>
-<div class="q" data-from="Ch. −4.3"><div class="q-text"><p>The lines $2x_1+x_2=12$ and $x_1+3x_2=18$ meet at which point?</p></div><div class="o">$(4,4)$<div class="e">That is where $x_1+x_2=8$ meets $2x_1+x_2=12$. Check it in $x_1+3x_2=18$: $4+12=16$.</div></div><div class="o ok">$(3.6,4.8)$<div class="e">From the first, $x_2=12-2x_1$; then $x_1+36-6x_1=18$ gives $x_1=3.6$, $x_2=4.8$.</div></div><div class="o">$(6,0)$<div class="e">At $(6,0)$ the second line gives $6\ne18$.</div></div></div>
+<div class="q" data-from="Ch. A.3"><div class="q-text"><p>The lines $2x_1+x_2=12$ and $x_1+3x_2=18$ meet at which point?</p></div><div class="o">$(4,4)$<div class="e">That is where $x_1+x_2=8$ meets $2x_1+x_2=12$. Check it in $x_1+3x_2=18$: $4+12=16$.</div></div><div class="o ok">$(3.6,4.8)$<div class="e">From the first, $x_2=12-2x_1$; then $x_1+36-6x_1=18$ gives $x_1=3.6$, $x_2=4.8$.</div></div><div class="o">$(6,0)$<div class="e">At $(6,0)$ the second line gives $6\ne18$.</div></div></div>
 </div>
 </article>
 
 <article class="part" data-id="p3" data-num="3" data-title="Integer programming: formulations and their strength" data-min="145">
 <p class="part-lede">Lecture 3 adds one restriction to linear programming, that some variables must be whole numbers, and shows how many routing and logistics decisions (pack this van, open that depot, assign this job) become integer programmes. The second half of the lecture asks which of several correct formulations a solver can actually use: the strong ones. The labs on facility location (Lab 1) and the generalised assignment problem (Lab 2) are the case studies. Throughout Parts 3 to 6 we follow one small, fictional firm, Kaveri Courier in Bengaluru: its owner decides which depot sites to open and how to load parcels onto vans here, then hands those decisions to a solver (Part 4), routes one van (Part 5) and finally the whole fleet (Part 6).</p>
-<p class="youneed"><b>You need:</b> Part −3 (turning a word problem into variables, objective and constraints), Part −1 (binary logic, forcing constraints, big-M, cover and packing matrices) and Part 1 (polyhedra, convex hulls, corners of an LP).</p>
+<p class="youneed"><b>You need:</b> Part B (turning a word problem into variables, objective and constraints), Part D (binary logic, forcing constraints, big-M, cover and packing matrices) and Part 1 (polyhedra, convex hulls, corners of an LP).</p>
 
 <section class="ch" id="p3-formulate" data-level="b" data-min="35" data-title="Six classical integer programmes" data-src="Lecture 3 (integer programs; Examples 1, 2, 4, 5, 6; slides 4–16); Practice L3 notes">
 <h2>Modelling with integer variables: six classical formulations</h2>
@@ -2563,7 +2563,7 @@ Each courier gets exactly one parcel and each parcel exactly one courier. A rema
 <div class="box def" data-k="Formulation" data-name="3. Bin packing">
 <p>$n$ items of weight $w_j$ are packed into identical bins (vans) of capacity $C$, and we want to use as few bins as possible. Let $y_i=1$ if bin $i$ is used and $x_{ij}=1$ if item $j$ goes into bin $i$.
 $$\min\ \sum_{i=1}^n y_i\quad\text{s.t.}\quad \sum_{j}w_jx_{ij}\le C\,y_i\ \ \forall i,\qquad \sum_{i}x_{ij}=1\ \ \forall j,\qquad x_{ij},y_i\in\{0,1\}.$$
-The first row is a <b>forcing constraint</b> (Part −1): an unused bin ($y_i=0$) can hold nothing, a used bin holds at most $C$. We use $n$ bins because $n$ items never need more than $n$ bins.</p>
+The first row is a <b>forcing constraint</b> (Part D): an unused bin ($y_i=0$) can hold nothing, a used bin holds at most $C$. We use $n$ bins because $n$ items never need more than $n$ bins.</p>
 </div>
 <div class="callout"><b>Careful:</b> the objective counts bins used and we want fewer of them, so it is a <b>minimisation</b>. The lecture slide writes "max" here; that is a slip, and with "max" a solver would happily open every bin.</div>
 
@@ -2700,7 +2700,7 @@ So the LP value is a <b>bound</b>, and the <b>integrality gap</b> $\dfrac{|z_{IP
 </div>
 </section>
 
-<section class="ch" id="p3-strong" data-level="n" data-min="40" data-title="Strong formulations and valid inequalities" data-src="Lecture 3 (slides 31–35: knapsack formulations, facility location, extended formulations); Practice L3 notes; Part −1 (big-M)">
+<section class="ch" id="p3-strong" data-level="n" data-min="40" data-title="Strong formulations and valid inequalities" data-src="Lecture 3 (slides 31–35: knapsack formulations, facility location, extended formulations); Practice L3 notes; Part D (big-M)">
 <h2>Strong formulations: facility location, tight $M$ and cover inequalities</h2>
 <div class="opener"><p>Two ways of writing the same forcing constraint can give very different LP bounds, and a handful of extra valid inequalities can close most of a gap.</p><p>This is the difference between a solver finishing in seconds and one that runs overnight, and you can control it when you write the model.</p><p>It is like two tax forms asking for the same information: one tells you exactly where each number goes, the other lets you spread it across the page and still get past the clerk.</p></div>
 
@@ -2708,7 +2708,7 @@ So the LP value is a <b>bound</b>, and the <b>integrality gap</b> $\dfrac{|z_{IP
 
 <div class="prose">
 <h3>Facility location: individual versus aggregated forcing</h3>
-<p>Part −1 introduced the forcing constraint and the rule "choose the tightest $M$". Lecture 3 applies it to facility location. Call $P_1$ the formulation with a forcing row for every pair, $x_{ij}\le y_j$, and $P_2$ the one with one aggregated row per depot,
+<p>Part D introduced the forcing constraint and the rule "choose the tightest $M$". Lecture 3 applies it to facility location. Call $P_1$ the formulation with a forcing row for every pair, $x_{ij}\le y_j$, and $P_2$ the one with one aggregated row per depot,
 $$\sum_{i=1}^m x_{ij}\le m\,y_j\qquad\forall j .$$
 Both enforce "no service from a closed depot" for 0/1 variables. But $P_2$ has fewer rows ($n$ instead of $mn$), so which is better?</p>
 </div>
@@ -2872,7 +2872,7 @@ Because exactly one $x_{ij}$ equals 1 in each customer's row, $\sum_jc_{ij}x_{ij
 <li><p>On the widget instance ($m=3$) the LP optimum splits only job 3, half to agent 1 and half to agent 3, with cost $46$ against the integer optimum $53$.</p><p class="why-step">One split job is within the bound of 3, and the bound explains why a few branching decisions suffice to remove it.</p></li>
 </ol></div>
 
-<details class="deeper"><summary>Go deeper: reading the lab code</summary><p>The lab's script builds exactly the model above with <code>addVars</code> for $x_{ij}$, <code>addConstrs</code> for the "exactly one" rows and the budget rows, and the objective with <code>quicksum</code> (see Part −1, Chapter 3 and <code>Practice/L3</code>). The Lab 1 reader keeps only numeric tokens from the instance file, so any text label in a data file silently shifts the position of every later number. Always print the first few parsed values and compare them with the file before trusting a result.</p></details>
+<details class="deeper"><summary>Go deeper: reading the lab code</summary><p>The lab's script builds exactly the model above with <code>addVars</code> for $x_{ij}$, <code>addConstrs</code> for the "exactly one" rows and the budget rows, and the objective with <code>quicksum</code> (see Part D, Chapter 3 and <code>Practice/L3</code>). The Lab 1 reader keeps only numeric tokens from the instance file, so any text label in a data file silently shifts the position of every later number. Always print the first few parsed values and compare them with the file before trusting a result.</p></details>
 
 <div class="practice">
 <div class="prob" data-id="p3-cases-p1" data-ans="500" data-labels="binary variables"><div class="stem"><p>A GAP instance has $m=5$ agents and $n=100$ jobs. How many binary variables $x_{ij}$ does the model have?</p></div><div class="hint"><p>One variable per (agent, job) pair.</p></div><div class="sol"><p>$5\times100=500$.</p></div></div>
@@ -2894,12 +2894,12 @@ Because exactly one $x_{ij}$ equals 1 in each customer's row, $\sum_jc_{ij}x_{ij
 <div class="story"><span class="label">Where we are in the story</span><p>Part 3 has given Kaveri Courier its models: which depots to open (facility location), how to load a van (knapsack and bin packing) and who does which job (the generalised assignment problem). Two things are still missing, a way to actually find the best integer plan and a way to prove it is best. Part 4 supplies both with branch and bound, starting from a two-van planning model of the same kind as the loading decision of Chapter 3.1, and returns to the GAP in Lab 2.</p></div>
 </section>
 
-<div class="quiz review" data-id="p3-review" data-title="Part 3 review (with Parts −1 and 1)">
+<div class="quiz review" data-id="p3-review" data-title="Part 3 review (with Parts D and 1)">
 <div class="q" data-from="Ch. 3.1"><div class="q-text"><p>A depot model uses $x_t\le M\,y_t$. If the largest possible production is 50, which $M$ gives the strongest valid LP relaxation?</p></div><div class="o ok">$M=50$<div class="e">The smallest valid $M$ forces $y_t\ge x_t/50$, the least fractional opening.</div></div><div class="o">$M=500$<div class="e">Valid but weaker: $y_t$ may be a tenth of what it should be.</div></div><div class="o">$M=1$<div class="e">That would cut off real production quantities.</div></div></div>
 <div class="q" data-from="Ch. 3.2"><div class="q-text"><p>For a minimisation, a stronger formulation $P_1\subset P_2$ of the same IP has LP bound ...</p></div><div class="o">no larger than that of $P_2$<div class="e">Think about minimising over a smaller set.</div></div><div class="o ok">at least as large as that of $P_2$, and at most the IP optimum<div class="e">The smaller region can only raise the LP minimum, never above the IP minimum.</div></div><div class="o">always equal to the IP optimum<div class="e">Only for the convex hull.</div></div></div>
 <div class="q" data-from="Ch. 3.3"><div class="q-text"><p>Weights $(9,8,5,4,3)$, capacity 16. The set $\{2,3,4\}$ has weight 17. The cover inequality is:</p></div><div class="o">$x_2+x_3+x_4\le3$<div class="e">That allows all three, which the capacity forbids.</div></div><div class="o ok">$x_2+x_3+x_4\le2$<div class="e">At most $|S|-1=2$ of the three can be loaded together.</div></div><div class="o">$x_2+x_3+x_4\le17$<div class="e">The weight total is not the right-hand side.</div></div></div>
 <div class="q" data-from="Ch. 3.4"><div class="q-text"><p>Which statement about the GAP relaxation is correct?</p></div><div class="o">It is always integral because the constraint matrix has "exactly one" rows.<div class="e">The budget rows break total unimodularity.</div></div><div class="o ok">It can split jobs, with at most $m$ split jobs at a corner.<div class="e">Counting non-zeros of a basic solution gives $n+r\le n+m$.</div></div><div class="o">It is infeasible whenever some agent's budget is small.<div class="e">The relaxation can use other agents.</div></div></div>
-<div class="q" data-from="Part −1"><div class="q-text"><p>Which constraint says "depot $j$ may serve customers only if it is open" for one customer $i$?</p></div><div class="o">$y_j\le x_{ij}$<div class="e">That reverses cause and effect: opening would force service.</div></div><div class="o ok">$x_{ij}\le y_j$<div class="e">If $y_j=0$ then $x_{ij}=0$.</div></div><div class="o">$x_{ij}+y_j\ge1$<div class="e">That says "serve or open", a different rule.</div></div></div>
+<div class="q" data-from="Part D"><div class="q-text"><p>Which constraint says "depot $j$ may serve customers only if it is open" for one customer $i$?</p></div><div class="o">$y_j\le x_{ij}$<div class="e">That reverses cause and effect: opening would force service.</div></div><div class="o ok">$x_{ij}\le y_j$<div class="e">If $y_j=0$ then $x_{ij}=0$.</div></div><div class="o">$x_{ij}+y_j\ge1$<div class="e">That says "serve or open", a different rule.</div></div></div>
 <div class="q" data-from="Part 1"><div class="q-text"><p>An LP has an optimal solution at a non-integer corner. The same polyhedron's integer points have best value 12 and the LP optimum is 13.2 (maximise). The gap is about:</p></div><div class="o">1.2%<div class="e">Divide the difference by the integer value 12.</div></div><div class="o ok">10%<div class="e">$(13.2-12)/12=0.1$.</div></div><div class="o">13.2%<div class="e">That is the LP value, not a ratio.</div></div></div>
 </div>
 </article>
@@ -3313,7 +3313,7 @@ $$\min\sum_{i,j}c_{ij}x_{ij}\quad\text{s.t.}\quad\sum_ix_{ij}=1\ \ \forall j,\qq
 <li><b>Your own branch and bound</b> (<code>GAP_Exercise.py</code>): Gurobi only solves the LP at each node (dual simplex, presolve off). You code the tree: depth-first until an incumbent exists then best-first by parent bound, most-fractional branching, deleting nodes against the incumbent, a 120 s limit.</li>
 <li><b>Gurobi's own MIP engine</b> (<code>GAP_Gurobi.py</code>): the same model, with <code>Presolve = 0</code> (no preprocessing), <code>Cuts = 0</code> (no cutting planes), <code>TimeLimit = 120</code>, branching direction left automatic. It is plain branch and bound, but still with Gurobi's heuristics and its fast node processing.</li>
 </ul>
-<p>Gurobi offers a free academic licence for students; Part −1 points to the set-up notes.</p>
+<p>Gurobi offers a free academic licence for students; Part D points to the set-up notes.</p>
 </div>
 
 <div class="table-wrap"><table>
@@ -3394,7 +3394,7 @@ $$\min\sum_{i,j}c_{ij}x_{ij}\quad\text{s.t.}\quad\sum_ix_{ij}=1\ \ \forall j,\qq
 
 <article class="part" data-id="p5" data-num="5" data-title="The travelling salesman problem" data-min="185">
 <p class="part-lede">Lecture 5 studies the most famous routing problem: one vehicle, many stops, the cheapest closed route. We write it as an integer programme with exponentially many constraints (the DFJ formulation), learn how a solver adds them only when needed, meet the compact alternatives of Miller–Tucker–Zemlin and of flow models, compare their strength, and finish with the variants of the lecture (time windows, optional customers, road networks, clusters, street-covering routes) and the heuristics that find good tours quickly.</p>
-<p class="youneed"><b>You need:</b> Part −2 (graphs, the notation $E(S)$ and $\delta(S)$, tours, Euler circuits, spanning trees and matchings; maximum flow and minimum cut are introduced in Ch. −2.2 and used again in Ch. 5.2), Part −1 (forcing constraints and why a small big-$M$ matters), Part 3 (LP relaxation and formulation strength), and Part 1 (what an LP bound means).</p>
+<p class="youneed"><b>You need:</b> Part C (graphs, the notation $E(S)$ and $\delta(S)$, tours, Euler circuits, spanning trees and matchings; maximum flow and minimum cut are introduced in Ch. C.2 and used again in Ch. 5.2), Part D (forcing constraints and why a small big-$M$ matters), Part 3 (LP relaxation and formulation strength), and Part 1 (what an LP bound means).</p>
 
 <section class="ch" id="p5-dfj" data-level="n" data-min="40" data-title="From tours to the DFJ formulation" data-src="Lecture 5 (28 Aug), slides 5–14; Lecture 5 TSP guide, chapters 3 and 4">
 <h2>From tours to the DFJ formulation</h2>
@@ -3402,8 +3402,8 @@ $$\min\sum_{i,j}c_{ij}x_{ij}\quad\text{s.t.}\quad\sum_ix_{ij}=1\ \ \forall j,\qq
 
 <div class="prose">
 <h3>The problem and a six-city example</h3>
-<p>Take one van of Kaveri Courier. It starts at the depot that was opened in Part 3 (the choice of Ch. 3.3 and Lab 1 in Ch. 3.4), must call at every customer on its load exactly once, and returns to the depot. Driving between places $u$ and $v$ costs $c_{uv}$, the same in both directions. Call the places <b>cities</b>; there are $n$ of them. Take the complete graph $G=(V,E)$ on the cities (Part −2): every pair of cities is joined by an edge $e=\{u,v\}$ with cost $c_e$. A <b>tour</b> is a cycle through all cities, and the TSP asks for the tour of least total cost.</p>
-<p>Because the first city is only a starting point, there are $(n-1)!/2$ different tours: $60$ for six cities, $181{,}440$ for ten, about $6.1\times10^{16}$ for twenty (Part −2 turned that into years of computing). We cannot list them, so we need a model.</p>
+<p>Take one van of Kaveri Courier. It starts at the depot that was opened in Part 3 (the choice of Ch. 3.3 and Lab 1 in Ch. 3.4), must call at every customer on its load exactly once, and returns to the depot. Driving between places $u$ and $v$ costs $c_{uv}$, the same in both directions. Call the places <b>cities</b>; there are $n$ of them. Take the complete graph $G=(V,E)$ on the cities (Part C): every pair of cities is joined by an edge $e=\{u,v\}$ with cost $c_e$. A <b>tour</b> is a cycle through all cities, and the TSP asks for the tour of least total cost.</p>
+<p>Because the first city is only a starting point, there are $(n-1)!/2$ different tours: $60$ for six cities, $181{,}440$ for ten, about $6.1\times10^{16}$ for twenty (Part C turned that into years of computing). We cannot list them, so we need a model.</p>
 <p>Our running example has six cities with these costs (an edge not in the table costs $9$). For the story, city $1$ is the depot, cities $2$ and $3$ are the customers in Indiranagar and Domlur, and cities $4$, $5$ and $6$ are the customers in Jayanagar, BTM Layout and Banashankari. The names are only labels: the costs below are the teaching numbers, not measured road distances, and everything that follows uses the numbers $1,\dots,6$.</p>
 </div>
 <div class="table-wrap"><table>
@@ -3623,7 +3623,7 @@ $$\min\sum_{i,j}c_{ij}x_{ij}\quad\text{s.t.}\quad\sum_ix_{ij}=1\ \ \forall j,\qq
 <p><b>The two cases of the label row.</b></p>
 <ul>
 <li>If $x_{ij}=1$ the row reads $u_i-u_j+1\le0$, that is $u_j\ge u_i+1$: the label must rise by at least one along the arc.</li>
-<li>If $x_{ij}=0$ it reads $u_i-u_j\le n-2$. Since all labels lie in $[2,n]$, the difference is at most $n-2$ anyway, so the row is always true: it is switched off. That is why $M=n-1$ is exactly the right big-$M$ (the smallest that switches the row off; Part −1).</li>
+<li>If $x_{ij}=0$ it reads $u_i-u_j\le n-2$. Since all labels lie in $[2,n]$, the difference is at most $n-2$ anyway, so the row is always true: it is switched off. That is why $M=n-1$ is exactly the right big-$M$ (the smallest that switches the row off; Part D).</li>
 </ul>
 <p>Arcs into and out of the depot have no label row. This is what lets the counter "restart": the last customer has label $n$, but the arc back to the depot puts no condition on any label.</p>
 </div>
@@ -3740,7 +3740,7 @@ $$\min\sum_{i,j}c_{ij}x_{ij}\quad\text{s.t.}\quad\sum_ix_{ij}=1\ \ \forall j,\qq
 <h3>Prize-collecting TSP (optional customers)</h3>
 <p>The vehicle need not visit every city. City $i$ gives a prize $w_i$ if visited, costs a penalty $p_i$ if skipped, and the total prize must be at least $U$. Let $y_i=1$ if $i$ is on the tour: $$\min\sum c_{ij}x_{ij}+\sum_i p_i(1-y_i)\ \text{ s.t. }\ \sum_{j\ne i}x_{ij}=y_i,\ \sum_{j\ne i}x_{ji}=y_i,\ \sum_iw_iy_i\ge U.$$ The subtour constraints must be conditional: $$x(A(S))\le\sum_{i\in S\setminus\{k\}}y_i+(1-y_l)\qquad\forall k\in S,\ l\in S^c,\ |S|\ge2.$$ If cities $k\in S$ and $l\in S^c$ are both visited, the tour must pass through both, so at most $\sum_{i\in S}y_i-1$ arcs lie inside $S$; if $y_l=0$ the term $(1-y_l)=1$ relaxes the row by one so that $S$ may hold the whole tour. An alternative adds self-loops $x_{ii}=1-y_i$ with cost $p_i$, making a skipped city "stay at home" and turning the model into an assignment-type model.</p>
 <h3>Steiner TSP (roads that must be reused)</h3>
-<p>On a road network, cities are not all joined directly, and the route may pass through the same node or road more than once; only a set $V_R$ of required nodes must be visited. Let $x_e\in\mathbb Z_+$ be the number of times edge $e$ is traversed: $$\min\sum_e c_ex_e\ \text{ s.t. }\ x(\delta(u))\text{ even }\forall u,\quad x(\delta(S))\ge2\ \ \forall S\text{ with }S\cap V_R\ne\emptyset\ne V_R\setminus S.$$ Even degrees make an Euler circuit possible (Part −2); the cut rows keep the required nodes connected. To enforce evenness, write $x(\delta(u))=2z_u$ with an integer $z_u$.</p>
+<p>On a road network, cities are not all joined directly, and the route may pass through the same node or road more than once; only a set $V_R$ of required nodes must be visited. Let $x_e\in\mathbb Z_+$ be the number of times edge $e$ is traversed: $$\min\sum_e c_ex_e\ \text{ s.t. }\ x(\delta(u))\text{ even }\forall u,\quad x(\delta(S))\ge2\ \ \forall S\text{ with }S\cap V_R\ne\emptyset\ne V_R\setminus S.$$ Even degrees make an Euler circuit possible (Part C); the cut rows keep the required nodes connected. To enforce evenness, write $x(\delta(u))=2z_u$ with an integer $z_u$.</p>
 <p>Revisiting can pay even when all cities are required. A Steiner TSP is the same as a plain metric TSP on the required nodes, using shortest-path distances.</p>
 </div>
 
@@ -3755,7 +3755,7 @@ $$\min\sum_{i,j}c_{ij}x_{ij}\quad\text{s.t.}\quad\sum_ix_{ij}=1\ \ \forall j,\qq
 <h3>Generalised TSP (clusters)</h3>
 <p>Cities are grouped into clusters $S_1,\dots,S_m$; the tour must visit <i>exactly one</i> city of each cluster. Using only arc variables: $$x(\delta^+(S_k))=x(\delta^-(S_k))=1\ \ \forall k,\qquad x(\delta^+(i))=x(\delta^-(i))\ \ \forall i,$$ plus subtour constraints on <i>sets of clusters</i>. The balance row at each city forces the arc leaving a cluster to start from the very city that was entered. If every cluster is a single city we recover the TSP. With $m$ clusters of $3$ cities the number of choices of representatives is $3^m$, each followed by an ordinary TSP on $m$ cities.</p>
 <h3>Arc routing: the Chinese postman problem</h3>
-<p>Now the streets must be traversed, not the stops: garbage collection, snow ploughing, meter reading. A connected graph has a closed walk using every street exactly once if and only if every intersection has an even number of streets (Euler, Part −2). If some intersections have an odd number of streets, some streets must be repeated. A closed walk that covers all streets at least once and has least length is the <b>Chinese postman problem</b>.</p>
+<p>Now the streets must be traversed, not the stops: garbage collection, snow ploughing, meter reading. A connected graph has a closed walk using every street exactly once if and only if every intersection has an even number of streets (Euler, Part C). If some intersections have an odd number of streets, some streets must be repeated. A closed walk that covers all streets at least once and has least length is the <b>Chinese postman problem</b>.</p>
 <p>Let $x_{uv}$ be the number of times the walk goes from $u$ to $v$: $$\min\sum_{\{u,v\}\in E}c_{uv}(x_{uv}+x_{vu})\ \text{ s.t. }\ x_{uv}+x_{vu}\ge1\ \ \forall\{u,v\}\in E,\quad x(\delta^+(u))=x(\delta^-(u))\ \ \forall u,\quad x_{uv},x_{vu}\in\mathbb Z_+.$$ The objective sums over the <i>undirected</i> edges $E$ (each street once, with both directions), not over arcs; summing over a directed arc set would count every street twice.</p>
 <p><b>Algorithm (polynomial).</b> (1) Find the odd-degree intersections; there is an even number of them. (2) Compute shortest-path distances between them. (3) Choose the cheapest way to pair them up (a minimum-cost perfect matching). (4) Repeat the streets along the paired shortest paths. (5) Take an Euler circuit. The directed postman problem is also polynomial; the rural postman (only some streets must be served) and capacitated arc routing are NP-hard.</p>
 </div>
@@ -3805,7 +3805,7 @@ $$\min\sum_{i,j}c_{ij}x_{ij}\quad\text{s.t.}\quad\sum_ix_{ij}=1\ \ \forall j,\qq
 <div class="example"><p class="problem"><b>Examinable.</b> Show that the cost of a minimum spanning tree $T$ is at most the optimal tour cost $\mathrm{OPT}$, and that the "double-tree" tour costs at most $2\,c(T)\le2\,\mathrm{OPT}$.</p>
 <ol class="steps">
 <li><p>Delete one edge from an optimal tour. What remains is a path through all cities, which is a spanning tree. Its cost is at most $\mathrm{OPT}$ (edge costs are non-negative).</p><p class="why-step">The cheapest spanning tree cannot cost more than this particular one, so $c(T)\le\mathrm{OPT}$.</p></li>
-<li><p>Double every edge of $T$. All degrees become even and the graph is connected, so it has an Euler circuit of cost $2c(T)$.</p><p class="why-step">Euler's theorem (Part −2).</p></li>
+<li><p>Double every edge of $T$. All degrees become even and the graph is connected, so it has an Euler circuit of cost $2c(T)$.</p><p class="why-step">Euler's theorem (Part C).</p></li>
 <li><p>Walk the circuit and skip every city already seen. By the triangle inequality, skipping never makes the walk longer, so the resulting tour has cost at most $2c(T)\le2\,\mathrm{OPT}$. $\blacksquare$</p><p class="why-step">So the double-tree heuristic is a 2-approximation on metric instances.</p></li>
 </ol></div>
 
@@ -3819,7 +3819,7 @@ $$\min\sum_{i,j}c_{ij}x_{ij}\quad\text{s.t.}\quad\sum_ix_{ij}=1\ \ \forall j,\qq
 
 <div class="panel try"><span class="label">Try it</span><p class="task">Move the cities and read the lower bounds in the readout: the spanning tree, then the 1-tree, against the optimal tour. Look at the double-tree tour and the Christofides tour (the tree plus a cheapest matching of the odd-degree cities) and see how close each gets.</p><div class="widget" data-w="p5_mst"></div></div>
 
-<details class="deeper"><summary>Go deeper: Christofides' 3/2-approximation</summary><p>Instead of doubling the whole tree, fix only its odd-degree cities. Take a minimum-cost perfect matching $M$ on them and join $T\cup M$ (all degrees even), take an Euler circuit and shortcut. Why $c(M)\le\frac12\mathrm{OPT}$: shortcut an optimal tour to visit only the odd-degree cities; it is an even cycle through them whose edges split into two perfect matchings, and the cheaper one costs at most $\frac12\mathrm{OPT}$. So the result costs at most $c(T)+c(M)\le\frac32\mathrm{OPT}$. It combines Euler (Part −2) with the matching idea of the Chinese postman problem. In practice local search such as 2-opt and Lin–Kernighan produces better tours.</p></details>
+<details class="deeper"><summary>Go deeper: Christofides' 3/2-approximation</summary><p>Instead of doubling the whole tree, fix only its odd-degree cities. Take a minimum-cost perfect matching $M$ on them and join $T\cup M$ (all degrees even), take an Euler circuit and shortcut. Why $c(M)\le\frac12\mathrm{OPT}$: shortcut an optimal tour to visit only the odd-degree cities; it is an even cycle through them whose edges split into two perfect matchings, and the cheaper one costs at most $\frac12\mathrm{OPT}$. So the result costs at most $c(T)+c(M)\le\frac32\mathrm{OPT}$. It combines Euler (Part C) with the matching idea of the Chinese postman problem. In practice local search such as 2-opt and Lin–Kernighan produces better tours.</p></details>
 
 <div class="practice">
 <div class="prob" data-id="p5-variants-p1" data-ans="16" data-labels="time back at depot"><div class="stem"><p>With the time-window data of this chapter, the van drives $D,C,B,A$ and leaves at time $0$. At what time does it return to the depot?</p></div><div class="hint"><p>Take the maximum of arrival time and window opening at each stop.</p></div><div class="sol"><p>$D$ at $6$, $C$ at $8$, $B$ at $11$, $A$ at $13$, depot at $13+3=16$.</p></div></div>
@@ -3841,19 +3841,19 @@ $$\min\sum_{i,j}c_{ij}x_{ij}\quad\text{s.t.}\quad\sum_ix_{ij}=1\ \ \forall j,\qq
 </div>
 </section>
 
-<div class="quiz review" data-id="p5-review" data-title="Part 5 review (with Parts −2, −1 and 3)">
+<div class="quiz review" data-id="p5-review" data-title="Part 5 review (with Parts C, D and 3)">
 <div class="q" data-from="Ch. 5.1"><div class="q-text"><p>A tour on $10$ cities visits a set $S$ of $6$ cities in two stretches. What are $x(E(S))$ and $x(\delta(S))$?</p></div><div class="o">$5$ and $2$<div class="e">That is one stretch; here the tour enters and leaves $S$ twice.</div></div><div class="o ok">$4$ and $4$<div class="e">$x(E(S))=6-2=4$; the handshake rule gives $12=2\cdot4+x(\delta(S))$, so $4$.</div></div><div class="o">$6$ and $0$<div class="e">That would mean $S$ is a separate cycle.</div></div></div>
 <div class="q" data-from="Ch. 5.2"><div class="q-text"><p>Why can a solver check all $2^{n-1}$ subtour constraints with only $n-1$ max-flow computations?</p></div><div class="o">Each max-flow checks the constraints of one city only.<div class="e">One flow tests many sets at once.</div></div><div class="o ok">A violated constraint is a cut of capacity below $2$ in the support graph, and every cut separates city 1 from at least one other city.<div class="e">The smallest cut separating city 1 from $t$ is found by max-flow/min-cut; the minimum over all $t$ is the global minimum cut.</div></div><div class="o">Because the number of tours is only $n-1$.<div class="e">It is $(n-1)!/2$.</div></div></div>
 <div class="q" data-from="Ch. 5.3"><div class="q-text"><p>With $n=10$, for an arc $(i,j)$ between customers that is not used ($x_{ij}=0$), the MTZ row reads $u_i-u_j\le\ ?$ Why is it harmless?</p></div><div class="o">$u_i-u_j\le9$; it is harmless because labels are at most $10$.<div class="e">Recompute: the right side is $(n-1)-1$.</div></div><div class="o ok">$u_i-u_j\le8$; it is harmless because labels lie in $[2,10]$, so the difference is at most $8$ anyway.<div class="e">$(n-1)(1-0)-1=8=n-2$, the largest possible difference.</div></div><div class="o">$u_i-u_j\le0$; it forces equal labels.<div class="e">That is the case $x_{ij}=1$ with the sign reversed.</div></div></div>
-<div class="q" data-from="Part −2"><div class="q-text"><p>A connected street network has $6$ intersections with an odd number of streets. How many odd intersections must be paired up in the postman algorithm, and into how many pairs?</p></div><div class="o">6 intersections, 6 pairs<div class="e">Each pair uses two intersections.</div></div><div class="o ok">6 intersections, 3 pairs<div class="e">Odd intersections come in pairs; 6 of them make 3 pairs.</div></div><div class="o">3 intersections, 3 pairs<div class="e">The 6 odd intersections are all paired.</div></div></div>
-<div class="q" data-from="Part −1"><div class="q-text"><p>A forcing row $y\le Mx$ with binary $x$: which choice of $M$ gives the best LP bound?</p></div><div class="o">A very large $M$, to be safe.<div class="e">A large $M$ lets $x$ be nearly 0 with $y$ positive.</div></div><div class="o ok">The smallest $M$ that is still valid.<div class="e">This is the same principle that makes MTZ weaker than multi-commodity flow.</div></div><div class="o">$M=0$.<div class="e">That would force $y=0$ always.</div></div></div>
+<div class="q" data-from="Part C"><div class="q-text"><p>A connected street network has $6$ intersections with an odd number of streets. How many odd intersections must be paired up in the postman algorithm, and into how many pairs?</p></div><div class="o">6 intersections, 6 pairs<div class="e">Each pair uses two intersections.</div></div><div class="o ok">6 intersections, 3 pairs<div class="e">Odd intersections come in pairs; 6 of them make 3 pairs.</div></div><div class="o">3 intersections, 3 pairs<div class="e">The 6 odd intersections are all paired.</div></div></div>
+<div class="q" data-from="Part D"><div class="q-text"><p>A forcing row $y\le Mx$ with binary $x$: which choice of $M$ gives the best LP bound?</p></div><div class="o">A very large $M$, to be safe.<div class="e">A large $M$ lets $x$ be nearly 0 with $y$ positive.</div></div><div class="o ok">The smallest $M$ that is still valid.<div class="e">This is the same principle that makes MTZ weaker than multi-commodity flow.</div></div><div class="o">$M=0$.<div class="e">That would force $y=0$ always.</div></div></div>
 <div class="q" data-from="Part 3"><div class="q-text"><p>Formulation A has LP bound $21.4$, formulation B has $27.9$, for the same minimisation IP with optimum $29$. Which statement is correct?</p></div><div class="o">A is stronger; its bound is smaller.<div class="e">For a minimisation a larger lower bound is better.</div></div><div class="o ok">B is stronger on this instance; its gap to the optimum is $1.1$ against $7.6$.<div class="e">The bound closer to the optimum prunes more of the branch-and-bound tree.</div></div><div class="o">They are equally strong, since both are below $29$.<div class="e">Strength is about how close to $29$ the bound gets.</div></div></div>
 </div>
 </article>
 
 <article class="part" data-id="p6" data-num="6" data-title="The vehicle routing problem" data-min="165">
 <p class="part-lede">Lecture 6 asks a simple question with a hard answer: given a depot, a fleet of vans of limited capacity and a list of customers, which van visits whom, and in what order, at least cost? The part builds the main integer-programming models of the capacitated vehicle routing problem, compares how strong their LP relaxations are on one small instance, tours the variants of Lecture 6 (time windows, pickup and delivery, backhauls, several echelons, depot location), and ends with the standard heuristics and with the CVRP project of this course as a case study.</p>
-<p class="youneed"><b>You need:</b> Part 3 (integer programmes, bin packing in Ch. 3.1, LP bounds and strong formulations), Part 4 (branch and bound and its pruning rules, Ch. 4.2), Part 5 (the TSP: degree constraints and subtour cuts in Ch. 5.1, MTZ in Ch. 5.3, time windows in Ch. 5.4), Part 2 (dual prices and reduced costs, for column generation) and Part −1 (set partitioning, big-M).</p>
+<p class="youneed"><b>You need:</b> Part 3 (integer programmes, bin packing in Ch. 3.1, LP bounds and strong formulations), Part 4 (branch and bound and its pruning rules, Ch. 4.2), Part 5 (the TSP: degree constraints and subtour cuts in Ch. 5.1, MTZ in Ch. 5.3, time windows in Ch. 5.4), Part 2 (dual prices and reduced costs, for column generation) and Part D (set partitioning, big-M).</p>
 
 <section class="ch" id="p6-cvrp" data-level="b" data-min="40" data-title="The CVRP and the two-index model" data-src="Lecture 6 (slides 9–17: VRP, r(S), two-index formulation, capacity cuts, MTZ variant); Lecture 3 (bin packing); Lecture 5 (subtour cuts)">
 <h2>The capacitated VRP and its two-index model</h2>
@@ -3991,7 +3991,7 @@ $$\begin{aligned}\min\ &\sum_{k=1}^{K}\sum_{(i,j)\in A}c^k_{ij}\,x^k_{ij}\\ \tex
 
 <div class="prose">
 <h3>Set partitioning: choose whole routes</h3>
-<p>Let $J$ be the set of all feasible routes (sets of customers whose demand fits in a van, with the best order for them). Route $j$ has cost $c_j$ and a 0/1 incidence $a_{ij}=1$ if it serves customer $i$. The binary $x_j=1$ means route $j$ is run. This is the set-partitioning idea of Part −1 applied to routes.</p>
+<p>Let $J$ be the set of all feasible routes (sets of customers whose demand fits in a van, with the best order for them). Route $j$ has cost $c_j$ and a 0/1 incidence $a_{ij}=1$ if it serves customer $i$. The binary $x_j=1$ means route $j$ is run. This is the set-partitioning idea of Part D applied to routes.</p>
 </div>
 
 <div class="box def" data-k="Model" data-name="Set-partitioning formulation of the CVRP">
@@ -4271,8 +4271,8 @@ Large savings come from customers that are far from the depot but close to each 
 </article>
 
 <article class="part" data-id="px" data-num="X" data-title="Exam practice" data-min="190" data-kind="exam">
-<p class="part-lede">This part is for the last weeks before the paper. It shows how to read an exam question, drills thirty true/false statements of the kind that catch careful students, and ends with a timed mock paper of ten new problems and a cumulative quiz over Parts −1 to 6. Every problem here is new: none is taken from the slides, past papers or the problem set.</p>
-<p class="youneed"><b>You need:</b> the main course, Parts 1 to 6, as the material to be examined (Part −1 for big-M and Part −3 for LP drawing). Come back to this part after each lecture and again in the week before the exam.</p>
+<p class="part-lede">This part is for the last weeks before the paper. It shows how to read an exam question, drills thirty true/false statements of the kind that catch careful students, and ends with a timed mock paper of ten new problems and a cumulative quiz over Parts D to 6. Every problem here is new: none is taken from the slides, past papers or the problem set.</p>
+<p class="youneed"><b>You need:</b> the main course, Parts 1 to 6, as the material to be examined (Part D for big-M and Part B for LP drawing). Come back to this part after each lecture and again in the week before the exam.</p>
 
 <section class="ch" id="px-approach" data-level="b" data-min="25" data-title="How to attack an exam question" data-src="All lectures; typical question types of the problem set (types only, no problems copied)">
 <h2>How to attack an exam question: six types and a first move for each</h2>
@@ -4310,7 +4310,7 @@ Large savings come from customers that are far from the depot but close to each 
 <li><p>(2) $y_C\le y_B$.</p><p class="why-step">If $y_C=1$ the row forces $y_B=1$; if $y_C=0$ the row says nothing. That is exactly "if C then B".</p></li>
 <li><p>(3) $y_D+y_E=1$.</p><p class="why-step">One of them is $1$ and the other $0$; "exactly one" is an equality.</p></li>
 <li><p>(4) $y_A+y_F\le 1$.</p><p class="why-step">The pair $(1,1)$ would give $2$, which the row forbids; the other three pairs are allowed.</p></li>
-<li><p>(5) $x_C\le 50\,y_C$ with $x_C\ge0$.</p><p class="why-step">If $y_C=0$ it forces $x_C=0$; if $y_C=1$ it allows up to $50$. The number $50$ is the smallest valid big-$M$, because $x_C$ can never exceed $50$ (Part −1).</p></li>
+<li><p>(5) $x_C\le 50\,y_C$ with $x_C\ge0$.</p><p class="why-step">If $y_C=0$ it forces $x_C=0$; if $y_C=1$ it allows up to $50$. The number $50$ is the smallest valid big-$M$, because $x_C$ can never exceed $50$ (Part D).</p></li>
 </ol></div>
 
 <div class="callout"><b>Careful:</b> read the sense of the objective before anything else. Bin packing minimises the number of bins used, and lot sizing minimises total cost, even though some slides write a maximisation. A formulation with the wrong sense scores no objective marks, whatever else is right.</div>
@@ -4515,9 +4515,9 @@ H     0   1410.0000   1271.0000   9.86%
 </div>
 </section>
 
-<div class="quiz review" data-id="px-review" data-title="Cumulative review (Parts −1 to 6 and exam technique)">
+<div class="quiz review" data-id="px-review" data-title="Cumulative review (Parts D to 6 and exam technique)">
 <div class="q" data-from="Ch. 2.2"><div class="q-text"><p>$\min\ 4x_1+3x_2$ subject to $x_1+x_2\ge6$, $x_1\ge2$, $x\ge0$. What is the optimal value (use the dual)?</p></div><div class="o">18<div class="e">That is the dual value at $y=(3,0)$, which is feasible but not optimal; it uses only one of the two rows.</div></div><div class="o ok">20<div class="e">Dual: $\max6y_1+2y_2$ with $y_1+y_2\le4$, $y_1\le3$: $y=(3,1)$ gives $20$; primal $x=(2,4)$ costs $8+12=20$.</div></div><div class="o">24<div class="e">That is $6\cdot4$, which breaks the dual row $y_1\le3$.</div></div></div>
-<div class="q" data-from="Ch. −1.2"><div class="q-text"><p>$x$ is a quantity with $0\le x\le35$, and $y$ is a binary switch. Which is the best linking row?</p></div><div class="o">$x\le1000\,y$<div class="e">Valid, but the LP bound is far weaker than necessary.</div></div><div class="o ok">$x\le35\,y$<div class="e">The smallest valid $M$ is the upper bound of $x$, and it gives the strongest relaxation.</div></div><div class="o">$x\le y$<div class="e">This cuts off every feasible value of $x$ above $1$.</div></div></div>
+<div class="q" data-from="Ch. D.2"><div class="q-text"><p>$x$ is a quantity with $0\le x\le35$, and $y$ is a binary switch. Which is the best linking row?</p></div><div class="o">$x\le1000\,y$<div class="e">Valid, but the LP bound is far weaker than necessary.</div></div><div class="o ok">$x\le35\,y$<div class="e">The smallest valid $M$ is the upper bound of $x$, and it gives the strongest relaxation.</div></div><div class="o">$x\le y$<div class="e">This cuts off every feasible value of $x$ above $1$.</div></div></div>
 <div class="q" data-from="Ch. 4.2"><div class="q-text"><p>In a maximisation, a node has LP value $12.5$ and the incumbent is $13$. What do you do?</p></div><div class="o">Branch further, since $12.5$ is fractional.<div class="e">A fractional LP does not matter if the node cannot beat the incumbent.</div></div><div class="o ok">Close the node: nothing inside it can exceed $12.5$, which is below $13$.<div class="e">For a maximisation the LP value is an upper bound on the node.</div></div><div class="o">Replace the incumbent by $12.5$.<div class="e">The incumbent must be a feasible integer plan, and it never gets worse.</div></div></div>
 <div class="q" data-from="Ch. 5.1"><div class="q-text"><p>A fractional TSP point has degree $2$ at every city and $x(\delta(S))=1.5$ for a set $S$. Which is right?</p></div><div class="o">The point is feasible for DFJ.<div class="e">DFJ needs $x(\delta(S))\ge2$ for every $S$.</div></div><div class="o ok">The cut $x(\delta(S))\ge2$ is violated, and so is $x(E(S))\le|S|-1$.<div class="e">The two forms are equal under the degree constraints: $x(E(S))=(2|S|-1.5)/2=|S|-0.75\gt|S|-1$.</div></div><div class="o">The point violates the degree constraints.<div class="e">The statement says every degree is $2$.</div></div></div>
 <div class="q" data-from="Ch. 5.3"><div class="q-text"><p>As $n$ grows with the cycle length $|C|=3$ fixed, how do the MTZ and DFJ allowances $x(C)$ behave?</p></div><div class="o">Both stay at $2$.<div class="e">Only DFJ is independent of $n$.</div></div><div class="o ok">DFJ stays at $2$, while MTZ rises towards $3$.<div class="e">MTZ allows $(1-\tfrac1{n-1})\cdot3$, which tends to $3=|C|$.</div></div><div class="o">MTZ falls below DFJ.<div class="e">The MTZ value $(1-\tfrac1{n-1})|C|$ is never below $|C|-1$.</div></div></div>
@@ -4552,7 +4552,7 @@ H     0   1410.0000   1271.0000   9.86%
 <canvas id="confetti" hidden></canvas>
 
 <script>
-window.SITE = {"name": "Tour Guide", "key": "tourguide", "path": "tour-guide", "domain": "courses.rahuldevsharma.com/tour-guide", "author": "Rahul Dev Sharma", "tagline": "Logistics and freight modelling, from school algebra to vehicle routing", "description": "An interactive course companion for SL 225 Logistics and Freight Modelling at IISc. It starts from school algebra and builds up to linear programming, integer programming, branch and bound, the travelling salesman problem and vehicle routing, with draggable widgets and self-checked practice.", "certTitle": ["Certificate of completion", "Tour Guide"], "certBody": ["answered every quiz and practice question correctly across", "Tour Guide, a companion to Prof. Tarun Rambha's SL 225 Logistics and Freight Modeling:", "linear and integer programming, branch and bound, TSP and vehicle routing."], "footer_html": "      <p><b>Acknowledgement.</b> Built around the lectures of SL 225 Logistics and Freight Modeling at the Indian Institute of Science (IISc), taught by Prof. Tarun Rambha. All explanations, figures, numbers and problems here are written afresh; slides, textbooks and problem sets are not reproduced. Reference texts: Wolsey, <i>Integer Programming</i>; Toth and Vigo (eds.), <i>The Vehicle Routing Problem</i>; Gutin and Punnen (eds.), <i>The Traveling Salesman Problem and Its Variations</i>; Applegate et al., <i>The Traveling Salesman Problem: A Computational Study</i>.</p>\n      <p><b>Disclaimer.</b> Independent study resource by a student. Not official, and not reviewed or endorsed by Prof. Rambha or IISc. Mistakes are the author's; the lecture slides are the authority.</p>", "theme": {"light": {"accent": "#C2570C", "accent-soft": "#FCEBDD", "warn": "#B3261E", "warn-soft": "#FBE3E1"}, "dark": {"accent": "#FF9A57", "accent-soft": "#3A2414", "warn": "#FF8A80", "warn-soft": "#3B1B1A"}}};
+window.SITE = {"name": "Tour Guide", "key": "tourguide", "path": "tour-guide", "domain": "courses.rahuldevsharma.com/tour-guide", "author": "Rahul Dev Sharma", "tagline": "Logistics and freight modelling, from linear programs to vehicle routing", "description": "An interactive course companion for SL 225 Logistics and Freight Modelling at IISc. It builds up linear programming, integer programming, branch and bound, the travelling salesman problem and vehicle routing, with draggable widgets and self-checked practice.", "certTitle": ["Certificate of completion", "Tour Guide"], "certBody": ["answered every quiz and practice question correctly across", "Tour Guide, a companion to Prof. Tarun Rambha's SL 225 Logistics and Freight Modeling:", "linear and integer programming, branch and bound, TSP and vehicle routing."], "footer_html": "      <p><b>Acknowledgement.</b> Built around the lectures of SL 225 Logistics and Freight Modeling at the Indian Institute of Science (IISc), taught by Prof. Tarun Rambha. All explanations, figures, numbers and problems here are written afresh; slides, textbooks and problem sets are not reproduced. Reference texts: Wolsey, <i>Integer Programming</i>; Toth and Vigo (eds.), <i>The Vehicle Routing Problem</i>; Gutin and Punnen (eds.), <i>The Traveling Salesman Problem and Its Variations</i>; Applegate et al., <i>The Traveling Salesman Problem: A Computational Study</i>.</p>\n      <p><b>Disclaimer.</b> Independent study resource by a student. Not official, and not reviewed or endorsed by Prof. Rambha or IISc. Mistakes are the author's; the lecture slides are the authority.</p>", "theme": {"light": {"accent": "#C2570C", "accent-soft": "#FCEBDD", "warn": "#B3261E", "warn-soft": "#FBE3E1"}, "dark": {"accent": "#FF9A57", "accent-soft": "#3A2414", "warn": "#FF8A80", "warn-soft": "#3B1B1A"}}};
 /* ---- expr.js ---- */
 /* Safe expression parser: no eval. Grammar (precedence low → high):
    sum := prod (('+'|'-') prod)* ; prod := unary (('*'|'/'| implicit) unary)* ; unary := '-' unary | pow ; pow := atom ('^' unary)?
