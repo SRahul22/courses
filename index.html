@@ -12,15 +12,15 @@
 <meta name="theme-color" content="#F3F5F7" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#0E1319" media="(prefers-color-scheme: dark)">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&family=JetBrains+Mono:wght@400;600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=JetBrains+Mono:wght@400;600&display=swap">
 <style>
-:root { --bg:#F3F5F7; --surface:#FFFFFF; --ink:#17202A; --muted:#586474; --line:#D8DEE6; --accent:#2C57CF; --mint:#12806A; }
-@media (prefers-color-scheme: dark) { :root { --bg:#0E1319; --surface:#151C25; --ink:#E5EBF2; --muted:#95A2B2; --line:#263240; --accent:#7E9CFF; --mint:#4ECFA5; color-scheme: dark; } }
+:root { --bg:#F5F7FA; --surface:#FFFFFF; --ink:#1A2233; --muted:#5A6578; --line:#DCE2EA; --accent:#2463C8; --mint:#0F766E; }
+@media (prefers-color-scheme: dark) { :root { --bg:#0E131B; --surface:#18202B; --ink:#E2E8F0; --muted:#9AA6B8; --line:#2A3442; --accent:#7EA9FF; --mint:#4FD1C0; color-scheme: dark; } }
 * { box-sizing: border-box; }
-body { margin:0; background:var(--bg); color:var(--ink); font-family:"Atkinson Hyperlegible",system-ui,sans-serif; font-size:17px; line-height:1.6; }
+body { margin:0; background:var(--bg); color:var(--ink); font-family:Figtree,system-ui,sans-serif; font-size:17.5px; line-height:1.68; -webkit-font-smoothing:antialiased; }
 main { max-width:1040px; margin:0 auto; padding:56px 16px 80px; display:flex; flex-direction:column; gap:40px; }
 .eyebrow { font-family:"JetBrains Mono",monospace; font-size:.78rem; letter-spacing:.08em; text-transform:uppercase; color:var(--accent); }
-h1 { font-family:"Bricolage Grotesque",sans-serif; font-weight:800; font-size:clamp(2rem,5vw,3.1rem); line-height:1.1; letter-spacing:-.02em; margin:8px 0 12px; }
+h1 { font-family:Fraunces,Georgia,serif; font-weight:500; font-size:clamp(2rem,5vw,3.1rem); line-height:1.1; letter-spacing:-.02em; margin:8px 0 12px; }
 .lede { color:var(--muted); font-size:1.15rem; max-width:62ch; margin:0; }
 .grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:20px; }
 a.card { display:flex; flex-direction:column; text-decoration:none; color:inherit; background:var(--surface); border:1px solid var(--line); border-radius:14px; overflow:hidden; transition:border-color .15s, transform .15s; }
@@ -28,7 +28,7 @@ a.card:hover { border-color:var(--accent); transform:translateY(-2px); }
 a.card:focus-visible { outline:3px solid var(--accent); outline-offset:3px; }
 a.card img { display:block; width:100%; aspect-ratio:1200/630; object-fit:cover; border-bottom:1px solid var(--line); background:var(--bg); }
 .body { padding:16px 18px 20px; display:flex; flex-direction:column; gap:8px; }
-.body h2 { font-family:"Bricolage Grotesque",sans-serif; font-size:1.35rem; margin:0; }
+.body h2 { font-family:Fraunces,Georgia,serif; font-weight:500; font-size:1.35rem; margin:0; }
 .body p { margin:0; color:var(--muted); font-size:.96rem; }
 .tags { display:flex; flex-wrap:wrap; gap:6px; margin-top:4px; }
 .tags span { font-family:"JetBrains Mono",monospace; font-size:.72rem; border:1px solid var(--line); border-radius:99px; padding:2px 9px; color:var(--muted); }
@@ -60,7 +60,7 @@ footer a { color:var(--accent); }
       <div class="body">
         <h2>HEAD Start</h2>
         <p>A field guide for new software engineers: Git, code review, databases, APIs, testing and shipping safely, explained clearly.</p>
-        <div class="tags"><span>11 parts</span><span>software engineering</span><span>beginner</span></div>
+        <div class="tags"><span>11 parts</span><span>software engineering</span><span>career skills</span></div>
         <span class="go">Start learning →</span>
       </div>
     </a>

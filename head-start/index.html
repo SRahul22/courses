@@ -24,53 +24,53 @@
 <title>HEAD Start</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=JetBrains+Mono:wght@400;600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;600&family=Figtree:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=JetBrains+Mono:wght@400;600&display=swap">
 <style>
 /* Layout: sticky chapter rail grouped into five parts (wraps to a top strip on phones), one readable column of chapters. Each chapter = read → try it → takeaways → gentle quiz. */
 :root {
-  --bg: #F3F5F7;
+  --bg: #F5F7FA;
   --surface: #FFFFFF;
-  --ink: #17202A;
-  --muted: #586474;
-  --line: #D8DEE6;
-  --accent: #2C57CF;
-  --accent-soft: #E4EBFB;
-  --mint: #12806A;
-  --mint-soft: #DCF1EA;
-  --plum: #8A44B8;
-  --plum-soft: #F1E6F8;
-  --warn: #A84E16;
-  --warn-soft: #FBE8DA;
+  --ink: #1A2233;
+  --muted: #5A6578;
+  --line: #DCE2EA;
+  --accent: #2463C8;
+  --accent-soft: rgba(36,99,200,.10);
+  --mint: #0F766E;
+  --mint-soft: rgba(15,118,110,.10);
+  --plum: #8A3DC2;
+  --plum-soft: rgba(138,61,194,.10);
+  --warn: #B3352B;
+  --warn-soft: rgba(179,53,43,.08);
   --code-bg: #121A23;
   --code-fg: #DCE6F0;
   --code-dim: #8796A8;
-  --font-display: "Bricolage Grotesque", "Avenir Next", "Segoe UI", system-ui, sans-serif;
-  --font-body: "Atkinson Hyperlegible", "Segoe UI", system-ui, sans-serif;
+  --font-display: Fraunces, Georgia, serif;
+  --font-body: Figtree, system-ui, -apple-system, "Segoe UI", sans-serif;
   --font-mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
   --r: 10px;
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --bg: #0E1319; --surface: #151C25; --ink: #E5EBF2; --muted: #95A2B2; --line: #263240;
-    --accent: #7E9CFF; --accent-soft: #1C2747; --mint: #4ECFA5; --mint-soft: #12302A; --plum: #C38BEA; --plum-soft: #2A1C36;
-    --warn: #F0A272; --warn-soft: #3A2417; --code-bg: #0A0F14; --code-fg: #DCE6F0; --code-dim: #8796A8;
+    --bg: #0E131B; --surface: #18202B; --ink: #E2E8F0; --muted: #9AA6B8; --line: #2A3442;
+    --accent: #7EA9FF; --accent-soft: rgba(126,169,255,.14); --mint: #4FD1C0; --mint-soft: rgba(79,209,192,.12); --plum: #C690F2; --plum-soft: rgba(198,144,242,.14);
+    --warn: #F08A7E; --warn-soft: rgba(240,138,126,.12); --code-bg: #0A0F14; --code-fg: #DCE6F0; --code-dim: #8796A8;
     color-scheme: dark;
   }
 }
 :root[data-theme="dark"] {
-  --bg: #0E1319; --surface: #151C25; --ink: #E5EBF2; --muted: #95A2B2; --line: #263240;
-  --accent: #7E9CFF; --accent-soft: #1C2747; --mint: #4ECFA5; --mint-soft: #12302A; --plum: #C38BEA; --plum-soft: #2A1C36;
-  --warn: #F0A272; --warn-soft: #3A2417; --code-bg: #0A0F14; --code-fg: #DCE6F0; --code-dim: #8796A8;
+  --bg: #0E131B; --surface: #18202B; --ink: #E2E8F0; --muted: #9AA6B8; --line: #2A3442;
+    --accent: #7EA9FF; --accent-soft: rgba(126,169,255,.14); --mint: #4FD1C0; --mint-soft: rgba(79,209,192,.12); --plum: #C690F2; --plum-soft: rgba(198,144,242,.14);
+    --warn: #F08A7E; --warn-soft: rgba(240,138,126,.12); --code-bg: #0A0F14; --code-fg: #DCE6F0; --code-dim: #8796A8;
   color-scheme: dark;
 }
 * { box-sizing: border-box; }
 html { scroll-behavior: smooth; }
-body { background: var(--bg); color: var(--ink); font-family: var(--font-body); font-size: 17px; line-height: 1.6; }
+body { background: var(--bg); color: var(--ink); font-family: var(--font-body); font-size: 17.5px; line-height: 1.68; -webkit-font-smoothing: antialiased; }
 .shell { display: grid; grid-template-columns: clamp(288px, 20vw, 320px) minmax(0, 1fr); min-height: 100vh; }
-h1, h2, h3 { font-family: var(--font-display); line-height: 1.15; text-wrap: balance; margin: 0; }
-h1 { font-size: clamp(2rem, 4.4vw, 3.1rem); font-weight: 800; letter-spacing: -0.02em; }
-h2 { font-size: clamp(1.55rem, 3vw, 2.05rem); font-weight: 700; letter-spacing: -0.01em; }
-h3 { font-size: 1.15rem; font-weight: 700; }
+h1, h2, h3 { font-family: var(--font-display); font-weight: 500; line-height: 1.2; text-wrap: balance; margin: 0; }
+h1 { font-size: clamp(2rem, 4.4vw, 3rem); font-weight: 500; letter-spacing: -0.015em; }
+h2 { font-size: clamp(1.55rem, 3vw, 2.05rem); font-weight: 500; letter-spacing: -0.01em; }
+h3 { font-size: 1.2rem; font-weight: 500; }
 p { margin: 0; }
 code { font-family: var(--font-mono); font-size: 0.86em; background: var(--accent-soft); padding: 1px 6px; border-radius: 5px; overflow-wrap: anywhere; }
 a { color: var(--accent); }
@@ -80,7 +80,7 @@ button:focus-visible, input:focus-visible { outline: 3px solid var(--accent); ou
 /* rail */
 .rail { position: sticky; top: env(safe-area-inset-top, 0px); align-self: start; height: calc(100vh - env(safe-area-inset-top, 0px)); display: flex; flex-direction: column; gap: 16px; overflow-y: auto; background: var(--surface); border-right: 1px solid var(--line); padding-inline: 20px; padding-block: 28px 24px; }
 .rail .toc a:hover, .rail .toc .part button:hover { background: var(--bg); }
-.brand { font-family: var(--font-display); font-weight: 800; font-size: 1.05rem; display: flex; align-items: center; gap: 10px; min-width: 0; }
+.brand { font-family: var(--font-display); font-weight: 600; font-size: 1.05rem; display: flex; align-items: center; gap: 10px; min-width: 0; }
 .brand-name { white-space: nowrap; }
 .rail-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
 .rail-body { display: flex; flex-direction: column; gap: 16px; }
@@ -171,6 +171,11 @@ main { display: flex; flex-direction: column; gap: 72px; min-width: 0; width: 10
 .promise { display: flex; flex-wrap: wrap; gap: 10px; }
 .promise span { font-size: 0.9rem; padding: 6px 12px; border-radius: 99px; border: 1px solid var(--line); background: var(--surface); }
 .plan { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 12px; }
+.lead { display: flex; flex-direction: column; gap: 12px; }
+.lead p { color: var(--muted); }
+.lead .lead-idea { font: 400 clamp(20px, 2.5vw, 24px)/1.45 var(--font-display); letter-spacing: -0.008em; color: var(--ink); }
+.lead .lead-like { margin-top: 4px; padding: 14px 16px; border-radius: 12px; background: var(--surface); border: 1px solid var(--line); font-size: 15.5px; }
+.lead .lead-k { font-weight: 700; color: var(--ink); }
 .intro { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
 .intro > div { border-radius: var(--r); padding: 14px 16px; display: flex; flex-direction: column; gap: 6px; min-width: 0; font-size: 0.97rem; }
 .intro .one { background: var(--accent-soft); }
@@ -209,7 +214,7 @@ details.deeper > * + * { margin-top: 14px; }
 .tty-line input { flex: 1; min-width: 0; background: transparent; border: 0; color: var(--code-fg); font: inherit; padding: 0; outline: none; }
 .checklist { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 18px; }
 .checklist fieldset { border: 0; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; min-width: 0; }
-.checklist legend { font-family: var(--font-display); font-weight: 700; margin-bottom: 4px; padding: 0; }
+.checklist legend { font-family: var(--font-display); font-weight: 600; margin-bottom: 4px; padding: 0; }
 .checklist label { display: grid; grid-template-columns: 20px minmax(0, 1fr); gap: 8px; align-items: start; font-size: 0.93rem; cursor: pointer; }
 .checklist input { accent-color: var(--mint); margin-top: 4px; }
 .checklist input:checked + span { color: var(--muted); text-decoration: line-through; }
@@ -219,7 +224,7 @@ details.deeper > * + * { margin-top: 14px; }
 .plan button:hover span { color: var(--accent); }
 /* Home: "What's inside" as readable cards */
 .plan-head { display: flex; flex-direction: column; gap: 2px; margin-top: 8px; }
-.plan-head h3 { font-family: var(--font-display); font-size: 1.2rem; font-weight: 700; }
+.plan-head h3 { font-family: var(--font-display); font-size: 1.2rem; font-weight: 500; }
 .plan-head p { color: var(--muted); font-size: 0.95rem; }
 .plan { grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 10px; }
 .plan button.plan-card { display: grid; grid-template-columns: 34px minmax(0, 1fr); align-items: center; gap: 12px; padding: 12px 14px; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); color: var(--ink); text-align: left; font-size: 0.95rem; }
@@ -248,7 +253,7 @@ tr.unmatched td { background: var(--warn-soft); }
 .codelines mark { background: rgba(243, 198, 122, .35); color: inherit; border-radius: 2px; }
 .part-divider { display: flex; flex-direction: column; gap: 6px; padding-top: 28px; border-top: 2px solid var(--ink); }
 .part-divider span { font-family: var(--font-mono); font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); }
-.part-divider h2 { font-size: clamp(1.9rem, 3.6vw, 2.6rem); font-weight: 800; }
+.part-divider h2 { font-size: clamp(1.9rem, 3.6vw, 2.6rem); font-weight: 500; }
 section.ch { display: flex; flex-direction: column; gap: 22px; scroll-margin-top: 24px; }
 .ch-head { display: flex; flex-direction: column; gap: 8px; }
 .prose { display: flex; flex-direction: column; gap: 14px; max-width: 68ch; }
@@ -431,7 +436,7 @@ td code { white-space: nowrap; }
 dialog.cert { border: 0; padding: 0; border-radius: 14px; width: min(940px, calc(100vw - 32px)); max-height: calc(100dvh - 32px); background: var(--surface); color: var(--ink); box-shadow: 0 30px 80px rgba(0, 0, 0, .35); overflow: auto; }
 dialog.cert::backdrop { background: rgba(10, 15, 20, .6); }
 .cert-body { display: flex; flex-direction: column; gap: 18px; padding: 28px; }
-.cert-body h2 { font-size: clamp(1.8rem, 4vw, 2.6rem); font-weight: 800; }
+.cert-body h2 { font-size: clamp(1.8rem, 4vw, 2.6rem); font-weight: 500; }
 .cert-body .lede { font-size: 1.05rem; }
 .cert-name { display: flex; flex-direction: column; gap: 6px; }
 .cert-name input { font: inherit; font-size: 1.1rem; padding: 10px 14px; border: 1px solid var(--line); border-radius: 8px; background: var(--bg); color: var(--ink); max-width: 420px; }
@@ -465,7 +470,7 @@ dialog.cert::backdrop { background: rgba(10, 15, 20, .6); }
     </div>
     <div class="rail-body">
       <div class="progress">
-        <span id="progText">0 questions answered right</span>
+        <span id="progText"></span>
         <div class="bar"><i id="progBar"></i></div>
       </div>
       <button class="cert-open" id="certBtn" type="button" hidden><svg width="18" height="18" viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="8" r="5.5" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M6.5 12.2L5 18l5-2.4 5 2.4-1.5-5.8" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>Your certificate</button>
@@ -501,7 +506,7 @@ dialog.cert::backdrop { background: rgba(10, 15, 20, .6); }
       <div class="ch-head"><span class="eyebrow">Chapter</span><h2>What software engineers actually do</h2></div>
       <div class="prose">
         <p>Software is a set of instructions that tells computers what to do. Engineers write those instructions as <b>code</b>. But typing new code is a small part of the job. Most of it is understanding problems, reading existing code, working with people, and changing things safely.</p>
-        <p>You'll spend far more time <b>reading</b> code than writing it. That's normal, and it's how everyone learns a codebase.</p>
+        <p>You'll spend far more time <b>reading</b> code than writing it. It's how everyone learns a codebase.</p>
       </div>
       <div class="prose"><h3>Who's on a software team</h3></div>
       <div class="table-wrap"><table>
@@ -2577,19 +2582,19 @@ Is there a step I'm missing?</pre></div>
     PARTS.forEach(function (p, i) {
       var ps = partScore(p), on = i === activePart;
       var complete = ps[1] && ps[0] === ps[1];
-      html += '<li class="part"><button type="button" data-part="' + i + '" class="' + (on ? "active" : "") + (complete ? " complete" : "") + '" aria-expanded="' + on + '" aria-label="' + esc(p.label + ": " + p.title) + '"><span class="pn">' + (i + 1) + '</span><span class="pt"><b>' + esc(p.title) + "</b><small>" + p.chapters.length + " chapter" + (p.chapters.length === 1 ? "" : "s") + '</small></span><span class="score' + (complete ? " done" : "") + '">' + ps[0] + "/" + ps[1] + "</span></button></li>";
+      html += '<li class="part"><button type="button" data-part="' + i + '" class="' + (on ? "active" : "") + (complete ? " complete" : "") + '" aria-expanded="' + on + '" aria-label="' + esc(p.label + ": " + p.title) + '"><span class="pn">' + (i + 1) + '</span><span class="pt"><b>' + esc(p.title) + "</b><small>" + p.chapters.length + " chapter" + (p.chapters.length === 1 ? "" : "s") + '</small></span><span class="score' + (complete ? " done" : "") + '">' + (ps[0] ? ps[0] + "/" + ps[1] : "") + "</span></button></li>";
       if (!on) return;
       p.chapters.forEach(function (s) {
         var sc = chapterScore(s.id), len = QUIZ[s.id] ? QUIZ[s.id].length : 0;
-        var badge = sc === null ? "" : '<span class="score' + (sc === len ? " done" : "") + '">' + sc + "/" + len + "</span>";
+        var badge = !sc ? "" : '<span class="score' + (sc === len ? " done" : "") + '">' + sc + "/" + len + "</span>";
         html += '<li class="sub"><a href="#' + s.id + '" data-id="' + s.id + '"><span>' + esc(s.dataset.title) + "</span>" + badge + "</a></li>";
       });
     });
     $("toc").innerHTML = html;
     var done = Object.keys(solved).filter(function (k) { return solved[k]; }).length;
-    $("progText").textContent = done + " of " + TOTAL + " questions answered right";
-    $("progBar").style.width = (done / TOTAL * 100) + "%";
-    $("topProg").textContent = done + "/" + TOTAL;
+    $("progText").textContent = done ? "You have answered " + Math.round(100 * done / TOTAL) + "% of the questions." : "";
+    $("progBar").style.width = (done / TOTAL * 100) + "%"; $("progBar").parentNode.hidden = !done;
+    $("topProg").textContent = done ? done + "/" + TOTAL : "";
     highlightToc();
   }
 
@@ -2870,7 +2875,7 @@ Is there a step I'm missing?</pre></div>
   CH.forEach(function (s, i) {
     var e = s.querySelector(".ch-head .eyebrow"); if (!e) return;
     var lv = s.dataset.level || "", cls = { "Beginner": "b", "Next step": "n", "Going deeper": "d", "Reference": "r" }[lv] || "b";
-    e.innerHTML = "Chapter " + (i + 1) + (s.dataset.min ? " · " + s.dataset.min + " min" : "") + (lv ? ' <span class="lvl ' + cls + '">' + lv + "</span>" : "");
+    e.innerHTML = "Chapter " + (i + 1) + (s.dataset.min ? " · " + s.dataset.min + " min" : "") + (lv === "Reference" ? ' <span class="lvl ' + cls + '">' + lv + "</span>" : "");
   });
 
   /* ---------- chapter openers: one sentence, why it matters, everyday comparison ---------- */
@@ -2904,8 +2909,8 @@ Is there a step I'm missing?</pre></div>
   };
   CH.forEach(function (s) {
     var d = INTRO[s.id]; if (!d) return;
-    var box = document.createElement("div"); box.className = "intro";
-    box.innerHTML = '<div class="one"><span class="label">In one sentence</span><p>' + esc(d[0]) + '</p></div><div class="why"><span class="label">Why it matters to you</span><p>' + esc(d[1]) + '</p></div><div class="like"><span class="label">It\'s like…</span><p>' + esc(d[2]) + "</p></div>";
+    var box = document.createElement("div"); box.className = "lead";
+    box.innerHTML = '<p class="lead-idea">' + esc(d[0]) + '</p><p>' + esc(d[1]) + '</p><p class="lead-like"><span class="lead-k">Picture it.</span> ' + esc(d[2]) + "</p>";
     var head = s.querySelector(".ch-head"); head.parentNode.insertBefore(box, head.nextSibling);
   });
 
