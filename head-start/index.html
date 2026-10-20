@@ -2762,7 +2762,7 @@ Is there a step I'm missing?</pre></div>
       var x = X(c), y = Y(c.lane), color = col[c.lane];
       svg += '<circle cx="' + x + '" cy="' + y + '" r="' + (c.merge ? 10 : 8) + '" fill="' + (c.merge ? bg : color) + '" stroke="' + color + '" stroke-width="3"/>';
       var words = c.msg.length > 17 ? c.msg.slice(0, 16) + "…" : c.msg;
-      svg += '<text x="' + x + '" y="' + (y + 28) + '" text-anchor="middle" font-family="Atkinson Hyperlegible, sans-serif" font-size="11" fill="' + muted + '">' + esc(words) + "</text>";
+      svg += '<text x="' + x + '" y="' + (y + 28) + '" text-anchor="middle" font-family="Figtree, sans-serif" font-size="11" fill="' + muted + '">' + esc(words) + "</text>";
     });
     Object.keys(g.branches).forEach(function (name) {
       var b = g.branches[name], c = g.commits[b.head], x = X(c), y = Y(b.lane) - 22, here = name === g.cur;
@@ -3265,7 +3265,7 @@ Is there a step I'm missing?</pre></div>
     var c = $("certCanvas"), x = c.getContext("2d"), W = c.width, H = c.height;
     var name = ($("certNameInput").value || "").trim() || "Your Name";
     var ink = "#17202A", muted = "#586474", accent = "#2C57CF", mint = "#12806A", line = "#D8DEE6", paper = "#FBFCFD";
-    var display = '"Bricolage Grotesque", "Avenir Next", sans-serif', body = '"Atkinson Hyperlegible", sans-serif', mono = '"JetBrains Mono", monospace';
+    var display = '"Fraunces", Georgia, serif', body = '"Figtree", sans-serif', mono = '"JetBrains Mono", monospace';
     x.fillStyle = paper; x.fillRect(0, 0, W, H);
     // dot grid
     x.fillStyle = "rgba(44, 87, 207, .07)";
@@ -3289,7 +3289,7 @@ Is there a step I'm missing?</pre></div>
     x.textBaseline = "alphabetic"; x.textAlign = "left";
     x.fillStyle = accent; x.font = "600 40px " + mono;
     x.fillText("HEAD START  ·  CERTIFICATE OF COMPLETION".split("").join(String.fromCharCode(8202)), L, 300);
-    x.fillStyle = ink; x.font = "800 128px " + display; x.fillText("Software Engineering", L, 470); x.fillText("Foundations", L, 600);
+    x.fillStyle = ink; x.font = "600 128px " + display; x.fillText("Software Engineering", L, 470); x.fillText("Foundations", L, 600);
     x.fillStyle = muted; x.font = "400 52px " + body; x.fillText("This certifies that", L, 740);
     var size = 150; x.font = "800 " + size + "px " + display;
     while (x.measureText(name).width > maxW && size > 60) { size -= 4; x.font = "800 " + size + "px " + display; }
@@ -3318,7 +3318,7 @@ Is there a step I'm missing?</pre></div>
     x.save(); x.translate(sx, sy); x.rotate(-0.18);
     x.strokeStyle = mint; x.lineWidth = 8; x.beginPath(); x.arc(0, 0, 150, 0, 7); x.stroke();
     x.lineWidth = 3; x.beginPath(); x.arc(0, 0, 126, 0, 7); x.stroke();
-    x.fillStyle = mint; x.textAlign = "center"; x.font = "800 58px " + display; x.fillText("MERGED", 0, 20);
+    x.fillStyle = mint; x.textAlign = "center"; x.font = "600 58px " + display; x.fillText("MERGED", 0, 20);
     x.font = "600 24px " + mono; x.fillText("INTO MAIN", 0, 66);
     x.lineWidth = 8; x.lineCap = "round"; x.lineJoin = "round"; x.beginPath(); x.moveTo(-34, -62); x.lineTo(-8, -38); x.lineTo(40, -88); x.stroke();
     x.restore(); x.textAlign = "left";
@@ -3328,8 +3328,8 @@ Is there a step I'm missing?</pre></div>
   var fontsReady = null;
   function whenFonts() {
     if (!fontsReady) fontsReady = document.fonts ? Promise.all([
-      document.fonts.load('800 100px "Bricolage Grotesque"'), document.fonts.load('400 40px "Atkinson Hyperlegible"'),
-      document.fonts.load('700 40px "Atkinson Hyperlegible"'), document.fonts.load('600 40px "JetBrains Mono"')
+      document.fonts.load('600 100px "Fraunces"'), document.fonts.load('400 40px "Figtree"'),
+      document.fonts.load('700 40px "Figtree"'), document.fonts.load('600 40px "JetBrains Mono"')
     ]).catch(function () {}) : Promise.resolve();
     return fontsReady;
   }
