@@ -7,6 +7,7 @@ Free, interactive, self-paced courses by Rahul Dev Sharma, published at https://
 | `/optimization/` | Downhill: computational methods of optimization (IISc E0 230) | built from `~/Dev/course-sources/downhill/source` (private backup `SRahul22/downhill`) |
 | `/head-start/` | HEAD Start: a field guide for new software engineers | built from `~/Dev/course-sources/head-start/source` (private backup `SRahul22/head-start`) |
 | `/tour-guide/` | Tour Guide: logistics and freight modelling (IISc SL 225) | built from `~/Dev/course-sources/tour-guide/source` (private backup `SRahul22/tour-guide`) |
+| `/ashish/` | Ashish: a one-page hello for Ashish (not a course, no catalogue card) | hand-written `ashish/index.html` (no source repo) |
 | `/gate-da/` | GATE DA: maths for the GATE Data Science & AI exam (multi-page: hub + one page per module) | built from `~/Dev/course-sources/gate-da/source` (private backup `SRahul22/gate-da`) |
 
 Each course is one self-contained `index.html` plus a `preview.png` link-preview image. To add a course, build it into a new folder and add a card to `index.html`.
