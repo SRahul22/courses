@@ -1,0 +1,402 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Which Would You Choose?</title>
+<meta name="description" content="Two quick choices between lottery boxes. A live classroom version of the Allais paradox.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Which would you choose?">
+<meta property="og:description" content="Two quick choices between lottery boxes. A live classroom version of the Allais paradox.">
+<meta property="og:url" content="https://courses.rahuldevsharma.com/allais/">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,500;9..144,600&display=swap">
+<style>
+:root {
+  --bg:#F5F7FA; --panel:#FFFFFF; --line:rgba(30,41,59,.12); --line2:rgba(30,41,59,.22);
+  --tx:#1A2233; --tx2:#475266; --tx3:#748094; --accent:#3D3B8E; --accent-bg:rgba(61,59,142,.08);
+  --five:#3D3B8E; --one:#1B8A80; --zero-bg:#F8DDE1; --zero-line:#E39AA4; --zero:#C23B4E;
+  --shadow:0 1px 2px rgba(30,41,59,.05),0 8px 26px -14px rgba(30,41,59,.16);
+  --serif:Fraunces,Georgia,serif; --sans:Figtree,system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg:#0E131B; --panel:#18202B; --line:rgba(203,213,225,.12); --line2:rgba(203,213,225,.24);
+  --tx:#E2E8F0; --tx2:#AAB6C6; --tx3:#7C889A; --accent:#A9A6F5; --accent-bg:rgba(169,166,245,.10);
+  --five:#7C78E0; --one:#2BB3A6; --zero-bg:#3A2228; --zero-line:#7A3C47; --zero:#F0798A;
+  --shadow:none; color-scheme:dark;
+} }
+:root[data-theme="dark"] {
+  --bg:#0E131B; --panel:#18202B; --line:rgba(203,213,225,.12); --line2:rgba(203,213,225,.24);
+  --tx:#E2E8F0; --tx2:#AAB6C6; --tx3:#7C889A; --accent:#A9A6F5; --accent-bg:rgba(169,166,245,.10);
+  --five:#7C78E0; --one:#2BB3A6; --zero-bg:#3A2228; --zero-line:#7A3C47; --zero:#F0798A;
+  --shadow:none; color-scheme:dark;
+}
+* { box-sizing:border-box; }
+body { margin:0; background:var(--bg); color:var(--tx); font-family:var(--sans); font-size:17px; line-height:1.5; }
+main { max-width:760px; margin:0 auto; padding:28px 16px 64px; }
+h1, h2 { font-family:var(--serif); font-weight:600; letter-spacing:-.01em; line-height:1.15; margin:0 0 10px; }
+h1 { font-size:clamp(1.8rem,6vw,2.6rem); }
+h2 { font-size:clamp(1.35rem,4.5vw,1.8rem); }
+p { margin:0 0 12px; color:var(--tx2); }
+b, strong { color:var(--tx); font-weight:600; }
+.kicker { font-size:.8rem; font-weight:600; letter-spacing:.08em; text-transform:uppercase; color:var(--accent); margin-bottom:8px; }
+.step { display:none; }
+.step.on { display:block; animation:in .25s ease; }
+@keyframes in { from { opacity:0; transform:translateY(6px); } }
+.card { background:var(--panel); border:1px solid var(--line); border-radius:14px; padding:18px; box-shadow:var(--shadow); }
+
+/* ticket grids */
+.grid { display:grid; grid-template-columns:repeat(10,1fr); gap:3px; width:100%; max-width:240px; margin:0 auto; }
+.grid i { aspect-ratio:1; border-radius:2px; background:var(--zero-bg); box-shadow:inset 0 0 0 1px var(--zero-line); transition:opacity .35s, transform .35s; }
+.grid i.f { background:var(--five); box-shadow:none; }
+.grid i.o { background:var(--one); box-shadow:none; }
+.grid i.drawn { background:transparent; box-shadow:inset 0 0 0 1.5px var(--tx3); }
+.grid.fade i.common { opacity:.12; transform:scale(.8); }
+.key { list-style:none; padding:0; margin:12px 0 0; font-size:.92rem; color:var(--tx2); }
+.key li { display:flex; align-items:center; gap:8px; margin:3px 0; }
+.sw { width:12px; height:12px; border-radius:2px; flex:none; }
+.sw.f { background:var(--five); } .sw.o { background:var(--one); } .sw.z { background:var(--zero-bg); box-shadow:inset 0 0 0 1px var(--zero-line); }
+.zero-t { color:var(--zero); font-weight:600; }
+
+/* intro */
+.intro { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1.1fr); gap:24px; align-items:start; margin:18px 0 22px; }
+.drawwrap { display:flex; align-items:center; gap:14px; justify-content:center; }
+.drawwrap .grid { max-width:200px; }
+.bigticket { width:56px; height:56px; border-radius:6px; background:var(--one); flex:none; }
+.win { text-align:center; font-weight:700; color:var(--one); font-size:.9rem; margin-top:6px; }
+ol.steps { margin:0; padding:0; list-style:none; counter-reset:s; }
+ol.steps li { counter-increment:s; position:relative; padding-left:34px; margin:0 0 14px; color:var(--tx2); }
+ol.steps li::before { content:counter(s); position:absolute; left:0; top:0; width:24px; height:24px; border-radius:50%; background:var(--accent-bg); color:var(--accent); font-weight:700; font-size:.85rem; display:grid; place-items:center; }
+
+/* choices */
+.pair { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin:16px 0 18px; }
+.opt { display:flex; flex-direction:column; justify-content:flex-start; font:inherit; color:inherit; text-align:left; cursor:pointer; background:var(--panel); border:2px solid var(--line); border-radius:14px; padding:14px 12px; box-shadow:var(--shadow); transition:border-color .15s, background .15s; }
+.opt:hover { border-color:var(--line2); }
+.opt[aria-pressed="true"] { border-color:var(--accent); background:var(--accent-bg); }
+.opt .lab { display:flex; justify-content:space-between; align-items:center; font-family:var(--serif); font-weight:600; font-size:1.2rem; margin-bottom:10px; }
+.tick { width:22px; height:22px; border-radius:50%; border:2px solid var(--line2); display:grid; place-items:center; font-size:.8rem; color:#fff; }
+.opt[aria-pressed="true"] .tick { background:var(--accent); border-color:var(--accent); }
+.opt[aria-pressed="true"] .tick::after { content:"✓"; }
+:root[data-theme="dark"] .opt[aria-pressed="true"] .tick, .opt[aria-pressed="true"] .tick { color:var(--bg); }
+.opt .key { font-size:.85rem; }
+
+.btn { font:inherit; font-weight:600; cursor:pointer; border:0; border-radius:10px; padding:12px 22px; background:var(--accent); color:var(--bg); }
+.btn:disabled { opacity:.35; cursor:default; }
+.btn.ghost { background:transparent; color:var(--accent); box-shadow:inset 0 0 0 1.5px var(--accent); }
+.row { display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
+.note { font-size:.88rem; color:var(--tx3); }
+
+/* reveal */
+.you { font-size:1.05rem; }
+.pill { display:inline-block; font-weight:700; padding:1px 10px; border-radius:99px; background:var(--accent-bg); color:var(--accent); }
+.four { display:grid; grid-template-columns:repeat(4,1fr); gap:10px; margin:16px 0 12px; }
+.four .card { padding:10px; text-align:center; }
+.four .card b { display:block; font-family:var(--serif); margin-bottom:6px; }
+.four .grid { max-width:150px; gap:2px; }
+.four .card.mine { border-color:var(--accent); box-shadow:inset 0 0 0 1px var(--accent); }
+details { margin-top:16px; }
+summary { cursor:pointer; font-weight:600; color:var(--accent); }
+
+/* presenter */
+.present main { max-width:1100px; }
+.pres-top { display:grid; grid-template-columns:auto 1fr; gap:28px; align-items:center; margin-bottom:24px; }
+#qr { background:#fff; padding:10px; border-radius:10px; width:max-content; }
+#qr img, #qr canvas { display:block; width:180px; height:180px; }
+.big { font-family:var(--serif); font-size:clamp(3rem,8vw,5.5rem); font-weight:600; line-height:1; color:var(--accent); }
+.bars { display:grid; grid-template-columns:1fr 1fr; gap:18px; margin:18px 0; }
+.bar { margin:10px 0; }
+.bar .t { display:flex; justify-content:space-between; font-weight:600; margin-bottom:4px; }
+.bar .track { height:22px; border-radius:6px; background:var(--line); overflow:hidden; }
+.bar .fill { height:100%; width:0; border-radius:6px; background:var(--accent); transition:width .6s ease; }
+table.x { border-collapse:collapse; width:100%; font-size:1.05rem; }
+table.x th, table.x td { border:1px solid var(--line2); padding:10px; text-align:center; }
+table.x th { color:var(--tx2); font-weight:600; }
+table.x td.ad { background:var(--accent-bg); font-weight:700; color:var(--accent); }
+.hidden-num .num { filter:blur(9px); }
+.warn { border-left:4px solid var(--zero); }
+
+@media (max-width:620px) {
+  body { font-size:16px; }
+  .intro { grid-template-columns:1fr; }
+  .four { grid-template-columns:repeat(2,1fr); }
+  .pres-top, .bars { grid-template-columns:1fr; }
+  .opt { padding:12px 9px; }
+  .opt .lab { font-size:1.05rem; }
+  .opt .key { font-size:.8rem; }
+}
+</style>
+</head>
+<body>
+<main>
+
+<!-- 0. Intro -->
+<section class="step on" id="s-intro">
+  <div class="kicker">A two-minute experiment</div>
+  <h1>The game: pick a box, draw one ticket</h1>
+  <div class="intro">
+    <div>
+      <div class="drawwrap">
+        <div class="grid" id="g-example"></div>
+        <div><div class="bigticket"></div><div class="win">you win<br>1 million</div></div>
+      </div>
+      <ul class="key" style="max-width:200px;margin:12px auto 0">
+        <li><span class="sw f"></span><span>ticket worth <b>5 million</b></span></li>
+        <li><span class="sw o"></span><span>ticket worth <b>1 million</b></span></li>
+        <li><span class="sw z"></span><span>ticket worth <span class="zero-t">nothing</span></span></li>
+      </ul>
+    </div>
+    <ol class="steps">
+      <li>You see two boxes. Each holds <b>100 lottery tickets</b>.</li>
+      <li>You pick <b>one</b> box.</li>
+      <li>One ticket is drawn at random from your box. You win <b>what is written on it</b>.</li>
+      <li>You make this choice <b>twice</b>, with two different pairs of boxes.</li>
+    </ol>
+  </div>
+  <p class="note">The box on the left is only an example (20 + 30 + 50 tickets). There are no right answers: go with your gut.</p>
+  <div class="row" style="margin-top:14px"><button class="btn" data-go="s-c1">Start</button></div>
+</section>
+
+<!-- 1. Choice 1 -->
+<section class="step" id="s-c1">
+  <div class="kicker">Choice 1 of 2</div>
+  <h2>Which box would you pick?</h2>
+  <div class="pair" data-q="c1"></div>
+  <div class="row"><button class="btn" id="next1" disabled data-go="s-c2">Next</button></div>
+</section>
+
+<!-- 2. Choice 2 -->
+<section class="step" id="s-c2">
+  <div class="kicker">Choice 2 of 2</div>
+  <h2>Which box would you pick?</h2>
+  <div class="pair" data-q="c2"></div>
+  <div class="row"><button class="btn ghost" data-go="s-c1">Back</button><button class="btn" id="submit" disabled>Submit my answers</button></div>
+  <p class="note" id="sendmsg" style="margin-top:10px"></p>
+</section>
+
+<!-- 3. Done -->
+<section class="step" id="s-done">
+  <div class="kicker">Thank you</div>
+  <h2>Your answers are in</h2>
+  <p class="you">You picked <span class="pill" id="mine1"></span> and <span class="pill" id="mine2"></span>.</p>
+  <p>Look up at the screen: the room's results will appear there. When the speaker reveals them, open the explanation below.</p>
+  <details id="why">
+    <summary>Why this pair of questions is interesting</summary>
+    <div style="margin-top:12px">
+      <p>Here are all four boxes, with the tickets drawn so the matching parts line up.</p>
+      <div class="four" id="four"></div>
+      <div class="row" style="margin-bottom:14px"><button class="btn ghost" id="fade">Hide the 89 tickets each pair shares</button></div>
+      <p>In each choice, <b>89 tickets are the same in both boxes</b>: 89 × 1 million in Choice 1, 89 × nothing in Choice 2. Those tickets pay the same whichever box you pick, so they should not change your mind.</p>
+      <p>Hide them and the two choices become <b>identical</b>: 11 tickets of 1 million against 10 tickets of 5 million plus 1 ticket of nothing. So a consistent decision-maker picks <b>A with C</b>, or <b>B with D</b>.</p>
+      <p>When Maurice Allais put these choices to economists at a 1953 conference, many (including trained decision theorists) chose <b>A and D</b>. This breaks the <b>independence axiom</b> of expected-utility theory: adding the same outcome to both options should not reverse a preference.</p>
+      <p id="verdict"></p>
+      <p>The usual reading: <b>certainty feels special</b> (A's sure million is hard to give up), but once the chances are small, 10% and 11% feel the same, so people go for the bigger prize.</p>
+    </div>
+  </details>
+</section>
+
+<!-- Presenter view (?view=results) -->
+<section class="step" id="s-results">
+  <div class="pres-top">
+    <div id="qr"></div>
+    <div>
+      <div class="kicker">Scan to take part</div>
+      <h1 id="url" style="font-size:clamp(1.3rem,3.5vw,2rem)"></h1>
+      <div class="row" style="align-items:baseline;gap:14px"><span class="big" id="n">0</span><span style="font-size:1.2rem;color:var(--tx2)">responses</span></div>
+    </div>
+  </div>
+  <div id="nobackend" class="card warn" style="display:none;margin-bottom:18px">
+    <b>Live results are not connected yet.</b>
+    <p style="margin:6px 0 0">Answers are not being collected. Set <code>ENDPOINT</code> in this page to the Google Apps Script web-app address.</p>
+  </div>
+  <div id="resbody" class="hidden-num">
+    <div class="bars">
+      <div class="card"><b>Choice 1</b>
+        <div class="bar"><div class="t"><span>A: 1 million for sure</span><span class="num" id="pA">0%</span></div><div class="track"><div class="fill" id="bA"></div></div></div>
+        <div class="bar"><div class="t"><span>B: the gamble</span><span class="num" id="pB">0%</span></div><div class="track"><div class="fill" id="bB"></div></div></div>
+      </div>
+      <div class="card"><b>Choice 2</b>
+        <div class="bar"><div class="t"><span>C: 11% of 1 million</span><span class="num" id="pC">0%</span></div><div class="track"><div class="fill" id="bC"></div></div></div>
+        <div class="bar"><div class="t"><span>D: 10% of 5 million</span><span class="num" id="pD">0%</span></div><div class="track"><div class="fill" id="bD"></div></div></div>
+      </div>
+    </div>
+    <div class="card">
+      <table class="x">
+        <tr><th></th><th>C</th><th>D</th></tr>
+        <tr><th>A</th><td class="num" id="xAC">0</td><td class="num ad" id="xAD">0</td></tr>
+        <tr><th>B</th><td class="num" id="xBC">0</td><td class="num" id="xBD">0</td></tr>
+      </table>
+      <p style="margin:14px 0 0;font-size:1.15rem"><b class="num" id="pAD">0%</b> of the room chose <b>A and D</b>, the pair that breaks expected-utility theory. A with C, or B with D, is consistent. Among the economists Allais asked in 1953, it was about 45%.</p>
+    </div>
+  </div>
+  <div class="row" style="margin-top:18px">
+    <button class="btn" id="reveal">Reveal results</button>
+    <span class="note" id="status"></span>
+  </div>
+</section>
+
+</main>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script>
+// Google Apps Script web-app address (see ~/Dev/pages/allais-quiz/README.md). Empty = answers stay on the device.
+const ENDPOINT = "https://script.google.com/macros/s/AKfycbxkECmURriG2UPiIbdWI7WGR_xI26r4gkXVMSAdoIRRSL1bKFWpEH3Bq-67WJENX9fq/exec";
+
+const OPTIONS = {
+  // tickets in order: the first 11 differ between the two boxes of a choice, the last 89 are shared
+  A: { name: "Option A", cells: "o".repeat(100),                         key: [["o", 100]] },
+  B: { name: "Option B", cells: "f".repeat(10) + "z" + "o".repeat(89),     key: [["f", 10], ["o", 89], ["z", 1]] },
+  C: { name: "Option C", cells: "o".repeat(11) + "z".repeat(89),         key: [["o", 11], ["z", 89]] },
+  D: { name: "Option D", cells: "f".repeat(10) + "z".repeat(90),         key: [["f", 10], ["z", 90]] },
+};
+const QUESTIONS = { c1: ["A", "B"], c2: ["C", "D"] };
+const PRIZE = { f: "<b>5 million</b>", o: "<b>1 million</b>", z: '<span class="zero-t">nothing</span>' };
+
+const $ = (s) => document.querySelector(s);
+const store = {
+  get(k) { try { return JSON.parse(localStorage.getItem("allais." + k)); } catch { return null; } },
+  set(k, v) { try { localStorage.setItem("allais." + k, JSON.stringify(v)); } catch {} },
+};
+
+function grid(cells, extraClass = "") {
+  const g = document.createElement("div");
+  g.className = "grid " + extraClass;
+  [...cells].forEach((c, i) => {
+    const t = document.createElement("i");
+    if (c !== "z") t.className = c;
+    if (i >= 11) t.classList.add("common");
+    g.appendChild(t);
+  });
+  return g;
+}
+function keyList(key) {
+  return '<ul class="key">' + key.map(([c, n]) =>
+    `<li><span class="sw ${c === "z" ? "z" : c}"></span><span>${n}&nbsp;ticket${n === 1 ? "" : "s"} → ${PRIZE[c]}</span></li>`).join("") + "</ul>";
+}
+function show(id) {
+  document.querySelectorAll(".step").forEach((s) => s.classList.toggle("on", s.id === id));
+  window.scrollTo(0, 0);
+}
+
+// --- participant flow ---
+const answers = { c1: null, c2: null };
+
+function buildChoices() {
+  for (const [q, opts] of Object.entries(QUESTIONS)) {
+    const pair = document.querySelector(`.pair[data-q="${q}"]`);
+    for (const k of opts) {
+      const b = document.createElement("button");
+      b.className = "opt"; b.type = "button"; b.setAttribute("aria-pressed", "false");
+      b.innerHTML = `<div class="lab">${OPTIONS[k].name}<span class="tick"></span></div>`;
+      b.appendChild(grid(OPTIONS[k].cells));
+      b.insertAdjacentHTML("beforeend", keyList(OPTIONS[k].key));
+      b.onclick = () => {
+        answers[q] = k;
+        pair.querySelectorAll(".opt").forEach((o) => o.setAttribute("aria-pressed", o === b ? "true" : "false"));
+        $(q === "c1" ? "#next1" : "#submit").disabled = false;
+      };
+      pair.appendChild(b);
+    }
+  }
+  // example box on the intro: 20 × 5M, 30 × 1M, 50 × nothing, with ticket 39 drawn
+  const ex = grid("f".repeat(20) + "o".repeat(30) + "z".repeat(50));
+  ex.children[39].className = "drawn";
+  $("#g-example").replaceWith(ex);
+}
+
+function showDone(a) {
+  $("#mine1").textContent = OPTIONS[a.c1].name;
+  $("#mine2").textContent = OPTIONS[a.c2].name;
+  const four = $("#four");
+  four.innerHTML = "";
+  for (const k of ["A", "B", "C", "D"]) {
+    const c = document.createElement("div");
+    c.className = "card" + (k === a.c1 || k === a.c2 ? " mine" : "");
+    c.innerHTML = `<b>${k}</b>`;
+    c.appendChild(grid(OPTIONS[k].cells));
+    four.appendChild(c);
+  }
+  const consistent = (a.c1 === "A" && a.c2 === "C") || (a.c1 === "B" && a.c2 === "D");
+  $("#verdict").innerHTML = consistent
+    ? `You chose <b>${a.c1} and ${a.c2}</b>: a consistent pair.`
+    : a.c1 === "A"
+      ? `You chose <b>A and D</b>, the classic Allais pattern. You are in good company.`
+      : `You chose <b>B and C</b>, the reverse pattern. It also breaks the independence axiom, but few people pick it.`;
+  show("s-done");
+}
+
+async function submit() {
+  const btn = $("#submit");
+  btn.disabled = true;
+  const id = store.get("id") || (crypto.randomUUID ? crypto.randomUUID() : String(Math.random()).slice(2));
+  store.set("id", id);
+  const a = { c1: answers.c1, c2: answers.c2 };
+  if (ENDPOINT) {
+    $("#sendmsg").textContent = "Sending…";
+    try {
+      // text/plain + no-cors avoids a CORS preflight, which Apps Script does not answer
+      await fetch(ENDPOINT, { method: "POST", mode: "no-cors", headers: { "Content-Type": "text/plain" },
+        body: JSON.stringify({ id, ...a }) });
+    } catch {
+      $("#sendmsg").textContent = "Could not send. Check your connection and try again.";
+      btn.disabled = false;
+      return;
+    }
+  }
+  store.set("answers", a);
+  showDone(a);
+}
+
+document.addEventListener("click", (e) => {
+  const go = e.target.closest("[data-go]");
+  if (go) show(go.dataset.go);
+});
+$("#submit").onclick = submit;
+$("#fade").onclick = () => {
+  const on = !$("#four .grid").classList.contains("fade");
+  document.querySelectorAll("#four .grid").forEach((g) => g.classList.toggle("fade", on));
+  $("#fade").textContent = on ? "Show all 100 tickets again" : "Hide the 89 tickets each pair shares";
+};
+
+// --- presenter view ---
+function pct(x, n) { return n ? Math.round((100 * x) / n) + "%" : "–"; }
+async function poll() {
+  try {
+    const r = await fetch(ENDPOINT + "?t=" + Date.now());
+    const d = await r.json();
+    const n = d.n || 0;
+    $("#n").textContent = n;
+    for (const k of ["A", "B", "C", "D"]) {
+      $("#p" + k).textContent = pct(d[k] || 0, n);
+      $("#b" + k).style.width = n ? (100 * (d[k] || 0)) / n + "%" : "0";
+    }
+    for (const k of ["AC", "AD", "BC", "BD"]) $("#x" + k).textContent = d[k] || 0;
+    $("#pAD").textContent = pct(d.AD || 0, n);
+    $("#status").textContent = "Updated " + new Date().toLocaleTimeString();
+  } catch {
+    $("#status").textContent = "Could not reach the results sheet; retrying…";
+  }
+}
+function presenter() {
+  document.body.classList.add("present");
+  const url = location.origin + location.pathname;
+  $("#url").textContent = url.replace(/^https?:\/\//, "");
+  if (window.QRCode) new QRCode($("#qr"), { text: url, width: 360, height: 360, correctLevel: QRCode.CorrectLevel.M });
+  $("#reveal").onclick = () => {
+    const hidden = $("#resbody").classList.toggle("hidden-num");
+    $("#reveal").textContent = hidden ? "Reveal results" : "Hide results";
+  };
+  show("s-results");
+  if (!ENDPOINT) { $("#nobackend").style.display = "block"; return; }
+  poll();
+  setInterval(poll, 4000);
+}
+
+buildChoices();
+if (new URLSearchParams(location.search).get("view") === "results") presenter();
+else {
+  const saved = store.get("answers");
+  if (saved && saved.c1 && saved.c2) showDone(saved);
+}
+</script>
+</body>
+</html>
