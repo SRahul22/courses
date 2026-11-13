@@ -1,0 +1,904 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Quiz Day: Ch 7 + Ch 8</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Fraunces:wght@600;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f7f5f0; --card:#ffffff; --ink:#1d2330; --soft:#5b6475; --line:#e4e0d6;
+  --blue:#2563eb; --blue-bg:#eaf1ff;
+  --red:#d93a3a; --red-bg:#fdeeee;
+  --green:#178a55; --green-bg:#e8f7ef;
+  --gold:#b7791f; --gold-bg:#fdf5e4;
+  --purple:#7c3aed; --purple-bg:#f3edff;
+  --accent:#e85d2a;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#14161c; --card:#1d2029; --ink:#e8eaf0; --soft:#a0a8b8; --line:#2e3240;
+    --blue:#7aa7ff; --blue-bg:#1b2540; --red:#ff7b7b; --red-bg:#3a1e22;
+    --green:#5fd39a; --green-bg:#16301f; --gold:#f0bb5c; --gold-bg:#33291a;
+    --purple:#b79bff; --purple-bg:#282040; --accent:#ff8a5c;
+  }
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.65 Inter,system-ui,sans-serif}
+main{max-width:860px;margin:0 auto;padding:0 16px 120px}
+h1,h2,h3{font-family:Fraunces,Georgia,serif;line-height:1.2}
+header.hero{padding:44px 0 18px}
+header.hero h1{font-size:2.4rem;margin:0 0 6px}
+header.hero p{color:var(--soft);margin:4px 0}
+.pill{display:inline-block;background:var(--card);border:1px solid var(--line);border-radius:999px;padding:3px 12px;margin:4px 6px 0 0;font-size:.85rem}
+nav.tabs{position:sticky;top:0;z-index:10;background:var(--bg);display:flex;gap:6px;flex-wrap:wrap;padding:10px 0;border-bottom:1px solid var(--line)}
+nav.tabs button{font:600 .9rem Inter,sans-serif;border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:10px;padding:8px 12px;cursor:pointer}
+nav.tabs button.on{background:var(--ink);color:var(--bg)}
+section.page{display:none}
+section.page.on{display:block}
+.scene{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:22px 22px 10px;margin:22px 0}
+.scene h2{margin:0 0 4px;font-size:1.5rem}
+.scene .num{font:800 .8rem Inter;color:var(--accent);letter-spacing:.08em;text-transform:uppercase}
+.hook{font-size:1.08rem;font-style:italic;color:var(--soft);margin:6px 0 14px}
+.box{border-left:5px solid;border-radius:10px;padding:12px 16px;margin:14px 0}
+.box b.t{display:block;font-size:.78rem;letter-spacing:.07em;text-transform:uppercase;margin-bottom:4px}
+.plain{border-color:var(--purple);background:var(--purple-bg)} .plain b.t{color:var(--purple)}
+.exact{border-color:var(--blue);background:var(--blue-bg)} .exact b.t{color:var(--blue)}
+.trap{border-color:var(--red);background:var(--red-bg)} .trap b.t{color:var(--red)}
+.ex{border-color:var(--green);background:var(--green-bg)} .ex b.t{color:var(--green)}
+.prof{border-color:var(--gold);background:var(--gold-bg)} .prof b.t{color:var(--gold)}
+.trap ul{margin:4px 0;padding-left:18px}
+.trap li{margin:3px 0}
+.no{color:var(--red);font-weight:700}
+.yes{color:var(--green);font-weight:700}
+.key{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0}
+.key span{font-size:.82rem;padding:3px 10px;border-radius:8px;border-left:4px solid}
+figure{margin:16px 0;text-align:center}
+figure svg{max-width:100%;height:auto}
+figcaption{font-size:.85rem;color:var(--soft)}
+table{border-collapse:collapse;width:100%;font-size:.93rem;margin:8px 0}
+td,th{border:1px solid var(--line);padding:6px 8px;vertical-align:top;text-align:left}
+th{background:var(--bg)}
+.done{display:flex;align-items:center;gap:8px;margin:14px 0 8px;font-size:.9rem;color:var(--soft);cursor:pointer}
+.progress{height:8px;background:var(--line);border-radius:99px;overflow:hidden;margin:10px 0}
+.progress div{height:100%;background:var(--green);width:0;transition:width .3s}
+/* quiz */
+.q{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px 18px;margin:16px 0}
+.q .stem{font-weight:600;margin-bottom:10px}
+.q button.opt{display:block;width:100%;text-align:left;font:inherit;color:inherit;background:var(--bg);border:1.5px solid var(--line);border-radius:10px;padding:9px 12px;margin:6px 0;cursor:pointer}
+.q button.opt:hover:not(:disabled){border-color:var(--blue)}
+.q button.opt.right{border-color:var(--green);background:var(--green-bg)}
+.q button.opt.wrong{border-color:var(--red);background:var(--red-bg)}
+.q button.skip{font:600 .8rem Inter;background:none;border:none;color:var(--soft);cursor:pointer;text-decoration:underline}
+.q .why{display:none;margin-top:10px;border-left:5px solid var(--green);background:var(--green-bg);border-radius:10px;padding:10px 14px;font-size:.95rem}
+.q.answered .why{display:block}
+.score{position:sticky;top:58px;z-index:9;background:var(--ink);color:var(--bg);border-radius:12px;padding:10px 16px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;font-weight:600}
+.score button{font:600 .85rem Inter;border:none;border-radius:8px;padding:4px 10px;cursor:pointer}
+.big{font-size:1.15rem}
+@media (max-width:600px){body{font-size:16px}header.hero h1{font-size:1.8rem}.scene{padding:16px 14px 6px}}
+#key{display:none}
+.printonly{display:none}
+@page{size:A4;margin:14mm 13mm}
+@media print{
+  :root{--bg:#fff;--card:#fff;--ink:#1d2330;--soft:#5b6475;--line:#d8d4ca;
+    --blue:#2563eb;--blue-bg:#eaf1ff;--red:#d93a3a;--red-bg:#fdeeee;--green:#178a55;--green-bg:#e8f7ef;
+    --gold:#b7791f;--gold-bg:#fdf5e4;--purple:#7c3aed;--purple-bg:#f3edff;--accent:#e85d2a}
+  *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  body{font-size:11.5pt;line-height:1.5;background:#fff}
+  main{max-width:none;padding:0}
+  nav.tabs,.score,.progress,#bartext,.done,.q button.skip,.q .why,main>section p button,.noprint{display:none!important}
+  .printonly{display:block}
+  section.page{display:block!important;break-before:page}
+  #p7{break-before:auto}
+  figure svg{max-height:62mm;width:auto}
+  header.hero{padding:0 0 6px}
+  .scene{border:none;padding:0;margin:0 0 14px}
+  .scene+.scene{border-top:1px solid var(--line);padding-top:10px}
+  .box,figure,table,.q,tr{break-inside:avoid}
+  h2,h3{break-after:avoid}
+  .q{padding:8px 12px;margin:8px 0}
+  .q button.opt{border:none;background:none;padding:1px 0;margin:2px 0}
+  #key{display:block;break-before:page}
+  #key .k{break-inside:avoid;margin:6px 0;font-size:10.5pt}
+}
+</style>
+</head>
+<body>
+<main>
+<header class="hero">
+  <h1>Quiz Day: Chapter 7 + Chapter 8</h1>
+  <p>Two quizzes in one hour. Quiz IV = Ch 7 (convexity and duality). Quiz V = Ch 8 (linear programming and simplex).</p>
+  <p><span class="pill">20 MCQs each</span><span class="pill">+1 right · −¼ wrong · 0 blank</span><span class="pill">Q1–10: sentences from the notes, slightly bent</span><span class="pill">Q11–20: notes examples, new numbers</span></p>
+  <div class="key">
+    <span class="plain" style="border-color:var(--purple);background:var(--purple-bg)">Purple: the idea in plain words</span>
+    <span class="exact" style="border-color:var(--blue);background:var(--blue-bg)">Blue: the exact statement</span>
+    <span class="trap" style="border-color:var(--red);background:var(--red-bg)">Red: the lies he will put in the options</span>
+    <span class="ex" style="border-color:var(--green);background:var(--green-bg)">Green: the example (expect new numbers)</span>
+    <span class="prof" style="border-color:var(--gold);background:var(--gold-bg)">Gold: what he said in class</span>
+  </div>
+  <p class="noprint"><a href="Quiz_Day_Study_Guide.pdf" download style="font-weight:700;color:var(--accent)">⬇ Download the printable PDF (A4, answer key at the back)</a></p>
+  <p class="printonly" style="font-size:.9rem;color:var(--soft)">Printed version. Order: Ch 7 story → Mock Quiz IV → Ch 8 story → Mock Quiz V → last-10-minutes sheet → answer key with explanations (last pages). Interactive version: courses.rahuldevsharma.com/lno-quiz/</p>
+  <div class="progress"><div id="bar"></div></div>
+  <p style="font-size:.85rem;color:var(--soft)" id="bartext"></p>
+</header>
+
+<nav class="tabs">
+  <button data-p="p7" class="on">Ch 7 story</button>
+  <button data-p="q7">Ch 7 mock quiz</button>
+  <button data-p="p8">Ch 8 story</button>
+  <button data-p="q8">Ch 8 mock quiz</button>
+  <button data-p="last">Last 10 minutes</button>
+</nav>
+
+<!-- ===================================================== CH 7 ===================================================== -->
+<section class="page on" id="p7">
+
+<div class="scene">
+  <div class="num">The game plan</div>
+  <h2>How he builds a quiz (and how you beat it)</h2>
+  <p>Your Quiz III paper and his official key show one rule: <b>nothing comes from outside the notes</b>. He takes a true sentence and writes three <i>near-miss</i> versions of it. Every wrong option is one of four tricks:</p>
+  <table>
+    <tr><th>Trick</th><th>Example of a bent sentence</th></tr>
+    <tr><td>Drop a condition</td><td>"the Hessian test works on <i>any</i> convex set" (it needs an <b>open</b> one)</td></tr>
+    <tr><td>Swap one word</td><td>"\(\{h\ge 0\}\) is convex when \(h\) is <i>convex</i>" (it needs <b>concave</b>)</td></tr>
+    <tr><td>Claim too much</td><td>"unique", "strict", "attained", "for every basis"</td></tr>
+    <tr><td>Reverse an arrow</td><td>"P infeasible \(\Rightarrow\) D unbounded"</td></tr>
+  </table>
+  <div class="box prof"><b class="t">Marking maths</b>If you can rule out two options, guess between the other two: on average you gain \(\tfrac12 - \tfrac18 > 0\). If you can rule out nothing, leave it blank.</div>
+  <label class="done"><input type="checkbox" data-done="c7-0"> Got it</label>
+</div>
+
+<div class="scene">
+  <div class="num">Scene 1 · Why this chapter exists</div>
+  <h2>Convexity: when a local answer is the whole answer</h2>
+  <p class="hook">In Chapter 6 a KKT point could be a maximum, a saddle point or a local minimum. You never knew which. Chapter 7 is about the problems where that worry goes away.</p>
+  <div class="box plain"><b class="t">Plain words</b>A <b>convex set</b> has no dents: the straight line between any two of its points stays inside. A <b>convex function</b> curves upward like a bowl. Minimise a bowl over a dent-free set and you can't get stuck in a small dip that isn't the real bottom.</div>
+  <div class="box exact"><b class="t">Exact (notes 7.1)</b>
+  <b>Convex set:</b> \(x,y\in\Omega \Rightarrow tx+(1-t)y\in\Omega\) for all \(t\in[0,1]\).<br>
+  <b>Convex optimisation problem:</b> minimise a <b>convex function</b> over a <b>convex set</b>.</div>
+  <div class="box ex"><b class="t">The five notes examples and why each one is convex</b>
+  <table>
+    <tr><th>Problem</th><th>Why it's convex</th></tr>
+    <tr><td>LP: \(\min c^\top x,\ Ax\le b\)</td><td>linear objective; the feasible set is an intersection of half-spaces</td></tr>
+    <tr><td>QP: \(\tfrac12x^\top Qx+c^\top x,\ Ax=b,\ x\ge0\)</td><td>\(Q\succeq 0\) (positive <b>semi</b>definite is enough)</td></tr>
+    <tr><td>Least squares \(\tfrac12\|Ax-b\|^2\)</td><td>Hessian \(A^\top A\succeq0\), <b>always</b>, for any \(A\)</td></tr>
+    <tr><td>Negative entropy \(\sum x_i\log x_i\), \(\mathbf1^\top x=1,\ x\ge0\)</td><td>\(\phi''(t)=1/t>0\); setting \(0\log 0:=0\) keeps it convex on \([0,\infty)\)</td></tr>
+    <tr><td>\(\min\|x\|_2\), \(Ax=b\)</td><td>every norm is convex; the constraint is an affine equality</td></tr>
+  </table></div>
+  <div class="box trap"><b class="t">Lies he could write</b><ul>
+    <li>"Least squares is convex only if \(A\) has full column rank" <span class="no">✗</span> Full rank gives <i>strict</i> convexity (one minimiser). Plain convexity always holds.</li>
+    <li>"The QP needs \(Q\succ0\)" <span class="no">✗</span> \(Q\succeq0\) is enough.</li>
+    <li>"Maximising entropy is a concave optimisation problem" <span class="no">✗</span> He bans that phrase: it is <i>minimising</i> the convex negative entropy.</li>
+    <li>"\(\min\|x\|\) s.t. \(\|x\|=1\) is convex" <span class="no">✗</span> A curved equality constraint is not affine. The unit circle has dents.</li>
+  </ul></div>
+  <div class="box prof"><b class="t">Prof</b>"Use only the course's theorem forms." Never write "concave optimisation problem".</div>
+  <label class="done"><input type="checkbox" data-done="c7-1"> I can explain why each example is convex</label>
+</div>
+
+<div class="scene">
+  <div class="num">Scene 2 · Testing convexity</div>
+  <h2>Two tests, and the small print that decides which one you may use</h2>
+  <p class="hook">Here is a function with a saddle-shaped Hessian that is still perfectly convex. Exam setters love it.</p>
+  <div class="box exact"><b class="t">Theorem 7.1.1 · first-order (tangent-line) test</b>
+  \(\Omega\) <b>convex</b>, \(f\) differentiable on an <b>open set containing</b> \(\Omega\). Then
+  \[f \text{ convex on }\Omega \iff f(y)\ge f(x)+(y-x)^\top\nabla f(x)\quad\forall x,y\in\Omega.\]
+  <i>Picture:</i> every tangent line (or plane) stays under the graph.</div>
+  <div class="box exact"><b class="t">Theorem 7.1.2 · second-order (Hessian) test</b>
+  \(\Omega\) <b>open and convex</b>, \(f\in C^2(\Omega)\). Then \(f\) convex on \(\Omega \iff \nabla^2 f(x)\succeq0\) for every \(x\in\Omega\).</div>
+  <div class="box ex"><b class="t">Remark 7.1.1 · the trap example</b>
+  \(f(x_1,x_2)=x_1^2-x_2^2\) on the line \(\Omega=\{(x_1,0)\}\). On that line \(f=x_1^2\), which is convex. But the full Hessian is \(\mathrm{diag}(2,-2)\), which is indefinite.<br>
+  The Hessian test doesn't apply here because a line is <b>not open</b>. The first-order test still works. On thin sets, check curvature only along directions that stay inside the set.</div>
+  <figure>
+  <svg viewBox="0 0 420 210" role="img" aria-label="Saddle restricted to a line">
+    <rect x="0" y="0" width="420" height="210" fill="none"/>
+    <path d="M30 60 Q110 200 190 60" fill="none" stroke="var(--green)" stroke-width="3"/>
+    <text x="110" y="200" text-anchor="middle" font-size="13" fill="var(--green)">along x₁ (inside Ω): x₁² — a bowl ✓</text>
+    <path d="M230 160 Q310 20 390 160" fill="none" stroke="var(--red)" stroke-width="3"/>
+    <text x="310" y="200" text-anchor="middle" font-size="13" fill="var(--red)">along x₂ (leaves Ω): −x₂² — ignore</text>
+    <text x="210" y="22" text-anchor="middle" font-size="14" font-weight="700" fill="var(--ink)">f = x₁² − x₂², Ω = the x₁-axis</text>
+  </svg>
+  <figcaption>Green: the only direction that counts on Ω. Red: a direction that leaves Ω, so its negative curvature doesn't matter.</figcaption>
+  </figure>
+  <div class="box trap"><b class="t">Lies</b><ul>
+    <li>"7.1.2 holds on every convex set" <span class="no">✗</span> It needs <b>open</b>.</li>
+    <li>"\(f\) convex on the line \(\Rightarrow \nabla^2 f\succeq0\)" <span class="no">✗</span> The example above shows it fails.</li>
+    <li>"7.1.1 needs \(\Omega\) open" <span class="no">✗</span> Only \(f\) needs to be differentiable on an open set <i>around</i> \(\Omega\).</li>
+    <li>"\(\nabla^2f\succ0\) is needed" <span class="no">✗</span> That is the test for <i>strict</i> convexity.</li>
+  </ul></div>
+  <label class="done"><input type="checkbox" data-done="c7-2"> I know which test needs "open"</label>
+</div>
+
+<div class="scene">
+  <div class="num">Scene 3 · Building feasible sets</div>
+  <h2>Which constraints keep the feasible set dent-free?</h2>
+  <p class="hook">Memory hook: <b>"≤ goes with convex, ≥ goes with concave, = only with affine."</b></p>
+  <div class="box exact"><b class="t">Theorem 7.2.1 (\(\Omega\) convex, \(h:\Omega\to\mathbb R\))</b>
+  (a) \(h\) <b>affine</b> \(\Rightarrow \{h=0\}\) convex.<br>
+  (b) \(h\) <b>convex</b> \(\Rightarrow \{h\le0\}\) convex.<br>
+  (c) \(h\) <b>concave</b> \(\Rightarrow \{h\ge0\}\) convex.<br>
+  Any intersection of such sets is convex (Cor. 7.2.2).</div>
+  <div class="box plain"><b class="t">Why (b) in one line</b>If \(h(x)\le0\) and \(h(y)\le0\), convexity gives \(h(tx+(1-t)y)\le t h(x)+(1-t)h(y)\le 0\). The average of two non-positive numbers is non-positive.</div>
+  <figure>
+  <svg viewBox="0 0 440 170" role="img" aria-label="Convex and non-convex constraint sets">
+    <line x1="10" y1="120" x2="200" y2="120" stroke="var(--soft)"/>
+    <rect x="60" y="112" width="90" height="16" fill="var(--green)" opacity=".7"/>
+    <text x="105" y="150" text-anchor="middle" font-size="13" fill="var(--green)">x² ≤ 1 : one piece ✓</text>
+    <line x1="240" y1="120" x2="430" y2="120" stroke="var(--soft)"/>
+    <rect x="240" y="112" width="50" height="16" fill="var(--red)" opacity=".7"/>
+    <rect x="380" y="112" width="50" height="16" fill="var(--red)" opacity=".7"/>
+    <text x="335" y="150" text-anchor="middle" font-size="13" fill="var(--red)">x² ≥ 1 : two pieces ✗</text>
+    <text x="220" y="40" text-anchor="middle" font-size="14" font-weight="700" fill="var(--ink)">Same convex h = x² − 1, opposite inequality</text>
+    <text x="220" y="62" text-anchor="middle" font-size="12" fill="var(--soft)">≤ keeps it convex; ≥ with a convex h breaks it</text>
+  </svg>
+  <figcaption>Green: the allowed pairing (convex h with ≤). Red: the forbidden one (convex h with ≥).</figcaption>
+  </figure>
+  <div class="box ex"><b class="t">Remark 7.2.1 · "affine" vs "convex"</b>On all of \(\mathbb R^n\), the zero set of an affine \(h\) is an <b>affine</b> set (a whole line or plane). Inside a box it is only <b>convex</b>: \(\Omega=[0,1]^2\), \(h=x_1\) gives the segment \(\{0\}\times[0,1]\). A segment is convex but not affine.</div>
+  <div class="box trap"><b class="t">Lies</b><ul>
+    <li>"\(\{h\ge0\}\) convex for \(h\) convex" <span class="no">✗</span> \(x^2\ge1\) has two pieces.</li>
+    <li>"\(\{h=0\}\) convex for \(h\) convex" <span class="no">✗</span> \(x_1^2+x_2^2=1\) is a circle.</li>
+    <li>"These conditions are necessary" <span class="no">✗</span> \(\{x^3\le0\}\) is convex even though \(x^3\) isn't.</li>
+    <li>"\(\{h=0\}\cap\Omega\) is always affine" <span class="no">✗</span> Inside a box you get a segment.</li>
+  </ul></div>
+  <div class="box prof"><b class="t">Prof</b>"≥ with concave … very important."</div>
+  <label class="done"><input type="checkbox" data-done="c7-3"> ≤ convex, ≥ concave, = affine</label>
+</div>
+
+<div class="scene">
+  <div class="num">Scene 4 · The superpower</div>
+  <h2>Local = global, with a six-line proof</h2>
+  <p class="hook">Say you sit at a local minimum but some far point \(y\) is lower. Walk a tiny step toward \(y\): by convexity you go downhill straight away. Then you weren't at a local minimum. That's the whole proof.</p>
+  <div class="box exact"><b class="t">Theorem 7.2.3 · proof in 6 steps (a favourite for guided-proof questions)</b>
+  1. Suppose \(f(y)<f(x^\star)\) for some \(y\in\Omega\).<br>
+  2. \(z_\alpha=\alpha y+(1-\alpha)x^\star\in\Omega\) <i>(convex set)</i>.<br>
+  3. \(f(z_\alpha)\le \alpha f(y)+(1-\alpha)f(x^\star)\) <i>(convex function)</i>.<br>
+  4. So \(f(z_\alpha)<f(x^\star)\).<br>
+  5. For <b>small</b> \(\alpha\), \(z_\alpha\) is as close to \(x^\star\) as you like. That contradicts \(x^\star\) being a local minimum.<br>
+  6. So \(x^\star\) is global. <b>No derivatives were used.</b></div>
+  <div class="box exact"><b class="t">Theorem 7.2.4 · the "no uphill-free direction" test</b>
+  \(f\) differentiable on an open set \(\supseteq\Omega\) and convex on \(\Omega\). Then \(x^\star\) is a <b>global</b> minimiser \(\iff (y-x^\star)^\top\nabla f(x^\star)\ge0\ \ \forall y\in\Omega\).<br>
+  <b>No constraint qualification needed.</b> This is the geometric condition, not KKT.<br>
+  <b>Cor 7.2.5:</b> all such points have the same value. <b>Cor 7.2.6:</b> the set of minimisers is <b>convex</b>.</div>
+  <div class="box trap"><b class="t">Lies</b><ul>
+    <li>"7.2.3 needs \(f\) differentiable" <span class="no">✗</span></li>
+    <li>"7.2.4 needs LICQ or Slater" <span class="no">✗</span> Those are needed for <i>KKT multipliers to exist</i>, not for this test.</li>
+    <li>"A convex problem has a unique minimiser" <span class="no">✗</span> It can have a whole segment of them. Uniqueness needs <i>strict</i> convexity.</li>
+    <li>"Exactly two minimisers" <span class="no">✗</span> Impossible: the minimisers form a convex set, so two means infinitely many.</li>
+    <li>"Step 5 holds for every \(\alpha\)" <span class="no">✗</span> It needs <b>small</b> \(\alpha\).</li>
+  </ul></div>
+  <label class="done"><input type="checkbox" data-done="c7-4"> I can recite the 6 steps</label>
+</div>
+
+<div class="scene">
+  <div class="num">Scene 5 · KKT gets promoted</div>
+  <h2>In a convex program, KKT is <i>enough</i></h2>
+  <p class="hook">Chapter 6: KKT only gave candidates. Chapter 7: if the problem is convex, any KKT point is a global minimum. No second-order check needed.</p>
+  <div class="box exact"><b class="t">Setting (7.2.7–7.2.8)</b>\(\min f\) s.t. \(h(x)=0,\ g(x)\le0\); \(f,g_j\) differentiable and <b>convex</b> on \(\mathbb R^n\), \(h\) <b>affine</b>. \(L=f+\lambda^\top h+\mu^\top g\).</div>
+  <div class="box exact"><b class="t">Theorem 7.2.8 · every feasible KKT point is a GLOBAL minimiser</b>
+  Take any feasible \(y\) and let \(d=y-x^\star\).<br>
+  <b>S1</b> \(f(y)\ge f(x^\star)+d^\top\nabla f(x^\star)\) <i>(convex f)</i><br>
+  <b>S2</b> substitute \(\nabla f=-J_h\lambda^\star-\sum_{j\,\text{active}}\mu_j^\star\nabla g_j\) <i>(stationarity; inactive \(\mu_j=0\))</i><br>
+  <b>S3</b> \(h\) affine, \(Ad=0\Rightarrow d^\top J_h=0\) <i>(this step needs \(h\) <b>affine</b>)</i><br>
+  <b>S4</b> \(0\ge g_j(y)\ge g_j(x^\star)+d^\top\nabla g_j=d^\top\nabla g_j\), multiplied by \(\mu_j^\star\ge0\) <i>(active, so \(g_j(x^\star)=0\))</i><br>
+  <b>S5</b> so \(f(y)\ge f(x^\star)\).</div>
+  <div class="box exact"><b class="t">Theorem 7.2.7 · bonus fact about the Hessian</b>At a KKT point of such a program (\(C^2\)): \(\nabla^2_{xx}L\succeq0\) on <b>all of \(\mathbb R^n\)</b>, not just on the critical cone. Reason: \(\nabla^2 h_i=0\) (affine), \(\nabla^2 f,\nabla^2 g_j\succeq0\), \(\mu^\star\ge0\). The sign of \(\lambda^\star\) never matters.</div>
+  <div class="box exact"><b class="t">Remark 7.2.2 · the two-way summary</b>
+  <b>Convex program:</b> KKT is <b>sufficient</b>. <b>Necessity</b> needs a CQ (e.g. Slater).<br>
+  <b>Non-convex program:</b> a CQ makes KKT necessary, but KKT alone is <b>not sufficient</b>.</div>
+  <div class="box exact"><b class="t">Jacobian convention (stated in the notes)</b>\(J_h=[\nabla h_1\ \cdots\ \nabla h_m]\), with gradients as <b>columns</b>. For \(h=Ax+b\): \(J_h=A^\top\), and the stationarity term is \(J_h\lambda=A^\top\lambda\), <b>not</b> \(J_h^\top\lambda\).</div>
+  <div class="box trap"><b class="t">Lies</b><ul>
+    <li>"7.2.8 needs LICQ or Slater" <span class="no">✗</span> No CQ is needed for sufficiency.</li>
+    <li>"…gives a strict or unique minimiser" <span class="no">✗</span> It gives a global one, not necessarily unique.</li>
+    <li>"\(h\) convex is enough" <span class="no">✗</span> S3 needs \(h\) affine.</li>
+    <li>"\(\nabla^2L\succeq0\) only on the critical cone" <span class="no">✗</span> It holds everywhere. And "\(\succ0\) so SOSC always holds" <span class="no">✗</span> (an LP has \(\nabla^2L=0\)).</li>
+    <li>"For a convex program every minimiser is a KKT point" <span class="no">✗</span> See the next scene.</li>
+  </ul></div>
+  <label class="done"><input type="checkbox" data-done="c7-5"> KKT ⇒ global (convex); converse needs a CQ</label>
+</div>
+
+<div class="scene">
+  <div class="num">Scene 6 · The villain</div>
+  <h2>A convex problem whose optimum has <i>no</i> KKT multiplier</h2>
+  <p class="hook">Both functions are strictly convex, the answer is obvious, and KKT still fails. This example shows up in at least three questions.</p>
+  <div class="box ex"><b class="t">Example 7.2.1 · \(\min (x-1)^2\) s.t. \(x^2\le 0\)</b>
+  The only feasible point is \(x=0\), so \(x^\star=0\) and \(p^\star=1\).<br>
+  Stationarity at 0: \(2(0-1)+\mu\cdot 2\cdot 0=-2\neq0\) for <b>every</b> \(\mu\). No multiplier exists.<br>
+  Why? <b>Slater fails</b>: no point has \(x^2<0\). Lesson from the notes: <i>"strict convexity cannot replace a constraint qualification"</i>.</div>
+  <div class="box ex"><b class="t">Example 7.4.1 · its dual</b>
+  \(q(\mu)=\inf_x\,(x-1)^2+\mu x^2\). Set the derivative to zero: \(x=\frac1{1+\mu}\), which gives \(q(\mu)=\frac{\mu}{1+\mu}\).<br>
+  As \(\mu\to\infty\), \(q\to1\), but \(q(\mu)<1\) for every finite \(\mu\). So \(d^\star=p^\star=1\) (<b>zero gap</b>), yet the dual sup is <b>never attained</b>.</div>
+  <figure>
+  <svg viewBox="0 0 380 260" role="img" aria-label="q of mu approaching 1">
+    <line x1="40" y1="220" x2="360" y2="220" stroke="var(--soft)"/><line x1="40" y1="220" x2="40" y2="20" stroke="var(--soft)"/>
+    <text x="360" y="240" font-size="13" fill="var(--soft)" text-anchor="end">μ →</text>
+    <text x="30" y="224" font-size="12" fill="var(--soft)" text-anchor="end">0</text>
+    <text x="30" y="44" font-size="12" fill="var(--soft)" text-anchor="end">1</text>
+    <line x1="40" y1="40" x2="360" y2="40" stroke="var(--red)" stroke-dasharray="6 5" stroke-width="2"/>
+    <text x="355" y="32" font-size="13" fill="var(--red)" text-anchor="end">p* = d* = 1 (never touched)</text>
+    <polyline points="40,220 55,160 70,130 100,100 130,85 190,70 250,62.5 340,56.4" fill="none" stroke="var(--blue)" stroke-width="3"/>
+    <text x="120" y="130" font-size="14" fill="var(--blue)">q(μ) = μ/(1+μ)</text>
+  </svg>
+  <figcaption>Blue: the dual function, always rising. Red dashed: its limit 1. Zero gap, but no μ reaches it, so there is no dual optimum and no KKT multiplier.</figcaption>
+  </figure>
+  <div class="box trap"><b class="t">How it comes back with new numbers</b>\(\min(x-a)^2,\ x^2\le0\): \(p^\star=a^2\), inner minimiser \(\frac{a}{1+\mu}\), \(q(\mu)=\frac{a^2\mu}{1+\mu}\). Same story: zero gap, not attained, no KKT, no Slater.</div>
+  <label class="done"><input type="checkbox" data-done="c7-6"> I can derive q(μ) = a²μ/(1+μ)</label>
+</div>
+
+<div class="scene">
+  <div class="num">Scene 7 · The dual function</div>
+  <h2>Price the constraints and let \(x\) roam free</h2>
+  <p class="hook">Instead of forcing \(x\) to obey the constraints, charge a price for breaking them. Then let \(x\) go anywhere in \(\mathbb R^n\) and find the cheapest total.</p>
+  <div class="box exact"><b class="t">Definitions (7.3)</b>
+  \(L(x,y)=f+u^\top h+v^\top g\), with \(y=(u,v)\). In the dual, <b>\(u\) is free</b> and \(v\ge0\).<br>
+  \(q(y)=\inf_{x\in\mathbb R^n}L(x,y)\): the infimum is over the <b>whole space</b>, not the feasible set.<br>
+  \(\mathbb D=\{y:q(y)>-\infty\}\). \(q\) <b>can't be \(+\infty\)</b> (all functions are finite).<br>
+  Dual problem: maximise \(q\) over \(y\in\mathbb D,\ v\ge0\).</div>
+  <div class="box exact"><b class="t">Properties</b>\(q\) is <b>concave</b> and \(\mathbb D\) is <b>convex</b>. Why: for fixed \(x\), \(L\) is <b>affine in \(y\)</b>, and an infimum of affine functions is concave.<br>
+  <b>Remark 7.3.1:</b> this holds even when the primal is <b>non-convex</b>.</div>
+  <div class="box prof"><b class="t">Prof's shortcut</b>"The infimum is finite iff the coefficients of \(x\) vanish." (for terms linear in \(x\)). That is how every LP dual gets its constraints.</div>
+  <div class="box trap"><b class="t">Lies</b><ul>
+    <li>"\(q\) is concave <i>because</i> \(f,g\) are convex" <span class="no">✗</span> The reason is that \(L\) is affine in \(y\).</li>
+    <li>"the inf is over the feasible set" <span class="no">✗</span></li>
+    <li>"\(u\ge0\)" <span class="no">✗</span> Equality multipliers are free.</li>
+    <li>"\(q\) is differentiable" <span class="no">✗</span> The notes never claim this.</li>
+    <li>"\(\mathbb D\) is all of \(\mathbb R^{m+p}\)" <span class="no">✗</span> For an LP, \(q=-\infty\) unless \(A^\top\lambda+\mu=c\).</li>
+  </ul></div>
+  <label class="done"><input type="checkbox" data-done="c7-7"> q is concave because L is affine in y</label>
+</div>
+
+<div class="scene">
+  <div class="num">Scene 8 · Weak duality</div>
+  <h2>The dual always gives a floor</h2>
+  <p class="hook">Two short steps, no convexity needed: every dual value sits below every primal value.</p>
+  <div class="box exact"><b class="t">Proof</b>Take a feasible \(\bar x\) and \(\bar v\ge0\):
+  \[q(\bar y)\le L(\bar x,\bar y)=f(\bar x)+\bar u^\top\underbrace{h(\bar x)}_{=0}+\underbrace{\bar v^\top g(\bar x)}_{\le0}\le f(\bar x).\]
+  The first \(\le\) is the definition of the inf. The second uses only feasibility and \(\bar v\ge0\). So \(d^\star\le p^\star\). <b>No convexity.</b></div>
+  <div class="box exact"><b class="t">Values</b>\(p^\star=\inf\{f(x):x \text{ feasible}\}\), \(d^\star=\sup\{q(y):v\ge0\}\). These are <b>inf and sup</b>, not min and max.<br>
+  <b>Strong duality</b> means \(p^\star=d^\star\). It is a <b>different thing</b> from attainment (Scene 6).</div>
+  <div class="box prof"><b class="t">Prof</b>"Minimum is defined only when it's attained."</div>
+  <div class="box trap"><b class="t">Lies</b><ul>
+    <li>"weak duality needs convexity" <span class="no">✗</span></li>
+    <li>"step 2 uses complementary slackness" <span class="no">✗</span> It uses only feasibility and \(v\ge0\).</li>
+    <li>"strong duality follows from the definition of the dual" <span class="no">✗</span></li>
+    <li>"\(p^\star=d^\star\Rightarrow\) both attained" <span class="no">✗</span> See the villain.</li>
+  </ul></div>
+  <label class="done"><input type="checkbox" data-done="c7-8"> d* ≤ p* always</label>
+</div>
+
+<div class="scene">
+  <div class="num">Scene 9 · The central theorem</div>
+  <h2>When does a KKT pair exist? (7.4.1) And how do you get \(x^\star\) back? (7.4.2)</h2>
+  <div class="box exact"><b class="t">Theorem 7.4.1 (\(f,g_j\) differentiable convex, \(h\) affine)</b>
+  A KKT pair exists \(\iff\) \(p^\star=d^\star\in\mathbb R\) <b>and both optimal values are attained</b>.<br>
+  Moreover, <b>any</b> primal optimum paired with <b>any</b> dual optimum is a KKT pair.</div>
+  <div class="box plain"><b class="t">Proof idea</b>
+  (⇒) \(L(\cdot,y^\star)\) is convex and stationary at \(x^\star\), so \(x^\star\) minimises it: \(q(y^\star)=L(x^\star,y^\star)=f(x^\star)\). That squeezes \(q(y^\star)\le d^\star\le p^\star\le f(x^\star)\) into equalities.<br>
+  (⇐) \(q(y^\star)\le L(x^\star,y^\star)\le f(x^\star)\) with equal ends. The first equality gives \(\nabla_xL=0\). The second gives \(\sum v_j^\star g_j=0\), and since every term is \(\le0\), each one is 0 (complementary slackness).</div>
+  <div class="box exact"><b class="t">Remark 7.4.1</b>Needs <b>no</b> strict convexity, <b>no</b> extra CQ, <b>no</b> uniqueness. In (⇐), zero gap and attainment are <i>assumptions</i>. They don't follow from convexity.</div>
+  <div class="box exact"><b class="t">Corollary 7.4.2 · getting \(x^\star\) back from the dual</b>
+  If a KKT pair exists, \(\bar y\) is any dual optimum, and \(L(\cdot,\bar y)\) has a <b>unique</b> minimiser \(\bar x\), then \(\bar x\) <b>is</b> the primal optimum. No feasibility or complementary-slackness checks are needed.<br>
+  <b>A sufficient condition for uniqueness:</b> \(f\) strictly convex. The constraints don't need to be strictly convex.<br>
+  <b>If the minimiser isn't unique:</b> pick a minimiser \(\tilde x\) that is feasible <i>and</i> satisfies \(\bar v_jg_j(\tilde x)=0\).</div>
+  <div class="box trap"><b class="t">Lies</b><ul>
+    <li>"KKT pair \(\iff p^\star=d^\star\)" <span class="no">✗</span> Attainment is missing.</li>
+    <li>"7.4.1 needs Slater" <span class="no">✗</span></li>
+    <li>"Any minimiser of \(L(\cdot,y^\star)\) is optimal" <span class="no">✗</span> Only when it is unique.</li>
+    <li>"Uniqueness needs every \(g_j\) strictly convex" <span class="no">✗</span> Strictly convex \(f\) is enough.</li>
+  </ul></div>
+  <label class="done"><input type="checkbox" data-done="c7-9"> KKT pair ⇔ zero gap + both attained</label>
+</div>
+
+<div class="scene">
+  <div class="num">Scene 10 · Slater</div>
+  <h2>One strictly-inside point buys you strong duality</h2>
+  <div class="box exact"><b class="t">Theorem 7.4.3 (stated without proof)</b>\(f,g_j\) convex, \(h\) affine, and <b>one single point</b> \(x^0\) with \(h(x^0)=0\) and \(g_j(x^0)<0\) for <b>every</b> \(j\). If \(p^\star\) is finite, then \(p^\star=d^\star\) and the <b>dual</b> optimum is attained.<br>
+  <b>Primal attainment is NOT guaranteed.</b><br>
+  Consequence: with Slater, a primal optimum that exists, and differentiability, a feasible point is optimal <b>iff</b> it has KKT multipliers.</div>
+  <div class="box prof"><b class="t">Prof</b>"One point … for all inequality constraints … not independent point."</div>
+  <div class="box ex"><b class="t">Example 7.4.2 · \(\min x\) s.t. \(-x\le0\)</b>
+  Slater point: \(x=1\). \(L=(1-\mu)x\), so \(q(1)=0\) and \(q(\mu)=-\infty\) otherwise. \(\mu^\star=1\).<br>
+  \(L(\cdot,1)\equiv0\): <b>every</b> \(x\) minimises it. \(x=-1\) is infeasible; \(x=1\) is feasible but fails complementary slackness; only \(x=0\) is optimal.<br>
+  This doesn't contradict 7.4.2: the minimiser isn't unique, so 7.4.2 doesn't apply.</div>
+  <div class="box trap"><b class="t">Lies</b><ul>
+    <li>"Slater ⇒ a primal optimum exists" <span class="no">✗</span></li>
+    <li>"a separate Slater point for each \(g_j\)" <span class="no">✗</span> It must be one point for all of them.</li>
+    <li>"Slater is necessary for zero gap" <span class="no">✗</span> The villain has zero gap without Slater.</li>
+    <li>"Slater makes any Lagrangian minimiser optimal" <span class="no">✗</span> Example 7.4.2 shows otherwise.</li>
+  </ul></div>
+  <label class="done"><input type="checkbox" data-done="c7-10"> Slater: one point, gives dual attainment only</label>
+</div>
+
+<div class="scene">
+  <div class="num">Scene 11 · LP through the Ch 7 lens</div>
+  <h2>Linear programs: KKT with no LICQ, and a dual with a twist</h2>
+  <div class="box exact"><b class="t">Standard form and tangent cone</b>\(\min c^\top x,\ Ax=b,\ x\ge0\). Writing it this way does <b>not</b> guarantee a feasible or bounded problem (\(\min -x\) on \(x\ge0\) is unbounded).<br>
+  At a feasible \(x^\star\), with \(I_0=\{i:x_i^\star=0\}\): \(\ \mathcal T(x^\star)=\{d: Ad=0,\ d_i\ge0 \text{ for } i\in I_0\}\).</div>
+  <div class="box exact"><b class="t">LP KKT (necessary by Farkas, NO rank or LICQ needed)</b>
+  \[A^\top\lambda^\star+\mu^\star=c,\quad Ax^\star=b,\quad x^\star\ge0,\quad \mu^\star\ge0,\quad (\mu^\star)^\top x^\star=0,\quad \lambda^\star\text{ free.}\]
+  Sufficiency in one line: \(c^\top\bar x=b^\top\lambda^\star+\bar x^\top\mu^\star\ge b^\top\lambda^\star=c^\top x^\star\).</div>
+  <div class="box exact"><b class="t">LP dual</b>\(L=(c-A^\top\lambda-\mu)^\top x+b^\top\lambda\). The inf over \(x\) is finite only if the coefficient of \(x\) vanishes:
+  \[\text{(D)}\quad \max\ b^\top\lambda\ \ \text{s.t.}\ \ A^\top\lambda\le c,\quad \lambda \text{ free}.\]
+  Weak duality: \(c^\top x-b^\top\lambda=\mu^\top x\ge0\).</div>
+  <div class="box exact"><b class="t">Theorem 7.6.1 + Remark 7.6.1</b>(i) If one has an optimal solution, so does the other, with equal values.<br>(ii) If one is unbounded, the other is infeasible.<br><b>Do NOT reverse (ii).</b> Both can be infeasible, and an infeasible primal can have an unbounded dual.</div>
+  <table>
+    <tr><th>P \ D</th><th>D optimal</th><th>D unbounded</th><th>D infeasible</th></tr>
+    <tr><td>P optimal</td><td class="yes">✓ equal values</td><td class="no">✗</td><td class="no">✗</td></tr>
+    <tr><td>P unbounded</td><td class="no">✗</td><td class="no">✗</td><td class="yes">✓</td></tr>
+    <tr><td>P infeasible</td><td class="no">✗</td><td class="yes">✓</td><td class="yes">✓ possible!</td></tr>
+  </table>
+  <div class="box prof"><b class="t">Prof</b>"\(d\) infeasible doesn't imply \(p\) unbounded." "Many students make that mistake."</div>
+  <div class="box trap"><b class="t">Lies</b><ul>
+    <li>"LP KKT needs \(A\) of full row rank" <span class="no">✗</span></li>
+    <li>"\(\lambda^\star\ge0\)" <span class="no">✗</span> It is free.</li>
+    <li>"the dual constraint is \(A^\top\lambda\ge c\)" <span class="no">✗</span> It is \(\le\).</li>
+    <li>"\(\mathcal T\) requires \(d_i\ge0\) for all \(i\)" <span class="no">✗</span> Only where \(x_i^\star=0\).</li>
+    <li>"P infeasible ⇒ D unbounded" <span class="no">✗</span></li>
+  </ul></div>
+  <label class="done"><input type="checkbox" data-done="c7-11"> I can fill the P/D table from memory</label>
+</div>
+<p style="text-align:center"><button onclick="go('q7')" style="font:700 1rem Inter;padding:12px 22px;border-radius:12px;border:none;background:var(--accent);color:#fff;cursor:pointer">Take the Ch 7 mock quiz →</button></p>
+</section>
+
+<!-- ===================================================== CH 7 QUIZ ===================================================== -->
+<section class="page" id="q7">
+  <h2 style="margin-top:26px">Mock Quiz IV · Chapter 7</h2>
+  <p>20 questions, 30 minutes, the real marking. Click an option to lock it in. The explanation shows every wrong option's flaw. "Leave blank" scores 0.</p>
+  <div class="score" id="s-q7"></div>
+  <div id="list-q7"></div>
+</section>
+
+<!-- ===================================================== CH 8 ===================================================== -->
+<section class="page" id="p8">
+
+<div class="scene">
+  <div class="num">The big picture</div>
+  <h2>Linear programming in one breath</h2>
+  <p class="hook">If an LP has an optimum, one of its <b>corners</b> is optimal. The simplex method walks from corner to corner, always downhill, until no edge goes down any more.</p>
+  <div class="box prof"><b class="t">What he said about Ch 8 questions (lec 2, 1:07)</b>"I'm not going to ask entire simplex algorithm, but concepts involved in each step. What is the meaning of … why you call it unbounded? … what is the feasible direction … You don't have to memorize the simplex algorithm entirely."</div>
+  <div class="box plain"><b class="t">So Quiz V tests</b>The <b>meaning</b> of each step, plus small calculations that use a single step: convert to standard form, list the basic solutions, compute a reduced cost, do a ratio test, read a tableau, decide optimal / unbounded / infeasible.</div>
+  <figure>
+  <svg viewBox="0 0 400 330" role="img" aria-label="Simplex path on a 2D LP">
+    <polygon points="40,280 190,280 100,100 40,40" fill="var(--green)" opacity=".18"/>
+    <line x1="40" y1="280" x2="380" y2="280" stroke="var(--soft)"/><line x1="40" y1="280" x2="40" y2="15" stroke="var(--soft)"/>
+    <text x="378" y="298" font-size="13" fill="var(--soft)" text-anchor="end">x₁</text><text x="28" y="22" font-size="13" fill="var(--soft)">x₂</text>
+    <line x1="40" y1="40" x2="280" y2="280" stroke="var(--blue)" stroke-width="2.5"/>
+    <line x1="70" y1="40" x2="190" y2="280" stroke="var(--red)" stroke-width="2.5"/>
+    <line x1="48" y1="272" x2="180" y2="272" stroke="var(--accent)" stroke-width="4" marker-end="url(#ar)"/>
+    <line x1="186" y1="266" x2="106" y2="110" stroke="var(--accent)" stroke-width="4" marker-end="url(#ar)"/>
+    <defs><marker id="ar" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M0 0L10 5L0 10z" fill="var(--accent)"/></marker></defs>
+    <circle cx="40" cy="280" r="5" fill="var(--ink)"/><text x="46" y="300" font-size="12" fill="var(--ink)">start z=0</text>
+    <circle cx="190" cy="280" r="5" fill="var(--ink)"/><text x="196" y="300" font-size="12" fill="var(--ink)">pivot 1: z=−7.5</text>
+    <circle cx="100" cy="100" r="6" fill="var(--accent)"/><text x="110" y="96" font-size="13" font-weight="700" fill="var(--accent)">pivot 2: z=−9 ★ optimal</text>
+    <circle cx="40" cy="40" r="5" fill="var(--ink)"/><text x="48" y="36" font-size="12" fill="var(--ink)">z=−8</text>
+  </svg>
+  <figcaption>Worked example from the slides: \(\min -3x_1-2x_2\). Blue: \(x_1+x_2=4\) (\(s_1=0\)). Red: \(2x_1+x_2=5\) (\(s_2=0\)). Green: feasible set. Orange arrows: the simplex path along the edges. Dots: corners (BFSs).</figcaption>
+  </figure>
+  <label class="done"><input type="checkbox" data-done="c8-0"> Corners + walking downhill</label>
+</div>
+
+<div class="scene">
+  <div class="num">Card 1 · Standard form</div>
+  <h2>Every LP can wear the same uniform</h2>
+  <div class="box exact"><b class="t">Standard form (8.1)</b>\(\min c^\top x\) s.t. \(Ax=b,\ x\ge0\), \(A\in\mathbb R^{m\times n}\).</div>
+  <table>
+    <tr><th>You have</th><th>Do this</th></tr>
+    <tr><td>\(Ax\le b\)</td><td><b>add</b> a slack: \(Ax+y=b,\ y\ge0\) → \([A\ \ I]\)</td></tr>
+    <tr><td>\(Ax\ge b\)</td><td><b>subtract</b> a surplus: \(Ax-y=b,\ y\ge0\) → \([A\ \ -I]\)</td></tr>
+    <tr><td>\(x_j\) free</td><td>\(x_j=x_j^+-x_j^-\), both \(\ge0\) (the split isn't unique)</td></tr>
+    <tr><td>\(x_j\ge\ell_j\)</td><td>shift: \(x_j=\ell_j+v_j,\ v_j\ge0\). This adds a constant to the cost.</td></tr>
+    <tr><td>upper bound \(x_j\le u_j\)</td><td>an extra \(\le\) row with a slack</td></tr>
+    <tr><td>\(\max c^\top x\)</td><td>\(\min -c^\top x\); the optimal values differ by a sign</td></tr>
+    <tr><td>\(b_i<0\)</td><td>multiply the row by \(-1\). An inequality <b>flips</b>.</td></tr>
+  </table>
+  <div class="box ex"><b class="t">Worked: \(x_1-x_2\le -2\)</b>Right-hand side negative → multiply by −1 and flip: \(-x_1+x_2\ge2\) → subtract a surplus: \(-x_1+x_2-y=2\).</div>
+  <div class="box trap"><b class="t">Lies</b><ul>
+    <li>"surplus: add \(+y\)" <span class="no">✗</span> Subtract it.</li>
+    <li>"slack variables change the feasible \(x\)" <span class="no">✗</span></li>
+    <li>"a free variable can't be put in standard form" <span class="no">✗</span> Split it.</li>
+    <li>"standard form is unique" <span class="no">✗</span></li>
+    <li>"\(b_i<0\): multiply by −1 and keep \(\le\)" <span class="no">✗</span> It becomes \(\ge\).</li>
+  </ul></div>
+  <label class="done"><input type="checkbox" data-done="c8-1"> I can convert any LP</label>
+</div>
+
+<div class="scene">
+  <div class="num">Card 2 · Basic solutions</div>
+  <h2>Pick \(m\) columns, zero the rest, solve</h2>
+  <div class="box plain"><b class="t">Plain words</b>You have \(m\) equations and \(n>m\) unknowns. Choose \(m\) "lucky" variables (the <b>basis</b>), set all the others to 0, and solve the square system. The result is a <b>basic solution</b>. If it also has no negative entries, it is a <b>BFS</b>: a corner of the feasible set.</div>
+  <div class="box exact"><b class="t">Definitions (rank \(A=m\))</b>
+  <b>Basic solution:</b> choose \(B\) = \(m\) independent columns; \(x_N=0\), \(x_B=B^{-1}b\). It <b>can have negative entries</b>.<br>
+  <b>BFS:</b> basic and \(x\ge0\), i.e. \(B^{-1}b\ge0\).<br>
+  <b>Degenerate:</b> at least one <b>basic</b> variable equals 0.<br>
+  There are at most \(\binom{n}{m}\) bases.</div>
+  <div class="box prof"><b class="t">Prof</b>"Basic and non-basic is not the property of the problem; it's the property of the current state of your algorithm." "Basic variables may be zero … that's one thing you have to remember."</div>
+  <div class="box ex"><b class="t">Worked: \(A=\begin{pmatrix}1&0&1\\0&1&1\end{pmatrix}\), \(b=(2,1)\)</b>
+  \(\{1,2\}\): \((2,1,0)\) <span class="yes">feasible</span><br>
+  \(\{1,3\}\): \(x_3=1,\ x_1=1\) → \((1,0,1)\) <span class="yes">feasible</span><br>
+  \(\{2,3\}\): \(x_3=2,\ x_2=-1\) → <span class="no">infeasible</span>. So there are <b>2 BFSs</b>.<br><br>
+  Now take \(b=(1,1)\): \(\{1,3\}\) and \(\{2,3\}\) both give \((0,0,1)\). That point is a <b>degenerate</b> BFS (a basic variable is 0) and has <b>two bases</b>.</div>
+  <div class="box trap"><b class="t">Lies</b><ul>
+    <li>"basic variables are positive" <span class="no">✗</span> They can be 0, or negative if the solution is infeasible.</li>
+    <li>"degenerate = a nonbasic variable is 0" <span class="no">✗</span> Nonbasic variables are always 0.</li>
+    <li>"each \(A\) has a unique basis" <span class="no">✗</span></li>
+  </ul></div>
+  <label class="done"><input type="checkbox" data-done="c8-2"> I can list all basic solutions of a 2×3 system</label>
+</div>
+
+<div class="scene">
+  <div class="num">Cards 3–4 · Why only corners matter</div>
+  <h2>Two theorems that justify the whole method</h2>
+  <div class="box exact"><b class="t">Theorem 8.2.1 (rank \(A=m\))</b>(i) If a feasible solution exists, a <b>BFS</b> exists.<br>(ii) If an optimal solution exists, an <b>optimal BFS</b> exists.</div>
+  <div class="box plain"><b class="t">Proof idea: shrink the support</b>Take a feasible \(\bar x\) with support \(S=\{i:\bar x_i>0\}\). If those columns are dependent, there is \(y\ne0\) on \(S\) with \(Ay=0\). Slide \(\bar x-\varepsilon y\) until one more component hits 0 (\(\varepsilon^\star=\min_{y_i>0}\bar x_i/y_i\)). Repeat until the columns are independent. For (ii), optimality forces \(c^\top y=0\), so the cost never changes while you slide.</div>
+  <div class="box exact"><b class="t">Theorem 8.2.2</b>\(x\) is an <b>extreme point</b> (not strictly between two other feasible points) \(\iff\) \(x\) is a <b>BFS</b>. This holds for <b>degenerate</b> BFSs too.</div>
+  <div class="box trap"><b class="t">Lies</b><ul>
+    <li>"every optimal solution is a BFS" <span class="no">✗</span> Only <i>some</i> optimum is. If two corners are optimal, the points between them are optimal but not basic.</li>
+    <li>"feasible ⇒ an optimal BFS exists" <span class="no">✗</span> The LP could be unbounded.</li>
+    <li>"at most \(m\) positive entries ⇒ BFS" <span class="no">✗</span> The slides say this "alone is insufficient"; the columns must be independent.</li>
+    <li>"only non-degenerate BFSs are extreme" <span class="no">✗</span> and "each extreme point has exactly one basis" <span class="no">✗</span></li>
+  </ul></div>
+  <label class="done"><input type="checkbox" data-done="c8-3"> BFS = corner, and some optimum is a corner</label>
+</div>
+
+<div class="scene">
+  <div class="num">Card 5 · Simplex is just KKT</div>
+  <h2>Four conditions hold by construction. Only one needs checking.</h2>
+  <div class="box exact"><b class="t">LP KKT (prof: "worth memorizing")</b>\[A^\top\lambda+\mu=c,\quad Ax=b,\quad x\ge0,\quad \mu\ge0,\quad \mu^\top x=0\quad(\lambda\text{ free})\]</div>
+  <div class="box exact"><b class="t">Candidate from a basis \(A=[B\ N]\)</b>Impose \(x_N=0\), \(\mu_B=0\) (complementary slackness for free). Then:
+  \[x_B=B^{-1}b,\qquad \lambda=B^{-\top}c_B,\qquad \mu_N=c_N-N^\top\lambda\ \ \text{(reduced costs)}.\]
+  BFS ⇒ \(B^{-1}b\ge0\). The only thing left to check is <b>\(\mu_N\ge0\)</b>. If it holds, the BFS is <b>optimal, even if it is degenerate</b>.</div>
+  <div class="box plain"><b class="t">Why the sign test proves optimality</b>For any feasible \(x'\): \(c^\top x'-c^\top\bar x=\mu_N^\top x'_N\ge0\) (both factors are \(\ge0\)). Also \(c^\top\bar x=b^\top\lambda\): the primal and dual values are equal.</div>
+  <div class="box prof"><b class="t">Prof</b>"All four of them you are taking care by construction. Only fifth will be remaining each step. If the fifth fails, you change."</div>
+  <div class="box trap"><b class="t">Lies</b><ul>
+    <li>"optimal needs \(\mu_N>0\)" <span class="no">✗</span> \(\ge0\) is enough. A zero entry hints at alternative optima.</li>
+    <li>"\(\lambda\ge0\) is required" <span class="no">✗</span> It is free.</li>
+    <li>"\(\lambda=B^{-1}c_B\)" <span class="no">✗</span> It is \(B^{-\top}c_B\), i.e. solve \(B^\top\lambda=c_B\).</li>
+    <li>"the test only works at non-degenerate BFSs" <span class="no">✗</span></li>
+  </ul></div>
+  <label class="done"><input type="checkbox" data-done="c8-4"> x_B, λ, μ_N formulas memorised</label>
+</div>
+
+<div class="scene">
+  <div class="num">Cards 6–7 · Walking an edge</div>
+  <h2>The reduced cost is the slope; the ratio test is the brake</h2>
+  <p class="hook">Push one nonbasic variable \(x_q\) up from 0. The basic variables have to adjust to keep \(Ax=b\). How fast does the cost change, and how far can you go before something hits 0?</p>
+  <div class="box exact"><b class="t">The edge</b>Let \(u=B^{-1}a_q\). Then \(x_B(t)=\bar x_B-u\,t\) and \(x_q=t\). The cost changes as
+  \[c^\top x(t)=c^\top\bar x+\mu_q\,t.\]
+  \(\mu_q<0\): downhill (a feasible descent direction at a non-degenerate BFS). \(\mu_q=0\): flat (alternative optima may exist).</div>
+  <div class="box exact"><b class="t">Minimum-ratio test</b>Stay feasible: \(\bar x_B-ut\ge0\). Rows with \(u_i\le0\) never block you.
+  \[\theta=\min_{i:\,u_i>0}\frac{(\bar x_B)_i}{u_i}.\]
+  The basic variable in the row that attains the minimum <b>leaves</b>; \(x_q\) <b>enters</b> with value \(\theta\). The cost changes by \(\mu_q\theta\).</div>
+  <div class="box exact"><b class="t">Unbounded</b>If \(\mu_q<0\) <b>and</b> \(u\le0\): nothing ever blocks the walk, and the cost goes to \(-\infty\). <b>One</b> such column is enough to prove the LP is unbounded.</div>
+  <div class="box ex"><b class="t">Worked: \(\min x_1+x_2-2x_3\), \(x_1+x_3=2,\ x_2+x_3=3\)</b>
+  Basis \((x_1,x_2)\): \(B=I\), \(\bar x=(2,3,0)\), cost 5, \(\lambda=c_B=(1,1)\).<br>
+  \(\mu_3=-2-(1\cdot1+1\cdot1)=\mathbf{-4}\). (If you forget that \(x_1,x_2\) also move, you'd wrongly say −2.)<br>
+  \(u=(1,1)\), ratios \(2/1,\ 3/1\) → \(\theta=2\), \(x_1\) leaves. New point \((0,1,2)\), cost \(5+(-4)(2)=-3\).<br>
+  New basis \((x_3,x_2)\): \(\lambda=(-3,1)\), \(\mu_1=1-(-3)=4\ge0\) → <span class="yes">optimal</span>.</div>
+  <div class="box prof"><b class="t">Prof</b>"When you bring in new non-basic … whatever was non-zero has to adjust. Remember that."</div>
+  <div class="box trap"><b class="t">Lies</b><ul>
+    <li>"increasing \(x_q\) leaves \(x_B\) unchanged" <span class="no">✗</span> and "the direction is \(d=e_q\)" <span class="no">✗</span></li>
+    <li>"take ratios over all rows" <span class="no">✗</span> Only rows with \(u_i>0\). And "the maximum ratio" <span class="no">✗</span> It is the minimum.</li>
+    <li>"unbounded if \(u\ge0\)" <span class="no">✗</span> It is \(u\le0\).</li>
+    <li>"\(\theta>0\) always" <span class="no">✗</span> At a degenerate BFS, \(\theta\) can be 0.</li>
+  </ul></div>
+  <label class="done"><input type="checkbox" data-done="c8-5"> I can do a reduced cost + ratio test by hand</label>
+</div>
+
+<div class="scene">
+  <div class="num">Card 8 · His favourite question</div>
+  <h2>What each step of the simplex <i>means</i></h2>
+  <table>
+    <tr><th>Step</th><th>What you do</th><th>What it means</th></tr>
+    <tr><td>0 Start</td><td>find \(B\) with \(B^{-1}b\ge0\) (Phase I if needed)</td><td>stand on a corner</td></tr>
+    <tr><td>1 Price</td><td>\(B^\top\lambda=c_B\), \(\mu_j=c_j-a_j^\top\lambda\)</td><td>KKT holds except possibly \(\mu_N\ge0\). If all \(\mu_j\ge0\): <b>optimal</b>, with \(\lambda\) as the certificate.</td></tr>
+    <tr><td>2 Enter</td><td>pick \(q\) with \(\mu_q<0\); solve \(Bu=a_q\)</td><td>the edge along \(x_q\) goes downhill. If \(u\le0\): <b>unbounded</b> ray.</td></tr>
+    <tr><td>3 Ratio</td><td>\(\theta=\min_{u_i>0}\bar x_i/u_i\)</td><td>walk until the first basic variable hits 0</td></tr>
+    <tr><td>4 Pivot</td><td>swap the leaving column for \(a_q\)</td><td>move to the neighbouring corner (or stay put if \(\theta=0\))</td></tr>
+  </table>
+  <div class="box trap"><b class="t">Exactly two ways to stop</b>\(\mu_N\ge0\) → optimal BFS. \(\mu_q<0\) with \(u\le0\) → unbounded below.</div>
+  <label class="done"><input type="checkbox" data-done="c8-6"> I can explain each step in one sentence</label>
+</div>
+
+<div class="scene">
+  <div class="num">Card 9 · Degeneracy</div>
+  <h2>When a step has length zero</h2>
+  <div class="box ex"><b class="t">Ties create degeneracy</b>\(\min -x_3\), \(x_1+x_3=1,\ x_2+x_3=1\). Basis \((x_1,x_2)\), \(\bar x=(1,1,0)\). \(x_3\) enters: \(u=(1,1)\), ratios \(\{1,1\}\), a tie! New point \((0,0,1)\). One of \(x_1,x_2\) leaves; the other stays basic <b>at value 0</b>. Under Bland's rule, \(x_1\) leaves (smaller index).</div>
+  <div class="box ex"><b class="t">Negative reduced cost at an optimum</b>\(\min x_1\), \(x_1+x_2=0\), \(x\ge0\). The only feasible point is \((0,0)\), so it is optimal. Basis \((x_1)\): \(\lambda=1\), \(\mu_2=0-1=-1<0\), \(u=1\), \(\theta=0\).<br>
+  <b>Lesson:</b> at a degenerate BFS, \(\mu_q<0\) doesn't guarantee progress, and an optimal BFS can show a negative reduced cost for some basis.</div>
+  <div class="box exact"><b class="t">Termination and Bland's rule</b>If every BFS is non-degenerate, each pivot strictly lowers the cost, so no basis repeats, and there are finitely many bases ⇒ the method finishes.<br>Degeneracy (\(\theta=0\)) can make bases <b>cycle</b>.<br>
+  <b>Bland's rule:</b> enter the variable with the <b>smallest original index</b> among \(\mu_j<0\). Break ratio-test ties by the <b>smallest original index</b>. This prevents cycling.</div>
+  <div class="box trap"><b class="t">Lies</b><ul>
+    <li>"Bland: enter the most negative reduced cost" <span class="no">✗</span> That is Dantzig's rule.</li>
+    <li>"Bland prevents degeneracy" <span class="no">✗</span> It prevents <b>cycling</b>.</li>
+    <li>"at an optimal BFS every reduced cost is ≥ 0 for every basis" <span class="no">✗</span> See the example above.</li>
+  </ul></div>
+  <label class="done"><input type="checkbox" data-done="c8-7"> Degeneracy → θ=0 → cycling; Bland fixes cycling</label>
+</div>
+
+<div class="scene">
+  <div class="num">Card 10 · Finding a first corner</div>
+  <h2>Phase I: a helper problem that can never be unbounded</h2>
+  <div class="box exact"><b class="t">Case I: slack basis</b>From \(A_0x\le b\) with \(b\ge0\), the slacks give \(B=I\), \(x=0\), \(y=b\). That is feasible straight away (degenerate if some \(b_i=0\), which is fine).</div>
+  <div class="box exact"><b class="t">Case II: Phase I</b>\(\min w=\mathbf 1^\top y\) s.t. \(Ax+y=b,\ x,y\ge0\) (with \(b\ge0\)). Start at \(x=0,\ y=b\). Since \(w\ge0\), it is <b>never unbounded</b>.<br>
+  \(w^{(1)}>0\) ⇒ the original LP is <b>infeasible</b>. \(w^{(1)}=0\) ⇒ feasible.<br>
+  Before Phase II: end Phase I at an optimal <b>BFS</b>, pivot out any artificial variables still basic at 0, drop the artificial columns, restore \(c\), and recompute \(\lambda,\mu_N\).</div>
+  <div class="box ex"><b class="t">Why "basic" matters</b>\(\min y\) s.t. \(x_1+x_2+y=1\): the point \((\tfrac12,\tfrac12,0)\) is optimal (\(w=0\)) but <b>not basic</b>. Phase I has to end at a BFS.</div>
+  <div class="box ex"><b class="t">Worked: \(x_1+x_2=1,\ 2x_1+2x_2+x_3=1\)</b>Directly: \(x_3=1-2(x_1+x_2)=1-2=-1<0\) → infeasible. Phase I gives \(w^{(1)}=\tfrac12>0\).</div>
+  <div class="box trap"><b class="t">Lies</b><ul>
+    <li>"Phase I can be unbounded" <span class="no">✗</span></li>
+    <li>"\(w^{(1)}>0\) means unbounded" <span class="no">✗</span> It means infeasible.</li>
+    <li>"\(w^{(1)}=0\) ⇒ every Phase I optimum is an original BFS" <span class="no">✗</span></li>
+    <li>"reuse the Phase I cost row in Phase II" <span class="no">✗</span></li>
+  </ul></div>
+  <label class="done"><input type="checkbox" data-done="c8-8"> w>0 ⇒ infeasible; Phase I is never unbounded</label>
+</div>
+
+<div class="scene">
+  <div class="num">Card 11 · The tableau</div>
+  <h2>Reading every number in the table</h2>
+  <div class="box exact"><b class="t">Canonical tableau</b>
+  \[\begin{array}{c|cc|c} & x_B & x_N & \text{RHS}\\\hline \text{rows} & I & B^{-1}N & B^{-1}b=\bar x_B\\\hline \text{cost} & 0 & r_N^\top & -z_0\end{array}\]
+  \(r_N=\mu_N\) (reduced costs), \(z_0=c_B^\top B^{-1}b\). <b>The bottom-right entry is \(-z_0\).</b> The column of \(x_q\) inside \(B^{-1}N\) is \(u\).</div>
+  <div class="box ex"><b class="t">Worked tableau</b>
+  \[\begin{array}{c|cc|cc|c} & x_3 & x_4 & x_1 & x_2 & \text{RHS}\\\hline x_3 & 1&0&2&1&6\\ x_4&0&1&1&3&9\\\hline \text{cost}&0&0&-1&-2&4\end{array}\]
+  The current value is \(z_0=-4\) (not 4!). Bland → \(x_1\) enters (smallest index with \(r<0\), even though −2 is more negative). \(u=(2,1)\), ratios \(3,\ 9\) → \(x_3\) leaves, \(\theta=3\). New value \(-4+(-1)(3)=-7\).</div>
+  <div class="box trap"><b class="t">Lies</b><ul>
+    <li>"the bottom-right entry is \(z_0\)" <span class="no">✗</span> It is \(-z_0\).</li>
+    <li>"the RHS column holds the reduced costs" <span class="no">✗</span> It holds the basic values.</li>
+  </ul></div>
+  <label class="done"><input type="checkbox" data-done="c8-9"> I can read a tableau and pivot once</label>
+</div>
+
+<div class="scene">
+  <div class="num">Card 12 · The finale</div>
+  <h2>The worked example and its dual certificate</h2>
+  <div class="box ex"><b class="t">\(\min -3x_1-2x_2\), \(x_1+x_2+s_1=4\), \(2x_1+x_2+s_2=5\)</b>
+  Start: basis \((s_1,s_2)\), \(x=(0,0,4,5)\), \(z=0\). Reduced costs \(-3,-2\).<br>
+  Pivot 1 (Bland: \(x_1\)): \(u=(1,2)\), ratios \(4,\ \tfrac52\) → \(\theta=\tfrac52\), \(s_2\) leaves, \(z=-7.5\).<br>
+  Pivot 2: \(x_2\) has \(r=-\tfrac12\); \(u=(\tfrac12,\tfrac12)\), ratios \(3,5\) → \(\theta=3\), \(s_1\) leaves, \(z=-9\).<br>
+  Final reduced costs \((1,1)\ge0\) → optimal \(x^\star=(1,3,0,0)\), \(z^\star=-9\).<br>
+  <b>Certificate:</b> \(\lambda=(-1,-1)\), \(\mu=c-A^\top\lambda=(0,0,1,1)\ge0\), \(b^\top\lambda=-9\). So every feasible point has \(c^\top x=-9+s_1+s_2\ge-9\).</div>
+  <div class="box plain"><b class="t">How to check a certificate in a quiz</b>1) Solve \(B^\top\lambda=c_B\) using the basic columns. 2) Compute \(\mu=c-A^\top\lambda\) and check it is \(\ge0\). 3) Check \(b^\top\lambda=c^\top x^\star\). All three must pass.</div>
+  <label class="done"><input type="checkbox" data-done="c8-10"> I can verify a dual certificate</label>
+</div>
+<p style="text-align:center"><button onclick="go('q8')" style="font:700 1rem Inter;padding:12px 22px;border-radius:12px;border:none;background:var(--accent);color:#fff;cursor:pointer">Take the Ch 8 mock quiz →</button></p>
+</section>
+
+<!-- ===================================================== CH 8 QUIZ ===================================================== -->
+<section class="page" id="q8">
+  <h2 style="margin-top:26px">Mock Quiz V · Chapter 8</h2>
+  <p>Standard form throughout: \(\min c^\top x,\ Ax=b,\ x\ge0\), rank \(A=m\), \(\mu_j=c_j-a_j^\top\lambda\) with \(\lambda=B^{-\top}c_B\).</p>
+  <div class="score" id="s-q8"></div>
+  <div id="list-q8"></div>
+</section>
+
+<!-- ===================================================== LAST 10 MIN ===================================================== -->
+<section class="page" id="last">
+<div class="scene">
+  <h2>Last 10 minutes: Ch 7</h2>
+  <table>
+    <tr><td>Hessian test</td><td>needs Ω <b>open</b>. The first-order test only needs differentiability on an open set <i>around</i> Ω.</td></tr>
+    <tr><td>Convex feasible sets</td><td>affine =, convex ≤, concave ≥. They are sufficient, not necessary.</td></tr>
+    <tr><td>Local = global</td><td>no derivatives used; minimisers form a convex set; unique only if strict.</td></tr>
+    <tr><td>KKT in a convex program</td><td><b>sufficient</b> with no CQ; <b>necessary</b> only with a CQ (Slater).</td></tr>
+    <tr><td>∇²L at a KKT point</td><td>⪰ 0 on all of ℝⁿ; λ's sign is irrelevant.</td></tr>
+    <tr><td>Villain</td><td>(x−a)², x² ≤ 0: p* = a², q = a²μ/(1+μ), zero gap, not attained, no KKT, no Slater.</td></tr>
+    <tr><td>q</td><td>concave because L is affine in y; inf over all x; u free; never +∞; true even for non-convex primals.</td></tr>
+    <tr><td>Weak duality</td><td>d* ≤ p*, no convexity needed.</td></tr>
+    <tr><td>7.4.1</td><td>KKT pair ⇔ zero gap + <b>both attained</b>. No strictness, no CQ, no uniqueness.</td></tr>
+    <tr><td>7.4.2</td><td>a <b>unique</b> minimiser of L(·, ȳ) is the optimum. Strictly convex f suffices.</td></tr>
+    <tr><td>Slater</td><td><b>one</b> point, strict for all g_j ⇒ zero gap + <b>dual</b> attained (not primal).</td></tr>
+    <tr><td>LP dual</td><td>max bᵀλ, Aᵀλ ≤ c, λ free. Both can be infeasible. Never reverse "unbounded ⇒ infeasible".</td></tr>
+    <tr><td>Jacobian</td><td>h = Ax + b: J_h = Aᵀ, term Aᵀλ.</td></tr>
+  </table>
+</div>
+<div class="scene">
+  <h2>Last 10 minutes: Ch 8</h2>
+  <table>
+    <tr><td>Conversions</td><td>≤ add slack; ≥ subtract surplus; free → x⁺ − x⁻; b &lt; 0 → multiply by −1 and flip.</td></tr>
+    <tr><td>Basic solution</td><td>x_N = 0, x_B = B⁻¹b; can be negative. BFS = also ≥ 0. Degenerate = a <b>basic</b> variable is 0.</td></tr>
+    <tr><td>8.2.1</td><td>feasible ⇒ a BFS exists; optimum exists ⇒ an <b>optimal BFS</b> exists (some, not every).</td></tr>
+    <tr><td>8.2.2</td><td>extreme point ⇔ BFS (degenerate ones too; one point can have several bases).</td></tr>
+    <tr><td>Formulas</td><td>Bᵀλ = c_B; μ_N = c_N − Nᵀλ; u = B⁻¹a_q.</td></tr>
+    <tr><td>Optimal</td><td>μ_N ≥ 0 (not &gt;), valid even when degenerate.</td></tr>
+    <tr><td>Ratio test</td><td>min over u_i &gt; 0 of x̄_i / u_i; that row leaves; cost changes by μ_q θ.</td></tr>
+    <tr><td>Unbounded</td><td>μ_q &lt; 0 and u ≤ 0 (one column is enough).</td></tr>
+    <tr><td>Degeneracy</td><td>θ can be 0; a negative μ can appear at an optimum; cycling is possible.</td></tr>
+    <tr><td>Bland</td><td>smallest index enters (μ &lt; 0); smallest index wins ties when leaving. Prevents <b>cycling</b>.</td></tr>
+    <tr><td>Phase I</td><td>never unbounded; w &gt; 0 ⇒ infeasible; must end at a BFS.</td></tr>
+    <tr><td>Tableau</td><td>bottom-right = −z₀; RHS = basic values; cost row = reduced costs.</td></tr>
+    <tr><td>Certificate</td><td>μ = c − Aᵀλ ≥ 0 and bᵀλ = cᵀx*.</td></tr>
+  </table>
+</div>
+</section>
+
+<section id="key"><h2>Answer key with explanations</h2><div id="keybody"></div></section>
+</main>
+
+<script>
+const Q7 = [
+ {q:String.raw`Let \(\Omega\) be convex. The test \(f(y)\ge f(x)+(y-x)^\top\nabla f(x)\ \forall x,y\in\Omega\) characterises convexity of \(f\) on \(\Omega\) provided`,
+  o:[String.raw`\(\Omega\) is open.`,String.raw`\(f\) is differentiable on an open set containing \(\Omega\).`,String.raw`\(f\in C^2\) and \(\nabla^2 f\succeq0\) on \(\Omega\).`,String.raw`\(\Omega\) is closed and bounded.`],a:1,
+  w:String.raw`Theorem 7.1.1. (A) \(\Omega\) itself need not be open: the first-order test works on closed and lower-dimensional sets. (C) is the Hessian test, which needs \(\Omega\) open. (D) is irrelevant.`},
+ {q:String.raw`\(f=x_1^2-x_2^2\), \(\Omega=\{(x_1,0)\}\). Which is correct?`,
+  o:[String.raw`\(f\) is not convex on \(\Omega\) because \(\nabla^2 f\) is indefinite.`,String.raw`\(f\) is convex on \(\Omega\); Theorem 7.1.2 does not apply because \(\Omega\) is not open.`,String.raw`Theorem 7.1.2 applies and proves \(f\) convex on \(\Omega\).`,String.raw`\(f\) is convex on \(\Omega\) but the first-order test fails on \(\Omega\).`],a:1,
+  w:String.raw`On \(\Omega\), \(f=x_1^2\), which is convex. (A) applies the full Hessian on a thin set: exactly the trap. (C) the theorem needs an open set. (D) the first-order test passes: \(y_1^2\ge x_1^2+2x_1(y_1-x_1)\).`},
+ {q:String.raw`\(\Omega=[-1,1]^2\), \(h=x_1+x_2\). The set \(\{x\in\Omega:h(x)=0\}\) is`,
+  o:["an affine set.","convex but not affine (a line segment).","not convex.","empty."],a:1,
+  w:String.raw`It is the diagonal from \((-1,1)\) to \((1,-1)\): a segment. Convex by 7.2.1(a), but not a whole line, so not affine (Remark 7.2.1 with new numbers).`},
+ {q:String.raw`On \(\mathbb R^n\), which constraint is guaranteed by Theorem 7.2.1 to give a convex set?`,
+  o:[String.raw`\(h\ge0\), \(h\) convex.`,String.raw`\(h=0\), \(h\) convex.`,String.raw`\(h\ge0\), \(h\) concave.`,String.raw`\(h\le0\), \(h\) concave.`],a:2,
+  w:String.raw`≥ goes with concave. (A) \(x^2\ge1\): two pieces. (B) a circle. (D) \(1-x^2\le0\) is \(|x|\ge1\): two pieces.`},
+ {q:String.raw`\(f\) convex on convex \(\Omega\), differentiable on an open set around it, and \((y-\bar x)^\top\nabla f(\bar x)\ge0\ \forall y\in\Omega\). Which holds with NO constraint qualification?`,
+  o:[String.raw`\(\bar x\) is a KKT point.`,String.raw`\(\bar x\) is a global minimiser of \(f\) on \(\Omega\).`,String.raw`\(\nabla f(\bar x)=0\).`,String.raw`\(\bar x\) is the unique minimiser.`],a:1,
+  w:String.raw`Theorem 7.2.4: \(f(y)\ge f(\bar x)+(y-\bar x)^\top\nabla f\ge f(\bar x)\). (A) multipliers need a CQ. (C) false on a boundary (\(\min x\) on \(x\ge0\)). (D) needs strict convexity.`},
+ {q:String.raw`Convex program (\(f,g_j\) convex \(C^2\), \(h\) affine), \((x^\star,\lambda^\star,\mu^\star)\) satisfies KKT. Then`,
+  o:[String.raw`\(\nabla^2_{xx}L\succeq0\) on all of \(\mathbb R^n\).`,String.raw`\(\nabla^2_{xx}L\succ0\) on \(C\setminus\{0\}\), so SOSC always holds.`,String.raw`\(\nabla^2_{xx}L\succeq0\) on the critical cone only.`,String.raw`The conclusion needs \(\lambda^\star\ge0\).`],a:0,
+  w:String.raw`Theorem 7.2.7. (B) only \(\succeq\) (an LP has \(\nabla^2L=0\)). (C) "only" is wrong. (D) \(\nabla^2h=0\), so \(\lambda\)'s sign never enters.`},
+ {q:"Which agrees with Remark 7.2.2?",
+  o:["Convex program: KKT necessary and sufficient with no CQ.","Convex program: KKT sufficient for global optimality; necessity needs a CQ such as Slater.","Non-convex problem with LICQ: KKT is sufficient for a local minimum.","Strict convexity of f and g can replace a CQ for KKT necessity."],a:1,
+  w:"(A) necessity fails in Example 7.2.1. (C) for non-convex problems KKT is never sufficient by itself. (D) Example 7.2.1 has strictly convex f and g and still no multiplier."},
+ {q:String.raw`With \(J_h=[\nabla h_1\cdots\nabla h_m]\) and \(h=Ax+b\), the equality term in stationarity is`,
+  o:[String.raw`\(J_h=A\), term \(A\lambda\).`,String.raw`\(J_h=A^\top\), term \(A^\top\lambda\).`,String.raw`\(J_h=A^\top\), term \(J_h^\top\lambda=A\lambda\).`,String.raw`\(J_h=A\), term \(A^\top\lambda\).`],a:1,
+  w:String.raw`Gradients are columns, so \(J_h=A^\top\) and the term is \(J_h\lambda=A^\top\lambda\). The notes explicitly say "not \(J_h^\top\lambda\)", which is option (C).`},
+ {q:String.raw`Which is true of \(q\) and \(\mathbb D=\{y:q(y)>-\infty\}\)?`,
+  o:[String.raw`\(q\) can take the value \(+\infty\).`,String.raw`\(q\) is concave and \(\mathbb D\) convex, even when the primal is not convex.`,String.raw`\(q\) is concave only when \(f,g_j\) are convex.`,String.raw`\(\mathbb D\) is always all of \(\mathbb R^{m+p}\).`],a:1,
+  w:String.raw`\(L\) is affine in \(y\) (Remark 7.3.1). (A) the notes say \(q\) can't be \(+\infty\). (C) wrong reason. (D) for an LP, \(q=-\infty\) unless \(A^\top\lambda+\mu=c\).`},
+ {q:"Theorem 7.4.1 (KKT pair ⇔ zero gap + both attained) assumes f, g convex differentiable and h affine. Which ADDITIONAL assumption does it need?",
+  o:["f strictly convex.","Slater's condition.","A unique primal optimum.","None of these."],a:3,
+  w:"Remark 7.4.1: neither strict convexity nor an extra CQ is needed, and uniqueness is not required. Uniqueness only enters the recovery corollary."},
+ {q:String.raw`\(f=\tfrac12\|Ax-b\|^2\), \(A=\begin{pmatrix}1&1\\1&1\end{pmatrix}\), \(b=(1,3)\). Which is correct?`,
+  o:[String.raw`Convex since \(A^\top A\succeq0\), not strictly convex; the minimisers form a line.`,"Strictly convex, so the minimiser is unique.",String.raw`Not convex because \(A^\top A\) is singular.`,String.raw`No minimiser because \(Ax=b\) has no solution.`],a:0,
+  w:String.raw`\(A^\top A=\begin{pmatrix}2&2\\2&2\end{pmatrix}\succeq0\) and singular. With \(s=x_1+x_2\), \(f=\tfrac12[(s-1)^2+(s-3)^2]\), minimised at \(s=2\): the whole line \(x_1+x_2=2\). (D) least squares always has a minimiser.`},
+ {q:String.raw`\(\min\sum_{i=1}^3 x_i\log x_i\) (\(0\log0:=0\)), \(\mathbf1^\top x=1,\ x\ge0\). The minimiser is`,
+  o:[String.raw`\((1,0,0)\)`,String.raw`\((\tfrac13,\tfrac13,\tfrac13)\)`,String.raw`\((\tfrac12,\tfrac12,0)\)`,String.raw`none: \(\log 0\) is undefined`],a:1,
+  w:String.raw`Stationarity: \(\log x_i+1=\lambda\) for every \(i\), so all \(x_i\) are equal. Value \(-\log3\). (A) gives 0, (C) gives \(-\log2\), both larger. (D) the notes use the \(0\log0=0\) extension.`},
+ {q:String.raw`\(\min (x+2)^2\) s.t. \(x^2\le0\). For \(\mu\ge0\) the dual function is`,
+  o:[String.raw`\(\dfrac{4\mu}{1+\mu}\)`,String.raw`\(\dfrac{4}{1+\mu}\)`,String.raw`\(4\mu\)`,String.raw`\(4-4\mu\)`],a:0,
+  w:String.raw`\(x=\frac{-2}{1+\mu}\). Then \((x+2)^2=\frac{4\mu^2}{(1+\mu)^2}\) and \(\mu x^2=\frac{4\mu}{(1+\mu)^2}\); the sum is \(\frac{4\mu}{1+\mu}\). This is the villain with \(a=-2\).`},
+ {q:"For the problem in Q13, which is correct?",
+  o:[String.raw`\(d^\star=4\) attained at \(\mu=1\).`,String.raw`\(p^\star=d^\star=4\), dual sup not attained, no KKT multiplier, Slater fails.`,"There is a duality gap, because no KKT multiplier exists.",String.raw`KKT holds at \(x=0\) with \(\mu=2\).`],a:1,
+  w:String.raw`The feasible set is \(\{0\}\), so \(p^\star=4\). \(q<4\) for every finite \(\mu\), and \(q\to4\). Stationarity at 0 gives \(4\ne0\). (A) \(q(1)=2\). (C) the gap is zero: "no KKT" means "not both attained".`},
+ {q:String.raw`\(\min 2x\) s.t. \(3-x\le0\). At the dual optimum \(\mu^\star\), consider \(x=0,3,4\). Which is correct?`,
+  o:[String.raw`Only \(x=3\) minimises \(L(\cdot,\mu^\star)\).`,String.raw`All three minimise \(L(\cdot,\mu^\star)\); 0 is infeasible, 4 is feasible but fails complementary slackness, only 3 is optimal.`,String.raw`\(x=4\) is optimal because it is a feasible minimiser of L.`,"Corollary 7.4.2 applies and returns x = 3 without any check."],a:1,
+  w:String.raw`\(L=(2-\mu)x+3\mu\), so \(\mu^\star=2\) and \(L(\cdot,2)\equiv6\). Select by feasibility and \(2(3-x)=0\): \(x=3\). (D) the minimiser isn't unique, so 7.4.2 doesn't apply (Example 7.4.2 with new numbers).`},
+ {q:String.raw`For recovery (Cor 7.4.2) you need \(L(\cdot,\bar y)\) to have a unique minimiser. Which is sufficient (\(g_j\) convex, \(h\) affine, \(\bar v\ge0\))?`,
+  o:[String.raw`Every \(g_j\) strictly convex.`,String.raw`\(f\) strictly convex.`,"Slater's condition.",String.raw`The dual optimum \(\bar y\) is unique.`],a:1,
+  w:"Strictly convex f makes L strictly convex. The notes: strict convexity of every constraint is unnecessary. (C) gives zero gap and a dual optimum, not uniqueness. (D) says nothing about the minimiser in x."},
+ {q:String.raw`\(\min x_1\) s.t. \(x_1^2+x_2^2-1\le0\). Which is correct?`,
+  o:[String.raw`\(\mu^\star=\tfrac12\); \(L(\cdot,\tfrac12)\) has unique minimiser \((-1,0)\); \(p^\star=d^\star=-1\).`,String.raw`\(\mu^\star=1\), recovered point \((-\tfrac12,0)\).`,String.raw`\(\mu^\star=0\) since the constraint is convex.`,"There is a duality gap since the constraint is not affine."],a:0,
+  w:String.raw`Slater point (0,0). For \(\mu>0\): \(x=(-\frac1{2\mu},0)\), \(q=-\frac1{4\mu}-\mu\). Maximising gives \(\mu^\star=\tfrac12\), \(d^\star=-1\). L is strictly convex, so the minimiser \((-1,0)\) is the optimum.`},
+ {q:String.raw`Standard LP with \(A=(1\ 1\ 1)\), \(b=3\), at \(x^\star=(2,0,1)\). Which direction is in \(\mathcal T(x^\star)\)?`,
+  o:[String.raw`\((1,-1,0)\)`,String.raw`\((-1,1,0)\)`,String.raw`\((1,1,0)\)`,String.raw`\((0,-1,1)\)`],a:1,
+  w:String.raw`\(I_0=\{2\}\): need \(d_1+d_2+d_3=0\) and \(d_2\ge0\). (A) and (D) have \(d_2<0\); (C) sums to 2.`},
+ {q:String.raw`\(\min x_1+2x_2+3x_3\), \(x_1+x_2+x_3=1\), \(x\ge0\). Which certifies that \(x^\star=(1,0,0)\) is optimal?`,
+  o:[String.raw`\(\lambda=1,\ \mu=(0,1,2)\), \(\mu^\top x^\star=0\)`,String.raw`\(\lambda=3,\ \mu=(-2,-1,0)\)`,String.raw`\(\lambda=1,\ \mu=(1,2,3)\)`,String.raw`\(\lambda=0,\ \mu=(1,2,3)\)`],a:0,
+  w:String.raw`\(\mu=c-\lambda\mathbf1\). \(\lambda=1\) gives \((0,1,2)\ge0\) and complementary slackness holds; \(b^\top\lambda=1=c^\top x^\star\). (B) negative μ. (C) violates \(A^\top\lambda+\mu=c\). (D) fails complementary slackness.`},
+ {q:String.raw`(P) \(\min x_1\), \(x_1-x_2=1\), \(-x_1+x_2=1\), \(x\ge0\) (infeasible). (D) \(\max\lambda_1+\lambda_2\), \(\lambda_1-\lambda_2\le1\), \(-\lambda_1+\lambda_2\le0\). Which is correct?`,
+  o:["(D) must be infeasible because (P) is.","(D) is unbounded above; this agrees with 7.6.1(ii).","(D) has an optimal solution.","Impossible: an infeasible primal must have an infeasible dual."],a:1,
+  w:String.raw`\(\lambda_1=\lambda_2=t\) satisfies both constraints, and the objective \(2t\to\infty\). (A) and (D) reverse 7.6.1(ii), the mistake "many students make".`},
+];
+
+const Q8 = [
+ {q:"Which statement about a basic solution for basis B is correct?",
+  o:["All its basic variables are positive.",String.raw`\(x_N=0\), \(x_B=B^{-1}b\); it may have negative components.`,"It is always feasible.","It is unique for given A and b."],a:1,
+  w:"Definition 8.2.1.1. (A) basic variables can be 0 or negative. (C) feasibility needs B⁻¹b ≥ 0. (D) different bases give different basic solutions."},
+ {q:"A basic solution is degenerate when",
+  o:["some nonbasic variable is zero.","some basic variable is zero.","it is infeasible.","B is singular."],a:1,
+  w:"A basic variable equals 0. Nonbasic variables are zero by construction, so (A) describes every basic solution."},
+ {q:String.raw`\(Ax\ge b\), \(x\ge0\) in standard form with \(y\ge0\):`,
+  o:[String.raw`\(Ax+Iy=b\)`,String.raw`\(Ax-Iy=b\), i.e. \([A\ \ -I]\)`,String.raw`\(-Ax+Iy=b\) with b unchanged`,String.raw`\(Ax=b+y\) with y free`],a:1,
+  w:"Surplus is subtracted. (A) is the slack form for ≤."},
+ {q:"Which follows from Theorem 8.2.1 (rank A = m)?",
+  o:["Every optimal solution is a BFS.","If the LP is feasible, it has an optimal BFS.","If the LP has an optimal solution, it has an optimal BFS.","Every feasible point with at most m positive components is a BFS."],a:2,
+  w:"(A) only some optimum is basic. (B) the LP could be unbounded. (D) the columns must also be independent: the slides say this condition 'alone is insufficient'."},
+ {q:String.raw`For \(K=\{Ax=b,\ x\ge0\}\), rank \(A=m\) (Theorem 8.2.2):`,
+  o:["only non-degenerate BFSs are extreme points.","x ∈ K is extreme iff it is a BFS.","every extreme point has exactly one basis.","extreme points need not be basic."],a:1,
+  w:"The proof works for degenerate BFSs too. (C) a degenerate extreme point can have several bases."},
+ {q:String.raw`At a BFS, all reduced costs satisfy \(\mu_N\ge0\). Then`,
+  o:["the BFS is optimal, even if degenerate.","it is optimal only if non-degenerate.",String.raw`optimality needs \(\mu_N>0\).`,String.raw`optimality also needs \(\lambda\ge0\).`],a:0,
+  w:String.raw`\(c^\top x'=c^\top\bar x+\mu_N^\top x'_N\ge c^\top\bar x\). No non-degeneracy is used. Zero entries are allowed; \(\lambda\) is free.`},
+ {q:"Which is correct?",
+  o:["At an optimal BFS every reduced cost must be ≥ 0.","At a degenerate optimal BFS, some reduced cost can be negative.","A negative reduced cost always gives θ > 0.","A degenerate BFS can never be optimal."],a:1,
+  w:String.raw`Slides' example: \(\min x_1\), \(x_1+x_2=0\). The point (0,0) is optimal, but basis \((x_1)\) gives \(\mu_2=-1\) with \(\theta=0\).`},
+ {q:String.raw`At a feasible basis, \(\mu_q<0\) and \(u=B^{-1}a_q\). The LP is unbounded below if`,
+  o:[String.raw`\(u\ge0\)`,String.raw`\(u\le0\)`,"u has a positive entry","all reduced costs are negative"],a:1,
+  w:String.raw`With \(u\le0\), \(\bar x_B-ut\ge0\) for every t, and the cost falls at rate \(\mu_q\). One column is enough.`},
+ {q:String.raw`Phase I ends with optimal value \(w^{(1)}\). Which is correct?`,
+  o:["w > 0 means the LP is unbounded.","w > 0 means the LP is infeasible.","Phase I can be unbounded below.","If w = 0, every optimal Phase I point gives an original BFS."],a:1,
+  w:"Any feasible x̂ would give w = 0. (C) w ≥ 0, so Phase I is never unbounded. (D) (½,½,0) is optimal but not basic."},
+ {q:"Bland's rule chooses",
+  o:["the most negative reduced cost to enter.","the smallest original index among negative reduced costs to enter, and the smallest index among ratio-test ties to leave.","the largest ratio for the leaving variable.","a rule that prevents degenerate BFSs."],a:1,
+  w:"(A) is Dantzig's rule. (D) Bland prevents cycling, not degeneracy."},
+ {q:String.raw`\(\min x_1+2x_2\) s.t. \(x_1-x_2\le-2\), \(x\ge0\). After making the RHS non-negative, the standard-form row is`,
+  o:[String.raw`\(x_1-x_2+y=-2\)`,String.raw`\(-x_1+x_2-y=2\)`,String.raw`\(-x_1+x_2+y=2\)`,String.raw`\(x_1-x_2-y=-2\)`],a:1,
+  w:String.raw`Multiply by −1 and flip: \(-x_1+x_2\ge2\), then subtract a surplus. (A) and (D) keep b < 0. (C) adds a slack to a ≥ row.`},
+ {q:String.raw`\(\min 4x_1-x_2\), \(x_1+x_2=5\), \(x_1\ge2\), \(x_2\) free. A correct standard form is`,
+  o:[String.raw`\(x_1=2+v\), \(x_2=x_2^+-x_2^-\): \(\min 4v-x_2^++x_2^-\) (+8) s.t. \(v+x_2^+-x_2^-=3\)`,String.raw`\(x_1=2+v\), \(x_2\ge0\): \(\min 4v-x_2\), \(v+x_2=3\)`,String.raw`\(x_1=v-2\), split \(x_2\): RHS 7`,"Impossible because x₂ is free."],a:0,
+  w:"Shift: 4(2+v) = 8 + 4v, and 2 + v + x₂⁺ − x₂⁻ = 5. (B) drops the free sign of x₂. (C) wrong shift. (D) free variables are split."},
+ {q:String.raw`\(A=\begin{pmatrix}1&0&1\\0&1&1\end{pmatrix}\), \(b=(2,1)\). How many BFSs?`,
+  o:["1","2","3","infinitely many"],a:1,
+  w:"{1,2}: (2,1,0) ✓. {1,3}: (1,0,1) ✓. {2,3}: x₂ = −1 ✗. So there are two."},
+ {q:"Same A, b = (1,1). Which is correct?",
+  o:["All three bases give the BFS (1,1,0).","(0,0,1) is a degenerate BFS, obtained from two different bases.","There is no degenerate BFS.","(0,0,1) is not extreme because it is degenerate."],a:1,
+  w:"{1,3} and {2,3} both give (0,0,1), with a basic variable at 0. It is still extreme by Theorem 8.2.2."},
+ {q:String.raw`\(\min x_1+x_2-2x_3\), \(x_1+x_3=2\), \(x_2+x_3=3\). At basis \((x_1,x_2)\), the reduced cost of \(x_3\) is`,
+  o:["−4","−2","0","4"],a:0,
+  w:String.raw`\(\lambda=c_B=(1,1)\), so \(\mu_3=-2-(1+1)=-4\). (B) forgets that \(x_1,x_2\) also move.`},
+ {q:String.raw`In Q15, \(x_3\) enters. Which is correct?`,
+  o:["θ = 2, x₁ leaves, new BFS (0,1,2) with cost −3, and it is optimal.","θ = 3, x₂ leaves.","θ = 2, x₂ leaves.","θ = 2, x₁ leaves, but the cost rises because μ₃ < 0."],a:0,
+  w:String.raw`u = (1,1), ratios 2 and 3, so θ = 2 and \(x_1\) leaves. Cost 5 − 8 = −3. New \(\lambda=(-3,1)\), \(\mu_1=4\ge0\), so it is optimal.`},
+ {q:String.raw`\(\min -x_1-x_2\), \(x_1-x_2+s=1\). At basis \((s)\):`,
+  o:["(0,0,1) is optimal because s > 0.",String.raw`\(x_2\) has \(\mu_2=-1\) and \(u=-1\le0\), so the LP is unbounded.`,String.raw`\(x_1\) must enter, so the LP is bounded.`,"Unboundedness needs every reduced cost to be negative."],a:1,
+  w:String.raw`The ray \(x_2=t\), \(s=1+t\) is feasible for all t, and the cost \(-t\to-\infty\). One column is enough.`},
+ {q:String.raw`\(x_1+x_2=1\), \(2x_1+2x_2+x_3=1\), \(x\ge0\). The Phase I value \(w^{(1)}\):`,
+  o:["½ > 0, so infeasible.","0, so feasible.","2, and feasible.","Phase I is unbounded."],a:0,
+  w:String.raw`Directly: \(x_3=1-2=-1<0\), so the system is infeasible. Phase I's best value is \(w=\tfrac12\).`},
+ {q:String.raw`Tableau, basis \((x_3,x_4)\): rows \([1,0\,|\,2,1\,|\,6]\), \([0,1\,|\,1,3\,|\,9]\); cost row \([0,0\,|\,-1,-2\,|\,4]\) (columns \(x_3,x_4\,|\,x_1,x_2\,|\) RHS). Under Bland:`,
+  o:["x₁ enters, x₃ leaves, new value −7.","x₂ enters because −2 is most negative.","The current value is 4.","x₁ enters and x₄ leaves."],a:0,
+  w:"Bottom-right = −z₀, so z₀ = −4. Bland: x₁ enters. Ratios 6/2 = 3 and 9/1 = 9, so x₃ leaves. New value −4 + (−1)(3) = −7."},
+ {q:String.raw`\(\min -x_1-x_2\), \(x_1+2x_2+s_1=4\), \(3x_1+x_2+s_2=6\); \(x^\star=(\tfrac85,\tfrac65,0,0)\), value \(-\tfrac{14}5\). Which \(\lambda\) certifies optimality?`,
+  o:[String.raw`\((-\tfrac25,-\tfrac15)\)`,String.raw`\((\tfrac25,\tfrac15)\)`,String.raw`\((-1,0)\)`,String.raw`\((0,0)\)`],a:0,
+  w:String.raw`Solve \(B^\top\lambda=c_B\): \(\lambda_1+3\lambda_2=-1\), \(2\lambda_1+\lambda_2=-1\), giving \(\lambda=(-\tfrac25,-\tfrac15)\). The slacks get \(\mu=(\tfrac25,\tfrac15)\ge0\), and \(b^\top\lambda=-\tfrac{14}5\). (C) is dual feasible but gives the bound −4 ≠ −14/5, so it is not a certificate.`},
+];
+
+function store(k,v){try{if(v===undefined)return localStorage.getItem(k);localStorage.setItem(k,v)}catch(e){return null}}
+function math(el){if(window.renderMathInElement)renderMathInElement(el,{delimiters:[{left:"\\[",right:"\\]",display:true},{left:"\\(",right:"\\)",display:false}],throwOnError:false})}
+
+function buildQuiz(id,Q){
+  const list=document.getElementById('list-'+id), sc=document.getElementById('s-'+id);
+  const state=Q.map(()=>null);
+  function upd(){
+    let r=0,w=0,b=0;state.forEach(s=>{if(s==='r')r++;else if(s==='w')w++;else if(s==='b')b++});
+    const pts=r-w/4;
+    sc.innerHTML=`<span class="big">Score: ${pts.toFixed(2)} / 20</span><span>✓ ${r} · ✗ ${w} · blank ${b} · left ${Q.length-r-w-b}</span><button onclick="resetQuiz('${id}')">Reset</button>`;
+  }
+  Q.forEach((x,i)=>{
+    const d=document.createElement('div');d.className='q';
+    d.innerHTML=`<div class="stem">${i+1}. ${x.q}</div>`+x.o.map((o,j)=>`<button class="opt" data-j="${j}">(${'ABCD'[j]}) ${o}</button>`).join('')+
+      `<button class="skip">Leave blank</button><div class="why"><b>Answer: ${'ABCD'[x.a]}.</b> ${x.w}</div>`;
+    d.querySelectorAll('button.opt').forEach(btn=>btn.onclick=()=>{
+      if(state[i])return;const j=+btn.dataset.j;
+      state[i]=j===x.a?'r':'w';btn.classList.add(j===x.a?'right':'wrong');
+      d.querySelectorAll('button.opt')[x.a].classList.add('right');
+      d.querySelectorAll('button').forEach(b=>b.disabled=true);d.classList.add('answered');upd();
+    });
+    d.querySelector('.skip').onclick=()=>{if(state[i])return;state[i]='b';d.querySelectorAll('button.opt')[x.a].classList.add('right');d.querySelectorAll('button').forEach(b=>b.disabled=true);d.classList.add('answered');upd();};
+    list.appendChild(d);
+  });
+  upd();
+}
+function resetQuiz(id){document.getElementById('list-'+id).innerHTML='';buildQuiz(id,id==='q7'?Q7:Q8);math(document.getElementById(id))}
+
+function go(p){
+  document.querySelectorAll('section.page').forEach(s=>s.classList.toggle('on',s.id===p));
+  document.querySelectorAll('nav.tabs button').forEach(b=>b.classList.toggle('on',b.dataset.p===p));
+  store('tab',p);window.scrollTo(0,0);
+}
+document.querySelectorAll('nav.tabs button').forEach(b=>b.onclick=()=>go(b.dataset.p));
+
+function bar(){
+  const all=document.querySelectorAll('[data-done]'),n=[...all].filter(c=>c.checked).length;
+  document.getElementById('bar').style.width=(100*n/all.length)+'%';
+  document.getElementById('bartext').textContent=`${n} of ${all.length} scenes ticked off`;
+}
+document.querySelectorAll('[data-done]').forEach(c=>{
+  c.checked=store('d-'+c.dataset.done)==='1';
+  c.onchange=()=>{store('d-'+c.dataset.done,c.checked?'1':'0');bar()};
+});
+bar();
+
+window.addEventListener('DOMContentLoaded',()=>{
+  buildQuiz('q7',Q7);buildQuiz('q8',Q8);
+  const kb=document.getElementById('keybody');
+  [['Mock Quiz IV · Chapter 7',Q7],['Mock Quiz V · Chapter 8',Q8]].forEach(([t,Q])=>{
+    kb.insertAdjacentHTML('beforeend',`<h3>${t}</h3><p><b>${Q.map((x,i)=>(i+1)+' '+'ABCD'[x.a]).join(' · ')}</b></p>`+
+      Q.map((x,i)=>`<div class="k"><b>${i+1} — ${'ABCD'[x.a]}.</b> ${x.w}</div>`).join(''));
+  });
+  math(document.body);
+  const t=store('tab');if(t&&document.getElementById(t))go(t);
+});
+</script>
+</body>
+</html>

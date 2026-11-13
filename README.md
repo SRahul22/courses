@@ -10,6 +10,7 @@ Free, interactive, self-paced courses by Rahul Dev Sharma, published at https://
 | `/ashish/` | Ashish: a one-page hello for Ashish (not a course, no catalogue card) | hand-written `ashish/index.html` (no source repo) |
 | `/allais/` | Which would you choose? A live seminar quiz on the Allais paradox (not a course, no catalogue card). Presenter view: `/allais/?view=results` | hand-written `allais/index.html`; answers go to a Google Sheet via `~/Dev/pages/allais-quiz/Code.gs` |
 | `/gate-da/` | GATE DA: maths for the GATE Data Science & AI exam (multi-page: hub + one page per module) | built from `~/Dev/course-sources/gate-da/source` (private backup `SRahul22/gate-da`) |
+| `/lno-quiz/` | LNO quiz day: study guide for IISc E1 251 Quiz IV (Ch 7, convexity and duality) and Quiz V (Ch 8, linear programming), with click-to-answer mock quizzes and a printable PDF (not a course, no catalogue card) | hand-written; master copy in OneDrive `E1 251 .../Notes/Quiz 4-5 Preparation/Quiz_Day_Study_Guide.html` (+ `.pdf`, printed from it with headless Edge) |
 
 Each course is one self-contained `index.html` plus a `preview.png` link-preview image. To add a course, build it into a new folder and add a card to `index.html`.
 
