@@ -8,6 +8,7 @@ Free, interactive, self-paced courses by Rahul Dev Sharma, published at https://
 | `/head-start/` | HEAD Start: a field guide for new software engineers | built from `~/Dev/course-sources/head-start/source` (private backup `SRahul22/head-start`) |
 | `/tour-guide/` | Tour Guide: logistics and freight modelling (IISc SL 225) | built from `~/Dev/course-sources/tour-guide/source` (private backup `SRahul22/tour-guide`) |
 | `/inventory/` | Restock: inventory optimization (IISc SL 225, Lecture 15) | built from `~/Dev/course-sources/inventory/source` (private backup `SRahul22/inventory`) |
+| `/achuthan-cvrp/` | Tight Cuts: Achuthan, Caccetta & Hill (2003) branch-and-cut for the CVRP, explained (SL 225 course project) | built from `~/Dev/course-sources/achuthan-cvrp/source` (private backup `SRahul22/achuthan-cvrp`) |
 | `/ashish/` | Ashish: a one-page hello for Ashish (not a course, no catalogue card) | hand-written `ashish/index.html` (no source repo) |
 | `/allais/` | Which would you choose? A live seminar quiz on the Allais paradox (not a course, no catalogue card). Presenter view: `/allais/?view=results` | hand-written `allais/index.html`; answers go to a Google Sheet via `~/Dev/pages/allais-quiz/Code.gs` |
 | `/gate-da/` | GATE DA: maths for the GATE Data Science & AI exam (multi-page: hub + one page per module) | built from `~/Dev/course-sources/gate-da/source` (private backup `SRahul22/gate-da`) |
