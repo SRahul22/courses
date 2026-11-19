@@ -21,13 +21,18 @@
 <meta name="twitter:description" content="A free, interactive course for the GATE DA (Data Science and Artificial Intelligence) exam. Explains every idea visually, includes maths refreshers, and works through real previous-year questions.">
 <meta name="twitter:image" content="https://courses.rahuldevsharma.com/gate-da/preview.png">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 26 26'%3E%3Ccircle cx='13' cy='13' r='10' fill='%230E6B6B'/%3E%3C/svg%3E">
+<!-- inline scripts first: they must never wait behind a slow or blocked stylesheet -->
+<script>/* one-time import of progress carried over from an old address (#import=...): never overwrites existing keys */try{var m=location.hash.match(/^#import=([^&]+)/);if(m){var o=JSON.parse(decodeURIComponent(escape(atob(decodeURIComponent(m[1])))));for(var k in o.d){if(localStorage.getItem(k)===null)localStorage.setItem(k,o.d[k]);}history.replaceState(null,"",location.pathname+location.search+(o.h?"#"+o.h:""));}}catch(e){}</script>
+<script>try { var t = localStorage.getItem("gateda-theme"); if (t === "dark" || t === "light") document.documentElement.setAttribute("data-theme", t); } catch (e) {}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;600&family=Figtree:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,300..600&family=Source+Serif+4:opsz,wght@8..60,400..700&family=JetBrains+Mono:wght@400;600&display=swap">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.11/katex.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
-<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.11/katex.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.11/contrib/auto-render.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-<script defer src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<!-- Google Fonts load without blocking the page; if they are blocked, the system fallbacks are used -->
+<link rel="stylesheet" media="print" onload="this.media='all'" href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;600&family=Figtree:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,300..600&family=Source+Serif+4:opsz,wght@8..60,400..700&family=JetBrains+Mono:wght@400;600&display=swap">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,300..600&family=Source+Serif+4:opsz,wght@8..60,400..700&display=swap"></noscript>
+<!-- KaTeX is served from this site (vendor/katex, copied by build.py), so maths works where CDNs are blocked -->
+<link rel="stylesheet" href="./vendor/katex/katex.min.css">
+<script defer src="./vendor/katex/katex.min.js"></script>
+<script defer src="./vendor/katex/contrib/auto-render.min.js"></script>
 <style>
 /* GATE DA stylesheet. Built on the K2 layout (rail of parts and chapters, one chapter per screen, 780 px reading column),
    with the EDITORIAL LAYER at the end of this file (2026-11-19): warm paper palette, teal brand and coral second colour,
@@ -48,7 +53,7 @@
   --surface:var(--panel); --rail:var(--bg); --ink:var(--tx); --ink-2:var(--tx2); --muted:var(--tx3);
   --accent:#0E6B6B; --accent-soft:rgba(14,107,107,.10); --mint:#2E7D4F; --mint-soft:rgba(46,125,79,.10);
   --plum:#7A4FB0; --plum-soft:rgba(122,79,176,.10); --warn:#C2571F; --warn-soft:rgba(194,87,31,.10);
-  --gold:#B5612C; --gold-soft:rgba(181,97,44,.10); --plot-bg:#FFFDF9;
+  --gold:#A8780F; --gold-soft:rgba(168,120,15,.12); --plot-bg:#FFFDF9;
   --code-bg:#1B1915; --code-fg:#EDE6D8; --code-dim:#958C7C;
   --serif:Fraunces,Georgia,serif; --read:"Source Serif 4","Source Serif Pro",Georgia,serif; --sans:Figtree,system-ui,-apple-system,"Segoe UI",sans-serif; --hand:Caveat,"Bradley Hand",cursive;
   --font-display:var(--serif); --font-ui:var(--sans); --font-body:var(--read);
@@ -66,7 +71,7 @@
   --shadow:0 1px 1px rgba(0,0,0,.3),0 10px 30px -18px rgba(0,0,0,.6); --shadow2:0 1px 2px rgba(0,0,0,.35),0 18px 40px -22px rgba(0,0,0,.7);
   --accent:#5CC2B4; --accent-soft:rgba(92,194,180,.13); --mint:#6BCB8B; --mint-soft:rgba(107,203,139,.12);
   --plum:#C3A2F0; --plum-soft:rgba(195,162,240,.13); --warn:#F2A066; --warn-soft:rgba(242,160,102,.13);
-  --gold:#F0A273; --gold-soft:rgba(240,162,115,.12); --plot-bg:#1A1917; --code-bg:#0D0C0B; --code-fg:#EDE6D8; --code-dim:#857C6E;
+  --gold:#E8BD62; --gold-soft:rgba(232,189,98,.14); --plot-bg:#1A1917; --code-bg:#0D0C0B; --code-fg:#EDE6D8; --code-dim:#857C6E;
   color-scheme:dark;
 }}
 :root[data-theme="dark"]{
@@ -80,7 +85,7 @@
   --shadow:0 1px 1px rgba(0,0,0,.3),0 10px 30px -18px rgba(0,0,0,.6); --shadow2:0 1px 2px rgba(0,0,0,.35),0 18px 40px -22px rgba(0,0,0,.7);
   --accent:#5CC2B4; --accent-soft:rgba(92,194,180,.13); --mint:#6BCB8B; --mint-soft:rgba(107,203,139,.12);
   --plum:#C3A2F0; --plum-soft:rgba(195,162,240,.13); --warn:#F2A066; --warn-soft:rgba(242,160,102,.13);
-  --gold:#F0A273; --gold-soft:rgba(240,162,115,.12); --plot-bg:#1A1917; --code-bg:#0D0C0B; --code-fg:#EDE6D8; --code-dim:#857C6E;
+  --gold:#E8BD62; --gold-soft:rgba(232,189,98,.14); --plot-bg:#1A1917; --code-bg:#0D0C0B; --code-fg:#EDE6D8; --code-dim:#857C6E;
   color-scheme:dark;
 }
 
@@ -772,7 +777,7 @@ details.deeper > .inner { font-size:17px; }
 .q-text { font-weight:400; font-size:17px; }
 .q-text > .q-from { font:600 11px var(--sans); letter-spacing:.1em; text-transform:uppercase; color:var(--tx3); }
 .opts { counter-reset:opt; gap:8px; }
-.opt { counter-increment:opt; position:relative; display:flex; align-items:center; padding:12px 16px 12px 54px; border:1.5px solid var(--line); background:var(--panel); border-radius:14px; font:400 15.5px/1.5 var(--sans); color:var(--tx); }
+.opt { counter-increment:opt; position:relative; display:block; width:100%; padding:12px 16px 12px 54px; border:1.5px solid var(--line); background:var(--panel); border-radius:14px; font:400 15.5px/1.5 var(--sans); color:var(--tx); }
 .opt::before { content:counter(opt,upper-alpha); position:absolute; left:14px; top:50%; transform:translateY(-50%); width:26px; height:26px; border-radius:8px; display:grid; place-items:center; font:600 12px var(--sans); color:var(--tx3); background:var(--bg); border:1px solid var(--line); transition:all .2s; }
 .opt:hover { border-color:color-mix(in srgb,var(--q) 45%,var(--line)); background:var(--panel); box-shadow:0 8px 20px -14px color-mix(in srgb,var(--q) 60%,transparent); }
 .opt:hover::before { color:var(--q); border-color:color-mix(in srgb,var(--q) 45%,var(--line)); }
@@ -1055,13 +1060,30 @@ dialog.revdlg::backdrop { background:rgba(24,18,10,.45); backdrop-filter:blur(3p
 .dash-rev { order:3; }
 @media (min-width:1600px) { main > *:not(.hero) { max-width:760px; } section.ch, section.pg-review { font-size:20px; } }
 
+/* ---------- phase 0 fixes (2026-11-19): contrast, phone maths, focus, skip link ---------- */
+:root { --tx3:#6E675C; --brand2:#B4532F; }
+:root[data-theme="dark"] { --tx3:#8A8378; --brand2:#F08B63; }
+@media (prefers-color-scheme:dark) { :root:not([data-theme="light"]) { --tx3:#8A8378; --brand2:#F08B63; } }
+/* UI boundaries at 3:1 (WCAG 1.4.11) */
+.ans-row input, .wfield input, .wfield select { border-color:color-mix(in srgb,var(--tx3) 70%,transparent); }
+.opt, .chip { border-color:color-mix(in srgb,var(--tx3) 45%,transparent); }
+/* equations wider than the screen scroll sideways, with a fade showing there is more */
+.katex-display.scrolls { -webkit-mask-image:linear-gradient(to right,#000 calc(100% - 36px),transparent); mask-image:linear-gradient(to right,#000 calc(100% - 36px),transparent); scrollbar-width:thin; }
+.katex-display.scrolls.at-end { -webkit-mask-image:none; mask-image:none; }
+.pyq .abcd li, .opt, .q-text, .mnote li { overflow-x:auto; overflow-y:hidden; scrollbar-width:thin; }
+.box .katex-display, .example .katex-display { max-width:100%; }
+/* focus */
+[tabindex="-1"]:focus { outline:none; }
+.skip { position:absolute; left:12px; top:-60px; z-index:100; padding:10px 16px; border-radius:10px; background:var(--tx); color:var(--bg); font:600 14px var(--sans); text-decoration:none; transition:top .15s; }
+.skip:focus { top:12px; }
+@media (max-width:900px) { .mnote.exam > summary { min-height:44px; align-items:center; } }
+
 /* site theme */
 
 </style>
-<script>/* one-time import of progress carried over from an old address (#import=...): never overwrites existing keys */try{var m=location.hash.match(/^#import=([^&]+)/);if(m){var o=JSON.parse(decodeURIComponent(escape(atob(decodeURIComponent(m[1])))));for(var k in o.d){if(localStorage.getItem(k)===null)localStorage.setItem(k,o.d[k]);}history.replaceState(null,"",location.pathname+location.search+(o.h?"#"+o.h:""));}}catch(e){}</script>
-<script>try { var t = localStorage.getItem("gateda-theme"); if (t === "dark" || t === "light") document.documentElement.setAttribute("data-theme", t); } catch (e) {}</script>
 </head>
 <body>
+<a class="skip" href="#top">Skip to the lesson</a>
 <div class="shell">
   <header class="topbar">
     <button class="icon-btn menu-btn" id="menuOpen" type="button" aria-label="Open contents" aria-controls="rail" aria-expanded="false"><svg width="18" height="18" viewBox="0 0 20 20" aria-hidden="true"><path d="M3 5h14M3 10h14M3 15h9" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg><span>Contents</span></button>
@@ -1096,7 +1118,7 @@ dialog.revdlg::backdrop { background:rgba(24,18,10,.45); backdrop-filter:blur(3p
     </div>
   </aside>
 
-  <main id="top">
+  <main id="top" tabindex="-1">
     <header class="hero hub" id="welcome">
       <div class="hub-top">
         <svg class="hub-art" viewBox="0 0 290 300" aria-hidden="true">
@@ -1876,8 +1898,14 @@ window.SITE = {"name": "GATE DA", "key": "gateda", "path": "gate-da", "domain": 
       var f = Math.floor(100 * d.clientWidth / d.scrollWidth) / 100;
       while (f < 1 && f >= 0.8) { k.style.fontSize = f + "em"; if (d.scrollWidth <= d.clientWidth) break; f -= 0.02; }
       if (f < 0.8) k.style.fontSize = "0.8em";
+      d.classList.toggle("scrolls", d.scrollWidth > d.clientWidth + 1);
     });
   }
+  // the fade on a scrollable equation disappears once it is scrolled to the end
+  document.addEventListener("scroll", function (e) {
+    var d = e.target; if (!d.classList || !d.classList.contains("scrolls")) return;
+    d.classList.toggle("at-end", d.scrollLeft + d.clientWidth >= d.scrollWidth - 2);
+  }, true);
   var fitT;
   function refit() { clearTimeout(fitT); fitT = setTimeout(function () { var a = current >= 0 ? parts[current] : null; if (a) fitMath(a); }, 60); }
   window.addEventListener("resize", refit);
@@ -2061,7 +2089,8 @@ window.SITE = {"name": "GATE DA", "key": "gateda", "path": "gate-da", "domain": 
     } else if (choices) {
       choices.forEach(function (c) {
         var b = h("button", { class: "chip", type: "button" }, c);
-        b.addEventListener("click", function () { $$(".chip", row).forEach(function (x) { x.classList.remove("on"); }); b.classList.add("on"); grade(c); });
+        b.setAttribute("aria-pressed", "false");
+        b.addEventListener("click", function () { $$(".chip", row).forEach(function (x) { x.classList.remove("on"); x.setAttribute("aria-pressed", "false"); }); b.classList.add("on"); b.setAttribute("aria-pressed", "true"); grade(c); });
         row.appendChild(b); renderMathLater(b);
       });
     } else {
@@ -2155,8 +2184,9 @@ window.SITE = {"name": "GATE DA", "key": "gateda", "path": "gate-da", "domain": 
         var b = h("button", { class: "opt", type: "button" }, o.innerHTML);
         var right = o.classList.contains("ok");
         b.addEventListener("click", function () {
-          $$(".opt", opts).forEach(function (x) { x.classList.remove("right", "wrong"); });
+          $$(".opt", opts).forEach(function (x) { x.classList.remove("right", "wrong"); x.removeAttribute("aria-pressed"); var sr = $(".sr", x); if (sr) sr.remove(); });
           b.classList.add(right ? "right" : "wrong");
+          b.setAttribute("aria-pressed", "true"); b.insertAdjacentHTML("beforeend", '<span class="sr"> (' + (right ? "correct" : "incorrect") + ")</span>");
           why.hidden = false;
           why.innerHTML = (right ? "<b class=\"ok\">Right.</b> " : "<b class=\"no\">Not quite.</b> ") + (e ? e.innerHTML : "") + (right ? "" : " <i>Try another option.</i>");
           DH.renderMath(why);
@@ -2199,20 +2229,20 @@ window.SITE = {"name": "GATE DA", "key": "gateda", "path": "gate-da", "domain": 
   (function () {
     var li = h("li", { class: "part home" });
     var b = h("button", { type: "button", "data-part": "-1" }, '<span class="pn"><svg width="16" height="16" viewBox="0 0 20 20" aria-hidden="true"><path d="M3.5 9.5L10 4l6.5 5.5V16a1 1 0 0 1-1 1h-3.5v-4.5h-4V17H4.5a1 1 0 0 1-1-1z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg></span><span class="pt"><b>' + (MOD ? 'Module overview' : 'Home') + '</b></span>');
-    b.addEventListener("click", function () { showPart(-1, true); closeDrawer(); });
+    b.addEventListener("click", function () { closeDrawer(true); showPart(-1, true); });
     li.appendChild(b); if (MOD) toc.appendChild(li);
   })();
   parts.forEach(function (art, pi) {
     var li = h("li", { class: "part" });
     var nch = $$("section.ch", art).length;
     var b = h("button", { type: "button", "data-part": pi, "aria-label": "Part " + art.dataset.num + ": " + art.dataset.title }, "<span class=\"pn\">" + art.dataset.num + "</span><span class=\"pt\"><b>" + art.dataset.title + "</b><small>" + nch + " chapter" + (nch === 1 ? "" : "s") + "</small></span><span class=\"score\" data-pscore=\"" + pi + "\"></span>");
-    b.addEventListener("click", function () { showPart(pi, true); closeDrawer(); });
+    b.addEventListener("click", function () { closeDrawer(true); showPart(pi, true); });
     li.appendChild(b);
     var ul = h("ul", { class: "chs" });
     art._pages.forEach(function (ch) {
       var cl = h("li");
       var a = h("a", { href: "#" + ch.id, "data-ch": ch.id }, "<span>" + ch.dataset.title + "</span><span class=\"score\" data-cscore=\"" + ch.id + "\"></span>");
-      a.addEventListener("click", function () { closeDrawer(); });
+      a.addEventListener("click", function () { closeDrawer(true); });
       cl.appendChild(a); ul.appendChild(cl);
     });
     li.appendChild(ul);
@@ -2417,6 +2447,7 @@ window.SITE = {"name": "GATE DA", "key": "gateda", "path": "gate-da", "domain": 
       $$(".toc .chs a").forEach(function (a) { var on = a.dataset.ch === page.id; a.classList.toggle("on", on); if (on) a.setAttribute("aria-current", "page"); else a.removeAttribute("aria-current"); });
     } else if (!art) curPage = -1;
     if (changed) { buildPager(); placeNotes(); updateScores(); }
+    if (changed && art && current >= 0 && booted) { var t2 = $(".ch-head h2", art._pages[pg]); if (t2) { t2.setAttribute("tabindex", "-1"); try { t2.focus({ preventScroll: true }); } catch (e) {} } }
     if (hero) hero.hidden = i !== -1;
     if (i === -1) renderCta();
     var hash = "#" + (art ? (opts.anchor || art._pages[pg].id) : "welcome");
@@ -2472,7 +2503,7 @@ window.SITE = {"name": "GATE DA", "key": "gateda", "path": "gate-da", "domain": 
   document.addEventListener("keydown", function (e) {
     if (e.altKey || e.ctrlKey || e.metaKey || e.shiftKey || (e.key !== "ArrowLeft" && e.key !== "ArrowRight")) return;
     var t = e.target; if (t && t.closest && t.closest("input,textarea,select,[contenteditable],canvas,.widget")) return;
-    if (document.body.classList.contains("drawer-open")) return;
+    if (document.body.classList.contains("drawer-open") || document.querySelector("dialog[open]")) return;
     var n = neighbour(e.key === "ArrowRight" ? 1 : -1); if (n) { e.preventDefault(); n.go(); }
   });
   // the page before (d = -1) or after (d = 1) the current one, crossing part boundaries
@@ -2546,11 +2577,11 @@ window.SITE = {"name": "GATE DA", "key": "gateda", "path": "gate-da", "domain": 
   function openReview() {
     var ids = dueIds(MOD).filter(function (id) { return RAW[id]; }).sort(function (a, b) { return rev[a].due - rev[b].due; }).slice(0, 12);
     if (!revDlg) {
-      revDlg = h("dialog", { class: "revdlg", "aria-label": "Review" }); document.body.appendChild(revDlg);
-      revDlg.addEventListener("close", function () { if (current === -1) renderCta(); updateScores(); });
+      revDlg = h("dialog", { class: "revdlg", "aria-labelledby": "rvTitle" }); document.body.appendChild(revDlg);
+      revDlg.addEventListener("close", function () { if (current === -1) renderCta(); updateScores(); setTimeout(function () { var f = $(".rv-cta") || $("#heroCta .cta"); if (f) f.focus(); }, 30); });
     }
     var i = 0, missed = 0;
-    revDlg.innerHTML = '<div class="rv-top"><span class="rv-k">Review · ' + (THISMOD ? THISMOD.title : "") + '</span><span class="rv-n"></span><button type="button" class="icon-btn rv-x" aria-label="Close review">✕</button></div><div class="rv-bar"><i></i></div><div class="rv-body"></div>';
+    revDlg.innerHTML = '<div class="rv-top"><span class="rv-k" id="rvTitle">Review · ' + (THISMOD ? THISMOD.title : "") + '</span><span class="rv-n"></span><button type="button" class="icon-btn rv-x" aria-label="Close review">✕</button></div><div class="rv-bar"><i></i></div><div class="rv-body"></div>';
     $(".rv-x", revDlg).addEventListener("click", function () { revDlg.close(); });
     var body = $(".rv-body", revDlg);
     function nextDue() { var t = today(), ds = Object.keys(rev).filter(function (id) { return rev[id].m === MOD && rev[id].due > t; }).map(function (id) { return rev[id].due - t; }); return ds.length ? Math.min.apply(null, ds) : 0; }
@@ -2651,11 +2682,20 @@ window.SITE = {"name": "GATE DA", "key": "gateda", "path": "gate-da", "domain": 
   /* ---------- rail collapse / drawer ---------- */
   var railToggle = $("#railToggle"), scrim = $("#scrim"), menuOpen = $("#menuOpen");
 
-  function openDrawer() { document.body.classList.add("drawer-open"); scrim.hidden = false; menuOpen.setAttribute("aria-expanded", "true"); $("#rail").focus(); }
-  function closeDrawer() { if (!document.body.classList.contains("drawer-open")) return; document.body.classList.remove("drawer-open"); scrim.hidden = true; menuOpen.setAttribute("aria-expanded", "false"); }
-  railToggle.addEventListener("click", function () { closeDrawer(); menuOpen.focus(); });
+  var railEl = $("#rail"); railEl.setAttribute("role", "dialog"); railEl.setAttribute("aria-modal", "true"); railEl.setAttribute("aria-label", "Contents");
+  function setInert(on) { [$("main"), $(".topbar")].forEach(function (el) { if (!el) return; if (on) el.setAttribute("inert", ""); else el.removeAttribute("inert"); }); }
+  function openDrawer() {
+    document.body.classList.add("drawer-open"); scrim.hidden = false; menuOpen.setAttribute("aria-expanded", "true"); setInert(true);
+    requestAnimationFrame(function () { requestAnimationFrame(function () { var on = $(".toc .chs a.on", railEl) || railToggle; on.focus(); }); });
+  }
+  function closeDrawer(noFocus) {
+    if (!document.body.classList.contains("drawer-open")) return;
+    document.body.classList.remove("drawer-open"); scrim.hidden = true; menuOpen.setAttribute("aria-expanded", "false"); setInert(false);
+    if (!noFocus) menuOpen.focus();
+  }
+  railToggle.addEventListener("click", function () { closeDrawer(); });
   menuOpen.addEventListener("click", openDrawer);
-  scrim.addEventListener("click", closeDrawer);
+  scrim.addEventListener("click", function () { closeDrawer(); });
   document.addEventListener("keydown", function (e) { if (e.key === "Escape") closeDrawer(); });
 
 
@@ -2721,13 +2761,21 @@ window.SITE = {"name": "GATE DA", "key": "gateda", "path": "gate-da", "domain": 
   $("#certPng").addEventListener("click", function () {
     var a = document.createElement("a"); a.download = SITE.name + "-certificate.png"; a.href = $("#certCanvas").toDataURL("image/png"); a.click();
   });
-  $("#certPdf").addEventListener("click", function () {
+  function withJsPDF(cb) {
+    if (window.jspdf) { cb(); return; }
+    var sc = document.createElement("script");
+    sc.src = "https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"; sc.crossOrigin = "anonymous"; sc.referrerPolicy = "no-referrer";
+    sc.onload = cb; sc.onerror = function () { alert("The PDF tool couldn't load here. Try the image download instead."); };
+    document.head.appendChild(sc);
+  }
+  $("#certPdf").addEventListener("click", function () { withJsPDF(makePdf); });
+  function makePdf() {
     if (!window.jspdf) { alert("The PDF tool didn't load. Try the image download instead."); return; }
     var doc = new window.jspdf.jsPDF({ orientation: "landscape", unit: "pt", format: "a4" });
     var w = doc.internal.pageSize.getWidth(), hh = doc.internal.pageSize.getHeight();
     doc.addImage($("#certCanvas").toDataURL("image/png"), "PNG", 0, 0, w, hh);
     doc.save(SITE.name + "-certificate.pdf");
-  });
+  }
   function confetti() {
     if (window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     var cv = $("#confetti"); cv.hidden = false; var g = cv.getContext("2d");
@@ -2743,7 +2791,9 @@ window.SITE = {"name": "GATE DA", "key": "gateda", "path": "gate-da", "domain": 
   }
 
   /* ---------- boot ---------- */
+  var booted = false;
   function boot() {
+    setTimeout(function () { booted = true; }, 0);
     if (hero) renderMath(hero);
     updateScores();
     var startHash = location.hash.slice(1);
