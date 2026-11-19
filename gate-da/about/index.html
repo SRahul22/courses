@@ -1222,6 +1222,37 @@ main > .hero.about { max-width:880px; }
 .mod-card .mc-top b { min-width:0; line-height:1.25; padding-top:3px; }
 .mod-card .mc-top .mc-st { flex:none; margin-top:5px; }
 
+/* ---------- phase 3: Daily set and streak (2026-11-19) ---------- */
+main > .hero.daily { max-width:760px; }
+.hero.daily { gap:22px; }
+.hero.daily h1 { font-size:clamp(40px,6vw,60px); line-height:1.02; }
+.streak { font:400 15px var(--sans); color:var(--tx2); }
+.streak b { font:600 22px var(--serif); color:var(--brand2); margin-right:4px; }
+.streak span { color:var(--tx3); }
+.daily { display:flex; flex-direction:column; gap:14px; font-family:var(--sans); }
+.dl-top { display:flex; flex-wrap:wrap; align-items:baseline; gap:6px 14px; font-size:13.5px; color:var(--tx3); }
+.dl-n { font-weight:600; color:var(--tx); }
+.dl-marks { margin-left:auto; color:var(--brand2); font-weight:600; }
+.dl-card { display:flex; flex-direction:column; gap:14px; }
+.dl-card .prob, .dl-card .q { box-shadow:none; }
+.dl-card .prob > .linkbtn { display:none; }
+.dl-end { display:flex; flex-direction:column; gap:14px; padding:12px 0; }
+.dl-end h2 { font-size:34px; font-weight:500; }
+.dl-score { font-size:17px; color:var(--tx2); }
+.dl-score b { color:var(--tx); }
+.dl-mods { list-style:none; margin:0; padding:0; border-top:1px solid var(--line); }
+.dl-mods li { display:flex; justify-content:space-between; padding:10px 2px; border-bottom:1px solid var(--line); font-size:15px; }
+.dl-next { color:var(--tx3); }
+.dl-actions { display:flex; flex-wrap:wrap; gap:10px; }
+.dl-actions .cmd { border-radius:99px; padding:10px 20px; text-decoration:none; }
+.dl-actions .ghost { border-radius:99px; padding:9px 18px; align-self:auto; }
+.cta-streak { font-weight:400; color:var(--tx3); margin-left:6px; font-size:13.5px; }
+.hf-links { display:flex; gap:18px; flex-wrap:wrap; }
+.prob .stem::before { text-transform:none !important; letter-spacing:0 !important; font:600 13px var(--sans) !important; color:var(--tx3); }
+.stem > .abcd { list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:6px; }
+.stem > .abcd li { position:relative; padding-left:2.4em; }
+.stem > .abcd li::before { content:attr(data-l); position:absolute; left:0; font:600 13px/1.75 var(--sans); color:var(--tx3); }
+
 /* site theme */
 
 </style>
@@ -1330,7 +1361,7 @@ main > .hero.about { max-width:880px; }
 <canvas id="confetti" hidden></canvas>
 
 <script>
-window.SITE = {"name": "GATE DA", "key": "gateda", "path": "gate-da", "domain": "courses.rahuldevsharma.com/gate-da", "author": "Rahul Dev Sharma", "tagline": "free GATE Data Science & AI preparation", "description": "A free, interactive course for the GATE DA (Data Science and Artificial Intelligence) exam. Explains every idea visually, includes maths refreshers, and works through real previous-year questions.", "certTitle": ["GATE DA", "Maths, Python, DSA & databases"], "certBody": ["answered every quiz and practice question correctly across", "GATE DA's refreshers, probability, statistics, linear algebra,", "calculus & optimization, Python & DSA, and databases modules."], "footer_html": "      <p><b>Acknowledgement.</b> Previous-year questions are quoted from the official GATE Data Science and Artificial Intelligence (DA) papers: 2024 (organised by IISc Bengaluru), 2025 (IIT Roorkee) and 2026 (IIT Guwahati), and from the 2024 DA sample paper; one LU question is quoted from GATE CS 2025 (set 2, IIT Roorkee). Each is cited by year and question number, and every answer is checked against the official answer keys. The syllabus followed is the GATE 2027 DA syllabus (IIT Madras).</p>\n      <p><b>Disclaimer.</b> An independent study resource. The Data Premier League, its teams and all their data are fictional. Not affiliated with, reviewed by or endorsed by GATE, IISc or any IIT. Solutions and explanations are the author's own; any mistakes are the author's too.</p>", "modules": [{"slug": "refreshers", "title": "Maths refreshers", "short": "Refreshers", "kind": "prereq", "blurb": "The maths toolkit, recapped: algebra, logs, sums, sets, derivatives, integrals and vectors. Everything the later modules lean on."}, {"slug": "probability", "title": "Probability", "short": "Probability", "kind": "", "blurb": "Counting, Bayes, random variables and the distributions GATE loves. The single biggest block of marks in the paper."}, {"slug": "statistics", "title": "Statistics", "short": "Statistics", "kind": "", "blurb": "Describing data, estimators, the Central Limit Theorem, confidence intervals and hypothesis tests (z, t and \u03c7\u00b2), built on the probability module."}, {"slug": "linear-algebra", "title": "Linear algebra", "short": "Linear algebra", "kind": "", "blurb": "Vectors, subspaces, rank, eigenvalues, projections and SVD, taught as pictures and exam shortcuts."}, {"slug": "calculus", "title": "Calculus & optimization", "short": "Calculus", "kind": "", "blurb": "Limits, continuity and differentiability, Taylor series, and finding maxima and minima: the single-variable calculus GATE DA tests, plus the optimisation ML relies on."}, {"slug": "python-dsa", "title": "Python & DSA", "short": "Python & DSA", "kind": "", "blurb": "The Python that GATE's code-tracing questions test, then complexity, searching and sorting, stacks, queues, hashing, trees and graph algorithms."}, {"slug": "dbms", "title": "Databases & warehousing", "short": "Databases", "kind": "", "blurb": "ER design, relational algebra, tuple calculus, SQL, functional dependencies and normal forms, B+ tree indexes, data transformation and OLAP cubes, all on the league's own tables."}], "manifest": {"refreshers": ["r-functions-p1", "r-functions-p2", "r-functions-p3", "r-functions-p4", "r-functions/0", "r-functions/1", "r-functions/2", "r-functions/3", "r-explog-p1", "r-explog-p2", "r-explog-p3", "r-explog-p4", "r-explog/0", "r-explog/1", "r-explog/2", "r-explog/3", "r1-review/0", "r1-review/1", "r1-review/2", "r1-review/3", "r-sums-p1", "r-sums-p2", "r-sums-p3", "r-sums-p4", "r-sums/0", "r-sums/1", "r-sums/2", "r-sums/3", "r-sets-p1", "r-sets-p2", "r-sets-p3", "r-sets-p4", "r-sets/0", "r-sets/1", "r-sets/2", "r-sets/3", "r2-review/0", "r2-review/1", "r2-review/2", "r2-review/3", "r-deriv-p1", "r-deriv-p2", "r-deriv-p3", "r-deriv-p4", "r-deriv/0", "r-deriv/1", "r-deriv/2", "r-deriv/3", "r-integ-p1", "r-integ-p2", "r-integ-p3", "r-integ-p4", "r-integ/0", "r-integ/1", "r-integ/2", "r-integ/3", "r-grad-p1", "r-grad-p2", "r-grad-p3", "r-grad-p4", "r-grad/0", "r-grad/1", "r-grad/2", "r3-review/0", "r3-review/1", "r3-review/2", "r3-review/3", "r-vectors-p1", "r-vectors-p2", "r-vectors-p3", "r-vectors-p4", "r-vectors/0", "r-vectors/1", "r-vectors/2", "r-matrices-p1", "r-matrices-p2", "r-matrices-p3", "r-matrices-p4", "r-matrices/0", "r-matrices/1", "r-matrices/2", "r4-review/0", "r4-review/1", "r4-review/2", "r4-review/3", "r4-review/4"], "probability": ["pr-counting-p1", "pr-counting-p2", "pr-counting-p3", "pr-counting-p4", "pr-counting/0", "pr-counting/1", "pr-counting/2", "pr-events-p1", "pr-events-p2", "pr-events-p3", "pr-events-p4", "pr-events/0", "pr-events/1", "pr-events/2", "pr-events/3", "pr1-review/0", "pr1-review/1", "pr1-review/2", "pr1-review/3", "pr-conditional-p1", "pr-conditional-p2", "pr-conditional-p3", "pr-conditional-p4", "pr-conditional/0", "pr-conditional/1", "pr-conditional/2", "pr-bayes-p1", "pr-bayes-p2", "pr-bayes-p3", "pr-bayes-p4", "pr-bayes/0", "pr-bayes/1", "pr-bayes/2", "pr2-review/0", "pr2-review/1", "pr2-review/2", "pr-rv-p1", "pr-rv-p2", "pr-rv-p3", "pr-rv-p4", "pr-rv/0", "pr-rv/1", "pr-rv/2", "pr-expect-p1", "pr-expect-p2", "pr-expect-p3", "pr-expect-p4", "pr-expect/0", "pr-expect/1", "pr-expect/2", "pr-expect/3", "pr3-review/0", "pr3-review/1", "pr3-review/2", "pr-discrete-p1", "pr-discrete-p2", "pr-discrete-p3", "pr-discrete-p4", "pr-discrete/0", "pr-discrete/1", "pr-discrete/2", "pr-continuous-p1", "pr-continuous-p2", "pr-continuous-p3", "pr-continuous-p4", "pr-continuous/0", "pr-continuous/1", "pr-continuous/2", "pr-continuous/3", "pr4-review/0", "pr4-review/1", "pr4-review/2", "pr-joint-p1", "pr-joint-p2", "pr-joint-p3", "pr-joint-p4", "pr-joint/0", "pr-joint/1", "pr-joint/2", "pr-condexp-p1", "pr-condexp-p2", "pr-condexp-p3", "pr-condexp/0", "pr-condexp/1", "pr-condexp/2", "pr5-review/0", "pr5-review/1", "pr5-review/2", "pr5-review/3", "pr5-review/4"], "statistics": ["st-descriptive-p1", "st-descriptive-p2", "st-descriptive-p3", "st-descriptive-p4", "st-descriptive/0", "st-descriptive/1", "st-descriptive/2", "st-correlation-p1", "st-correlation-p2", "st-correlation-p3", "st-correlation-p4", "st-correlation/0", "st-correlation/1", "st-correlation/2", "st1-review/0", "st1-review/1", "st1-review/2", "st-estimators-p1", "st-estimators-p2", "st-estimators-p3", "st-estimators-p4", "st-estimators/0", "st-estimators/1", "st-estimators/2", "st-clt-p1", "st-clt-p2", "st-clt-p3", "st-clt-p4", "st-clt/0", "st-clt/1", "st-clt/2", "st2-review/0", "st2-review/1", "st2-review/2", "st-tchi-p1", "st-tchi-p2", "st-tchi-p3", "st-tchi-p4", "st-tchi/0", "st-tchi/1", "st-tchi/2", "st-ci-p1", "st-ci-p2", "st-ci-p3", "st-ci-p4", "st-ci/0", "st-ci/1", "st-ci/2", "st3-review/0", "st3-review/1", "st3-review/2", "st-tests-p1", "st-tests-p2", "st-tests-p3", "st-tests-p4", "st-tests/0", "st-tests/1", "st-tests/2", "st-ttest-chi-p1", "st-ttest-chi-p2", "st-ttest-chi-p3", "st-ttest-chi-p4", "st-ttest-chi/0", "st-ttest-chi/1", "st-ttest-chi/2", "st4-review/0", "st4-review/1", "st4-review/2", "st4-review/3", "st4-review/4"], "linear-algebra": ["la-spaces-p1", "la-spaces-p2", "la-spaces-p3", "la-spaces/0", "la-spaces/1", "la-spaces/2", "la-independence-p1", "la-independence-p2", "la-independence-p3", "la-independence-p4", "la-independence/0", "la-independence/1", "la-independence/2", "la1-review/0", "la1-review/1", "la1-review/2", "la-systems-p1", "la-systems-p2", "la-systems-p3", "la-systems-p4", "la-systems/0", "la-systems/1", "la-systems/2", "la-rank-p1", "la-rank-p2", "la-rank-p3", "la-rank-p4", "la-rank/0", "la-rank/1", "la-rank/2", "la-det-p1", "la-det-p2", "la-det-p3", "la-det-p4", "la-det/0", "la-det/1", "la-det/2", "la2-review/0", "la2-review/1", "la2-review/2", "la-eigen-p1", "la-eigen-p2", "la-eigen-p3", "la-eigen-p4", "la-eigen/0", "la-eigen/1", "la-eigen/2", "la-special-p1", "la-special-p2", "la-special-p3", "la-special-p4", "la-special/0", "la-special/1", "la-special/2", "la-quad-p1", "la-quad-p2", "la-quad-p3", "la-quad-p4", "la-quad/0", "la-quad/1", "la-quad/2", "la3-review/0", "la3-review/1", "la3-review/2", "la-lu-p1", "la-lu-p2", "la-lu-p3", "la-lu-p4", "la-lu/0", "la-lu/1", "la-lu/2", "la-svd-p1", "la-svd-p2", "la-svd-p3", "la-svd-p4", "la-svd/0", "la-svd/1", "la-svd/2", "la4-review/0", "la4-review/1", "la4-review/2", "la4-review/3", "la4-review/4"], "calculus": ["ca-limits-p1", "ca-limits-p2", "ca-limits-p3", "ca-limits-p4", "ca-limits/0", "ca-limits/1", "ca-limits/2", "ca-continuity-p1", "ca-continuity-p2", "ca-continuity-p3", "ca-continuity-p4", "ca-continuity/0", "ca-continuity/1", "ca-continuity/2", "ca1-review/0", "ca1-review/1", "ca1-review/2", "ca-taylor-p1", "ca-taylor-p2", "ca-taylor-p3", "ca-taylor-p4", "ca-taylor/0", "ca-taylor/1", "ca-taylor/2", "ca-extrema-p1", "ca-extrema-p2", "ca-extrema-p3", "ca-extrema-p4", "ca-extrema/0", "ca-extrema/1", "ca-extrema/2", "ca2-review/0", "ca2-review/1", "ca2-review/2", "ca-optim-p1", "ca-optim-p2", "ca-optim-p3", "ca-optim-p4", "ca-optim/0", "ca-optim/1", "ca-optim/2", "ca-convex-p1", "ca-convex-p2", "ca-convex-p3", "ca-convex/0", "ca-convex/1", "ca-convex/2", "ca3-review/0", "ca3-review/1", "ca3-review/2", "ca3-review/3", "ca3-review/4"], "python-dsa": ["py-basics-p1", "py-basics-p2", "py-basics-p3", "py-basics-p4", "py-basics/0", "py-basics/1", "py-basics/2", "py-functions-p1", "py-functions-p2", "py-functions-p3", "py-functions-p4", "py-functions/0", "py-functions/1", "py-functions/2", "py1-review/0", "py1-review/1", "py1-review/2", "ds-complexity-p1", "ds-complexity-p2", "ds-complexity-p3", "ds-complexity-p4", "ds-complexity/0", "ds-complexity/1", "ds-complexity/2", "ds-sorting-p1", "ds-sorting-p2", "ds-sorting-p3", "ds-sorting-p4", "ds-sorting/0", "ds-sorting/1", "ds-sorting/2", "ds-dc-p1", "ds-dc-p2", "ds-dc-p3", "ds-dc-p4", "ds-dc/0", "ds-dc/1", "ds-dc/2", "py2-review/0", "py2-review/1", "py2-review/2", "ds-linear-p1", "ds-linear-p2", "ds-linear-p3", "ds-linear-p4", "ds-linear/0", "ds-linear/1", "ds-linear/2", "ds-hashing-p1", "ds-hashing-p2", "ds-hashing-p3", "ds-hashing-p4", "ds-hashing/0", "ds-hashing/1", "ds-hashing/2", "ds-trees-p1", "ds-trees-p2", "ds-trees-p3", "ds-trees-p4", "ds-trees/0", "ds-trees/1", "ds-trees/2", "py3-review/0", "py3-review/1", "py3-review/2", "ds-graphs-p1", "ds-graphs-p2", "ds-graphs-p3", "ds-graphs-p4", "ds-graphs/0", "ds-graphs/1", "ds-graphs/2", "ds-shortest-p1", "ds-shortest-p2", "ds-shortest-p3", "ds-shortest-p4", "ds-shortest/0", "ds-shortest/1", "ds-shortest/2", "py4-review/0", "py4-review/1", "py4-review/2", "py4-review/3", "py4-review/4"], "dbms": ["db-relational-p1", "db-relational-p2", "db-relational-p3", "db-relational-p4", "db-relational/0", "db-relational/1", "db-relational/2", "db-er-p1", "db-er-p2", "db-er-p3", "db-er-p4", "db-er/0", "db-er/1", "db-er/2", "db1-review/0", "db1-review/1", "db1-review/2", "db1-review/3", "db-algebra-p1", "db-algebra-p2", "db-algebra-p3", "db-algebra-p4", "db-algebra-p5", "db-algebra/0", "db-algebra/1", "db-algebra/2", "db-trc-p1", "db-trc-p2", "db-trc-p3", "db-trc-p4", "db2-review/0", "db2-review/1", "db2-review/2", "db2-review/3", "db-sql-p1", "db-sql-p2", "db-sql-p3", "db-sql-p4", "db-sql/0", "db-sql/1", "db-sql/2", "db-subq-p1", "db-subq-p2", "db-subq-p3", "db-subq-p4", "db-subq/0", "db-subq/1", "db-subq/2", "db3-review/0", "db3-review/1", "db3-review/2", "db3-review/3", "db-fd-p1", "db-fd-p2", "db-fd-p3", "db-fd-p4", "db-fd/0", "db-fd/1", "db-fd/2", "db-nf-p1", "db-nf-p2", "db-nf-p3", "db-nf-p4", "db-nf/0", "db-nf/1", "db-nf/2", "db4-review/0", "db4-review/1", "db4-review/2", "db4-review/3", "db-index-p1", "db-index-p2", "db-index-p3", "db-index-p4", "db-index/0", "db-index/1", "db-index/2", "db-transform-p1", "db-transform-p2", "db-transform-p3", "db-transform-p4", "db-transform/0", "db-transform/1", "db-transform/2", "db-olap-p1", "db-olap-p2", "db-olap-p3", "db-olap-p4", "db-olap/0", "db-olap/1", "db-olap/2", "db5-review/0", "db5-review/1", "db5-review/2", "db5-review/3"]}, "modinfo": {"refreshers": {"parts": 4, "chs": 9, "min": 405}, "probability": {"parts": 5, "chs": 10, "min": 525}, "statistics": {"parts": 4, "chs": 8, "min": 395}, "linear-algebra": {"parts": 4, "chs": 10, "min": 490}, "calculus": {"parts": 3, "chs": 6, "min": 300}, "python-dsa": {"parts": 4, "chs": 10, "min": 500}, "dbms": {"parts": 5, "chs": 11, "min": 515}}, "module": "", "root": "../"};
+window.SITE = {"name": "GATE DA", "key": "gateda", "path": "gate-da", "domain": "courses.rahuldevsharma.com/gate-da", "author": "Rahul Dev Sharma", "tagline": "free GATE Data Science & AI preparation", "description": "A free, interactive course for the GATE DA (Data Science and Artificial Intelligence) exam. Explains every idea visually, includes maths refreshers, and works through real previous-year questions.", "certTitle": ["GATE DA", "Maths, Python, DSA & databases"], "certBody": ["answered every quiz and practice question correctly across", "GATE DA's refreshers, probability, statistics, linear algebra,", "calculus & optimization, Python & DSA, and databases modules."], "footer_html": "      <p><b>Acknowledgement.</b> Previous-year questions are quoted from the official GATE Data Science and Artificial Intelligence (DA) papers: 2024 (organised by IISc Bengaluru), 2025 (IIT Roorkee) and 2026 (IIT Guwahati), and from the 2024 DA sample paper; one LU question is quoted from GATE CS 2025 (set 2, IIT Roorkee). Each is cited by year and question number, and every answer is checked against the official answer keys. The syllabus followed is the GATE 2027 DA syllabus (IIT Madras).</p>\n      <p><b>Disclaimer.</b> An independent study resource. The Data Premier League, its teams and all their data are fictional. Not affiliated with, reviewed by or endorsed by GATE, IISc or any IIT. Solutions and explanations are the author's own; any mistakes are the author's too.</p>", "modules": [{"slug": "refreshers", "title": "Maths refreshers", "short": "Refreshers", "kind": "prereq", "blurb": "The maths toolkit, recapped: algebra, logs, sums, sets, derivatives, integrals and vectors. Everything the later modules lean on."}, {"slug": "probability", "title": "Probability", "short": "Probability", "kind": "", "blurb": "Counting, Bayes, random variables and the distributions GATE loves. The single biggest block of marks in the paper."}, {"slug": "statistics", "title": "Statistics", "short": "Statistics", "kind": "", "blurb": "Describing data, estimators, the Central Limit Theorem, confidence intervals and hypothesis tests (z, t and \u03c7\u00b2), built on the probability module."}, {"slug": "linear-algebra", "title": "Linear algebra", "short": "Linear algebra", "kind": "", "blurb": "Vectors, subspaces, rank, eigenvalues, projections and SVD, taught as pictures and exam shortcuts."}, {"slug": "calculus", "title": "Calculus & optimization", "short": "Calculus", "kind": "", "blurb": "Limits, continuity and differentiability, Taylor series, and finding maxima and minima: the single-variable calculus GATE DA tests, plus the optimisation ML relies on."}, {"slug": "python-dsa", "title": "Python & DSA", "short": "Python & DSA", "kind": "", "blurb": "The Python that GATE's code-tracing questions test, then complexity, searching and sorting, stacks, queues, hashing, trees and graph algorithms."}, {"slug": "dbms", "title": "Databases & warehousing", "short": "Databases", "kind": "", "blurb": "ER design, relational algebra, tuple calculus, SQL, functional dependencies and normal forms, B+ tree indexes, data transformation and OLAP cubes, all on the league's own tables."}], "manifest": {"refreshers": ["r-functions-p1", "r-functions-p2", "r-functions-p3", "r-functions-p4", "r-functions/0", "r-functions/1", "r-functions/2", "r-functions/3", "r-explog-p1", "r-explog-p2", "r-explog-p3", "r-explog-p4", "r-explog/0", "r-explog/1", "r-explog/2", "r-explog/3", "r1-review/0", "r1-review/1", "r1-review/2", "r1-review/3", "r-sums-p1", "r-sums-p2", "r-sums-p3", "r-sums-p4", "r-sums/0", "r-sums/1", "r-sums/2", "r-sums/3", "r-sets-p1", "r-sets-p2", "r-sets-p3", "r-sets-p4", "r-sets/0", "r-sets/1", "r-sets/2", "r-sets/3", "r2-review/0", "r2-review/1", "r2-review/2", "r2-review/3", "r-deriv-p1", "r-deriv-p2", "r-deriv-p3", "r-deriv-p4", "r-deriv/0", "r-deriv/1", "r-deriv/2", "r-deriv/3", "r-integ-p1", "r-integ-p2", "r-integ-p3", "r-integ-p4", "r-integ/0", "r-integ/1", "r-integ/2", "r-integ/3", "r-grad-p1", "r-grad-p2", "r-grad-p3", "r-grad-p4", "r-grad/0", "r-grad/1", "r-grad/2", "r3-review/0", "r3-review/1", "r3-review/2", "r3-review/3", "r-vectors-p1", "r-vectors-p2", "r-vectors-p3", "r-vectors-p4", "r-vectors/0", "r-vectors/1", "r-vectors/2", "r-matrices-p1", "r-matrices-p2", "r-matrices-p3", "r-matrices-p4", "r-matrices/0", "r-matrices/1", "r-matrices/2", "r4-review/0", "r4-review/1", "r4-review/2", "r4-review/3", "r4-review/4"], "probability": ["pr-counting-p1", "pr-counting-p2", "pr-counting-p3", "pr-counting-p4", "pr-counting/0", "pr-counting/1", "pr-counting/2", "pr-events-p1", "pr-events-p2", "pr-events-p3", "pr-events-p4", "pr-events/0", "pr-events/1", "pr-events/2", "pr-events/3", "pr1-review/0", "pr1-review/1", "pr1-review/2", "pr1-review/3", "pr-conditional-p1", "pr-conditional-p2", "pr-conditional-p3", "pr-conditional-p4", "pr-conditional/0", "pr-conditional/1", "pr-conditional/2", "pr-bayes-p1", "pr-bayes-p2", "pr-bayes-p3", "pr-bayes-p4", "pr-bayes/0", "pr-bayes/1", "pr-bayes/2", "pr2-review/0", "pr2-review/1", "pr2-review/2", "pr-rv-p1", "pr-rv-p2", "pr-rv-p3", "pr-rv-p4", "pr-rv/0", "pr-rv/1", "pr-rv/2", "pr-expect-p1", "pr-expect-p2", "pr-expect-p3", "pr-expect-p4", "pr-expect/0", "pr-expect/1", "pr-expect/2", "pr-expect/3", "pr3-review/0", "pr3-review/1", "pr3-review/2", "pr-discrete-p1", "pr-discrete-p2", "pr-discrete-p3", "pr-discrete-p4", "pr-discrete/0", "pr-discrete/1", "pr-discrete/2", "pr-continuous-p1", "pr-continuous-p2", "pr-continuous-p3", "pr-continuous-p4", "pr-continuous/0", "pr-continuous/1", "pr-continuous/2", "pr-continuous/3", "pr4-review/0", "pr4-review/1", "pr4-review/2", "pr-joint-p1", "pr-joint-p2", "pr-joint-p3", "pr-joint-p4", "pr-joint/0", "pr-joint/1", "pr-joint/2", "pr-condexp-p1", "pr-condexp-p2", "pr-condexp-p3", "pr-condexp/0", "pr-condexp/1", "pr-condexp/2", "pr5-review/0", "pr5-review/1", "pr5-review/2", "pr5-review/3", "pr5-review/4"], "statistics": ["st-descriptive-p1", "st-descriptive-p2", "st-descriptive-p3", "st-descriptive-p4", "st-descriptive/0", "st-descriptive/1", "st-descriptive/2", "st-correlation-p1", "st-correlation-p2", "st-correlation-p3", "st-correlation-p4", "st-correlation/0", "st-correlation/1", "st-correlation/2", "st1-review/0", "st1-review/1", "st1-review/2", "st-estimators-p1", "st-estimators-p2", "st-estimators-p3", "st-estimators-p4", "st-estimators/0", "st-estimators/1", "st-estimators/2", "st-clt-p1", "st-clt-p2", "st-clt-p3", "st-clt-p4", "st-clt/0", "st-clt/1", "st-clt/2", "st2-review/0", "st2-review/1", "st2-review/2", "st-tchi-p1", "st-tchi-p2", "st-tchi-p3", "st-tchi-p4", "st-tchi/0", "st-tchi/1", "st-tchi/2", "st-ci-p1", "st-ci-p2", "st-ci-p3", "st-ci-p4", "st-ci/0", "st-ci/1", "st-ci/2", "st3-review/0", "st3-review/1", "st3-review/2", "st-tests-p1", "st-tests-p2", "st-tests-p3", "st-tests-p4", "st-tests/0", "st-tests/1", "st-tests/2", "st-ttest-chi-p1", "st-ttest-chi-p2", "st-ttest-chi-p3", "st-ttest-chi-p4", "st-ttest-chi/0", "st-ttest-chi/1", "st-ttest-chi/2", "st4-review/0", "st4-review/1", "st4-review/2", "st4-review/3", "st4-review/4"], "linear-algebra": ["la-spaces-p1", "la-spaces-p2", "la-spaces-p3", "la-spaces/0", "la-spaces/1", "la-spaces/2", "la-independence-p1", "la-independence-p2", "la-independence-p3", "la-independence-p4", "la-independence/0", "la-independence/1", "la-independence/2", "la1-review/0", "la1-review/1", "la1-review/2", "la-systems-p1", "la-systems-p2", "la-systems-p3", "la-systems-p4", "la-systems/0", "la-systems/1", "la-systems/2", "la-rank-p1", "la-rank-p2", "la-rank-p3", "la-rank-p4", "la-rank/0", "la-rank/1", "la-rank/2", "la-det-p1", "la-det-p2", "la-det-p3", "la-det-p4", "la-det/0", "la-det/1", "la-det/2", "la2-review/0", "la2-review/1", "la2-review/2", "la-eigen-p1", "la-eigen-p2", "la-eigen-p3", "la-eigen-p4", "la-eigen-p5", "la-eigen-p6", "la-eigen/0", "la-eigen/1", "la-eigen/2", "la-special-p1", "la-special-p2", "la-special-p3", "la-special-p4", "la-special/0", "la-special/1", "la-special/2", "la-quad-p1", "la-quad-p2", "la-quad-p3", "la-quad-p4", "la-quad/0", "la-quad/1", "la-quad/2", "la3-review/0", "la3-review/1", "la3-review/2", "la-lu-p1", "la-lu-p2", "la-lu-p3", "la-lu-p4", "la-lu/0", "la-lu/1", "la-lu/2", "la-svd-p1", "la-svd-p2", "la-svd-p3", "la-svd-p4", "la-svd/0", "la-svd/1", "la-svd/2", "la4-review/0", "la4-review/1", "la4-review/2", "la4-review/3", "la4-review/4"], "calculus": ["ca-limits-p1", "ca-limits-p2", "ca-limits-p3", "ca-limits-p4", "ca-limits/0", "ca-limits/1", "ca-limits/2", "ca-continuity-p1", "ca-continuity-p2", "ca-continuity-p3", "ca-continuity-p4", "ca-continuity/0", "ca-continuity/1", "ca-continuity/2", "ca1-review/0", "ca1-review/1", "ca1-review/2", "ca-taylor-p1", "ca-taylor-p2", "ca-taylor-p3", "ca-taylor-p4", "ca-taylor/0", "ca-taylor/1", "ca-taylor/2", "ca-extrema-p1", "ca-extrema-p2", "ca-extrema-p3", "ca-extrema-p4", "ca-extrema/0", "ca-extrema/1", "ca-extrema/2", "ca2-review/0", "ca2-review/1", "ca2-review/2", "ca-optim-p1", "ca-optim-p2", "ca-optim-p3", "ca-optim-p4", "ca-optim/0", "ca-optim/1", "ca-optim/2", "ca-convex-p1", "ca-convex-p2", "ca-convex-p3", "ca-convex/0", "ca-convex/1", "ca-convex/2", "ca3-review/0", "ca3-review/1", "ca3-review/2", "ca3-review/3", "ca3-review/4"], "python-dsa": ["py-basics-p1", "py-basics-p2", "py-basics-p3", "py-basics-p4", "py-basics/0", "py-basics/1", "py-basics/2", "py-functions-p1", "py-functions-p2", "py-functions-p3", "py-functions-p4", "py-functions/0", "py-functions/1", "py-functions/2", "py1-review/0", "py1-review/1", "py1-review/2", "ds-complexity-p1", "ds-complexity-p2", "ds-complexity-p3", "ds-complexity-p4", "ds-complexity/0", "ds-complexity/1", "ds-complexity/2", "ds-sorting-p1", "ds-sorting-p2", "ds-sorting-p3", "ds-sorting-p4", "ds-sorting/0", "ds-sorting/1", "ds-sorting/2", "ds-dc-p1", "ds-dc-p2", "ds-dc-p3", "ds-dc-p4", "ds-dc/0", "ds-dc/1", "ds-dc/2", "py2-review/0", "py2-review/1", "py2-review/2", "ds-linear-p1", "ds-linear-p2", "ds-linear-p3", "ds-linear-p4", "ds-linear/0", "ds-linear/1", "ds-linear/2", "ds-hashing-p1", "ds-hashing-p2", "ds-hashing-p3", "ds-hashing-p4", "ds-hashing/0", "ds-hashing/1", "ds-hashing/2", "ds-trees-p1", "ds-trees-p2", "ds-trees-p3", "ds-trees-p4", "ds-trees/0", "ds-trees/1", "ds-trees/2", "py3-review/0", "py3-review/1", "py3-review/2", "ds-graphs-p1", "ds-graphs-p2", "ds-graphs-p3", "ds-graphs-p4", "ds-graphs/0", "ds-graphs/1", "ds-graphs/2", "ds-shortest-p1", "ds-shortest-p2", "ds-shortest-p3", "ds-shortest-p4", "ds-shortest/0", "ds-shortest/1", "ds-shortest/2", "py4-review/0", "py4-review/1", "py4-review/2", "py4-review/3", "py4-review/4"], "dbms": ["db-relational-p1", "db-relational-p2", "db-relational-p3", "db-relational-p4", "db-relational/0", "db-relational/1", "db-relational/2", "db-er-p1", "db-er-p2", "db-er-p3", "db-er-p4", "db-er/0", "db-er/1", "db-er/2", "db1-review/0", "db1-review/1", "db1-review/2", "db1-review/3", "db-algebra-p1", "db-algebra-p2", "db-algebra-p3", "db-algebra-p4", "db-algebra-p5", "db-algebra/0", "db-algebra/1", "db-algebra/2", "db-trc-p1", "db-trc-p2", "db-trc-p3", "db-trc-p4", "db2-review/0", "db2-review/1", "db2-review/2", "db2-review/3", "db-sql-p1", "db-sql-p2", "db-sql-p3", "db-sql-p4", "db-sql/0", "db-sql/1", "db-sql/2", "db-subq-p1", "db-subq-p2", "db-subq-p3", "db-subq-p4", "db-subq/0", "db-subq/1", "db-subq/2", "db3-review/0", "db3-review/1", "db3-review/2", "db3-review/3", "db-fd-p1", "db-fd-p2", "db-fd-p3", "db-fd-p4", "db-fd/0", "db-fd/1", "db-fd/2", "db-nf-p1", "db-nf-p2", "db-nf-p3", "db-nf-p4", "db-nf/0", "db-nf/1", "db-nf/2", "db4-review/0", "db4-review/1", "db4-review/2", "db4-review/3", "db-index-p1", "db-index-p2", "db-index-p3", "db-index-p4", "db-index/0", "db-index/1", "db-index/2", "db-transform-p1", "db-transform-p2", "db-transform-p3", "db-transform-p4", "db-transform/0", "db-transform/1", "db-transform/2", "db-olap-p1", "db-olap-p2", "db-olap-p3", "db-olap-p4", "db-olap/0", "db-olap/1", "db-olap/2", "db5-review/0", "db5-review/1", "db5-review/2", "db5-review/3"]}, "modinfo": {"refreshers": {"parts": 4, "chs": 9, "min": 405}, "probability": {"parts": 5, "chs": 10, "min": 525}, "statistics": {"parts": 4, "chs": 8, "min": 395}, "linear-algebra": {"parts": 4, "chs": 10, "min": 490}, "calculus": {"parts": 3, "chs": 6, "min": 300}, "python-dsa": {"parts": 4, "chs": 10, "min": 500}, "dbms": {"parts": 5, "chs": 11, "min": 515}}, "module": "", "root": "../", "page": "about"};
 /* ---- expr.js ---- */
 /* Safe expression parser: no eval. Grammar (precedence low → high):
    sum := prod (('+'|'-') prod)* ; prod := unary (('*'|'/'| implicit) unary)* ; unary := '-' unary | pow ; pow := atom ('^' unary)?
@@ -1913,7 +1944,7 @@ window.SITE = {"name": "GATE DA", "key": "gateda", "path": "gate-da", "domain": 
   var prog;
   try { prog = JSON.parse(store.get(KEY, "{}")) || {}; } catch (e) { prog = {}; }
   prog.q = prog.q || {}; prog.p = prog.p || {};
-  function save() { store.set(KEY, JSON.stringify(prog)); }
+  function save() { store.set(KEY, JSON.stringify(prog)); try { markActive(); } catch (e) {} }
 
   var $ = function (s, r) { return (r || document).querySelector(s); };
   var $$ = function (s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); };
@@ -1949,9 +1980,30 @@ window.SITE = {"name": "GATE DA", "key": "gateda", "path": "gate-da", "domain": 
     b = g === 0 ? 0 : g === 1 ? Math.min(GAPS.length - 1, Math.max(1, b + 1)) : Math.min(GAPS.length - 1, Math.max(2, b + 1));
     var gap = g === 1 ? Math.max(GAPS[1], Math.round(GAPS[b] / 2)) : GAPS[b];   // unsure: half the gap
     rev[id] = { b: b, due: today() + gap, m: r ? r.m : modOf(id) };
-    store.set(REVKEY, JSON.stringify(rev));
+    store.set(REVKEY, JSON.stringify(rev)); markActive();
     return gap;
   }
+  var DAYSKEY = SITE.key + "-days";
+  function daysData() { var d; try { d = JSON.parse(store.get(DAYSKEY, "null")); } catch (e) {} return d && d.days ? d : { days: [], best: 0 }; }
+  function markActive() {
+    var d = daysData(), t = today();
+    if (d.days.indexOf(t) < 0) { d.days.push(t); d.days = d.days.slice(-120); }
+    d.best = Math.max(d.best || 0, streak(d).n); store.set(DAYSKEY, JSON.stringify(d));
+  }
+  // current streak: walk back from today (or yesterday, if today has no activity yet); a single missed day is
+  // forgiven as a rest day if no other rest day was used in the 7 days before it
+  function streak(d) {
+    d = d || daysData(); var on = {}; d.days.forEach(function (x) { on[x] = 1; });
+    var t = today(), x = on[t] ? t : t - 1, n = 0, rest = null;
+    if (!on[x] && on[x - 1]) { rest = x; x--; }
+    while (true) {
+      if (on[x]) { n++; x--; continue; }
+      if (on[x - 1] && (rest === null || rest - x >= 7)) { rest = x; x--; continue; }
+      break;
+    }
+    return { n: n, today: !!on[t], best: Math.max(d.best || 0, n) };
+  }
+  DH.streak = streak;
   function dueIds(mod) { var t = today(); return Object.keys(rev).filter(function (id) { return rev[id].m === mod && rev[id].due <= t; }); }
   // questions solved before spaced review existed join the deck gradually over the next week
   (function seed() {
@@ -2200,6 +2252,7 @@ window.SITE = {"name": "GATE DA", "key": "gateda", "path": "gate-da", "domain": 
     var chNo = chEl && artEl ? artEl.dataset.num + "." + ($$("section.ch", artEl).indexOf(chEl) + 1) + "." : "";
     stem.dataset.n = R ? R.label : "Exercise " + chNo + n;
     var choices = p.dataset.choices ? p.dataset.choices.split("|") : null;
+    if (R && choices && !/^\(?[A-D]\)?$/.test(choices[0].trim())) choices = shuffle(choices);   // keep A–D letter chips in order
     var multi = !!p.dataset.multi;   // MSQ: select all that apply; data-ans lists the right choices separated by ";"
     var answers = (p.dataset.ans || "").split(";").map(function (s) { return s.trim(); });
     var labels = (p.dataset.labels || "").split(";").map(function (s) { return s.trim(); });
@@ -2552,13 +2605,14 @@ window.SITE = {"name": "GATE DA", "key": "gateda", "path": "gate-da", "domain": 
     var w = where(), wm = w ? MODS.filter(function (m) { return m.slug === w.mod; })[0] : null;
     if (wm) {
       cta.appendChild(h("a", { class: "cta", href: ROOT + wm.slug + "/#resume" }, "Continue: " + w.label + " →" + (w.part ? "<small>" + wm.title + "</small>" : "")));
-      var dm = MODS.filter(function (m) { return dueIds(m.slug).length; }), dn = dm.reduce(function (n, m) { return n + dueIds(m.slug).length; }, 0);
-      if (dn) cta.appendChild(h("a", { class: "alt rv-cta", href: ROOT + dm[0].slug + "/#review" }, "Review · <b>" + dn + "</b> due"));
+      var dn = MODS.reduce(function (n, m) { return n + dueIds(m.slug).length; }, 0), st = streak();
+      cta.appendChild(h("a", { class: "alt rv-cta", href: ROOT + "daily/" }, "Daily set" + (dn ? " · <b>" + dn + "</b> due" : "") + (st.n ? ' <span class="cta-streak">' + st.n + " day" + (st.n === 1 ? "" : "s") + " in a row</span>" : "")));
 
     } else if (MODS[0]) {
       var m0 = (SITE.modinfo || {})[MODS[0].slug] || {};
       cta.appendChild(h("a", { class: "cta", href: ROOT + MODS[0].slug + "/#start" }, "Start: " + MODS[0].title + " →" + (m0.min ? "<small>" + hours(m0.min) + ", or dip in as needed</small>" : "")));
       if (MODS[1]) cta.appendChild(h("a", { class: "alt", href: ROOT + MODS[1].slug + "/#start" }, "Maths is fine: go to " + MODS[1].title.toLowerCase()));
+      if (globalScore()[0] > 0) cta.appendChild(h("a", { class: "alt rv-cta", href: ROOT + "daily/" }, "Daily set"));
     }
   }
 
@@ -2706,13 +2760,14 @@ window.SITE = {"name": "GATE DA", "key": "gateda", "path": "gate-da", "domain": 
     var pos = null; try { pos = JSON.parse(store.get(POSKEY, "null")); } catch (e) {}
     show(last, Math.max(0, lpg), { push: push, setHash: !push, y: lpg >= 0 && pos && pos.id === lc.id ? pos.y : null });
   }
+  function shuffle(a) { a = a.slice(); for (var i = a.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)), t = a[i]; a[i] = a[j]; a[j] = t; } return a; }
   var revDlg = null;
   function homeLabel(el) { var pg = el.closest("section.ch, section.pg-review"), art = el.closest("article.part"); return art && pg ? pageLabel(art, pg) : ""; }
   function reviewQ(el, done) {
     var card = h("div", { class: "q" }), text = $(":scope > .q-text", el);
     if (text) card.appendChild(text);
     var opts = h("div", { class: "opts" }), why = h("div", { class: "why" }), answered = false; why.hidden = true;
-    $$(":scope > .o", el).forEach(function (o) {
+    shuffle($$(":scope > .o", el)).forEach(function (o) {
       var e = $(".e", o); if (e) o.removeChild(e);
       var b = h("button", { class: "opt", type: "button" }, o.innerHTML); b._ok = o.classList.contains("ok");
       b.addEventListener("click", function () {
@@ -2776,6 +2831,77 @@ window.SITE = {"name": "GATE DA", "key": "gateda", "path": "gate-da", "domain": 
     if (revDlg.showModal) revDlg.showModal(); else revDlg.setAttribute("open", "");
   }
   DH.openReview = openReview;
+
+  /* ---------- Daily set ---------- */
+  function marksOf(b) { var m = /(\d) marks?/i.exec(b.h.replace(/<[^>]+>/g, " ")); return b.x && m ? +m[1] : 1; }
+  function kindOf(el) { return el.classList.contains("q") ? "MCQ" : el.dataset.multi ? "MSQ" : el.dataset.choices ? "MCQ" : "NAT"; }
+  function pickDaily(exclude) {
+    var B = SITE.bank || {}, t = today(), ex = exclude || {};
+    var started = MODS.filter(function (m) { return modScore(m.slug)[0] > 0 || Object.keys(rev).some(function (id) { return rev[id].m === m.slug; }); }).map(function (m) { return m.slug; });
+    if (!started.length) started = MODS.slice(0, 2).map(function (m) { return m.slug; });
+    var due = shuffle(Object.keys(rev).filter(function (id) { return B[id] && rev[id].due <= t && !ex[id]; })).slice(0, 5);
+    var fresh = shuffle(Object.keys(B).filter(function (id) { return started.indexOf(B[id].m) >= 0 && !prog.q[id] && !prog.p[id] && !rev[id] && !ex[id] && due.indexOf(id) < 0; }));
+    var pyq = fresh.filter(function (id) { return B[id].x; })[0] || shuffle(Object.keys(B).filter(function (id) { return B[id].x && !ex[id] && due.indexOf(id) < 0; }))[0];
+    var ids = due.slice(); if (pyq) ids.push(pyq);
+    fresh.forEach(function (id) { if (ids.length < 8 && ids.indexOf(id) < 0) ids.push(id); });
+    // interleave modules so two questions from the same module rarely sit together
+    var byMod = {}; ids.forEach(function (id) { (byMod[B[id].m] = byMod[B[id].m] || []).push(id); });
+    var order = [], keys = Object.keys(byMod); while (order.length < ids.length) keys.forEach(function (k) { if (byMod[k].length) order.push(byMod[k].shift()); });
+    return order;
+  }
+  function runDaily() {
+    var box = $("#daily"), B = SITE.bank || {}, DKEY = SITE.key + "-daily";
+    function showStreak() {
+      var st = streak(), el = $("#streakLine"); if (!el) return;
+      el.hidden = !st.n && !st.best;
+      el.innerHTML = '<b>' + st.n + '</b> day' + (st.n === 1 ? "" : "s") + ' in a row' + (st.best > st.n ? '<span> · best ' + st.best + '</span>' : st.n > 1 ? '<span> · your best</span>' : '') + (st.today || !st.n ? "" : '<span> · answer one question today to keep it going</span>');
+    }
+    var state; try { state = JSON.parse(store.get(DKEY, "null")); } catch (e) {}
+    if (!state || state.day !== today()) state = { day: today(), ids: pickDaily(), i: 0, got: 0, net: 0, max: 0, done: {}, mods: {} };
+    function persist() { store.set(DKEY, JSON.stringify(state)); }
+    persist(); showStreak();
+    function card() {
+      box.innerHTML = "";
+      if (state.i >= state.ids.length) return summary();
+      var id = state.ids[state.i], b = B[id], el = h("div"); el.innerHTML = b.h; el = el.firstElementChild;
+      var mod = MODS.filter(function (m) { return m.slug === b.m; })[0], kind = kindOf(el), mk = marksOf(b);
+      box.appendChild(h("div", { class: "dl-top" }, '<span class="dl-n">' + (state.i + 1) + " of " + state.ids.length + '</span><span class="dl-from"></span><span class="dl-marks">' + kind + " · " + mk + " mark" + (mk === 1 ? "" : "s") + (kind === "MCQ" ? " · −" + (mk === 1 ? "⅓" : "⅔") + " if wrong" : "") + '</span>'));
+      $(".dl-from", box).textContent = (mod ? mod.title + " · " : "") + b.ch;
+      box.appendChild(h("div", { class: "rv-bar" }, '<i style="width:' + (100 * state.i / state.ids.length) + '%"></i>'));
+      var holder = h("div", { class: "dl-card" }); box.appendChild(holder);
+      function done(ok) {
+        state.max += mk; state.mods[b.m] = state.mods[b.m] || [0, 0]; state.mods[b.m][1]++;
+        if (ok) { state.got++; state.net += mk; state.mods[b.m][0]++; if (b.k === "q") prog.q[id] = 1; else prog.p[id] = 1; save(); }
+        else { if (kind === "MCQ") state.net -= mk / 3; schedule(id, 0); }
+        state.done[id] = 1; persist();
+        var g = h("div", { class: "rv-grade" });
+        if (ok) {
+          g.appendChild(h("span", null, "How well did you know it?"));
+          [["Guessed", 0], ["Unsure", 1], ["Knew it", 2]].forEach(function (x) {
+            var bt = h("button", { type: "button", class: x[1] === 2 ? "cmd" : "ghost" }, x[0]);
+            bt.addEventListener("click", function () { schedule(id, x[1]); state.i++; persist(); card(); window.scrollTo(0, 0); }); g.appendChild(bt);
+          });
+        } else {
+          g.appendChild(h("span", null, kind === "MCQ" ? "Minus " + (mk === 1 ? "⅓" : "⅔") + ". It comes back tomorrow." : "It comes back tomorrow."));
+          var nb = h("button", { type: "button", class: "cmd" }, "Next →"); nb.addEventListener("click", function () { state.i++; persist(); card(); window.scrollTo(0, 0); }); g.appendChild(nb);
+        }
+        holder.appendChild(g); g.scrollIntoView({ block: "nearest" });
+      }
+      if (b.k === "q") holder.appendChild(reviewQ(el, done));
+      else { holder.appendChild(el); buildProb(el, 0, { label: b.x ? "Exam question" : "Practice", onResult: done }); }
+      DH.renderMath(box);
+    }
+    function summary() {
+      var net = Math.round(state.net * 100) / 100, st = streak();
+      var rows = Object.keys(state.mods).map(function (k) { var m = MODS.filter(function (x) { return x.slug === k; })[0]; return "<li><span>" + (m ? m.title : k) + "</span><b>" + state.mods[k][0] + " / " + state.mods[k][1] + "</b></li>"; }).join("");
+      box.innerHTML = '<div class="dl-end"><h2>' + (state.ids.length ? "Done for today." : "Nothing to practise yet.") + '</h2>' +
+        (state.ids.length ? '<p class="dl-score"><b>' + state.got + " of " + state.ids.length + '</b> right · <b>' + net + "</b> of " + state.max + ' marks, GATE marking</p><ul class="dl-mods">' + rows + "</ul>" : '<p>Start a module and answer a few questions; they will come back here.</p>') +
+        '<p class="dl-next">' + (st.n ? st.n + " day" + (st.n === 1 ? "" : "s") + " in a row. " : "") + 'A new set is ready tomorrow.</p><div class="dl-actions"><a class="cmd" href="' + ROOT + '">Back to the course</a><button type="button" class="ghost" id="dlMore">Another set</button></div></div>';
+      $("#dlMore", box).addEventListener("click", function () { state = { day: today(), ids: pickDaily(state.done), i: 0, got: 0, net: 0, max: 0, done: state.done, mods: {} }; persist(); card(); });
+      showStreak();
+    }
+    card();
+  }
   DH.showPart = showPart;
   function buildPager() {
     var pg = $("#pager"); pg.innerHTML = "";
@@ -2946,6 +3072,7 @@ window.SITE = {"name": "GATE DA", "key": "gateda", "path": "gate-da", "domain": 
   /* ---------- boot ---------- */
   var booted = false;
   function boot() {
+    if (SITE.page === "daily") setTimeout(function () { runDaily(); booted = true; }, 0);
     setTimeout(function () { booted = true; }, 0);
     if (hero) renderMath(hero);
     updateScores();
