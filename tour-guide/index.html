@@ -708,6 +708,20 @@ details.why .why-k { font:700 15px var(--ui); color:var(--brand); }
 /* phones: a slightly smaller reading size so wide inline maths fits 375 px */
 @media (max-width:600px) { section.ch { font-size:17px; } .lead .lead-idea { font-size:20px; } }
 
+/* ---- design v5, PHASE 2 (2026-11-20): GATE DA's reading blocks ---- */
+/* one chapter per screen: no rule above a chapter that starts the page */
+section.ch, section.pg-review { border-top:0; padding-top:0; }
+section.pg-review { display:flex; flex-direction:column; gap:26px; }
+.part-divider + section.ch { padding-top:8px; border-top:1px solid var(--line); padding-top:48px; }
+/* exercise numbers: quiet text, not a pill */
+.prob .stem::before, .prob.solved .stem::before { background:transparent; padding:0; border-radius:0; color:var(--tx3); font:600 13px var(--ui); letter-spacing:0; text-transform:none; }
+/* Key points: a light card */
+.takeaways { background:var(--panel); border:1px solid var(--line); border-radius:22px; padding:22px 24px 14px; box-shadow:none; }
+.takeaways ol > li { border-top:1px solid var(--line); padding-top:12px; }
+.takeaways ol > li:first-child { border-top:0; }
+.takeaways ol > li::before { top:10px; }
+.takeaways ol > li:first-child::before { top:2px; }
+
 /* site theme */
 :root { --accent: #C2570C; --accent-soft: #FCEBDD; --warn: #B3261E; --warn-soft: #FBE3E1; }
 @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --accent: #FF9A57; --accent-soft: #3A2414; --warn: #FF8A80; --warn-soft: #3B1B1A; } }
@@ -756,7 +770,7 @@ details.why .why-k { font:700 15px var(--ui); color:var(--brand); }
       <span class="eyebrow">Logistics and freight modelling, from linear programs to vehicle routing</span>
       <h1>Learn how deliveries, depots and routes are planned with mathematics</h1>
       <p class="lede">This is a companion to SL 225 Logistics and Freight Modeling. The course assumes linear programming, integer programming and algorithms. Here those are built up first, and then the course itself: facility location, assignment, branch and bound, the travelling salesman problem and vehicle routing.</p>
-      <p class="stack">Based on SL 225 Logistics and Freight Modeling at IISc, taught by Prof. Tarun Rambha. An independent study resource: <a href="#about">see the acknowledgement</a>.</p>
+      <p class="stack">Based on SL 225 Logistics and Freight Modeling at IISc, taught by Prof. Tarun Rambha.</p>
       <p class="prereq">The course is self-contained. Foundation parts A to D cover the maths, modelling, graph and code tools the lectures use; if you already have them, start at Part 0. Parts 0 to 6 follow Lectures 0 to 6, and the last part has exam-level practice.</p>
       <div class="plan-head"><h3>The route</h3></div>
       <ol class="plan" id="plan"></ol>
@@ -4770,11 +4784,6 @@ H     0   1410.0000   1271.0000   9.86%
 
     </div>
     <nav class="pager" id="pager" aria-label="Part navigation"></nav>
-    <footer class="foot" id="about">
-      <p><b>Acknowledgement.</b> Built around the lectures of SL 225 Logistics and Freight Modeling at the Indian Institute of Science (IISc), taught by Prof. Tarun Rambha. All explanations, figures, numbers and problems here are written afresh; slides, textbooks and problem sets are not reproduced. Reference texts: Wolsey, <i>Integer Programming</i>; Toth and Vigo (eds.), <i>The Vehicle Routing Problem</i>; Gutin and Punnen (eds.), <i>The Traveling Salesman Problem and Its Variations</i>; Applegate et al., <i>The Traveling Salesman Problem: A Computational Study</i>.</p>
-      <p><b>Disclaimer.</b> Independent study resource by a student. Not official, and not reviewed or endorsed by Prof. Rambha or IISc. Mistakes are the author's; the lecture slides are the authority.</p>
-      <p>Your progress is saved only in this browser and is never sent anywhere.</p>
-    </footer>
   </main>
 </div>
 
@@ -4795,7 +4804,7 @@ H     0   1410.0000   1271.0000   9.86%
 <canvas id="confetti" hidden></canvas>
 
 <script>
-window.SITE = {"name": "Tour Guide", "key": "tourguide", "path": "tour-guide", "domain": "courses.rahuldevsharma.com/tour-guide", "author": "Rahul Dev Sharma", "tagline": "Logistics and freight modelling, from linear programs to vehicle routing", "description": "An interactive course companion for SL 225 Logistics and Freight Modelling at IISc. It builds up linear programming, integer programming, branch and bound, the travelling salesman problem and vehicle routing, with draggable widgets and self-checked practice.", "certTitle": ["Certificate of completion", "Tour Guide"], "certBody": ["answered every quiz and practice question correctly across", "Tour Guide, a companion to Prof. Tarun Rambha's SL 225 Logistics and Freight Modeling:", "linear and integer programming, branch and bound, TSP and vehicle routing."], "footer_html": "      <p><b>Acknowledgement.</b> Built around the lectures of SL 225 Logistics and Freight Modeling at the Indian Institute of Science (IISc), taught by Prof. Tarun Rambha. All explanations, figures, numbers and problems here are written afresh; slides, textbooks and problem sets are not reproduced. Reference texts: Wolsey, <i>Integer Programming</i>; Toth and Vigo (eds.), <i>The Vehicle Routing Problem</i>; Gutin and Punnen (eds.), <i>The Traveling Salesman Problem and Its Variations</i>; Applegate et al., <i>The Traveling Salesman Problem: A Computational Study</i>.</p>\n      <p><b>Disclaimer.</b> Independent study resource by a student. Not official, and not reviewed or endorsed by Prof. Rambha or IISc. Mistakes are the author's; the lecture slides are the authority.</p>", "theme": {"light": {"accent": "#C2570C", "accent-soft": "#FCEBDD", "warn": "#B3261E", "warn-soft": "#FBE3E1"}, "dark": {"accent": "#FF9A57", "accent-soft": "#3A2414", "warn": "#FF8A80", "warn-soft": "#3B1B1A"}}};
+window.SITE = {"name": "Tour Guide", "key": "tourguide", "path": "tour-guide", "domain": "courses.rahuldevsharma.com/tour-guide", "author": "Rahul Dev Sharma", "tagline": "Logistics and freight modelling, from linear programs to vehicle routing", "description": "An interactive course companion for SL 225 Logistics and Freight Modelling at IISc. It builds up linear programming, integer programming, branch and bound, the travelling salesman problem and vehicle routing, with draggable widgets and self-checked practice.", "certTitle": ["Certificate of completion", "Tour Guide"], "certBody": ["answered every quiz and practice question correctly across", "Tour Guide, a companion to Prof. Tarun Rambha's SL 225 Logistics and Freight Modeling:", "linear and integer programming, branch and bound, TSP and vehicle routing."], "theme": {"light": {"accent": "#C2570C", "accent-soft": "#FCEBDD", "warn": "#B3261E", "warn-soft": "#FBE3E1"}, "dark": {"accent": "#FF9A57", "accent-soft": "#3A2414", "warn": "#FF8A80", "warn-soft": "#3B1B1A"}}};
 /* ---- expr.js ---- */
 /* Safe expression parser: no eval. Grammar (precedence low → high):
    sum := prod (('+'|'-') prod)* ; prod := unary (('*'|'/'| implicit) unary)* ; unary := '-' unary | pow ; pow := atom ('^' unary)?
@@ -5555,7 +5564,7 @@ window.SITE = {"name": "Tour Guide", "key": "tourguide", "path": "tour-guide", "
       answers.forEach(function (a, i) {
         var lab = h("label");
         lab.appendChild(h("span", null, labels[i] ? labels[i] : (answers.length > 1 ? "Answer " + (i + 1) : "Your answer")));
-        var inp = h("input", { type: "text", inputmode: "text", autocomplete: "off", spellcheck: "false", placeholder: "e.g. 3/4", title: "Numbers, fractions like 3/4, or expressions like sqrt(2)/2", "aria-label": (labels[i] || "Answer").replace(/\$/g, "") });
+        var inp = h("input", { type: "text", inputmode: "text", autocomplete: "off", spellcheck: "false", title: "Numbers, fractions like 3/4, or expressions like sqrt(2)/2", "aria-label": (labels[i] || "Answer").replace(/\$/g, "") });
         inp.addEventListener("keydown", function (e) { if (e.key === "Enter") check.click(); });
         lab.appendChild(inp); row.appendChild(lab); inputs.push(inp);
       });
@@ -5730,27 +5739,70 @@ window.SITE = {"name": "Tour Guide", "key": "tourguide", "path": "tour-guide", "
     if (TOTAL > 0 && done === TOTAL) unlockCert(true); else $("#certBtn").hidden = !store.get(SITE.key + "-cert", "");
   }
 
-  /* ---------- part switching ---------- */
-  var hero = $("#welcome");
-  function showPart(i, scrollTop, anchor) {
+  /* ---------- pages: one chapter per screen (design v5, as in GATE DA) ----------
+     Each chapter is a page; whatever follows the last chapter (the part review quiz) becomes a final
+     "Part review" page. The part header shows with the first page. */
+  parts.forEach(function (art) {
+    var chs = $$(":scope > section.ch", art), pages = chs.slice(), lastCh = chs[chs.length - 1], trailing = [];
+    if (lastCh) for (var n = lastCh.nextElementSibling; n; n = n.nextElementSibling) trailing.push(n);
+    if (trailing.length) {
+      var rv = h("section", { class: "pg-review", id: art.id + "-review", "data-title": "Part review" });
+      rv.appendChild(h("div", { class: "ch-head" }, '<span class="meta">Part ' + art.dataset.num + ' · wrap-up</span><h2>Part review</h2>'));
+      trailing.forEach(function (t) { rv.appendChild(t); });
+      art.appendChild(rv); pages.push(rv);
+    }
+    art._pages = pages;
+  });
+  function pageLabel(art, pg) { return pg.classList.contains("pg-review") ? "Part " + art.dataset.num + " review" : art.dataset.num + "." + (art._pages.indexOf(pg) + 1) + " " + pg.dataset.title; }
+  function pageOf(art, el) { for (var k = 0; k < art._pages.length; k++) if (art._pages[k].contains(el)) return k; return 0; }
+  var hero = $("#welcome"), curPage = -1;
+  function showPage(i, pg) {
     if (i < -1 || i >= parts.length) return;
+    var art = i >= 0 ? parts[i] : null;
+    pg = art ? Math.max(0, Math.min(art._pages.length - 1, pg || 0)) : -1;
+    var changed = i !== current || pg !== curPage;
     if (i !== current) {
       parts.forEach(function (p, k) { p.hidden = k !== i; });
       current = i; store.set(SITE.key + "-part", String(i));
-      if (i >= 0) { store.set(SITE.key + "-last", String(i)); renderMath(parts[i]); DH.mountWidgets(parts[i]); }
+      if (i >= 0) { store.set(SITE.key + "-last", String(i)); renderMath(parts[i]); }
       $$(".toc .part > button").forEach(function (b) { var on = +b.dataset.part === i; b.classList.toggle("active", on); b.setAttribute("aria-current", on ? "true" : "false"); });
       $$(".toc .chs").forEach(function (u, k) { u.hidden = k !== i; });
-      buildPager();
-      updateScores();
-      document.body.classList.toggle("reading", i >= 0);
-      curCh = i >= 0 ? $("section.ch", parts[i]) : null;
     }
+    curPage = pg;
+    if (art && changed) {
+      var page = art._pages[pg];
+      Array.prototype.forEach.call(art.children, function (c) { var k = art._pages.indexOf(c); c.hidden = k >= 0 ? k !== pg : !(pg === 0 && c.classList.contains("part-divider")); });
+      DH.mountWidgets(page); fitMath(page);
+      curCh = page;
+      if (page.matches("section.ch")) store.set(SITE.key + "-ch", page.id);
+      $$(".toc .chs a").forEach(function (a) { a.classList.toggle("on", a.dataset.ch === page.id); });
+    }
+    if (changed) { buildPager(); updateScores(); document.body.classList.toggle("reading", i >= 0); if (i < 0) curCh = null; }
     if (hero) hero.hidden = i !== -1;
-    if (anchor) { var ac = document.getElementById(anchor); ac = ac && ac.closest("section.ch"); if (ac) curCh = ac; }
-    tbKey = ""; setTimeout(updateLocbar, 40);
     if (i === -1) renderCta();
-    if (anchor) { var t = document.getElementById(anchor); if (t) setTimeout(function () { t.scrollIntoView(); }, 30); }
-    else if (scrollTop) { window.scrollTo(0, 0); history.replaceState(null, "", "#" + (i < 0 ? "welcome" : parts[i].id)); }
+    tbKey = ""; setTimeout(updateLocbar, 0);
+  }
+  // show part i: the page holding anchor (scrolled to it), else its first page
+  function showPart(i, scrollTop, anchor) {
+    var art = parts[i], el = anchor ? document.getElementById(anchor) : null;
+    showPage(i, art && el ? pageOf(art, el) : 0);
+    if (el && art && art._pages.indexOf(el) < 0) setTimeout(function () { el.scrollIntoView(); }, 30);
+    else if (el || scrollTop) window.scrollTo(0, 0);
+    if (scrollTop && !anchor) history.replaceState(null, "", "#" + (i < 0 ? "welcome" : parts[i].id));
+  }
+  // go to page pg of part i (through the address, so Back works)
+  function goPage(i, pg) {
+    var id = parts[i]._pages[pg].id;
+    if (location.hash === "#" + id) showPart(i, false, id); else location.hash = "#" + id;
+  }
+  function neighbour(d) {   // the page before (-1) or after (1) the current one, across parts
+    if (current < 0) return null;
+    var art = parts[current], pg = curPage + d;
+    if (pg >= 0 && pg < art._pages.length) { var i0 = current; return { kind: "page", label: pageLabel(art, art._pages[pg]), review: art._pages[pg].classList.contains("pg-review"), go: function () { goPage(i0, pg); } }; }
+    var ni = current + d, na = parts[ni];
+    if (!na) return null;
+    var np = d > 0 ? 0 : na._pages.length - 1;
+    return { kind: "part", label: na.dataset.num + " · " + na.dataset.title, go: function () { if (np === 0) showPart(ni, true); else goPage(ni, np); } };
   }
   // Home: "Start Part 1" for new visitors, "Continue: Part N" for returning ones
   var cta = $("#heroCta");
@@ -5780,19 +5832,18 @@ window.SITE = {"name": "Tour Guide", "key": "tourguide", "path": "tour-guide", "
   DH.showPart = showPart;
   function buildPager() {
     var pg = $("#pager"); pg.innerHTML = "";
-    if (current === 0) {
+    if (current < 0) return;
+    var prev = neighbour(-1), next = neighbour(1);
+    if (prev) {
+      var b1 = h("button", { type: "button" }, "<small>← " + (prev.kind === "part" ? "Previous part" : "Previous") + "</small><b></b>");
+      $("b", b1).textContent = prev.label; b1.addEventListener("click", prev.go); pg.appendChild(b1);
+    } else {
       var bh = h("button", { type: "button" }, "<small>← Back to</small><b>Home</b>");
       bh.addEventListener("click", function () { showPart(-1, true); }); pg.appendChild(bh);
     }
-    if (current > 0) {
-      var a = parts[current - 1];
-      var b1 = h("button", { type: "button" }, "<small>← Previous part</small><b>" + a.dataset.num + " · " + a.dataset.title + "</b>");
-      b1.addEventListener("click", function () { showPart(current - 1, true); }); pg.appendChild(b1);
-    }
-    if (current < parts.length - 1) {
-      var n = parts[current + 1];
-      var b2 = h("button", { type: "button", class: "next" }, "<small>Next part →</small><b>" + n.dataset.num + " · " + n.dataset.title + "</b>");
-      b2.addEventListener("click", function () { showPart(current + 1, true); }); pg.appendChild(b2);
+    if (next) {
+      var b2 = h("button", { type: "button", class: "next" }, "<small>" + (next.kind === "part" ? "Next part →" : next.review ? "Next: check the whole part →" : "Next chapter →") + "</small><b></b>");
+      $("b", b2).textContent = next.label; b2.addEventListener("click", next.go); pg.appendChild(b2);
     }
   }
   function route() {
@@ -5809,7 +5860,7 @@ window.SITE = {"name": "Tour Guide", "key": "tourguide", "path": "tour-guide", "
   // highlight current chapter in rail
   var obs = "IntersectionObserver" in window ? new IntersectionObserver(function (ents) {
     ents.forEach(function (en) {
-      if (en.isIntersecting) { $$(".toc a").forEach(function (a) { a.classList.toggle("on", a.dataset.ch === en.target.id); }); store.set(SITE.key + "-ch", en.target.id); curCh = en.target; updateLocbar(); }
+      if (en.isIntersecting) { $$(".toc a").forEach(function (a) { a.classList.toggle("on", a.dataset.ch === en.target.id); }); store.set(SITE.key + "-ch", en.target.id); }
     });
   }, { rootMargin: "-20% 0px -70% 0px" }) : null;
   if (obs) $$("section.ch").forEach(function (s) { obs.observe(s); });
@@ -5817,13 +5868,7 @@ window.SITE = {"name": "Tour Guide", "key": "tourguide", "path": "tour-guide", "
   /* ---------- top bar: where you are, Next, and a reading line through the open part ---------- */
   var tbWhere = $("#tbWhere"), tbBar = $("#tbBar"), tbKey = "", curCh = null;
   function chLabel(ch) { var art = ch.closest("article.part"); return art.dataset.num + "." + ($$("section.ch", art).indexOf(ch) + 1) + " " + ch.dataset.title; }
-  function nextStep() {   // the next chapter in this part, else the next part
-    if (current < 0) return null;
-    var chs = $$("section.ch", parts[current]), k = curCh ? chs.indexOf(curCh) : -1;
-    if (k >= 0 && k < chs.length - 1) { var c = chs[k + 1]; return { label: chLabel(c), go: function () { location.hash = "#" + c.id; } }; }
-    if (current < parts.length - 1) { var n = current + 1; return { label: "Part " + parts[n].dataset.num + " · " + parts[n].dataset.title, go: function () { showPart(n, true); } }; }
-    return null;
-  }
+  function nextStep() { var n = neighbour(1); return n && { label: n.kind === "part" ? "Part " + n.label : n.label, go: n.go }; }
   var tbNext = h("button", { type: "button", class: "tb-next", "aria-label": "Next" }, "Next <span aria-hidden=\"true\">›</span>");
   tbNext.addEventListener("click", function () { var n = nextStep(); if (n) n.go(); });
   tbWhere.insertAdjacentElement("afterend", tbNext);
@@ -5833,12 +5878,12 @@ window.SITE = {"name": "Tour Guide", "key": "tourguide", "path": "tour-guide", "
       tbKey = key;
       tbWhere.innerHTML = "<span></span><b></b>";
       $("span", tbWhere).textContent = current >= 0 ? "Part " + parts[current].dataset.num + " · " + parts[current].dataset.title : "";
-      $("b", tbWhere).textContent = current >= 0 && curCh ? chLabel(curCh) : "";
+      $("b", tbWhere).textContent = current >= 0 && curCh ? pageLabel(parts[current], curCh) : "";
       var nx = nextStep(); tbNext.hidden = !nx;
       if (nx) { tbNext.title = "Next: " + nx.label; tbNext.setAttribute("aria-label", "Next: " + nx.label); }
     }
     if (current < 0) { tbBar.style.width = "0"; return; }
-    var r = parts[current].getBoundingClientRect(), tot = r.height - innerHeight * 0.6;
+    var r = (curCh || parts[current]).getBoundingClientRect(), tot = r.height - innerHeight * 0.6;
     tbBar.style.width = 100 * (tot > 0 ? Math.min(1, Math.max(0, -r.top / tot)) : 1) + "%";
   }
   window.addEventListener("scroll", updateLocbar, { passive: true }); window.addEventListener("resize", updateLocbar);

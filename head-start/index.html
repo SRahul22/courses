@@ -717,6 +717,8 @@ section.ch .ch-head h2 { font-size:clamp(28px,3.6vw,38px); letter-spacing:-.025e
 .topbar .brand, .rail-head .brand { text-decoration:none; color:var(--tx); }
 .plan-head h3, .checklist legend, .zone h4, .term-card b { font-family:var(--ui); font-weight:700; }
 @media (max-width:600px) { section.ch, .prose { font-size:17px; } .lead .lead-idea { font-size:20px; } }
+.takeaways { background:var(--panel); border:1px solid var(--line); border-radius:22px; padding:22px 24px; box-shadow:none; }
+.takeaways .label { color:var(--brand); }
 </style>
 <script>/* one-time import of progress carried over from an old address (#import=...): never overwrites existing keys */try{var m=location.hash.match(/^#import=([^&]+)/);if(m){var o=JSON.parse(decodeURIComponent(escape(atob(decodeURIComponent(m[1])))));for(var k in o.d){if(localStorage.getItem(k)===null)localStorage.setItem(k,o.d[k]);}history.replaceState(null,"",location.pathname+location.search+(o.h?"#"+o.h:""));}}catch(e){}</script>
 <script>try { var t = localStorage.getItem("first-commit-progress-v2-theme"); if (t === "dark" || t === "light") document.documentElement.setAttribute("data-theme", t); } catch (e) {}</script>
@@ -2801,38 +2803,50 @@ Is there a step I'm missing?</pre></div>
     return '<button type="button" class="plan-card" data-go="' + i + '" aria-label="' + esc(p.label + ": " + p.title) + '"><span class="pn">' + (i + 1) + '</span><span class="pc"><b>' + esc(p.title) + "</b><small>" + n + " chapter" + (n === 1 ? "" : "s") + "</small></span></button>";
   }).join("");
   $("plan").addEventListener("click", function (e) { var b = e.target.closest("button"); if (b) showPart(+b.dataset.go); });
-  PARTS.forEach(function (p, i) {
-    var nav = document.createElement("nav"); nav.className = "pager"; nav.setAttribute("aria-label", "Part navigation");
-    var prev = PARTS[i - 1], next = PARTS[i + 1];
-    nav.innerHTML =
-      (i === 0 ? '<button type="button" data-go="-1"><small>← Back to</small><b>Home</b></button>' : "") +
-      (prev ? '<button type="button" data-go="' + (i - 1) + '"><small>← Previous · ' + esc(prev.label) + "</small><b>" + esc(prev.title) + "</b></button>" : "") +
-      (next ? '<button type="button" class="next" data-go="' + (i + 1) + '"><small>Next · ' + esc(next.label) + " →</small><b>" + esc(next.title) + "</b></button>"
-            : '<button type="button" class="next" data-go="-1"><small>You reached the end</small><b>Back to Home</b></button>');
-    var last = p.els[p.els.length - 1];
-    last.parentNode.insertBefore(nav, last.nextSibling);
-    p.els.push(nav);
-  });
+  // one pager under the open chapter, rebuilt for every page (previous / next chapter, across parts)
+  var PAGER = document.createElement("nav"); PAGER.className = "pager"; PAGER.setAttribute("aria-label", "Chapter navigation");
+  mainEl.appendChild(PAGER);
   function partScore(p) {
     var got = 0, len = 0;
     p.chapters.forEach(function (s) { if (QUIZ[s.id]) { len += QUIZ[s.id].length; got += chapterScore(s.id); } });
     return [got, len];
   }
+  // one chapter per screen (design v5): show part i at the chapter holding targetId (else its first chapter)
   function showPart(i, targetId) {
     activePart = i;
-    PARTS.forEach(function (p, j) { p.els.forEach(function (el) { el.hidden = j !== i; }); });
+    var target = targetId && $(targetId), ch = i >= 0 ? (target && target.closest("section.ch")) || PARTS[i].chapters[0] : null;
+    if (ch && +ch.dataset.pi !== i) { i = activePart = +ch.dataset.pi; }
+    var first = ch && PARTS[i].chapters[0] === ch;
+    PARTS.forEach(function (p, j) { p.els.forEach(function (el) { el.hidden = j !== i || (el.matches("section.ch") ? el !== ch : !first); }); });
     HERO.hidden = i !== -1;
     try { localStorage.setItem(KEY + "-part", String(i)); if (i >= 0) localStorage.setItem(KEY + "-last", String(i)); } catch (e) {}
     if (i === -1) renderCta();
+    curCh = ch;
     renderToc();
-    var target = targetId && $(targetId);
-    curCh = i >= 0 ? (target && target.closest("section.ch")) || PARTS[i].chapters[0] : null;
+    buildPager();
     document.body.classList.toggle("reading", i >= 0);
-    if (target) target.scrollIntoView(); else window.scrollTo(0, 0);
+    if (target && target !== ch) target.scrollIntoView(); else window.scrollTo(0, 0);
     tbKey = ""; updateLocbar();
     if (typeof gRender === "function" && g) gRender();
   }
-  mainEl.addEventListener("click", function (e) { var b = e.target.closest(".pager button"); if (b) showPart(+b.dataset.go); });
+  function neighbour(d) {
+    if (!curCh) return null;
+    var pi = +curCh.dataset.pi, chs = PARTS[pi].chapters, k = chs.indexOf(curCh) + d;
+    if (k >= 0 && k < chs.length) return { kind: "page", ch: chs[k], label: chLabel(chs[k]) };
+    var np = PARTS[pi + d]; if (!np) return null;
+    return { kind: "part", ch: d > 0 ? np.chapters[0] : np.chapters[np.chapters.length - 1], label: np.label + " · " + np.title };
+  }
+  function buildPager() {
+    PAGER.hidden = activePart < 0; if (activePart < 0) { PAGER.innerHTML = ""; return; }
+    var prev = neighbour(-1), next = neighbour(1);
+    PAGER.innerHTML =
+      (prev ? '<button type="button" data-ch="' + prev.ch.id + '"><small>← ' + (prev.kind === "part" ? "Previous part" : "Previous") + "</small><b>" + esc(prev.label) + "</b></button>"
+            : '<button type="button" data-go="-1"><small>← Back to</small><b>Home</b></button>') +
+      (next ? '<button type="button" class="next" data-ch="' + next.ch.id + '"><small>' + (next.kind === "part" ? "Next part →" : "Next chapter →") + "</small><b>" + esc(next.label) + "</b></button>"
+            : '<button type="button" class="next" data-go="-1"><small>You reached the end</small><b>Back to Home</b></button>');
+  }
+  window.addEventListener("hashchange", function () { var el = location.hash && document.getElementById(location.hash.slice(1)), c = el && el.closest && el.closest("section.ch"); if (c) showPart(+c.dataset.pi, el.id); else if (el && el.id === "welcome") showPart(-1); });
+  mainEl.addEventListener("click", function (e) { var b = e.target.closest(".pager button"); if (!b) return; if (b.dataset.ch) { var c = $(b.dataset.ch); showPart(+c.dataset.pi, c.id); } else showPart(+b.dataset.go); });
 
   function renderCta() {
     var last = -1;
@@ -2895,7 +2909,7 @@ Is there a step I'm missing?</pre></div>
   function highlightToc() {
     var y = window.scrollY + 200, cur = null;
     if (activePart < 0) return;
-    PARTS[activePart].chapters.forEach(function (s) { if (s.getBoundingClientRect().top + window.scrollY <= y) cur = s.id; });
+    if (curCh) cur = curCh.id;
     document.querySelectorAll(".toc a").forEach(function (a) { a.classList.toggle("on", a.dataset.id === cur); });
     if (cur) curCh = $(cur); updateLocbar();
   }
@@ -2907,9 +2921,7 @@ Is there a step I'm missing?</pre></div>
   function nextStep() {
     if (activePart < 0) return null;
     var chs = PARTS[activePart].chapters, k = curCh ? chs.indexOf(curCh) : -1;
-    if (k >= 0 && k < chs.length - 1) { var c = chs[k + 1]; return { label: chLabel(c), go: function () { c.scrollIntoView({ behavior: "smooth" }); } }; }
-    if (activePart < PARTS.length - 1) { var n = activePart + 1; return { label: PARTS[n].label + " · " + PARTS[n].title, go: function () { showPart(n); } }; }
-    return null;
+    var n = neighbour(1); return n && { label: n.label, go: function () { showPart(+n.ch.dataset.pi, n.ch.id); } };
   }
   var tbNext = document.createElement("button"); tbNext.type = "button"; tbNext.className = "tb-next"; tbNext.innerHTML = 'Next <span aria-hidden="true">›</span>';
   tbNext.addEventListener("click", function () { var n = nextStep(); if (n) n.go(); });
@@ -2925,8 +2937,7 @@ Is there a step I'm missing?</pre></div>
       if (nx) { tbNext.title = "Next: " + nx.label; tbNext.setAttribute("aria-label", "Next: " + nx.label); }
     }
     if (activePart < 0) { tbBar.style.width = "0"; return; }
-    var els = PARTS[activePart].els, top = els[0].getBoundingClientRect().top + window.scrollY, last = els[els.length - 1];
-    var end = last.getBoundingClientRect().bottom + window.scrollY - window.innerHeight;
+    var top = 0, end = (curCh ? curCh.getBoundingClientRect().bottom + window.scrollY : document.documentElement.scrollHeight) - window.innerHeight;
     tbBar.style.width = 100 * (end > top ? Math.min(1, Math.max(0, (window.scrollY - top) / (end - top))) : 1) + "%";
   }
   window.addEventListener("resize", updateLocbar);
@@ -2959,11 +2970,12 @@ Is there a step I'm missing?</pre></div>
     var pb = e.target.closest(".part button");
     if (pb) { showPart(+pb.dataset.part); return; }
     var a = e.target.closest("a[data-id]");
-    if (a) { e.preventDefault(); $(a.dataset.id).scrollIntoView({ behavior: "smooth" }); }
+    if (a) { e.preventDefault(); var c = $(a.dataset.id); showPart(+c.dataset.pi, c.id); }
   });
   (function initialPart() {
     var start = -1, hashEl = location.hash && document.getElementById(location.hash.slice(1));
-    if (hashEl && hashEl.dataset.pi) { showPart(+hashEl.dataset.pi, hashEl.id); return; }
+    var hc = hashEl && hashEl.closest && hashEl.closest("section.ch");
+    if (hc) { showPart(+hc.dataset.pi, hashEl.id); return; }
     if (hashEl && hashEl.id === "welcome") { showPart(-1); return; }
     try { var saved = parseInt(localStorage.getItem(KEY + "-part"), 10); if (saved >= -1 && saved < PARTS.length) start = saved; } catch (e) {}
     showPart(start);
