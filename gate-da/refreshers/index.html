@@ -24,16 +24,18 @@
 <!-- inline scripts first: they must never wait behind a slow or blocked stylesheet -->
 <script>/* one-time import of progress carried over from an old address (#import=...): never overwrites existing keys */try{var m=location.hash.match(/^#import=([^&]+)/);if(m){var o=JSON.parse(decodeURIComponent(escape(atob(decodeURIComponent(m[1])))));for(var k in o.d){if(localStorage.getItem(k)===null)localStorage.setItem(k,o.d[k]);}history.replaceState(null,"",location.pathname+location.search+(o.h?"#"+o.h:""));}}catch(e){}</script>
 <script>try { var t = localStorage.getItem("gateda-theme"); if (t === "dark" || t === "light") document.documentElement.setAttribute("data-theme", t); } catch (e) {}</script>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<!-- Google Fonts load without blocking the page; if they are blocked, the system fallbacks are used -->
-<link rel="stylesheet" media="print" onload="this.media='all'" href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,300..600&family=Source+Serif+4:opsz,wght@8..60,400..700&family=JetBrains+Mono:wght@400;600&display=swap">
-<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,300..600&family=Source+Serif+4:opsz,wght@8..60,400..700&display=swap"></noscript>
+<!-- fonts are served from this site (vendor/fonts, copied by build.py from @fontsource-variable in ~/Dev/tools) -->
+<link rel="preload" href="../vendor/fonts/figtree.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="../vendor/fonts/source-serif-4.woff2" as="font" type="font/woff2" crossorigin>
 <!-- KaTeX is served from this site (vendor/katex, copied by build.py), so maths works where CDNs are blocked -->
 <link rel="stylesheet" href="../vendor/katex/katex.min.css">
 <script defer src="../vendor/katex/katex.min.js"></script>
 <script defer src="../vendor/katex/contrib/auto-render.min.js"></script>
 <style>
+@font-face { font-family:Figtree; font-style:normal; font-weight:300 900; font-display:swap; src:url(../vendor/fonts/figtree.woff2) format("woff2"); }
+@font-face { font-family:"Source Serif 4"; font-style:normal; font-weight:200 900; font-display:swap; src:url(../vendor/fonts/source-serif-4.woff2) format("woff2"); }
+@font-face { font-family:"Source Serif 4"; font-style:italic; font-weight:200 900; font-display:swap; src:url(../vendor/fonts/source-serif-4-italic.woff2) format("woff2"); }
+@font-face { font-family:"JetBrains Mono"; font-style:normal; font-weight:100 800; font-display:swap; src:url(../vendor/fonts/jetbrains-mono.woff2) format("woff2"); }
 /* GATE DA stylesheet. Built on the K2 layout (rail of parts and chapters, one chapter per screen, 780 px reading column),
    with the EDITORIAL LAYER at the end of this file (2026-11-19): warm paper palette, teal brand and coral second colour,
    Fraunces for headings, Source Serif 4 for reading text, Figtree for everything you click or answer, a distinct look per
@@ -944,7 +946,7 @@ section.ch > .ch-head + *, section.pg-review > .ch-head + * { margin-top:36px; }
 @media (min-width:1500px) {
   section.ch > .panel.try, section.ch > .example, section.ch > .table-wrap, section.ch > figure.fig, section.ch > .widget { margin-inline:-170px; }
 }
-@media (min-width:1300px) {
+@media (min-width:1360px) {
   .mnote { float:right; clear:right; width:250px; margin:8px -298px 20px 0 !important; }
 }
 }
@@ -1006,7 +1008,7 @@ section.ch > .ch-head + *, section.pg-review > .ch-head + * { margin-top:36px; }
 .mn-body { display:flex; flex-direction:column; gap:8px; margin-top:8px; }
 .mn-body p { font-size:14px; line-height:1.55; }
 .mn-qk { font:600 10.5px var(--sans) !important; letter-spacing:.12em; text-transform:uppercase; color:var(--tx3); margin-top:4px !important; }
-@media (min-width:1300px) {
+@media (min-width:1360px) {
   .mnote.exam > summary { cursor:default; pointer-events:none; flex-direction:column; gap:2px; }
   .mnote.exam > summary::after { display:none; }
 }
@@ -1252,6 +1254,257 @@ main > .hero.daily { max-width:760px; }
 .stem > .abcd { list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:6px; }
 .stem > .abcd li { position:relative; padding-left:2.4em; }
 .stem > .abcd li::before { content:attr(data-l); position:absolute; left:0; font:600 13px/1.75 var(--sans); color:var(--tx3); }
+
+/* ==========================================================================
+   BEST OF BOTH (2026-11-19, after the blind A/B review)
+   >= 1200 px: a permanent sidebar (this module's chapters, then the course), the reading column, and a
+   notes column on the right (>= 1360 px); wide blocks extend into the notes column. Below 1200 px the
+   sidebar is the Contents drawer. The top bar keeps the breadcrumb and Next everywhere.
+   ========================================================================== */
+@media (min-width:1200px) {
+  .shell, body.rail-collapsed .shell { display:grid !important; grid-template-columns:272px minmax(0,1fr); grid-template-rows:auto 1fr; }
+  .topbar { grid-column:1 / -1; grid-row:1; }
+  .rail, body.rail-collapsed .rail { grid-column:1; grid-row:2; position:sticky !important; top:57px; height:calc(100vh - 57px) !important; width:auto !important; transform:none !important; visibility:visible !important; box-shadow:none !important; background:var(--bg) !important; border-right:1px solid var(--line); padding:16px 14px 28px; z-index:1; }
+  .rail-head { display:none; }
+  main { grid-column:2; grid-row:2; }
+  .scrim { display:none !important; }
+  body.drawer-open { overflow:auto; }
+  body.rail-off .shell { grid-template-columns:0 minmax(0,1fr); }
+  body.rail-off .rail { display:none !important; }
+  /* reading pages: the column sits centred in the space beside the sidebar */
+  body.reading main { align-items:flex-start; padding:56px 40px 140px max(48px, calc((100% - 680px) / 2)); }
+  body.reading main > * { max-width:680px; }
+  body.reading section.ch > .panel.try, body.reading section.ch > .example, body.reading section.ch > .table-wrap, body.reading section.ch > figure.fig, body.reading section.ch > .widget { margin-inline:0; }
+}
+@media (min-width:1360px) {
+  body.reading main { padding-left:max(48px, calc((100% - 978px) / 2)); }
+  body.reading section.ch > .panel.try, body.reading section.ch > .example, body.reading section.ch > .table-wrap, body.reading section.ch > figure.fig, body.reading section.ch > .widget { margin-left:0; margin-right:-298px; clear:right; }
+}
+/* sidebar contents */
+.finder { position:relative; }
+.finder input { width:100%; font:400 14px var(--sans); padding:9px 12px; border:1px solid var(--line2); border-radius:10px; background:var(--panel); color:var(--tx); }
+.finder input:focus { outline:none; border-color:var(--brand); box-shadow:0 0 0 3px var(--brand-soft); }
+.finder-res { list-style:none; margin:8px 0 0; padding:0; display:flex; flex-direction:column; gap:2px; }
+.finder-res a { display:grid; grid-template-columns:34px minmax(0,1fr); gap:2px 6px; padding:7px 8px; border-radius:8px; text-decoration:none; color:var(--tx); font-size:14px; line-height:1.3; }
+.finder-res a:hover, .finder-res a:focus { background:var(--hover); }
+.finder-res .fn { color:var(--tx3); font-size:12.5px; font-variant-numeric:tabular-nums; }
+.finder-res small { grid-column:2; color:var(--tx3); font-size:12px; }
+.finder-res .none { color:var(--tx3); font-size:13.5px; padding:6px 8px; }
+.rail-body.finding > :not(.finder) { display:none !important; }
+.toc .chs { margin-bottom:6px; }
+/* module page: title, then the route straight away; the exam pattern folds lower down */
+.hero:not(.hub):not(.about):not(.daily) h1 { font-size:clamp(34px,4.4vw,50px); max-width:20ch; }
+.hero:not(.hub):not(.about):not(.daily) .lede { font-size:18px; line-height:1.6; }
+.hero:not(.hub) .plan-head { margin-top:18px; }
+.mp { padding:22px 0; }
+.mp-t p { display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
+details.mod-exam { border:1px solid var(--line); border-radius:var(--r); background:var(--panel); margin-top:28px; }
+details.mod-exam > summary { list-style:none; cursor:pointer; display:flex; flex-direction:column; gap:2px; padding:16px 48px 16px 20px; position:relative; }
+details.mod-exam > summary::-webkit-details-marker { display:none; }
+details.mod-exam > summary::after { content:"+"; position:absolute; right:20px; top:50%; transform:translateY(-50%); font-size:22px; color:var(--tx3); }
+details.mod-exam[open] > summary::after { content:"−"; }
+details.mod-exam > summary b { font:500 19px/1.3 var(--serif); }
+details.mod-exam .mx-list { margin:0 20px 8px; }
+@media (max-width:900px) {
+  .hero:not(.hub):not(.about):not(.daily) .lede { display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden; cursor:pointer; }
+  .hero:not(.hub):not(.about):not(.daily) .lede.open { -webkit-line-clamp:unset; display:block; }
+  .hero:not(.hub):not(.about):not(.daily) .stack { font-size:14px; }
+}
+/* phone home: compact cards so every module is quickly in view */
+@media (max-width:700px) {
+  .mod-card { padding:16px !important; gap:8px !important; }
+  .mod-card .mc-blurb { display:none; }
+  .modplan { gap:10px !important; }
+}
+
+/* ==========================================================================
+   PALETTE: Cool paper, ink blue (chosen by the user 2026-11-19 from six options).
+   Between the warm editorial palette and the earlier cool K2 one. Ink blue = anything you act on;
+   coral = GATE / exam material; green/red = right/wrong. Small text passes WCAG AA (tx3 5.2:1, coral 4.9:1).
+   ========================================================================== */
+:root {
+  --bg:#F4F6F7; --bg2:#EAEEF0; --panel:#FFFFFF; --panel2:#F9FAFB; --hover:#EBEFF2;
+  --line:rgba(24,32,41,.10); --line2:rgba(24,32,41,.18);
+  --tx:#182029; --tx2:#46505C; --tx3:#5E6874;
+  --brand:#1F5F8B; --brand2:#A9532F; --brand-soft:rgba(31,95,139,.09); --brand2-soft:rgba(169,83,47,.09);
+  --var:#1F5F8B; --accent:#1F5F8B; --accent-soft:rgba(31,95,139,.10); --lab:#1F5F8B; --def:#1F5F8B; --def-bg:#F1F5F8;
+  --case:#A9532F; --world-bg:#F6F0EB; --world-line:#EBDCD0; --plot-bg:#FFFFFF;
+  --shadow:0 1px 1px rgba(24,32,41,.04),0 10px 30px -18px rgba(24,32,41,.18);
+  --shadow2:0 1px 2px rgba(24,32,41,.05),0 18px 40px -22px rgba(24,32,41,.26);
+}
+@media (prefers-color-scheme:dark) { :root:not([data-theme="light"]) {
+  --bg:#11151A; --bg2:#171C22; --panel:#1A2027; --panel2:#1F262E; --hover:#262E37;
+  --line:rgba(228,232,236,.09); --line2:rgba(228,232,236,.17);
+  --tx:#E4E8EC; --tx2:#B3BCC6; --tx3:#8A95A1;
+  --brand:#79AEDB; --brand2:#EE9068; --brand-soft:rgba(121,174,219,.13); --brand2-soft:rgba(238,144,104,.12);
+  --var:#79AEDB; --accent:#79AEDB; --accent-soft:rgba(121,174,219,.14); --lab:#79AEDB; --def:#79AEDB; --def-bg:#18212A;
+  --case:#EE9068; --world-bg:#221D19; --world-line:#3A2C22; --plot-bg:#171C22;
+} }
+:root[data-theme="dark"] {
+  --bg:#11151A; --bg2:#171C22; --panel:#1A2027; --panel2:#1F262E; --hover:#262E37;
+  --line:rgba(228,232,236,.09); --line2:rgba(228,232,236,.17);
+  --tx:#E4E8EC; --tx2:#B3BCC6; --tx3:#8A95A1;
+  --brand:#79AEDB; --brand2:#EE9068; --brand-soft:rgba(121,174,219,.13); --brand2-soft:rgba(238,144,104,.12);
+  --var:#79AEDB; --accent:#79AEDB; --accent-soft:rgba(121,174,219,.14); --lab:#79AEDB; --def:#79AEDB; --def-bg:#18212A;
+  --case:#EE9068; --world-bg:#221D19; --world-line:#3A2C22; --plot-bg:#171C22;
+}
+/* button text on the light-blue dark-mode accent */
+:root[data-theme="dark"] .cmd, :root[data-theme="dark"] .hero-cta .cta { color:#0D1620; }
+@media (prefers-color-scheme:dark) { :root:not([data-theme="light"]) .cmd, :root:not([data-theme="light"]) .hero-cta .cta { color:#0D1620; } }
+
+/* ==========================================================================
+   DESIGN v5 (2026-11-19, chosen by the owner after two blind reviews of 11 designs).
+   Bold Figtree headings, Source Serif reading text, capsule buttons, grouped answer lists,
+   a floating sidebar, a bottom-sheet menu on phones; notes ("Picture it", "In GATE DA") read
+   inline after the guess, never in a margin. Three parts: base look, inline notes, review fixes.
+   ========================================================================== */
+:root { --display:var(--ui); }
+:root { --r:16px; --ui:Figtree,system-ui,-apple-system,"Segoe UI",sans-serif; }
+
+/* headings: bold sans, tight (Apple); reading stays serif */
+h1, .ch-head h2, .part-divider h2, .hero h1, .hero.hub h1, .brand { font-family:var(--ui) !important; font-weight:700 !important; letter-spacing:-.028em !important; font-variation-settings:normal !important; }
+h2, h3, h4, .block-h, .quiz-head h3, .takeaways h3, .prose h3, section.ch > h3, .plan-head h2, .mod-exam h2 { font-family:var(--ui) !important; font-weight:700 !important; letter-spacing:-.018em !important; }
+.ch-head h2 { font-size:clamp(32px,4vw,42px) !important; line-height:1.1 !important; }
+.hero.hub h1 { font-size:clamp(46px,6vw,68px) !important; letter-spacing:-.035em !important; }
+.box > .label b, .mod-card .mc-top b, .mp-t b, .mx-ch b, .pager button b, .pager a b, details.mod-exam > summary b { font-family:var(--ui) !important; font-weight:650 !important; letter-spacing:-.012em !important; }
+.lead .lead-idea { font-family:var(--read) !important; }
+.ch-head .meta, .eyebrow { font:600 13px var(--ui) !important; letter-spacing:0 !important; text-transform:none !important; color:var(--tx3) !important; }
+
+/* top bar: translucent material (Apple) */
+.topbar { background:color-mix(in srgb,var(--bg) 72%,transparent) !important; backdrop-filter:saturate(1.8) blur(22px) !important; -webkit-backdrop-filter:saturate(1.8) blur(22px) !important; border-bottom:1px solid var(--line) !important; }
+.topbar .menu-btn, .tb-next { border-radius:99px !important; border:0 !important; background:color-mix(in srgb,var(--tx) 6%,transparent) !important; color:var(--tx) !important; }
+.tb-next { background:var(--brand-soft) !important; color:var(--brand) !important; font-weight:600 !important; }
+
+/* sidebar: floating inset panel (Apple) with a pill active item (Material) */
+@media (min-width:1200px) {
+  .rail, body.rail-collapsed .rail { margin:10px 0 10px 10px; height:calc(100vh - 77px) !important; top:67px !important; border:1px solid var(--line) !important; border-radius:18px; background:color-mix(in srgb,var(--panel) 80%,var(--bg)) !important; box-shadow:0 1px 2px rgba(0,0,0,.04),0 12px 32px -20px rgba(0,0,0,.18) !important; }
+  .shell { grid-template-columns:282px minmax(0,1fr) !important; }
+}
+.toc .chs { border-left:0 !important; margin-left:6px !important; padding-left:0 !important; }
+.toc .chs a { border-radius:99px !important; padding:7px 14px !important; }
+.toc .chs a.on { background:var(--brand-soft) !important; color:var(--brand) !important; box-shadow:none !important; font-weight:650 !important; }
+.toc .part > button { border-radius:12px !important; }
+.toc .part > button.active { background:transparent !important; box-shadow:none !important; }
+.modnav a { border-radius:99px !important; }
+.modnav a.on { background:var(--brand-soft) !important; color:var(--brand) !important; }
+.finder input { border-radius:10px !important; border:0 !important; background:color-mix(in srgb,var(--tx) 6%,transparent) !important; }
+
+/* buttons: capsules with Material press feedback */
+.cmd, .hero-cta .cta, .ans-row .cmd, .rv-grade .cmd, .dl-actions .cmd { border-radius:99px !important; background:var(--brand) !important; color:#fff !important; box-shadow:none !important; font:600 15px var(--ui) !important; transition:transform .12s ease, filter .15s !important; }
+.cmd:hover, .hero-cta .cta:hover { filter:brightness(1.08); }
+.cmd:active, .hero-cta .cta:active, .opt:active, .chip:active { transform:scale(.97) !important; }
+.hero-cta .alt, .ghost, .tk-test { border-radius:99px !important; border:0 !important; background:var(--brand-soft) !important; color:var(--brand) !important; font-weight:600 !important; }
+.hero-cta .cta small { color:rgba(255,255,255,.78) !important; }
+
+/* questions: grouped inset lists (Apple) with clear states (Material) */
+.q, .prob, .guess { background:var(--panel) !important; border:1px solid var(--line) !important; border-radius:20px !important; box-shadow:none !important; padding:20px 22px !important; }
+.guess { border-top:1px solid var(--line) !important; }
+.opts { gap:0 !important; border-radius:14px; overflow:hidden; background:var(--panel2); border:1px solid var(--line); }
+.opt { border:0 !important; border-radius:0 !important; background:transparent !important; box-shadow:none !important; border-bottom:1px solid var(--line) !important; padding:14px 48px 14px 52px !important; min-height:50px !important; }
+.opts .opt:last-child { border-bottom:0 !important; }
+.opt:hover { background:color-mix(in srgb,var(--brand) 6%,transparent) !important; }
+.opt::before { border:0 !important; background:transparent !important; color:var(--tx3) !important; font-weight:700 !important; }
+.opt.right { background:color-mix(in srgb,var(--ok) 12%,transparent) !important; }
+.opt.wrong { background:color-mix(in srgb,var(--bad) 10%,transparent) !important; }
+.opt.right::before { background:var(--ok) !important; color:#fff !important; border-radius:50% !important; }
+.opt.wrong::before { background:var(--bad) !important; color:#fff !important; border-radius:50% !important; }
+.chip { border-radius:99px !important; }
+.chip.on { background:var(--brand) !important; border-color:var(--brand) !important; }
+.ans-row input { border-radius:12px !important; border:1px solid var(--line2) !important; background:var(--panel2) !important; }
+.why, .pfb { border-radius:14px !important; border-left:0 !important; background:var(--panel2) !important; }
+
+/* blocks: calm grey containers, no heavy rules */
+.box, .box.def, .box.thm, .box.plain { border-left:0 !important; border-radius:16px !important; background:color-mix(in srgb,var(--tx) 3.5%,var(--panel)) !important; padding:18px 22px !important; }
+.box.trick { background:var(--brand2-soft) !important; }
+.example { border:1px solid var(--line) !important; border-radius:20px !important; padding:22px !important; background:var(--panel) !important; }
+.panel.try { border-radius:22px !important; }
+.takeaways { border-radius:22px !important; }
+.mnote { border-left:0 !important; background:var(--panel); border:1px solid var(--line); border-radius:14px; padding:12px 14px !important; }
+.mnote.exam { background:var(--brand2-soft); border-color:transparent; }
+
+/* home cards */
+.mod-card { border-radius:22px !important; border:1px solid var(--line) !important; box-shadow:none !important; }
+.mod-card .mn { border-radius:10px !important; background:var(--brand-soft) !important; color:var(--brand) !important; border:0 !important; font-family:var(--ui) !important; font-weight:700 !important; }
+.mod-card.current { border-color:var(--brand) !important; box-shadow:0 0 0 3px var(--brand-soft) !important; }
+.mc-st.cur { border-radius:99px; }
+
+/* phones: the contents become a bottom sheet (Apple) instead of a side drawer */
+@media (max-width:1199px) {
+  .rail, body.rail-collapsed .rail { top:auto !important; bottom:0 !important; left:0 !important; right:0 !important; width:auto !important; height:86vh !important; border-radius:22px 22px 0 0; transform:translateY(104%) !important; padding-top:28px !important; }
+  body.drawer-open .rail { transform:none !important; }
+  .rail::before { content:""; position:absolute; top:9px; left:50%; width:38px; height:5px; margin-left:-19px; border-radius:99px; background:var(--line2); }
+}
+
+/* ---- inline notes and a steady column ---- */
+/* one steady reading column beside the sidebar; every block keeps the column width */
+@media (min-width:1200px) {
+  body.reading main { padding-left:max(48px, calc((100% - 720px) / 2)) !important; padding-right:40px !important; }
+  body.reading main > * { max-width:720px !important; }
+  body.reading section.ch > .panel.try, body.reading section.ch > .example, body.reading section.ch > .table-wrap, body.reading section.ch > figure.fig, body.reading section.ch > .widget { margin-inline:0 !important; }
+}
+/* notes flow inline after the opening idea (the engine floats them on wide screens; flex order brings them back) */
+section.ch:not([hidden]) { display:flex !important; flex-direction:column; gap:28px; }
+section.ch > .ch-head { order:-2; }
+section.ch > .lead { order:-1; }
+section.ch > * + * { margin-top:0 !important; }
+.mnote { float:none !important; width:auto !important; margin:0 !important; padding:14px 18px !important; border-radius:14px !important; }
+.mnote .mn-k { font:600 14px var(--sans) !important; color:var(--brand) !important; margin-bottom:6px; letter-spacing:0 !important; text-transform:none !important; }
+.mnote.exam .mn-k { color:var(--brand2) !important; }
+.mnote p, .mn-body p { font-size:16.5px !important; line-height:1.55 !important; color:var(--tx2) !important; }
+.mnote.picture .mn-k::before { content:"\1F4A1"; margin-right:6px; }
+/* "In GATE DA" is one quiet line; the paragraph and past questions open on tap */
+.mnote.exam { padding:12px 18px !important; }
+.mnote.exam > summary { pointer-events:auto !important; cursor:pointer !important; flex-direction:row !important; align-items:baseline; gap:4px 10px !important; }
+.mnote.exam > summary .mn-k { margin:0 !important; }
+.mnote.exam > summary::after { display:inline !important; content:"Show past questions ▸" !important; margin-left:auto; font:500 13px var(--sans); color:var(--tx3); transform:none !important; }
+.mnote.exam[open] > summary::after { content:"Hide ▾" !important; }
+.mnote .mn-heat { font-size:15px !important; color:var(--tx2) !important; }
+@media (max-width:600px) { .mnote.exam > summary::after { content:"▸" !important; } .mnote.exam[open] > summary::after { content:"▾" !important; } }
+/* dark mode: filled accent buttons and pills get dark text (contrast about 8:1 on the light accent) */
+:root[data-theme="dark"] .cmd, :root[data-theme="dark"] .hero-cta .cta, :root[data-theme="dark"] .ans-row .cmd, :root[data-theme="dark"] .mc-st.cur, :root[data-theme="dark"] .rv-grade .cmd, :root[data-theme="dark"] .dl-actions .cmd { color:#0B1620 !important; }
+:root[data-theme="dark"] .hero-cta .cta small { color:rgba(11,22,32,.72) !important; }
+@media (prefers-color-scheme:dark) { :root:not([data-theme="light"]) .cmd, :root:not([data-theme="light"]) .hero-cta .cta, :root:not([data-theme="light"]) .ans-row .cmd, :root:not([data-theme="light"]) .mc-st.cur, :root:not([data-theme="light"]) .rv-grade .cmd, :root:not([data-theme="light"]) .dl-actions .cmd { color:#0B1620 !important; } :root:not([data-theme="light"]) .hero-cta .cta small { color:rgba(11,22,32,.72) !important; } }
+
+/* ---- review fixes ---- */
+/* 1. order: title, opening idea, the guess (a pre-test, before any hint), then the asides */
+section.ch > .ch-head { order:-3 !important; }
+section.ch > .lead { order:-2 !important; }
+section.ch > .guess { order:-1 !important; }
+.guess > .label::after { content:" · wrong guesses are fine and aren't scored"; font-weight:400; color:var(--tx3); }
+
+/* 2. asides are light inline notes (a rule and a label), not cards: one surface style for the page */
+.mnote, .mnote.picture, .mnote.exam { background:transparent !important; border:0 !important; border-left:3px solid var(--brand) !important; border-radius:0 !important; padding:2px 0 2px 18px !important; }
+.mnote.exam { border-left-color:var(--brand2) !important; }
+.mnote .mn-k { color:var(--brand) !important; }
+.mnote p, .mn-body p { color:var(--tx2) !important; }
+.mnote.exam > summary::after { color:var(--tx2) !important; font-weight:600 !important; }
+.mnote .mn-heat { color:var(--tx) !important; }
+
+/* 3. balanced desktop: a slightly wider column centred in the space beside the sidebar */
+@media (min-width:1200px) {
+  body.reading main { padding-left:max(40px, calc((100% - 760px) / 2)) !important; }
+  body.reading main > * { max-width:760px !important; }
+}
+/* 4. lighter sidebar: no repeated "2 chapters", quieter part-review rows, tighter rows */
+.toc .pt small { display:none !important; }
+.toc .chs a { padding-top:5px !important; padding-bottom:5px !important; }
+.toc .chs a[data-ch$="-review"] { font-size:12.5px !important; color:var(--tx3) !important; }
+.toc .part > button { padding-top:5px !important; padding-bottom:5px !important; }
+
+/* 5. Next is a solid primary button */
+.tb-next { background:var(--brand) !important; color:#fff !important; }
+:root[data-theme="dark"] .tb-next { color:#0B1620 !important; }
+@media (prefers-color-scheme:dark) { :root:not([data-theme="light"]) .tb-next { color:#0B1620 !important; } }
+
+/* 6. one reading face: question stems read in the same serif as the lesson; options and controls stay sans */
+.q-text, .prob .stem, .guess .q-text { font-family:var(--read) !important; font-size:18px !important; line-height:1.6 !important; }
+.prob .stem .pyq .label, .q-text .q-from { font-family:var(--sans) !important; }
+
+/* 7. home: progress you can actually see */
+.mod-card .bar, .mod-card .mc-prog .bar { height:8px !important; border-radius:99px !important; }
+.mod-card .mc-prog small { font-weight:600 !important; color:var(--tx2) !important; font-size:13px !important; }
+.home-streak { display:flex; align-items:center; gap:10px; margin-top:4px; font:500 14.5px var(--sans); color:var(--tx2); }
+.home-streak b { color:var(--brand2); font-weight:700; }
 
 /* site theme */
 
@@ -1969,7 +2222,7 @@ $$\begin{bmatrix}1&2\\3&4\end{bmatrix}\begin{bmatrix}5\\6\end{bmatrix} = \begin{
 <canvas id="confetti" hidden></canvas>
 
 <script>
-window.SITE = {"name": "GATE DA", "key": "gateda", "path": "gate-da", "domain": "courses.rahuldevsharma.com/gate-da", "author": "Rahul Dev Sharma", "tagline": "free GATE Data Science & AI preparation", "description": "A free, interactive course for the GATE DA (Data Science and Artificial Intelligence) exam. Explains every idea visually, includes maths refreshers, and works through real previous-year questions.", "certTitle": ["GATE DA", "Maths, Python, DSA & databases"], "certBody": ["answered every quiz and practice question correctly across", "GATE DA's refreshers, probability, statistics, linear algebra,", "calculus & optimization, Python & DSA, and databases modules."], "footer_html": "      <p><b>Acknowledgement.</b> Previous-year questions are quoted from the official GATE Data Science and Artificial Intelligence (DA) papers: 2024 (organised by IISc Bengaluru), 2025 (IIT Roorkee) and 2026 (IIT Guwahati), and from the 2024 DA sample paper; one LU question is quoted from GATE CS 2025 (set 2, IIT Roorkee). Each is cited by year and question number, and every answer is checked against the official answer keys. The syllabus followed is the GATE 2027 DA syllabus (IIT Madras).</p>\n      <p><b>Disclaimer.</b> An independent study resource. The Data Premier League, its teams and all their data are fictional. Not affiliated with, reviewed by or endorsed by GATE, IISc or any IIT. Solutions and explanations are the author's own; any mistakes are the author's too.</p>", "modules": [{"slug": "refreshers", "title": "Maths refreshers", "short": "Refreshers", "kind": "prereq", "blurb": "The maths toolkit, recapped: algebra, logs, sums, sets, derivatives, integrals and vectors. Everything the later modules lean on."}, {"slug": "probability", "title": "Probability", "short": "Probability", "kind": "", "blurb": "Counting, Bayes, random variables and the distributions GATE loves. The single biggest block of marks in the paper."}, {"slug": "statistics", "title": "Statistics", "short": "Statistics", "kind": "", "blurb": "Describing data, estimators, the Central Limit Theorem, confidence intervals and hypothesis tests (z, t and \u03c7\u00b2), built on the probability module."}, {"slug": "linear-algebra", "title": "Linear algebra", "short": "Linear algebra", "kind": "", "blurb": "Vectors, subspaces, rank, eigenvalues, projections and SVD, taught as pictures and exam shortcuts."}, {"slug": "calculus", "title": "Calculus & optimization", "short": "Calculus", "kind": "", "blurb": "Limits, continuity and differentiability, Taylor series, and finding maxima and minima: the single-variable calculus GATE DA tests, plus the optimisation ML relies on."}, {"slug": "python-dsa", "title": "Python & DSA", "short": "Python & DSA", "kind": "", "blurb": "The Python that GATE's code-tracing questions test, then complexity, searching and sorting, stacks, queues, hashing, trees and graph algorithms."}, {"slug": "dbms", "title": "Databases & warehousing", "short": "Databases", "kind": "", "blurb": "ER design, relational algebra, tuple calculus, SQL, functional dependencies and normal forms, B+ tree indexes, data transformation and OLAP cubes, all on the league's own tables."}], "manifest": {"refreshers": ["r-functions-p1", "r-functions-p2", "r-functions-p3", "r-functions-p4", "r-functions/0", "r-functions/1", "r-functions/2", "r-functions/3", "r-explog-p1", "r-explog-p2", "r-explog-p3", "r-explog-p4", "r-explog/0", "r-explog/1", "r-explog/2", "r-explog/3", "r1-review/0", "r1-review/1", "r1-review/2", "r1-review/3", "r-sums-p1", "r-sums-p2", "r-sums-p3", "r-sums-p4", "r-sums/0", "r-sums/1", "r-sums/2", "r-sums/3", "r-sets-p1", "r-sets-p2", "r-sets-p3", "r-sets-p4", "r-sets/0", "r-sets/1", "r-sets/2", "r-sets/3", "r2-review/0", "r2-review/1", "r2-review/2", "r2-review/3", "r-deriv-p1", "r-deriv-p2", "r-deriv-p3", "r-deriv-p4", "r-deriv/0", "r-deriv/1", "r-deriv/2", "r-deriv/3", "r-integ-p1", "r-integ-p2", "r-integ-p3", "r-integ-p4", "r-integ/0", "r-integ/1", "r-integ/2", "r-integ/3", "r-grad-p1", "r-grad-p2", "r-grad-p3", "r-grad-p4", "r-grad/0", "r-grad/1", "r-grad/2", "r3-review/0", "r3-review/1", "r3-review/2", "r3-review/3", "r-vectors-p1", "r-vectors-p2", "r-vectors-p3", "r-vectors-p4", "r-vectors/0", "r-vectors/1", "r-vectors/2", "r-matrices-p1", "r-matrices-p2", "r-matrices-p3", "r-matrices-p4", "r-matrices/0", "r-matrices/1", "r-matrices/2", "r4-review/0", "r4-review/1", "r4-review/2", "r4-review/3", "r4-review/4"], "probability": ["pr-counting-p1", "pr-counting-p2", "pr-counting-p3", "pr-counting-p4", "pr-counting/0", "pr-counting/1", "pr-counting/2", "pr-events-p1", "pr-events-p2", "pr-events-p3", "pr-events-p4", "pr-events/0", "pr-events/1", "pr-events/2", "pr-events/3", "pr1-review/0", "pr1-review/1", "pr1-review/2", "pr1-review/3", "pr-conditional-p1", "pr-conditional-p2", "pr-conditional-p3", "pr-conditional-p4", "pr-conditional/0", "pr-conditional/1", "pr-conditional/2", "pr-bayes-p1", "pr-bayes-p2", "pr-bayes-p3", "pr-bayes-p4", "pr-bayes/0", "pr-bayes/1", "pr-bayes/2", "pr2-review/0", "pr2-review/1", "pr2-review/2", "pr-rv-p1", "pr-rv-p2", "pr-rv-p3", "pr-rv-p4", "pr-rv/0", "pr-rv/1", "pr-rv/2", "pr-expect-p1", "pr-expect-p2", "pr-expect-p3", "pr-expect-p4", "pr-expect/0", "pr-expect/1", "pr-expect/2", "pr-expect/3", "pr3-review/0", "pr3-review/1", "pr3-review/2", "pr-discrete-p1", "pr-discrete-p2", "pr-discrete-p3", "pr-discrete-p4", "pr-discrete/0", "pr-discrete/1", "pr-discrete/2", "pr-continuous-p1", "pr-continuous-p2", "pr-continuous-p3", "pr-continuous-p4", "pr-continuous/0", "pr-continuous/1", "pr-continuous/2", "pr-continuous/3", "pr4-review/0", "pr4-review/1", "pr4-review/2", "pr-joint-p1", "pr-joint-p2", "pr-joint-p3", "pr-joint-p4", "pr-joint/0", "pr-joint/1", "pr-joint/2", "pr-condexp-p1", "pr-condexp-p2", "pr-condexp-p3", "pr-condexp/0", "pr-condexp/1", "pr-condexp/2", "pr5-review/0", "pr5-review/1", "pr5-review/2", "pr5-review/3", "pr5-review/4"], "statistics": ["st-descriptive-p1", "st-descriptive-p2", "st-descriptive-p3", "st-descriptive-p4", "st-descriptive/0", "st-descriptive/1", "st-descriptive/2", "st-correlation-p1", "st-correlation-p2", "st-correlation-p3", "st-correlation-p4", "st-correlation/0", "st-correlation/1", "st-correlation/2", "st1-review/0", "st1-review/1", "st1-review/2", "st-estimators-p1", "st-estimators-p2", "st-estimators-p3", "st-estimators-p4", "st-estimators/0", "st-estimators/1", "st-estimators/2", "st-clt-p1", "st-clt-p2", "st-clt-p3", "st-clt-p4", "st-clt/0", "st-clt/1", "st-clt/2", "st2-review/0", "st2-review/1", "st2-review/2", "st-tchi-p1", "st-tchi-p2", "st-tchi-p3", "st-tchi-p4", "st-tchi/0", "st-tchi/1", "st-tchi/2", "st-ci-p1", "st-ci-p2", "st-ci-p3", "st-ci-p4", "st-ci/0", "st-ci/1", "st-ci/2", "st3-review/0", "st3-review/1", "st3-review/2", "st-tests-p1", "st-tests-p2", "st-tests-p3", "st-tests-p4", "st-tests/0", "st-tests/1", "st-tests/2", "st-ttest-chi-p1", "st-ttest-chi-p2", "st-ttest-chi-p3", "st-ttest-chi-p4", "st-ttest-chi/0", "st-ttest-chi/1", "st-ttest-chi/2", "st4-review/0", "st4-review/1", "st4-review/2", "st4-review/3", "st4-review/4"], "linear-algebra": ["la-spaces-p1", "la-spaces-p2", "la-spaces-p3", "la-spaces/0", "la-spaces/1", "la-spaces/2", "la-independence-p1", "la-independence-p2", "la-independence-p3", "la-independence-p4", "la-independence/0", "la-independence/1", "la-independence/2", "la1-review/0", "la1-review/1", "la1-review/2", "la-systems-p1", "la-systems-p2", "la-systems-p3", "la-systems-p4", "la-systems/0", "la-systems/1", "la-systems/2", "la-rank-p1", "la-rank-p2", "la-rank-p3", "la-rank-p4", "la-rank/0", "la-rank/1", "la-rank/2", "la-det-p1", "la-det-p2", "la-det-p3", "la-det-p4", "la-det/0", "la-det/1", "la-det/2", "la2-review/0", "la2-review/1", "la2-review/2", "la-eigen-p1", "la-eigen-p2", "la-eigen-p3", "la-eigen-p4", "la-eigen-p5", "la-eigen-p6", "la-eigen/0", "la-eigen/1", "la-eigen/2", "la-special-p1", "la-special-p2", "la-special-p3", "la-special-p4", "la-special/0", "la-special/1", "la-special/2", "la-quad-p1", "la-quad-p2", "la-quad-p3", "la-quad-p4", "la-quad/0", "la-quad/1", "la-quad/2", "la3-review/0", "la3-review/1", "la3-review/2", "la-lu-p1", "la-lu-p2", "la-lu-p3", "la-lu-p4", "la-lu/0", "la-lu/1", "la-lu/2", "la-svd-p1", "la-svd-p2", "la-svd-p3", "la-svd-p4", "la-svd/0", "la-svd/1", "la-svd/2", "la4-review/0", "la4-review/1", "la4-review/2", "la4-review/3", "la4-review/4"], "calculus": ["ca-limits-p1", "ca-limits-p2", "ca-limits-p3", "ca-limits-p4", "ca-limits/0", "ca-limits/1", "ca-limits/2", "ca-continuity-p1", "ca-continuity-p2", "ca-continuity-p3", "ca-continuity-p4", "ca-continuity/0", "ca-continuity/1", "ca-continuity/2", "ca1-review/0", "ca1-review/1", "ca1-review/2", "ca-taylor-p1", "ca-taylor-p2", "ca-taylor-p3", "ca-taylor-p4", "ca-taylor/0", "ca-taylor/1", "ca-taylor/2", "ca-extrema-p1", "ca-extrema-p2", "ca-extrema-p3", "ca-extrema-p4", "ca-extrema/0", "ca-extrema/1", "ca-extrema/2", "ca2-review/0", "ca2-review/1", "ca2-review/2", "ca-optim-p1", "ca-optim-p2", "ca-optim-p3", "ca-optim-p4", "ca-optim/0", "ca-optim/1", "ca-optim/2", "ca-convex-p1", "ca-convex-p2", "ca-convex-p3", "ca-convex/0", "ca-convex/1", "ca-convex/2", "ca3-review/0", "ca3-review/1", "ca3-review/2", "ca3-review/3", "ca3-review/4"], "python-dsa": ["py-basics-p1", "py-basics-p2", "py-basics-p3", "py-basics-p4", "py-basics/0", "py-basics/1", "py-basics/2", "py-functions-p1", "py-functions-p2", "py-functions-p3", "py-functions-p4", "py-functions/0", "py-functions/1", "py-functions/2", "py1-review/0", "py1-review/1", "py1-review/2", "ds-complexity-p1", "ds-complexity-p2", "ds-complexity-p3", "ds-complexity-p4", "ds-complexity/0", "ds-complexity/1", "ds-complexity/2", "ds-sorting-p1", "ds-sorting-p2", "ds-sorting-p3", "ds-sorting-p4", "ds-sorting/0", "ds-sorting/1", "ds-sorting/2", "ds-dc-p1", "ds-dc-p2", "ds-dc-p3", "ds-dc-p4", "ds-dc/0", "ds-dc/1", "ds-dc/2", "py2-review/0", "py2-review/1", "py2-review/2", "ds-linear-p1", "ds-linear-p2", "ds-linear-p3", "ds-linear-p4", "ds-linear/0", "ds-linear/1", "ds-linear/2", "ds-hashing-p1", "ds-hashing-p2", "ds-hashing-p3", "ds-hashing-p4", "ds-hashing/0", "ds-hashing/1", "ds-hashing/2", "ds-trees-p1", "ds-trees-p2", "ds-trees-p3", "ds-trees-p4", "ds-trees/0", "ds-trees/1", "ds-trees/2", "py3-review/0", "py3-review/1", "py3-review/2", "ds-graphs-p1", "ds-graphs-p2", "ds-graphs-p3", "ds-graphs-p4", "ds-graphs/0", "ds-graphs/1", "ds-graphs/2", "ds-shortest-p1", "ds-shortest-p2", "ds-shortest-p3", "ds-shortest-p4", "ds-shortest/0", "ds-shortest/1", "ds-shortest/2", "py4-review/0", "py4-review/1", "py4-review/2", "py4-review/3", "py4-review/4"], "dbms": ["db-relational-p1", "db-relational-p2", "db-relational-p3", "db-relational-p4", "db-relational/0", "db-relational/1", "db-relational/2", "db-er-p1", "db-er-p2", "db-er-p3", "db-er-p4", "db-er/0", "db-er/1", "db-er/2", "db1-review/0", "db1-review/1", "db1-review/2", "db1-review/3", "db-algebra-p1", "db-algebra-p2", "db-algebra-p3", "db-algebra-p4", "db-algebra-p5", "db-algebra/0", "db-algebra/1", "db-algebra/2", "db-trc-p1", "db-trc-p2", "db-trc-p3", "db-trc-p4", "db2-review/0", "db2-review/1", "db2-review/2", "db2-review/3", "db-sql-p1", "db-sql-p2", "db-sql-p3", "db-sql-p4", "db-sql/0", "db-sql/1", "db-sql/2", "db-subq-p1", "db-subq-p2", "db-subq-p3", "db-subq-p4", "db-subq/0", "db-subq/1", "db-subq/2", "db3-review/0", "db3-review/1", "db3-review/2", "db3-review/3", "db-fd-p1", "db-fd-p2", "db-fd-p3", "db-fd-p4", "db-fd/0", "db-fd/1", "db-fd/2", "db-nf-p1", "db-nf-p2", "db-nf-p3", "db-nf-p4", "db-nf/0", "db-nf/1", "db-nf/2", "db4-review/0", "db4-review/1", "db4-review/2", "db4-review/3", "db-index-p1", "db-index-p2", "db-index-p3", "db-index-p4", "db-index/0", "db-index/1", "db-index/2", "db-transform-p1", "db-transform-p2", "db-transform-p3", "db-transform-p4", "db-transform/0", "db-transform/1", "db-transform/2", "db-olap-p1", "db-olap-p2", "db-olap-p3", "db-olap-p4", "db-olap/0", "db-olap/1", "db-olap/2", "db5-review/0", "db5-review/1", "db5-review/2", "db5-review/3"]}, "modinfo": {"refreshers": {"parts": 4, "chs": 9, "min": 405}, "probability": {"parts": 5, "chs": 10, "min": 525}, "statistics": {"parts": 4, "chs": 8, "min": 395}, "linear-algebra": {"parts": 4, "chs": 10, "min": 490}, "calculus": {"parts": 3, "chs": 6, "min": 300}, "python-dsa": {"parts": 4, "chs": 10, "min": 500}, "dbms": {"parts": 5, "chs": 11, "min": 515}}, "module": "refreshers", "root": "../", "page": "module"};
+window.SITE = {"name": "GATE DA", "key": "gateda", "path": "gate-da", "domain": "courses.rahuldevsharma.com/gate-da", "author": "Rahul Dev Sharma", "tagline": "free GATE Data Science & AI preparation", "description": "A free, interactive course for the GATE DA (Data Science and Artificial Intelligence) exam. Explains every idea visually, includes maths refreshers, and works through real previous-year questions.", "certTitle": ["GATE DA", "Maths, Python, DSA & databases"], "certBody": ["answered every quiz and practice question correctly across", "GATE DA's refreshers, probability, statistics, linear algebra,", "calculus & optimization, Python & DSA, and databases modules."], "footer_html": "      <p><b>Acknowledgement.</b> Previous-year questions are quoted from the official GATE Data Science and Artificial Intelligence (DA) papers: 2024 (organised by IISc Bengaluru), 2025 (IIT Roorkee) and 2026 (IIT Guwahati), and from the 2024 DA sample paper; one LU question is quoted from GATE CS 2025 (set 2, IIT Roorkee). Each is cited by year and question number, and every answer is checked against the official answer keys. The syllabus followed is the GATE 2027 DA syllabus (IIT Madras).</p>\n      <p><b>Disclaimer.</b> An independent study resource. The Data Premier League, its teams and all their data are fictional. Not affiliated with, reviewed by or endorsed by GATE, IISc or any IIT. Solutions and explanations are the author's own; any mistakes are the author's too.</p>", "modules": [{"slug": "refreshers", "title": "Maths refreshers", "short": "Refreshers", "kind": "prereq", "blurb": "The maths toolkit, recapped: algebra, logs, sums, sets, derivatives, integrals and vectors. Everything the later modules lean on."}, {"slug": "probability", "title": "Probability", "short": "Probability", "kind": "", "blurb": "Counting, Bayes, random variables and the distributions GATE loves. The single biggest block of marks in the paper."}, {"slug": "statistics", "title": "Statistics", "short": "Statistics", "kind": "", "blurb": "Describing data, estimators, the Central Limit Theorem, confidence intervals and hypothesis tests (z, t and \u03c7\u00b2), built on the probability module."}, {"slug": "linear-algebra", "title": "Linear algebra", "short": "Linear algebra", "kind": "", "blurb": "Vectors, subspaces, rank, eigenvalues, projections and SVD, taught as pictures and exam shortcuts."}, {"slug": "calculus", "title": "Calculus & optimization", "short": "Calculus", "kind": "", "blurb": "Limits, continuity and differentiability, Taylor series, and finding maxima and minima: the single-variable calculus GATE DA tests, plus the optimisation ML relies on."}, {"slug": "python-dsa", "title": "Python & DSA", "short": "Python & DSA", "kind": "", "blurb": "The Python that GATE's code-tracing questions test, then complexity, searching and sorting, stacks, queues, hashing, trees and graph algorithms."}, {"slug": "dbms", "title": "Databases & warehousing", "short": "Databases", "kind": "", "blurb": "ER design, relational algebra, tuple calculus, SQL, functional dependencies and normal forms, B+ tree indexes, data transformation and OLAP cubes, all on the league's own tables."}], "manifest": {"refreshers": ["r-functions-p1", "r-functions-p2", "r-functions-p3", "r-functions-p4", "r-functions/0", "r-functions/1", "r-functions/2", "r-functions/3", "r-explog-p1", "r-explog-p2", "r-explog-p3", "r-explog-p4", "r-explog/0", "r-explog/1", "r-explog/2", "r-explog/3", "r1-review/0", "r1-review/1", "r1-review/2", "r1-review/3", "r-sums-p1", "r-sums-p2", "r-sums-p3", "r-sums-p4", "r-sums/0", "r-sums/1", "r-sums/2", "r-sums/3", "r-sets-p1", "r-sets-p2", "r-sets-p3", "r-sets-p4", "r-sets/0", "r-sets/1", "r-sets/2", "r-sets/3", "r2-review/0", "r2-review/1", "r2-review/2", "r2-review/3", "r-deriv-p1", "r-deriv-p2", "r-deriv-p3", "r-deriv-p4", "r-deriv/0", "r-deriv/1", "r-deriv/2", "r-deriv/3", "r-integ-p1", "r-integ-p2", "r-integ-p3", "r-integ-p4", "r-integ/0", "r-integ/1", "r-integ/2", "r-integ/3", "r-grad-p1", "r-grad-p2", "r-grad-p3", "r-grad-p4", "r-grad/0", "r-grad/1", "r-grad/2", "r3-review/0", "r3-review/1", "r3-review/2", "r3-review/3", "r-vectors-p1", "r-vectors-p2", "r-vectors-p3", "r-vectors-p4", "r-vectors/0", "r-vectors/1", "r-vectors/2", "r-matrices-p1", "r-matrices-p2", "r-matrices-p3", "r-matrices-p4", "r-matrices/0", "r-matrices/1", "r-matrices/2", "r4-review/0", "r4-review/1", "r4-review/2", "r4-review/3", "r4-review/4"], "probability": ["pr-counting-p1", "pr-counting-p2", "pr-counting-p3", "pr-counting-p4", "pr-counting/0", "pr-counting/1", "pr-counting/2", "pr-events-p1", "pr-events-p2", "pr-events-p3", "pr-events-p4", "pr-events/0", "pr-events/1", "pr-events/2", "pr-events/3", "pr1-review/0", "pr1-review/1", "pr1-review/2", "pr1-review/3", "pr-conditional-p1", "pr-conditional-p2", "pr-conditional-p3", "pr-conditional-p4", "pr-conditional/0", "pr-conditional/1", "pr-conditional/2", "pr-bayes-p1", "pr-bayes-p2", "pr-bayes-p3", "pr-bayes-p4", "pr-bayes/0", "pr-bayes/1", "pr-bayes/2", "pr2-review/0", "pr2-review/1", "pr2-review/2", "pr-rv-p1", "pr-rv-p2", "pr-rv-p3", "pr-rv-p4", "pr-rv/0", "pr-rv/1", "pr-rv/2", "pr-expect-p1", "pr-expect-p2", "pr-expect-p3", "pr-expect-p4", "pr-expect/0", "pr-expect/1", "pr-expect/2", "pr-expect/3", "pr3-review/0", "pr3-review/1", "pr3-review/2", "pr-discrete-p1", "pr-discrete-p2", "pr-discrete-p3", "pr-discrete-p4", "pr-discrete/0", "pr-discrete/1", "pr-discrete/2", "pr-continuous-p1", "pr-continuous-p2", "pr-continuous-p3", "pr-continuous-p4", "pr-continuous/0", "pr-continuous/1", "pr-continuous/2", "pr-continuous/3", "pr4-review/0", "pr4-review/1", "pr4-review/2", "pr-joint-p1", "pr-joint-p2", "pr-joint-p3", "pr-joint-p4", "pr-joint/0", "pr-joint/1", "pr-joint/2", "pr-condexp-p1", "pr-condexp-p2", "pr-condexp-p3", "pr-condexp/0", "pr-condexp/1", "pr-condexp/2", "pr5-review/0", "pr5-review/1", "pr5-review/2", "pr5-review/3", "pr5-review/4"], "statistics": ["st-descriptive-p1", "st-descriptive-p2", "st-descriptive-p3", "st-descriptive-p4", "st-descriptive/0", "st-descriptive/1", "st-descriptive/2", "st-correlation-p1", "st-correlation-p2", "st-correlation-p3", "st-correlation-p4", "st-correlation/0", "st-correlation/1", "st-correlation/2", "st1-review/0", "st1-review/1", "st1-review/2", "st-estimators-p1", "st-estimators-p2", "st-estimators-p3", "st-estimators-p4", "st-estimators/0", "st-estimators/1", "st-estimators/2", "st-clt-p1", "st-clt-p2", "st-clt-p3", "st-clt-p4", "st-clt/0", "st-clt/1", "st-clt/2", "st2-review/0", "st2-review/1", "st2-review/2", "st-tchi-p1", "st-tchi-p2", "st-tchi-p3", "st-tchi-p4", "st-tchi/0", "st-tchi/1", "st-tchi/2", "st-ci-p1", "st-ci-p2", "st-ci-p3", "st-ci-p4", "st-ci/0", "st-ci/1", "st-ci/2", "st3-review/0", "st3-review/1", "st3-review/2", "st-tests-p1", "st-tests-p2", "st-tests-p3", "st-tests-p4", "st-tests/0", "st-tests/1", "st-tests/2", "st-ttest-chi-p1", "st-ttest-chi-p2", "st-ttest-chi-p3", "st-ttest-chi-p4", "st-ttest-chi/0", "st-ttest-chi/1", "st-ttest-chi/2", "st4-review/0", "st4-review/1", "st4-review/2", "st4-review/3", "st4-review/4"], "linear-algebra": ["la-spaces-p1", "la-spaces-p2", "la-spaces-p3", "la-spaces/0", "la-spaces/1", "la-spaces/2", "la-independence-p1", "la-independence-p2", "la-independence-p3", "la-independence-p4", "la-independence/0", "la-independence/1", "la-independence/2", "la1-review/0", "la1-review/1", "la1-review/2", "la-systems-p1", "la-systems-p2", "la-systems-p3", "la-systems-p4", "la-systems/0", "la-systems/1", "la-systems/2", "la-rank-p1", "la-rank-p2", "la-rank-p3", "la-rank-p4", "la-rank/0", "la-rank/1", "la-rank/2", "la-det-p1", "la-det-p2", "la-det-p3", "la-det-p4", "la-det/0", "la-det/1", "la-det/2", "la2-review/0", "la2-review/1", "la2-review/2", "la-eigen-p1", "la-eigen-p2", "la-eigen-p3", "la-eigen-p4", "la-eigen-p5", "la-eigen-p6", "la-eigen/0", "la-eigen/1", "la-eigen/2", "la-special-p1", "la-special-p2", "la-special-p3", "la-special-p4", "la-special/0", "la-special/1", "la-special/2", "la-quad-p1", "la-quad-p2", "la-quad-p3", "la-quad-p4", "la-quad/0", "la-quad/1", "la-quad/2", "la3-review/0", "la3-review/1", "la3-review/2", "la-lu-p1", "la-lu-p2", "la-lu-p3", "la-lu-p4", "la-lu/0", "la-lu/1", "la-lu/2", "la-svd-p1", "la-svd-p2", "la-svd-p3", "la-svd-p4", "la-svd/0", "la-svd/1", "la-svd/2", "la4-review/0", "la4-review/1", "la4-review/2", "la4-review/3", "la4-review/4"], "calculus": ["ca-limits-p1", "ca-limits-p2", "ca-limits-p3", "ca-limits-p4", "ca-limits/0", "ca-limits/1", "ca-limits/2", "ca-continuity-p1", "ca-continuity-p2", "ca-continuity-p3", "ca-continuity-p4", "ca-continuity/0", "ca-continuity/1", "ca-continuity/2", "ca1-review/0", "ca1-review/1", "ca1-review/2", "ca-taylor-p1", "ca-taylor-p2", "ca-taylor-p3", "ca-taylor-p4", "ca-taylor/0", "ca-taylor/1", "ca-taylor/2", "ca-extrema-p1", "ca-extrema-p2", "ca-extrema-p3", "ca-extrema-p4", "ca-extrema/0", "ca-extrema/1", "ca-extrema/2", "ca2-review/0", "ca2-review/1", "ca2-review/2", "ca-optim-p1", "ca-optim-p2", "ca-optim-p3", "ca-optim-p4", "ca-optim/0", "ca-optim/1", "ca-optim/2", "ca-convex-p1", "ca-convex-p2", "ca-convex-p3", "ca-convex/0", "ca-convex/1", "ca-convex/2", "ca3-review/0", "ca3-review/1", "ca3-review/2", "ca3-review/3", "ca3-review/4"], "python-dsa": ["py-basics-p1", "py-basics-p2", "py-basics-p3", "py-basics-p4", "py-basics/0", "py-basics/1", "py-basics/2", "py-functions-p1", "py-functions-p2", "py-functions-p3", "py-functions-p4", "py-functions/0", "py-functions/1", "py-functions/2", "py1-review/0", "py1-review/1", "py1-review/2", "ds-complexity-p1", "ds-complexity-p2", "ds-complexity-p3", "ds-complexity-p4", "ds-complexity/0", "ds-complexity/1", "ds-complexity/2", "ds-sorting-p1", "ds-sorting-p2", "ds-sorting-p3", "ds-sorting-p4", "ds-sorting/0", "ds-sorting/1", "ds-sorting/2", "ds-dc-p1", "ds-dc-p2", "ds-dc-p3", "ds-dc-p4", "ds-dc/0", "ds-dc/1", "ds-dc/2", "py2-review/0", "py2-review/1", "py2-review/2", "ds-linear-p1", "ds-linear-p2", "ds-linear-p3", "ds-linear-p4", "ds-linear/0", "ds-linear/1", "ds-linear/2", "ds-hashing-p1", "ds-hashing-p2", "ds-hashing-p3", "ds-hashing-p4", "ds-hashing/0", "ds-hashing/1", "ds-hashing/2", "ds-trees-p1", "ds-trees-p2", "ds-trees-p3", "ds-trees-p4", "ds-trees/0", "ds-trees/1", "ds-trees/2", "py3-review/0", "py3-review/1", "py3-review/2", "ds-graphs-p1", "ds-graphs-p2", "ds-graphs-p3", "ds-graphs-p4", "ds-graphs/0", "ds-graphs/1", "ds-graphs/2", "ds-shortest-p1", "ds-shortest-p2", "ds-shortest-p3", "ds-shortest-p4", "ds-shortest/0", "ds-shortest/1", "ds-shortest/2", "py4-review/0", "py4-review/1", "py4-review/2", "py4-review/3", "py4-review/4"], "dbms": ["db-relational-p1", "db-relational-p2", "db-relational-p3", "db-relational-p4", "db-relational/0", "db-relational/1", "db-relational/2", "db-er-p1", "db-er-p2", "db-er-p3", "db-er-p4", "db-er/0", "db-er/1", "db-er/2", "db1-review/0", "db1-review/1", "db1-review/2", "db1-review/3", "db-algebra-p1", "db-algebra-p2", "db-algebra-p3", "db-algebra-p4", "db-algebra-p5", "db-algebra/0", "db-algebra/1", "db-algebra/2", "db-trc-p1", "db-trc-p2", "db-trc-p3", "db-trc-p4", "db2-review/0", "db2-review/1", "db2-review/2", "db2-review/3", "db-sql-p1", "db-sql-p2", "db-sql-p3", "db-sql-p4", "db-sql/0", "db-sql/1", "db-sql/2", "db-subq-p1", "db-subq-p2", "db-subq-p3", "db-subq-p4", "db-subq/0", "db-subq/1", "db-subq/2", "db3-review/0", "db3-review/1", "db3-review/2", "db3-review/3", "db-fd-p1", "db-fd-p2", "db-fd-p3", "db-fd-p4", "db-fd/0", "db-fd/1", "db-fd/2", "db-nf-p1", "db-nf-p2", "db-nf-p3", "db-nf-p4", "db-nf/0", "db-nf/1", "db-nf/2", "db4-review/0", "db4-review/1", "db4-review/2", "db4-review/3", "db-index-p1", "db-index-p2", "db-index-p3", "db-index-p4", "db-index/0", "db-index/1", "db-index/2", "db-transform-p1", "db-transform-p2", "db-transform-p3", "db-transform-p4", "db-transform/0", "db-transform/1", "db-transform/2", "db-olap-p1", "db-olap-p2", "db-olap-p3", "db-olap-p4", "db-olap/0", "db-olap/1", "db-olap/2", "db5-review/0", "db5-review/1", "db5-review/2", "db5-review/3"]}, "modinfo": {"refreshers": {"parts": 4, "chs": 9, "min": 405}, "probability": {"parts": 5, "chs": 10, "min": 525}, "statistics": {"parts": 4, "chs": 8, "min": 395}, "linear-algebra": {"parts": 4, "chs": 10, "min": 490}, "calculus": {"parts": 3, "chs": 6, "min": 300}, "python-dsa": {"parts": 4, "chs": 10, "min": 500}, "dbms": {"parts": 5, "chs": 11, "min": 515}}, "chapters": [{"m": "refreshers", "id": "r-functions", "n": "1.1", "t": "Functions and their graphs"}, {"m": "refreshers", "id": "r-explog", "n": "1.2", "t": "Exponentials and logarithms"}, {"m": "refreshers", "id": "r-sums", "n": "2.1", "t": "Sums and series"}, {"m": "refreshers", "id": "r-sets", "n": "2.2", "t": "Sets and Venn diagrams"}, {"m": "refreshers", "id": "r-deriv", "n": "3.1", "t": "Derivatives"}, {"m": "refreshers", "id": "r-integ", "n": "3.2", "t": "Integrals as area"}, {"m": "refreshers", "id": "r-grad", "n": "3.3", "t": "Partial derivatives and gradients"}, {"m": "refreshers", "id": "r-vectors", "n": "4.1", "t": "Vectors and the dot product"}, {"m": "refreshers", "id": "r-matrices", "n": "4.2", "t": "Matrices and multiplication"}, {"m": "probability", "id": "pr-counting", "n": "1.1", "t": "Counting"}, {"m": "probability", "id": "pr-events", "n": "1.2", "t": "Events and axioms"}, {"m": "probability", "id": "pr-conditional", "n": "2.1", "t": "Conditional probability"}, {"m": "probability", "id": "pr-bayes", "n": "2.2", "t": "Bayes' theorem"}, {"m": "probability", "id": "pr-rv", "n": "3.1", "t": "PMF, PDF and CDF"}, {"m": "probability", "id": "pr-expect", "n": "3.2", "t": "Expectation, variance, covariance"}, {"m": "probability", "id": "pr-discrete", "n": "4.1", "t": "Bernoulli, binomial, Poisson"}, {"m": "probability", "id": "pr-continuous", "n": "4.2", "t": "Uniform, exponential, normal"}, {"m": "probability", "id": "pr-joint", "n": "5.1", "t": "Joint and marginal distributions"}, {"m": "probability", "id": "pr-condexp", "n": "5.2", "t": "Conditional expectation"}, {"m": "statistics", "id": "st-descriptive", "n": "1.1", "t": "Centre, spread and z-scores"}, {"m": "statistics", "id": "st-correlation", "n": "1.2", "t": "Covariance and correlation"}, {"m": "statistics", "id": "st-estimators", "n": "2.1", "t": "Estimators and bias"}, {"m": "statistics", "id": "st-clt", "n": "2.2", "t": "The Central Limit Theorem"}, {"m": "statistics", "id": "st-tchi", "n": "3.1", "t": "The \u03c7\u00b2 and t distributions"}, {"m": "statistics", "id": "st-ci", "n": "3.2", "t": "Confidence intervals"}, {"m": "statistics", "id": "st-tests", "n": "4.1", "t": "Tests, p-values and errors"}, {"m": "statistics", "id": "st-ttest-chi", "n": "4.2", "t": "t-tests and \u03c7\u00b2 tests"}, {"m": "linear-algebra", "id": "la-spaces", "n": "1.1", "t": "Span and subspaces"}, {"m": "linear-algebra", "id": "la-independence", "n": "1.2", "t": "Independence, basis, dimension"}, {"m": "linear-algebra", "id": "la-systems", "n": "2.1", "t": "Gaussian elimination"}, {"m": "linear-algebra", "id": "la-rank", "n": "2.2", "t": "Rank, nullity and solutions"}, {"m": "linear-algebra", "id": "la-det", "n": "2.3", "t": "Determinants"}, {"m": "linear-algebra", "id": "la-eigen", "n": "3.1", "t": "Eigenvalues and eigenvectors"}, {"m": "linear-algebra", "id": "la-special", "n": "3.2", "t": "Symmetric, orthogonal, projection"}, {"m": "linear-algebra", "id": "la-quad", "n": "3.3", "t": "Quadratic forms"}, {"m": "linear-algebra", "id": "la-lu", "n": "4.1", "t": "LU and block matrices"}, {"m": "linear-algebra", "id": "la-svd", "n": "4.2", "t": "Singular value decomposition"}, {"m": "calculus", "id": "ca-limits", "n": "1.1", "t": "Limits"}, {"m": "calculus", "id": "ca-continuity", "n": "1.2", "t": "Continuity and differentiability"}, {"m": "calculus", "id": "ca-taylor", "n": "2.1", "t": "Taylor series"}, {"m": "calculus", "id": "ca-extrema", "n": "2.2", "t": "Maxima and minima"}, {"m": "calculus", "id": "ca-optim", "n": "3.1", "t": "Optimization problems"}, {"m": "calculus", "id": "ca-convex", "n": "3.2", "t": "Convexity"}, {"m": "python-dsa", "id": "py-basics", "n": "1.1", "t": "Values, lists, sets and loops"}, {"m": "python-dsa", "id": "py-functions", "n": "1.2", "t": "Functions, scope and recursion"}, {"m": "python-dsa", "id": "ds-complexity", "n": "2.1", "t": "Complexity and binary search"}, {"m": "python-dsa", "id": "ds-sorting", "n": "2.2", "t": "Bubble, selection, insertion"}, {"m": "python-dsa", "id": "ds-dc", "n": "2.3", "t": "Merge sort and quicksort"}, {"m": "python-dsa", "id": "ds-linear", "n": "3.1", "t": "Stacks, queues and linked lists"}, {"m": "python-dsa", "id": "ds-hashing", "n": "3.2", "t": "Hash tables"}, {"m": "python-dsa", "id": "ds-trees", "n": "3.3", "t": "Binary trees and traversals"}, {"m": "python-dsa", "id": "ds-graphs", "n": "4.1", "t": "BFS, DFS and topological sort"}, {"m": "python-dsa", "id": "ds-shortest", "n": "4.2", "t": "Shortest paths"}, {"m": "dbms", "id": "db-relational", "n": "1.1", "t": "Relations, keys and constraints"}, {"m": "dbms", "id": "db-er", "n": "1.2", "t": "From ER diagrams to tables"}, {"m": "dbms", "id": "db-algebra", "n": "2.1", "t": "Relational algebra"}, {"m": "dbms", "id": "db-trc", "n": "2.2", "t": "Tuple relational calculus"}, {"m": "dbms", "id": "db-sql", "n": "3.1", "t": "SELECT, joins and GROUP BY"}, {"m": "dbms", "id": "db-subq", "n": "3.2", "t": "Nested and correlated subqueries"}, {"m": "dbms", "id": "db-fd", "n": "4.1", "t": "Functional dependencies and keys"}, {"m": "dbms", "id": "db-nf", "n": "4.2", "t": "Normal forms and decomposition"}, {"m": "dbms", "id": "db-index", "n": "5.1", "t": "File organisation and B+ trees"}, {"m": "dbms", "id": "db-transform", "n": "5.2", "t": "Data transformation"}, {"m": "dbms", "id": "db-olap", "n": "5.3", "t": "Warehouses, cubes and OLAP"}], "module": "refreshers", "root": "../", "page": "module"};
 /* ---- expr.js ---- */
 /* Safe expression parser: no eval. Grammar (precedence low → high):
    sum := prod (('+'|'-') prod)* ; prod := unary (('*'|'/'| implicit) unary)* ; unary := '-' unary | pow ; pow := atom ('^' unary)?
@@ -3079,8 +3332,8 @@ window.SITE = {"name": "GATE DA", "key": "gateda", "path": "gate-da", "domain": 
     parts.forEach(function (art) { $$("section.ch", art).forEach(function (ch, ci) { if (ch._exam) rows.push({ ch: ch, n: art.dataset.num + "." + (ci + 1), x: ch._exam }); }); });
     if (rows.length) {
       var nq = rows.reduce(function (n, r) { return n + r.x.qs.length; }, 0);
-      var sec = h("section", { class: "mod-exam", "aria-labelledby": "mx-h" });
-      sec.innerHTML = '<span class="kicker">How GATE DA asks this</span><h2 id="mx-h">' + nq + " past-paper references, chapter by chapter</h2>";
+      var sec = h("details", { class: "mod-exam" });
+      sec.innerHTML = '<summary><span class="kicker">How GATE DA asks this</span><b>' + nq + " past-paper references, chapter by chapter</b></summary>";
       var list = h("div", { class: "mx-list" });
       rows.forEach(function (r) {
         var row = h("div", { class: "mx-row" });
@@ -3214,7 +3467,7 @@ window.SITE = {"name": "GATE DA", "key": "gateda", "path": "gate-da", "domain": 
     if (wm) {
       cta.appendChild(h("a", { class: "cta", href: ROOT + wm.slug + "/#resume" }, "Continue: " + w.label + " →" + (w.part ? "<small>" + wm.title + "</small>" : "")));
       var dn = MODS.reduce(function (n, m) { return n + dueIds(m.slug).length; }, 0), st = streak();
-      cta.appendChild(h("a", { class: "alt rv-cta", href: ROOT + "daily/" }, "Daily set" + (dn ? " · <b>" + dn + "</b> due" : "") + (st.n ? ' <span class="cta-streak">' + st.n + " day" + (st.n === 1 ? "" : "s") + " in a row</span>" : "")));
+      cta.appendChild(h("a", { class: "alt rv-cta", href: ROOT + "daily/" }, "Daily set" + (dn ? " · <b>" + dn + "</b> due" : "")));
 
     } else if (MODS[0]) {
       var m0 = (SITE.modinfo || {})[MODS[0].slug] || {};
@@ -3222,7 +3475,35 @@ window.SITE = {"name": "GATE DA", "key": "gateda", "path": "gate-da", "domain": 
       if (MODS[1]) cta.appendChild(h("a", { class: "alt", href: ROOT + MODS[1].slug + "/#start" }, "Maths is fine: go to " + MODS[1].title.toLowerCase()));
       if (globalScore()[0] > 0) cta.appendChild(h("a", { class: "alt rv-cta", href: ROOT + "daily/" }, "Daily set"));
     }
+    /* the streak gets its own quiet line under the home buttons */
+    var sl = $("#homeStreak") || h("p", { class: "home-streak", id: "homeStreak" }), s2 = streak();
+    sl.innerHTML = s2.n ? "\uD83D\uDD25 <b>" + s2.n + "-day streak</b> · " + (s2.today ? "done for today" : "answer one question today to keep it") : "Start a streak: answer one question a day.";
+    cta.insertAdjacentElement("afterend", sl);
   }
+
+  // module page on phones: the introduction is clipped to three lines; tap to read it all
+  $$(".hero .lede").forEach(function (l) { if (!l.closest(".hub")) l.addEventListener("click", function () { l.classList.toggle("open"); }); });
+  /* find a chapter anywhere in the course */
+  (function () {
+    var body = $(".rail-body"), CH = SITE.chapters || []; if (!body || !CH.length) return;
+    var wrap = h("div", { class: "finder" }), inp = h("input", { type: "search", placeholder: "Find a chapter", "aria-label": "Find a chapter", autocomplete: "off", spellcheck: "false" });
+    var res = h("ul", { class: "finder-res" }); res.hidden = true;
+    wrap.appendChild(inp); wrap.appendChild(res); body.insertBefore(wrap, body.firstChild);
+    inp.addEventListener("input", function () {
+      var q = inp.value.trim().toLowerCase(); res.innerHTML = "";
+      body.classList.toggle("finding", !!q); res.hidden = !q; if (!q) return;
+      var hits = CH.filter(function (c) { return c.t.toLowerCase().indexOf(q) >= 0; }).slice(0, 12);
+      if (!hits.length) { res.appendChild(h("li", { class: "none" }, "No chapter matches.")); return; }
+      hits.forEach(function (c) {
+        var m = MODS.filter(function (x) { return x.slug === c.m; })[0], li = h("li");
+        var a = h("a", { href: c.m === MOD ? "#" + c.id : ROOT + c.m + "/#" + c.id }, '<span class="fn">' + c.n + '</span><span class="ft"></span><small></small>');
+        $(".ft", a).textContent = c.t; $("small", a).textContent = m ? m.title : "";
+        a.addEventListener("click", function () { inp.value = ""; res.hidden = true; body.classList.remove("finding"); closeDrawer(true); });
+        li.appendChild(a); res.appendChild(li);
+      });
+    });
+    inp.addEventListener("keydown", function (e) { if (e.key === "Enter") { var a = $("a", res); if (a) a.click(); } });
+  })();
 
   /* ---------- part switching ---------- */
   var hero = $("#welcome");
@@ -3243,7 +3524,7 @@ window.SITE = {"name": "GATE DA", "key": "gateda", "path": "gate-da", "domain": 
       current = i; store.set(PARTKEY, String(i));
       if (art) { store.set(LASTKEY, String(i)); if (MOD) store.set(SITE.key + "-mod", MOD); renderMath(art); }
       $$(".toc .part > button").forEach(function (b) { var on = +b.dataset.part === i; b.classList.toggle("active", on); b.setAttribute("aria-current", on ? "true" : "false"); });
-      $$(".toc .chs").forEach(function (u, k) { u.hidden = k !== i; var pb = u.parentNode.querySelector(":scope > button"); if (pb) pb.setAttribute("aria-expanded", k === i ? "true" : "false"); });
+      $$(".toc .chs").forEach(function (u) { var pb = u.parentNode.querySelector(":scope > button"); if (pb) pb.setAttribute("aria-expanded", u.hidden ? "false" : "true"); });
     }
     if (art && changed) {
       curPage = pg;
@@ -3254,7 +3535,7 @@ window.SITE = {"name": "GATE DA", "key": "gateda", "path": "gate-da", "domain": 
       if (MOD) store.set(SITE.key + "-where", JSON.stringify({ mod: MOD, label: pageLabel(art, page), part: art.dataset.title, at: Date.now() }));
       $$(".toc .chs a").forEach(function (a) { var on = a.dataset.ch === page.id; a.classList.toggle("on", on); if (on) a.setAttribute("aria-current", "page"); else a.removeAttribute("aria-current"); });
     } else if (!art) curPage = -1;
-    if (changed) { buildPager(); placeNotes(); updateScores(); }
+    if (changed) { buildPager(); placeNotes(); updateScores(); document.body.classList.toggle("reading", current >= 0); var on = $(".toc .chs a.on"); if (on && wideNav.matches && on.scrollIntoView) on.scrollIntoView({ block: "nearest" }); }
     if (changed && art && current >= 0 && booted) { var t2 = $(".ch-head h2", art._pages[pg]); if (t2) { t2.setAttribute("tabindex", "-1"); try { t2.focus({ preventScroll: true }); } catch (e) {} } }
     if (hero) hero.hidden = i !== -1;
     if (i === -1) renderCta();
@@ -3293,7 +3574,7 @@ window.SITE = {"name": "GATE DA", "key": "gateda", "path": "gate-da", "domain": 
       tbWhere.innerHTML = "<span></span><b></b>";
       $("span", tbWhere).textContent = THISMOD ? THISMOD.title : "";
       $("b", tbWhere).textContent = current >= 0 ? pageLabel(parts[current], parts[current]._pages[curPage]) : "";
-      if (tbNext) tbNext.hidden = current < 0 || !neighbour(1);
+      if (tbNext) { var nx = neighbour(1); tbNext.hidden = current < 0 || !nx; if (nx) { var nl = "Next: " + pageLabel(nx.art, nx.page); tbNext.title = nl; tbNext.setAttribute("aria-label", nl); } }
     }
     if (current < 0) { if (tbBar) tbBar.style.width = "0"; return; }
     var page = parts[current]._pages[curPage];
@@ -3301,18 +3582,14 @@ window.SITE = {"name": "GATE DA", "key": "gateda", "path": "gate-da", "domain": 
     var f = end > top ? (window.scrollY - top) / (end - top) : 1;
     if (tbBar) tbBar.style.width = Math.max(0, Math.min(1, f)) * 100 + "%";
   }
-  /* margin notes: beside the opening paragraphs on wide screens, after them on narrow ones */
-  var wide = window.matchMedia("(min-width: 1300px)");
+  /* notes ("Picture it", "In GATE DA") read inline after the opening idea; "In GATE DA" stays folded until opened */
   function placeNotes() {
     $$("section.ch").forEach(function (ch) {
       var lead = $(":scope > .lead", ch), notes = $$(":scope > .mnote", ch);
       if (!lead || !notes.length) return;
-      if (wide.matches) notes.forEach(function (n) { lead.insertAdjacentElement("beforebegin", n); });
-      else notes.slice().reverse().forEach(function (n) { lead.insertAdjacentElement("afterend", n); });
-      notes.forEach(function (n) { if (n.tagName === "DETAILS") n.open = wide.matches; });
+      notes.slice().reverse().forEach(function (n) { lead.insertAdjacentElement("afterend", n); });
     });
   }
-  if (wide.addEventListener) wide.addEventListener("change", placeNotes);
   /* left and right arrow keys move between chapters */
   document.addEventListener("keydown", function (e) {
     if (e.altKey || e.ctrlKey || e.metaKey || e.shiftKey || (e.key !== "ArrowLeft" && e.key !== "ArrowRight")) return;
@@ -3569,6 +3846,7 @@ window.SITE = {"name": "GATE DA", "key": "gateda", "path": "gate-da", "domain": 
   /* ---------- rail collapse / drawer ---------- */
   var railToggle = $("#railToggle"), scrim = $("#scrim"), menuOpen = $("#menuOpen");
 
+  var wideNav = window.matchMedia("(min-width: 1200px)");
   var railEl = $("#rail"); railEl.setAttribute("role", "dialog"); railEl.setAttribute("aria-modal", "true"); railEl.setAttribute("aria-label", "Contents");
   function setInert(on) { [$("main"), $(".topbar")].forEach(function (el) { if (!el) return; if (on) el.setAttribute("inert", ""); else el.removeAttribute("inert"); }); }
   function openDrawer() {
@@ -3580,8 +3858,11 @@ window.SITE = {"name": "GATE DA", "key": "gateda", "path": "gate-da", "domain": 
     document.body.classList.remove("drawer-open"); scrim.hidden = true; menuOpen.setAttribute("aria-expanded", "false"); setInert(false);
     if (!noFocus) menuOpen.focus();
   }
-  railToggle.addEventListener("click", function () { closeDrawer(); });
-  menuOpen.addEventListener("click", openDrawer);
+  railToggle.addEventListener("click", function () { if (wideNav.matches) { setRail(true); menuOpen.focus(); } else closeDrawer(); });
+  menuOpen.addEventListener("click", function () { if (wideNav.matches) setRail(!document.body.classList.contains("rail-off")); else openDrawer(); });
+  function setRail(off) { document.body.classList.toggle("rail-off", off); store.set(SITE.key + "-rail", off ? "1" : "0"); menuOpen.setAttribute("aria-expanded", off ? "false" : "true"); }
+  if (store.get(SITE.key + "-rail", "0") === "1") document.body.classList.add("rail-off");
+  if (wideNav.addEventListener) wideNav.addEventListener("change", function () { closeDrawer(true); });
   scrim.addEventListener("click", function () { closeDrawer(); });
   document.addEventListener("keydown", function (e) { if (e.key === "Escape") closeDrawer(); });
 
@@ -3620,19 +3901,19 @@ window.SITE = {"name": "GATE DA", "key": "gateda", "path": "gate-da", "domain": 
     var d = c.at ? new Date(c.at) : new Date();
     var dateStr = d.toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" });
     g.fillStyle = "#FBFCFD"; g.fillRect(0, 0, W, H);
-    g.strokeStyle = "#0E6B6B"; g.lineWidth = 6; g.strokeRect(40, 40, W - 80, H - 80);
+    g.strokeStyle = "#1F5F8B"; g.lineWidth = 6; g.strokeRect(40, 40, W - 80, H - 80);
     g.strokeStyle = "#D8DEE6"; g.lineWidth = 2; g.strokeRect(60, 60, W - 120, H - 120);
     // descending curve motif with a ball resting near the bottom
     var cy = function (x) { return H - 100 - 70 * Math.exp(-Math.pow(x - 0.5, 2) / 0.018); };
-    g.strokeStyle = "#D2643C"; g.lineWidth = 5; g.beginPath();
+    g.strokeStyle = "#A9532F"; g.lineWidth = 5; g.beginPath();
     for (var x = 0; x <= 1.0001; x += 0.01) { var X = 120 + x * (W - 240); if (x === 0) g.moveTo(X, cy(x)); else g.lineTo(X, cy(x)); }
     g.stroke();
-    g.fillStyle = "#0E6B6B"; g.beginPath(); g.arc(120 + 0.5 * (W - 240), cy(0.5) - 14, 12, 0, 7); g.fill();
+    g.fillStyle = "#1F5F8B"; g.beginPath(); g.arc(120 + 0.5 * (W - 240), cy(0.5) - 14, 12, 0, 7); g.fill();
     g.textAlign = "center"; g.fillStyle = "#586474";
     g.font = "600 26px 'JetBrains Mono', monospace"; g.fillText((SITE.name + " · SELF-PACED LEARNING CERTIFICATE").toUpperCase(), W / 2, 165);
     g.fillStyle = "#17202A"; g.font = "600 64px 'Fraunces', serif"; (SITE.certTitle || [SITE.name]).forEach(function (t, k) { g.fillText(t, W / 2, 270 + 75 * k); });
     g.fillStyle = "#586474"; g.font = "28px 'Figtree', sans-serif"; g.fillText("This certifies that", W / 2, 440);
-    g.fillStyle = name ? "#0E6B6B" : "#B8C1CC"; g.font = "600 76px 'Fraunces', serif";
+    g.fillStyle = name ? "#1F5F8B" : "#B8C1CC"; g.font = "600 76px 'Fraunces', serif";
     var nm = name || "Your name"; while (g.measureText(nm).width > W - 300 && nm.length > 3) nm = nm.slice(0, -1);
     g.fillText(nm, W / 2, 540);
     g.fillStyle = "#17202A"; g.font = "28px 'Figtree', sans-serif";
@@ -3667,7 +3948,7 @@ window.SITE = {"name": "GATE DA", "key": "gateda", "path": "gate-da", "domain": 
     if (window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     var cv = $("#confetti"); cv.hidden = false; var g = cv.getContext("2d");
     cv.width = innerWidth; cv.height = innerHeight;
-    var cols = ["#0E6B6B", "#D2643C", "#7A4FB0", "#E9C25B", "#5CC6BF"], ps = [];
+    var cols = ["#1F5F8B", "#A9532F", "#7A4FB0", "#E9C25B", "#5CC6BF"], ps = [];
     for (var i = 0; i < 160; i++) ps.push({ x: Math.random() * cv.width, y: -20 - Math.random() * cv.height * 0.5, vx: (Math.random() - 0.5) * 3, vy: 2 + Math.random() * 4, r: 4 + Math.random() * 5, c: cols[i % 5], a: Math.random() * 6 });
     var t0 = performance.now();
     (function frame(t) {
