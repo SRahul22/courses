@@ -9,108 +9,111 @@
 <meta property="og:title" content="Courses by Rahul Dev Sharma">
 <meta property="og:description" content="Free, interactive, self-paced courses: optimization methods, software engineering basics, and more.">
 <meta property="og:url" content="https://courses.rahuldevsharma.com/">
-<meta name="theme-color" content="#F3F5F7" media="(prefers-color-scheme: light)">
-<meta name="theme-color" content="#0E1319" media="(prefers-color-scheme: dark)">
-<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=JetBrains+Mono:wght@400;600&display=swap">
+<meta name="theme-color" content="#F4F6F7" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#11151A" media="(prefers-color-scheme: dark)">
+<!-- fonts are served from this site (fonts/, copied from @fontsource-variable in ~/Dev/tools); design: GATE DA "design v5" -->
+<link rel="preload" href="fonts/figtree.woff2" as="font" type="font/woff2" crossorigin>
+<script>try { var t = localStorage.getItem("courses-theme"); if (t === "dark" || t === "light") document.documentElement.setAttribute("data-theme", t); } catch (e) {}</script>
 <style>
-:root { --bg:#F5F7FA; --surface:#FFFFFF; --ink:#1A2233; --muted:#5A6578; --line:#DCE2EA; --accent:#2463C8; --mint:#0F766E; }
-@media (prefers-color-scheme: dark) { :root { --bg:#0E131B; --surface:#18202B; --ink:#E2E8F0; --muted:#9AA6B8; --line:#2A3442; --accent:#7EA9FF; --mint:#4FD1C0; color-scheme: dark; } }
-* { box-sizing: border-box; }
-body { margin:0; background:var(--bg); color:var(--ink); font-family:Figtree,system-ui,sans-serif; font-size:17.5px; line-height:1.68; -webkit-font-smoothing:antialiased; }
-main { max-width:1040px; margin:0 auto; padding:56px 16px 80px; display:flex; flex-direction:column; gap:40px; }
-.eyebrow { font-family:"JetBrains Mono",monospace; font-size:.78rem; letter-spacing:.08em; text-transform:uppercase; color:var(--accent); }
-h1 { font-family:Fraunces,Georgia,serif; font-weight:500; font-size:clamp(2rem,5vw,3.1rem); line-height:1.1; letter-spacing:-.02em; margin:8px 0 12px; }
-.lede { color:var(--muted); font-size:1.15rem; max-width:62ch; margin:0; }
-.grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:20px; }
-a.card { display:flex; flex-direction:column; text-decoration:none; color:inherit; background:var(--surface); border:1px solid var(--line); border-radius:14px; overflow:hidden; transition:border-color .15s, transform .15s; }
-a.card:hover { border-color:var(--accent); transform:translateY(-2px); }
-a.card:focus-visible { outline:3px solid var(--accent); outline-offset:3px; }
-a.card img { display:block; width:100%; aspect-ratio:1200/630; object-fit:cover; border-bottom:1px solid var(--line); background:var(--bg); }
-.body { padding:16px 18px 20px; display:flex; flex-direction:column; gap:8px; }
-.body h2 { font-family:Fraunces,Georgia,serif; font-weight:500; font-size:1.35rem; margin:0; }
-.body p { margin:0; color:var(--muted); font-size:.96rem; }
-.tags { display:flex; flex-wrap:wrap; gap:6px; margin-top:4px; }
-.tags span { font-family:"JetBrains Mono",monospace; font-size:.72rem; border:1px solid var(--line); border-radius:99px; padding:2px 9px; color:var(--muted); }
-.go { color:var(--accent); font-weight:700; margin-top:6px; }
-footer { color:var(--muted); font-size:.9rem; border-top:1px solid var(--line); padding-top:20px; }
-footer a { color:var(--accent); }
-@media (prefers-reduced-motion: reduce) { a.card { transition:none; } a.card:hover { transform:none; } }
+@font-face { font-family:Figtree; font-style:normal; font-weight:300 900; font-display:swap; src:url(fonts/figtree.woff2) format("woff2"); }
+@font-face { font-family:"Source Serif 4"; font-style:normal; font-weight:200 900; font-display:swap; src:url(fonts/source-serif-4.woff2) format("woff2"); }
+:root { --bg:#F4F6F7; --panel:#FFFFFF; --tx:#182029; --tx2:#46505C; --tx3:#5E6874; --line:rgba(24,32,41,.10); --brand:#1F5F8B; --brand-soft:rgba(31,95,139,.09); --brand2:#A9532F; --ui:Figtree,system-ui,-apple-system,"Segoe UI",sans-serif; --read:"Source Serif 4",Georgia,serif; color-scheme:light; }
+@media (prefers-color-scheme:dark) { :root:not([data-theme="light"]) { --bg:#11151A; --panel:#1A2027; --tx:#E4E8EC; --tx2:#B3BCC6; --tx3:#8A95A1; --line:rgba(228,232,236,.09); --brand:#79AEDB; --brand-soft:rgba(121,174,219,.13); --brand2:#EE9068; color-scheme:dark; } }
+:root[data-theme="dark"] { --bg:#11151A; --panel:#1A2027; --tx:#E4E8EC; --tx2:#B3BCC6; --tx3:#8A95A1; --line:rgba(228,232,236,.09); --brand:#79AEDB; --brand-soft:rgba(121,174,219,.13); --brand2:#EE9068; color-scheme:dark; }
+* { box-sizing:border-box; }
+body { margin:0; background:var(--bg); color:var(--tx); font:16.5px/1.6 var(--ui); -webkit-font-smoothing:antialiased; }
+.topbar { position:sticky; top:0; z-index:10; display:flex; align-items:center; gap:12px; height:56px; padding:0 20px; background:color-mix(in srgb,var(--bg) 72%,transparent); backdrop-filter:saturate(1.8) blur(22px); -webkit-backdrop-filter:saturate(1.8) blur(22px); border-bottom:1px solid var(--line); }
+.brand { font:700 17px var(--ui); letter-spacing:-.018em; color:var(--tx); text-decoration:none; }
+.where { flex:1; font-size:13.5px; color:var(--tx3); }
+.where::before { content:"/"; margin-right:10px; color:var(--line); }
+.theme { display:grid; place-items:center; width:40px; height:40px; border:0; border-radius:99px; background:transparent; color:var(--tx2); cursor:pointer; }
+.theme:hover { background:color-mix(in srgb,var(--tx) 6%,transparent); }
+.theme .sun, :root[data-theme="dark"] .theme .moon { display:none; }
+:root[data-theme="dark"] .theme .sun { display:block; }
+@media (prefers-color-scheme:dark) { :root:not([data-theme="light"]) .theme .moon { display:none; } :root:not([data-theme="light"]) .theme .sun { display:block; } }
+main { max-width:1040px; margin:0 auto; padding:56px 20px 80px; display:flex; flex-direction:column; gap:40px; }
+h1 { font:700 clamp(34px,5.4vw,54px)/1.06 var(--ui); letter-spacing:-.03em; margin:0 0 14px; max-width:18ch; }
+.lede { font:400 clamp(18px,2.2vw,20px)/1.55 var(--read); color:var(--tx2); max-width:58ch; margin:0; }
+.grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(290px,1fr)); gap:16px; }
+a.card { display:flex; flex-direction:column; gap:6px; padding:22px 22px 18px; text-decoration:none; color:inherit; background:var(--panel); border:1px solid var(--line); border-radius:22px; transition:border-color .15s; }
+a.card:hover { border-color:var(--brand); }
+a.card:focus-visible { outline:2px solid var(--brand); outline-offset:3px; }
+.kick { font:600 13px var(--ui); color:var(--brand2); }
+.card h2 { font:700 22px/1.2 var(--ui); letter-spacing:-.018em; margin:0; }
+.card p { font:400 16px/1.55 var(--read); color:var(--tx2); margin:0 0 8px; }
+.row { margin-top:auto; display:flex; align-items:center; justify-content:space-between; gap:12px; }
+.meta { font-size:13.5px; color:var(--tx3); }
+.go { border-radius:99px; padding:6px 14px; background:var(--brand-soft); color:var(--brand); font:600 14px var(--ui); }
+a.card:hover .go { background:var(--brand); color:var(--panel); }
+footer { color:var(--tx3); font-size:14px; border-top:1px solid var(--line); padding-top:20px; }
+footer a { color:var(--brand); }
+@media (max-width:600px) { main { padding:36px 16px 64px; gap:28px; } .topbar { padding:0 10px 0 16px; } }
+@media (prefers-reduced-motion:reduce) { a.card { transition:none; } }
 </style>
 </head>
 <body>
+<header class="topbar">
+  <a class="brand" href="/">Courses</a><span class="where">Rahul Dev Sharma</span>
+  <button class="theme" type="button" aria-label="Switch light or dark mode"><svg class="moon" width="20" height="20" viewBox="0 0 20 20" aria-hidden="true"><path d="M16.5 12.2A7 7 0 0 1 7.8 3.5a7 7 0 1 0 8.7 8.7z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg><svg class="sun" width="20" height="20" viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="3.6" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M10 1.8v2.2M10 16v2.2M1.8 10H4M16 10h2.2M4.2 4.2l1.6 1.6M14.2 14.2l1.6 1.6M4.2 15.8l1.6-1.6M14.2 5.8l1.6-1.6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></button>
+</header>
 <main>
   <header>
-    <span class="eyebrow">Free · interactive · self-paced</span>
     <h1>Interactive courses, built to be understood</h1>
-    <p class="lede">Each course explains ideas in plain language first, lets you try them hands-on, and checks your understanding with real practice questions. No sign-up: your progress stays in your browser.</p>
+    <p class="lede">Plain-language ideas first, then hands-on practice with real questions. Free, no sign-up; your progress stays in your browser.</p>
   </header>
   <section class="grid" aria-label="Courses">
     <a class="card" href="optimization/">
-      <img src="optimization/preview.png" alt="Downhill: how computers find the best answer" loading="lazy">
-      <div class="body">
-        <h2>Downhill</h2>
-        <p>Computational methods of optimization: optimality conditions, convexity, gradient descent, conjugate gradients and quasi-Newton methods. Based on IISc's E0 230.</p>
-        <div class="tags"><span>14 parts</span><span>maths</span><span>exam practice</span></div>
-        <span class="go">Start learning →</span>
-      </div>
+      <span class="kick">IISc E0 230</span>
+      <h2>Downhill</h2>
+      <p>How computers find the best answer: optimality conditions, convexity, gradient descent, conjugate gradients and quasi-Newton methods.</p>
+      <span class="row"><span class="meta">14 parts</span><span class="go">Open <span aria-hidden="true">›</span></span></span>
     </a>
     <a class="card" href="head-start/">
-      <img src="head-start/preview.png" alt="HEAD Start: a field guide for new software engineers" loading="lazy">
-      <div class="body">
-        <h2>HEAD Start</h2>
-        <p>A field guide for new software engineers: Git, code review, databases, APIs, testing and shipping safely, explained clearly.</p>
-        <div class="tags"><span>11 parts</span><span>software engineering</span><span>career skills</span></div>
-        <span class="go">Start learning →</span>
-      </div>
+      <span class="kick">Career skills</span>
+      <h2>HEAD Start</h2>
+      <p>A field guide for new software engineers: Git, code review, databases, APIs, testing and shipping safely.</p>
+      <span class="row"><span class="meta">11 parts</span><span class="go">Open <span aria-hidden="true">›</span></span></span>
     </a>
     <a class="card" href="tour-guide/">
-      <img src="tour-guide/preview.png" alt="Tour Guide: from linear programs to vehicle routing" loading="lazy">
-      <div class="body">
-        <h2>Tour Guide</h2>
-        <p>Logistics and freight modelling: linear and integer programming, branch and bound, the travelling salesman problem and vehicle routing. Based on IISc's SL 225.</p>
-        <div class="tags"><span>12 parts</span><span>maths</span><span>exam practice</span></div>
-        <span class="go">Start learning →</span>
-      </div>
+      <span class="kick">IISc SL 225</span>
+      <h2>Tour Guide</h2>
+      <p>From linear and integer programs to branch and bound, the travelling salesman problem and vehicle routing.</p>
+      <span class="row"><span class="meta">12 parts</span><span class="go">Open <span aria-hidden="true">›</span></span></span>
     </a>
     <a class="card" href="inventory/">
-      <img src="inventory/preview.png" alt="Restock: inventory optimization, how much to order and when" loading="lazy">
-      <div class="body">
-        <h2>Restock</h2>
-        <p>Inventory optimization: the economic order quantity, Wagner–Whitin lot sizing, the newsvendor and (s, S) policies, with hover definitions and a step-by-step DP table. Based on Lecture 15 of IISc's SL 225.</p>
-        <div class="tags"><span>5 parts</span><span>maths</span><span>interactive</span></div>
-        <span class="go">Start learning →</span>
-      </div>
+      <span class="kick">IISc SL 225 · Lecture 15</span>
+      <h2>Restock</h2>
+      <p>Inventory optimization: how much to order and when, from the EOQ to Wagner–Whitin, the newsvendor and (s, S) policies.</p>
+      <span class="row"><span class="meta">5 parts</span><span class="go">Open <span aria-hidden="true">›</span></span></span>
     </a>
     <a class="card" href="achuthan-cvrp/">
-      <img src="achuthan-cvrp/preview.png" alt="Tight Cuts: branch-and-cut for vehicle routing, Achuthan, Caccetta and Hill (2003)" loading="lazy">
-      <div class="body">
-        <h2>Tight Cuts</h2>
-        <p>A paper explained interactively: Achuthan, Caccetta and Hill's improved branch-and-cut for the capacitated vehicle routing problem. Every cut on a worked instance, a find-the-cut exercise and a branch-and-cut stepper.</p>
-        <div class="tags"><span>7 parts</span><span>paper explainer</span><span>interactive</span></div>
-        <span class="go">Start reading →</span>
-      </div>
+      <span class="kick">Paper explainer</span>
+      <h2>Tight Cuts</h2>
+      <p>Achuthan, Caccetta and Hill's branch-and-cut for vehicle routing, every cut shown on a worked instance.</p>
+      <span class="row"><span class="meta">7 parts</span><span class="go">Open <span aria-hidden="true">›</span></span></span>
     </a>
     <a class="card" href="gate-da/">
-      <img src="gate-da/preview.png" alt="GATE DA: maths for GATE Data Science and AI" loading="lazy">
-      <div class="body">
-        <h2>GATE DA</h2>
-        <p>Prep for the GATE Data Science &amp; AI exam: maths, Python &amp; DSA, and databases, with real previous-year questions checked against the official keys.</p>
-        <div class="tags"><span>7 modules</span><span>GATE DA</span><span>exam practice</span></div>
-        <span class="go">Start learning →</span>
-      </div>
+      <span class="kick">Exam prep</span>
+      <h2>GATE DA</h2>
+      <p>Maths, Python &amp; DSA and databases for the GATE Data Science &amp; AI exam, with real past questions.</p>
+      <span class="row"><span class="meta">7 modules</span><span class="go">Open <span aria-hidden="true">›</span></span></span>
     </a>
     <a class="card" href="lno-quiz/">
-      <img src="lno-quiz/preview.png" alt="Quiz Day: convexity, duality and the simplex method" loading="lazy">
-      <div class="body">
-        <h2>Quiz Day</h2>
-        <p>Convexity, duality and linear programming as short stories: the idea in plain words, the exact statement, the traps, and two click-to-answer mock quizzes. Based on IISc&#39;s E1 251, Chapters 7 and 8.</p>
-        <div class="tags"><span>2 chapters</span><span>maths</span><span>exam practice</span><span>printable PDF</span></div>
-        <span class="go">Start studying →</span>
-      </div>
+      <span class="kick">IISc E1 251</span>
+      <h2>Quiz Day</h2>
+      <p>Convexity, duality and linear programming as short stories, with two click-to-answer mock quizzes.</p>
+      <span class="row"><span class="meta">2 chapters</span><span class="go">Open <span aria-hidden="true">›</span></span></span>
     </a>
   </section>
   <footer>Made by <a href="https://rahuldevsharma.com">Rahul Dev Sharma</a>. Independent learning resources; see each course's acknowledgement for credits.</footer>
 </main>
+<script>
+document.querySelector(".theme").addEventListener("click", function () {
+  var r = document.documentElement, t = r.getAttribute("data-theme");
+  var dark = t ? t === "dark" : matchMedia("(prefers-color-scheme: dark)").matches;
+  r.setAttribute("data-theme", dark ? "light" : "dark");
+  try { localStorage.setItem("courses-theme", dark ? "light" : "dark"); } catch (e) {}
+});
+</script>
 </body>
 </html>
