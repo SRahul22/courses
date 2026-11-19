@@ -198,7 +198,7 @@ article.part { display:flex; flex-direction:column; gap:72px; }
 .youneed b { color:var(--tx); }
 
 /* chapter */
-section.ch { display:flex; flex-direction:column; gap:26px; scroll-margin-top:24px; padding-top:56px; border-top:1px solid var(--line); }
+section.ch, section.pg-review { display:flex; flex-direction:column; gap:26px; scroll-margin-top:24px; padding-top:56px; border-top:1px solid var(--line); }
 .ch-head { display:flex; flex-direction:column; gap:10px; padding-bottom:22px; border-bottom:1px solid var(--line); }
 .ch-head .meta { display:flex; flex-wrap:wrap; gap:6px 12px; align-items:center; font:500 12px var(--sans); letter-spacing:.07em; text-transform:uppercase; color:var(--tx3); }
 .ch-head h2 { font-size:clamp(30px,4.4vw,40px); line-height:1.12; letter-spacing:-.02em; font-variation-settings:"opsz" 96; }
@@ -462,8 +462,33 @@ dialog.cert::backdrop { background:rgba(10,15,20,.6); }
 .cert-close { position:sticky; top:0; float:right; margin:12px 12px 0 0; background:var(--panel); }
 #confetti { position:fixed; inset:0; pointer-events:none; z-index:100; }
 @media (max-width:560px) { .cert-body { padding:18px; } }
+/* ---------- one chapter per screen: location bar ---------- */
+.locbar { position:sticky; top:0; z-index:20; display:grid; grid-template-columns:auto minmax(0,1fr) auto auto; align-items:center; gap:10px; margin:-36px 0 -40px; padding:10px 12px 12px; border:1px solid var(--line); border-top:0; border-radius:0 0 14px 14px; background:color-mix(in srgb,var(--bg) 88%,transparent); backdrop-filter:blur(14px) saturate(1.4); -webkit-backdrop-filter:blur(14px) saturate(1.4); }
+.lb-txt { display:flex; flex-direction:column; min-width:0; line-height:1.25; }
+.lb-part { font:500 11px var(--sans); letter-spacing:.07em; text-transform:uppercase; color:var(--tx3); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.lb-ch { font:600 14.5px var(--sans); color:var(--tx); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.lb-count { font-size:12.5px; color:var(--tx3); font-variant-numeric:tabular-nums; white-space:nowrap; }
+.lb-btn { width:34px; height:34px; border:1px solid var(--line); border-radius:9px; background:var(--panel); color:var(--tx); font-size:20px; line-height:1; display:grid; place-items:center; }
+.lb-btn:hover:not(:disabled) { border-color:var(--var); }
+.lb-btn:disabled { opacity:.35; cursor:default; }
+.lb-prev { order:-1; }
+.lb-bar { position:absolute; left:0; right:0; bottom:0; height:3px; background:transparent; overflow:hidden; border-radius:0 0 14px 14px; }
+.lb-bar > i { display:block; height:100%; width:0; background:var(--var); transition:width .1s linear; }
+@media (max-width:900px) {
+  .locbar { top:60px; margin:-28px -16px -36px; border-radius:0; border-inline:0; padding:8px 12px 10px; }
+  .lb-bar { border-radius:0; }
+  .lb-count { font-size:12px; }
+  .lede { font-size:18px; line-height:1.5; }
+  .part-divider .lede { font-size:17px; }
+  .part-divider h2 { font-size:32px; }
+  .lead .lead-idea { font-size:19px; }
+  .ch-head h2 { font-size:28px; }
+}
+html { scroll-padding-top:76px; }
+@media (max-width:900px) { html { scroll-padding-top:124px; } section.ch, section.pg-review { scroll-margin-top:124px; } }
+@media (max-width:420px) { .lb-count { display:none; } }
 @media (prefers-reduced-motion:reduce) { * { animation:none !important; transition:none !important; } html { scroll-behavior:auto; } }
-@media print { .rail, .topbar, .pager, .quiz, .practice, .try { display:none !important; } .shell { display:block; } }
+@media print { .rail, .topbar, .pager, .locbar, .quiz, .practice, .try { display:none !important; } .shell { display:block; } }
 
 /* ---------- GATE DA extras on top of the K2 stylesheet (hub, modules, PYQ radar, tracers, charts) ---------- */
 :root { --coral: var(--case); --coral-soft: var(--world-bg); }
@@ -1981,6 +2006,28 @@ window.SITE = {"name": "GATE DA", "key": "gateda", "path": "gate-da", "domain": 
     $$(".predict", art).forEach(buildPredict);
   });
 
+  /* ---------- pages: one chapter per screen ----------
+     A part shows one page at a time: each chapter is a page, and whatever follows the last chapter
+     (the part review quiz) becomes a final "Part review" page. The part header sits on the first page. */
+  parts.forEach(function (art) {
+    var chs = $$(":scope > section.ch", art), pages = chs.slice();
+    var lastCh = chs[chs.length - 1], trailing = [];
+    if (lastCh) for (var n = lastCh.nextElementSibling; n; n = n.nextElementSibling) trailing.push(n);
+    if (trailing.length) {
+      var rv = h("section", { class: "pg-review", id: art.id + "-review", "data-title": "Part review" });
+      rv.appendChild(h("div", { class: "ch-head" }, '<span class="meta">Part ' + art.dataset.num + ' · wrap-up</span><h2>Part review</h2>'));
+      trailing.forEach(function (t) { rv.appendChild(t); });
+      art.appendChild(rv); pages.push(rv);
+      var map = $(".part-map", art);
+      if (map) map.appendChild(h("a", { href: "#" + rv.id }, '<span class="cn">✓</span> Part review'));
+    }
+    art._pages = pages;
+  });
+  function pageLabel(art, pg) {
+    var i = art._pages.indexOf(pg);
+    return pg.classList.contains("pg-review") ? "Part " + art.dataset.num + " review" : art.dataset.num + "." + (i + 1) + " " + pg.dataset.title;
+  }
+
   /* ---------- worked examples ---------- */
   function buildExample(ex) {
     if (!$(":scope > .label", ex)) ex.insertBefore(h("span", { class: "label" }, "Worked example"), ex.firstChild);
@@ -2182,7 +2229,7 @@ window.SITE = {"name": "GATE DA", "key": "gateda", "path": "gate-da", "domain": 
     b.addEventListener("click", function () { showPart(pi, true); closeDrawer(); });
     li.appendChild(b);
     var ul = h("ul", { class: "chs" });
-    $$("section.ch", art).forEach(function (ch) {
+    art._pages.forEach(function (ch) {
       var cl = h("li");
       var a = h("a", { href: "#" + ch.id, "data-ch": ch.id }, "<span>" + ch.dataset.title + "</span><span class=\"score\" data-cscore=\"" + ch.id + "\"></span>");
       a.addEventListener("click", function () { closeDrawer(); });
@@ -2216,14 +2263,14 @@ window.SITE = {"name": "GATE DA", "key": "gateda", "path": "gate-da", "domain": 
     $("#progBar").style.width = (TOTAL ? 100 * done / TOTAL : 0) + "%";
     var hp = $("#homeProg");
     if (hp) { hp.hidden = done === 0; hp.textContent = "You have answered " + Math.round(100 * done / TOTAL) + "% of the course's questions."; }
-    var cs = current >= 0 ? scoreOf(parts[current]) : null;
-    $("#topProg").textContent = cs && cs[0] ? "Part " + parts[current].dataset.num + " · " + cs[0] + "/" + cs[1] : "";
+    $("#topProg").textContent = "";
+    updateLocbar();
     parts.forEach(function (art, pi) {
       var s = scoreOf(art), el = $('[data-pscore="' + pi + '"]');
       el.textContent = s[0] ? s[0] + "/" + s[1] : ""; el.classList.toggle("done", s[1] > 0 && s[0] === s[1]);
       var hs = $('[data-hscore="' + pi + '"]'); if (hs) { hs.textContent = s[0] ? (s[0] === s[1] ? "done" : s[0] + "/" + s[1]) : ""; hs.classList.toggle("done", s[1] > 0 && s[0] === s[1]); }
       el.parentElement.classList.toggle("complete", s[1] > 0 && s[0] === s[1]);
-      $$("section.ch", art).forEach(function (ch) {
+      art._pages.forEach(function (ch) {
         var c = scoreOf(ch), e2 = $('[data-cscore="' + ch.id + '"]');
         e2.textContent = c[0] ? c[0] + "/" + c[1] : ""; e2.classList.toggle("done", c[1] > 0 && c[0] === c[1]);
       });
@@ -2291,21 +2338,88 @@ window.SITE = {"name": "GATE DA", "key": "gateda", "path": "gate-da", "domain": 
 
   /* ---------- part switching ---------- */
   var hero = $("#welcome");
-  function showPart(i, scrollTop, anchor) {
+  var CHKEY = SITE.key + "-ch" + (MOD ? "-" + MOD : ""), POSKEY = SITE.key + "-pos" + (MOD ? "-" + MOD : "");
+  var curPage = -1;
+  function pageOf(art, el) { var pg = art._pages.filter(function (p) { return p.contains(el); })[0]; return pg ? art._pages.indexOf(pg) : 0; }
+  // show part i (-1 = overview), page pg of it; anchor = id to scroll to; push = add a history entry
+  // page changes jump instantly (the page has smooth scrolling for in-page links)
+  function jump(y) { window.scrollTo({ top: y, left: 0, behavior: "instant" }); }
+  function show(i, pg, opts) {
+    opts = opts || {};
     if (i < -1 || i >= parts.length) return;
+    var art = i >= 0 ? parts[i] : null;
+    pg = art ? Math.max(0, Math.min(art._pages.length - 1, pg || 0)) : -1;
+    var changed = i !== current || pg !== curPage;
     if (i !== current) {
       parts.forEach(function (p, k) { p.hidden = k !== i; });
       current = i; store.set(PARTKEY, String(i));
-      if (i >= 0) { store.set(LASTKEY, String(i)); if (MOD) store.set(SITE.key + "-mod", MOD); renderMath(parts[i]); DH.mountWidgets(parts[i]); }
+      if (art) { store.set(LASTKEY, String(i)); if (MOD) store.set(SITE.key + "-mod", MOD); renderMath(art); }
       $$(".toc .part > button").forEach(function (b) { var on = +b.dataset.part === i; b.classList.toggle("active", on); b.setAttribute("aria-current", on ? "true" : "false"); });
       $$(".toc .chs").forEach(function (u, k) { u.hidden = k !== i; });
-      buildPager();
-      updateScores();
     }
+    if (art && changed) {
+      curPage = pg;
+      var page = art._pages[pg];
+      Array.prototype.forEach.call(art.children, function (c) { var k = art._pages.indexOf(c); c.hidden = k >= 0 ? k !== pg : pg !== 0; });
+      DH.mountWidgets(page); fitMath(page);
+      store.set(CHKEY, page.id);
+      $$(".toc .chs a").forEach(function (a) { var on = a.dataset.ch === page.id; a.classList.toggle("on", on); if (on) a.setAttribute("aria-current", "page"); else a.removeAttribute("aria-current"); });
+    } else if (!art) curPage = -1;
+    if (changed) { buildPager(); updateScores(); }
     if (hero) hero.hidden = i !== -1;
     if (i === -1) renderCta();
-    if (anchor) { var t = document.getElementById(anchor); if (t) setTimeout(function () { t.scrollIntoView(); }, 30); }
-    else if (scrollTop) { window.scrollTo(0, 0); history.replaceState(null, "", "#" + (i < 0 ? "welcome" : parts[i].id)); }
+    var hash = "#" + (art ? (opts.anchor || art._pages[pg].id) : "welcome");
+    if (opts.push && location.hash !== hash) history.pushState(null, "", hash);
+    else if (opts.setHash) history.replaceState(null, "", hash);
+    if (opts.anchor) { var t = document.getElementById(opts.anchor); if (t && !(art && t === art._pages[pg] && pg === 0)) setTimeout(function () { t.scrollIntoView({ behavior: "instant" }); }, 30); else jump(0); }
+    else if (opts.y != null) setTimeout(function () { jump(opts.y); }, 30);
+    else if (opts.top || changed) jump(0);
+  }
+  // kept for widgets and older callers: show a part (its first page), or the page holding anchor
+  function showPart(i, scrollTop, anchor) {
+    if (i >= 0 && anchor) { var el = document.getElementById(anchor); show(i, el ? pageOf(parts[i], el) : 0, { anchor: anchor }); }
+    else show(i, 0, { top: scrollTop, setHash: scrollTop });
+  }
+  function go(i, pg) { show(i, pg, { push: true, top: true }); }
+  // remember the exact spot (page + scroll offset) so "Continue" lands where the learner stopped
+  var posT;
+  window.addEventListener("scroll", function () {
+    clearTimeout(posT); updateLocbar();
+    posT = setTimeout(function () { if (current >= 0) store.set(POSKEY, JSON.stringify({ id: parts[current]._pages[curPage].id, y: Math.round(window.scrollY) })); }, 250);
+  }, { passive: true });
+
+  /* sticky location bar: where am I, how far through this page, quick previous/next */
+  var locbar = null;
+  if (MOD) {
+    locbar = h("div", { class: "locbar", role: "navigation", "aria-label": "Where you are" });
+    locbar.innerHTML = '<button type="button" class="lb-btn lb-prev" aria-label="Previous page">‹</button><div class="lb-txt"><span class="lb-part"></span><b class="lb-ch"></b></div><span class="lb-count"></span><button type="button" class="lb-btn lb-next" aria-label="Next page">›</button><i class="lb-bar"><i></i></i>';
+    $("main").insertBefore(locbar, $("main").firstChild);
+    $(".lb-prev", locbar).addEventListener("click", function () { var t = neighbour(-1); if (t) t.go(); });
+    $(".lb-next", locbar).addEventListener("click", function () { var t = neighbour(1); if (t) t.go(); });
+  }
+  function updateLocbar() {
+    if (!locbar) return;
+    locbar.hidden = current < 0;
+    if (current < 0) return;
+    var art = parts[current], page = art._pages[curPage];
+    $(".lb-part", locbar).textContent = "Part " + art.dataset.num + " · " + art.dataset.title;
+    $(".lb-ch", locbar).textContent = pageLabel(art, page);
+    var sc = scoreOf(page);
+    $(".lb-count", locbar).textContent = (curPage + 1) + " of " + art._pages.length + (sc[1] ? " · " + sc[0] + "/" + sc[1] + " right" : "");
+    var top = page.getBoundingClientRect().top + window.scrollY - (curPage === 0 ? 600 : 0), end = top + page.offsetHeight + (curPage === 0 ? 600 : 0) - window.innerHeight;
+    var f = end > top ? (window.scrollY - top) / (end - top) : 1;
+    $(".lb-bar > i", locbar).style.width = Math.max(0, Math.min(1, f)) * 100 + "%";
+    $(".lb-prev", locbar).disabled = !neighbour(-1); $(".lb-next", locbar).disabled = !neighbour(1);
+  }
+  // the page before (d = -1) or after (d = 1) the current one, crossing part boundaries
+  function neighbour(d) {
+    if (current < 0) return null;
+    var art = parts[current], pg = curPage + d;
+    if (pg >= 0 && pg < art._pages.length) return { kind: "page", art: art, page: art._pages[pg], go: function () { go(current, pg); } };
+    var ni = current + d, na = parts[ni];
+    if (!na) return null;
+    var np = d > 0 ? 0 : na._pages.length - 1;
+    return { kind: "part", art: na, page: na._pages[np], go: function () { go(ni, np); } };
   }
   // Home: "Start Part 1" for new visitors, "Continue: Part N" for returning ones
   var cta = $("#heroCta");
@@ -2323,58 +2437,54 @@ window.SITE = {"name": "GATE DA", "key": "gateda", "path": "gate-da", "domain": 
     cta.innerHTML = "";
     if (!first) { cta.appendChild(h("p", { class: "youneed" }, "This module is being written. Check back soon.")); return; }
     if (last >= 0 && last < parts.length) {
-      var lc = document.getElementById(store.get(SITE.key + "-ch" + (MOD ? "-" + MOD : ""), ""));
-      if (lc && lc.closest("article.part") !== parts[last]) lc = null;
-      var lcNum = lc ? parts[last].dataset.num + "." + ($$("section.ch", parts[last]).indexOf(lc) + 1) : "";
-      var c = h("button", { type: "button", class: "cta" }, lc ? "Continue: " + lcNum + " " + lc.dataset.title + " →" : "Continue: Part " + parts[last].dataset.num + " · " + parts[last].dataset.title + " →");
-      c.addEventListener("click", function () { if (lc) { showPart(last, false, lc.id); history.replaceState(null, "", "#" + lc.id); } else showPart(last, true); }); cta.appendChild(c);
-      if (last > 0) { var a = h("button", { type: "button", class: "alt" }, "Start from Part " + first.dataset.num); a.addEventListener("click", function () { showPart(0, true); }); cta.appendChild(a); }
+      var la = parts[last], lc = document.getElementById(store.get(CHKEY, ""));
+      var lpg = lc ? la._pages.indexOf(lc) : -1;
+      var pos = null; try { pos = JSON.parse(store.get(POSKEY, "null")); } catch (e) {}
+      var y = pos && lc && pos.id === lc.id ? pos.y : null;
+      var c = h("button", { type: "button", class: "cta" }, lpg >= 0 ? "Continue: " + pageLabel(la, lc) + " →" : "Continue: Part " + la.dataset.num + " · " + la.dataset.title + " →");
+      c.addEventListener("click", function () { show(last, Math.max(0, lpg), { push: true, y: y }); }); cta.appendChild(c);
+      if (last > 0) { var a = h("button", { type: "button", class: "alt" }, "Start from Part " + first.dataset.num); a.addEventListener("click", function () { go(0, 0); }); cta.appendChild(a); }
     } else {
       var s0 = h("button", { type: "button", class: "cta" }, "Start Part " + first.dataset.num + " →");
-      s0.addEventListener("click", function () { showPart(0, true); }); cta.appendChild(s0);
+      s0.addEventListener("click", function () { go(0, 0); }); cta.appendChild(s0);
     }
   }
   DH.showPart = showPart;
   function buildPager() {
     var pg = $("#pager"); pg.innerHTML = "";
-    if (current === 0) {
-      var bh = h("button", { type: "button" }, "<small>← Back to</small><b>Home</b>");
-      bh.addEventListener("click", function () { showPart(-1, true); }); pg.appendChild(bh);
+    if (current < 0) return;
+    var art = parts[current], prev = neighbour(-1), next = neighbour(1);
+    if (prev) {
+      var b1 = h("button", { type: "button" }, "<small>← " + (prev.kind === "part" ? "Previous part" : "Previous") + "</small><b>" + pageLabel(prev.art, prev.page) + "</b>");
+      b1.addEventListener("click", prev.go); pg.appendChild(b1);
+    } else {
+      var bh = h("button", { type: "button" }, "<small>← Back to</small><b>" + (MOD ? "Module overview" : "Home") + "</b>");
+      bh.addEventListener("click", function () { show(-1, 0, { push: true, top: true }); }); pg.appendChild(bh);
     }
-    if (current > 0) {
-      var a = parts[current - 1];
-      var b1 = h("button", { type: "button" }, "<small>← Previous part</small><b>" + a.dataset.num + " · " + a.dataset.title + "</b>");
-      b1.addEventListener("click", function () { showPart(current - 1, true); }); pg.appendChild(b1);
-    }
-    if (current === parts.length - 1 && MOD) {
+    if (next) {
+      var nlab = next.kind === "part" ? "Next part →" : next.page.classList.contains("pg-review") ? "Next: check the whole part →" : "Next chapter →";
+      var nb = next.kind === "part" ? next.art.dataset.num + " · " + next.art.dataset.title : pageLabel(next.art, next.page);
+      var b2 = h("button", { type: "button", class: "next" }, "<small>" + nlab + "</small><b>" + nb + "</b>");
+      b2.addEventListener("click", next.go); pg.appendChild(b2);
+    } else if (MOD) {
       var mi = MODS.indexOf(THISMOD), nm = MODS[mi + 1];
-      var lk = h("a", { class: "next", href: ROOT + (nm ? nm.slug + "/" : "") }, nm ? "<small>Next module →</small><b>" + nm.title + "</b>" : "<small>All done →</small><b>Back to the course home</b>");
-      pg.appendChild(lk);
-    }
-    if (current < parts.length - 1) {
-      var n = parts[current + 1];
-      var b2 = h("button", { type: "button", class: "next" }, "<small>Next part →</small><b>" + n.dataset.num + " · " + n.dataset.title + "</b>");
-      b2.addEventListener("click", function () { showPart(current + 1, true); }); pg.appendChild(b2);
+      pg.appendChild(h("a", { class: "next", href: ROOT + (nm ? nm.slug + "/" : "") }, nm ? "<small>Next module →</small><b>" + nm.title + "</b>" : "<small>All done →</small><b>Back to the course home</b>"));
     }
   }
   function route() {
     var id = decodeURIComponent(location.hash.slice(1));
-    if (!id || id === "top") { showPart(current >= -1 ? current : -1, false); return; }
-    if (id === "welcome" || id === "home") { showPart(-1, true); return; }
+    if (!id || id === "top") { show(current >= -1 ? current : -1, curPage); return; }
+    if (id === "welcome" || id === "home") { show(-1, 0, { top: true }); return; }
     var el = document.getElementById(id);
     if (!el) return;
     var art = el.closest("article.part");
-    if (art) { var i = parts.indexOf(art); showPart(i, false, art === el ? null : id); if (art === el) window.scrollTo(0, 0); }
+    if (!art) return;
+    var i = parts.indexOf(art);
+    if (art === el) show(i, 0, { top: true });
+    else { var pg = pageOf(art, el); show(i, pg, art._pages[pg] === el ? { top: true } : { anchor: id }); }
   }
   window.addEventListener("hashchange", route);
-
-  // highlight current chapter in rail
-  var obs = "IntersectionObserver" in window ? new IntersectionObserver(function (ents) {
-    ents.forEach(function (en) {
-      if (en.isIntersecting) { $$(".toc a").forEach(function (a) { a.classList.toggle("on", a.dataset.ch === en.target.id); }); store.set(SITE.key + "-ch" + (MOD ? "-" + MOD : ""), en.target.id); }
-    });
-  }, { rootMargin: "-20% 0px -70% 0px" }) : null;
-  if (obs) $$("section.ch").forEach(function (s) { obs.observe(s); });
+  window.addEventListener("popstate", route);
 
   /* ---------- theme ---------- */
   function isDark() {
@@ -2496,9 +2606,15 @@ window.SITE = {"name": "GATE DA", "key": "gateda", "path": "gate-da", "domain": 
     updateScores();
     var startHash = location.hash.slice(1);
     if (startHash && document.getElementById(startHash)) route();
-    else { var sp = parseInt(store.get(PARTKEY, "-1"), 10); showPart(isNaN(sp) ? -1 : Math.min(parts.length - 1, Math.max(-1, sp)), false); }
+    else {
+      var sp = parseInt(store.get(PARTKEY, "-1"), 10); sp = isNaN(sp) ? -1 : Math.min(parts.length - 1, Math.max(-1, sp));
+      var lc = sp >= 0 ? document.getElementById(store.get(CHKEY, "")) : null;
+      var pos = null; try { pos = JSON.parse(store.get(POSKEY, "null")); } catch (e) {}
+      var pg = lc ? parts[sp]._pages.indexOf(lc) : -1;
+      show(sp, Math.max(0, pg), pg >= 0 && pos && pos.id === lc.id ? { y: pos.y } : {});
+    }
   }
-  DH.boot = boot;
+  DH.boot = boot; DH.show = show;
   DH._internal = { allQ: allQ, allP: allP, prog: function () { return prog; } };
 })();
 
