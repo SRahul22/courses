@@ -728,7 +728,7 @@ section.ch, section.pg-review { border-top:0; padding-top:24px; gap:30px; }
 .pyq > *:not(.label) { margin-inline:18px; }
 .pyq .abcd { gap:6px; }
 .pyq .abcd li { padding-left:2.4em; }
-.pyq .abcd li::before { content:"(" attr(data-l) ")"; font:600 12.5px/1.75 var(--font-mono); color:var(--tx3); }
+.pyq .abcd li::before { content:attr(data-l); font:600 12.5px/1.75 var(--font-mono); color:var(--tx3); }
 
 /* ---- Try it: an instrument panel ---- */
 .panel.try { border:1px solid color-mix(in srgb,var(--lab) 30%,var(--line)); border-radius:20px; background:var(--panel); box-shadow:var(--shadow2); }
@@ -907,9 +907,13 @@ body.drawer-open { overflow:hidden; }
 .ic-collapse { display:none; }
 .ic-close { display:inline; }
 
-/* reading column; on wide screens a 250 px margin for notes */
-main { max-width:760px; padding:72px 40px 140px; gap:64px; }
-main:has(> .hero.hub) { max-width:1120px; }
+/* reading column: centred, 700 px of text. Try-it panels, worked examples, tables and figures break out wider
+   on big screens (Distill / Stripe Press style) so the extra width goes to what needs it; margin notes float
+   into the right margin only when there is room for them (>= 1300 px). */
+main { max-width:none; padding:72px 40px 140px; gap:64px; align-items:center; }
+main > * { width:100%; max-width:700px; }
+main > .hero.hub { max-width:1120px; }
+main > .hero:not(.hub) { max-width:1000px; }
 section.ch, section.pg-review { display:block; padding-top:0; }
 section.ch > * + *, section.pg-review > * + * { margin-top:32px; }
 section.ch > .ch-head + *, section.pg-review > .ch-head + * { margin-top:36px; }
@@ -929,10 +933,15 @@ section.ch > .ch-head + *, section.pg-review > .ch-head + * { margin-top:36px; }
 .mnote summary::before { content:"▸"; display:inline-block; margin-right:6px; transition:transform .2s; }
 .mnote details[open] summary::before { transform:rotate(90deg); }
 .mnote ul { list-style:none; margin:6px 0 0; padding:0; display:flex; flex-direction:column; gap:4px; font-size:12.5px; color:var(--tx2); }
-@media (min-width:1180px) {
-  main:not(:has(> .hero.hub)) { max-width:1080px; }
-  section.ch, section.pg-review, #pager { width:100%; max-width:680px; }
+@media (min-width:1100px) {
+  section.ch > .panel.try, section.ch > .example, section.ch > .table-wrap, section.ch > figure.fig, section.ch > .widget { margin-inline:-110px; clear:right; }
+}
+@media (min-width:1500px) {
+  section.ch > .panel.try, section.ch > .example, section.ch > .table-wrap, section.ch > figure.fig, section.ch > .widget { margin-inline:-170px; }
+}
+@media (min-width:1300px) {
   .mnote { float:right; clear:right; width:250px; margin:8px -298px 20px 0 !important; }
+}
 }
 
 /* module front page */
@@ -992,7 +1001,7 @@ section.ch > .ch-head + *, section.pg-review > .ch-head + * { margin-top:36px; }
 .mn-body { display:flex; flex-direction:column; gap:8px; margin-top:8px; }
 .mn-body p { font-size:14px; line-height:1.55; }
 .mn-qk { font:600 10.5px var(--sans) !important; letter-spacing:.12em; text-transform:uppercase; color:var(--tx3); margin-top:4px !important; }
-@media (min-width:1180px) {
+@media (min-width:1300px) {
   .mnote.exam > summary { cursor:default; pointer-events:none; flex-direction:column; gap:2px; }
   .mnote.exam > summary::after { display:none; }
 }
@@ -1044,6 +1053,7 @@ dialog.revdlg::backdrop { background:rgba(24,18,10,.45); backdrop-filter:blur(3p
 .pg-done b { color:var(--ok); font-weight:600; }
 @media (max-width:900px) { .tk-test { right:16px; top:20px; } .rv-body { padding:18px 16px 22px; } .dash-rev-mods { margin-left:0; } }
 .dash-rev { order:3; }
+@media (min-width:1600px) { main > *:not(.hero) { max-width:760px; } section.ch, section.pg-review { font-size:20px; } }
 
 /* site theme */
 
@@ -3025,7 +3035,7 @@ window.SITE = {"name": "GATE DA", "key": "gateda", "path": "gate-da", "domain": 
     if (tbBar) tbBar.style.width = Math.max(0, Math.min(1, f)) * 100 + "%";
   }
   /* margin notes: beside the opening paragraphs on wide screens, after them on narrow ones */
-  var wide = window.matchMedia("(min-width: 1180px)");
+  var wide = window.matchMedia("(min-width: 1300px)");
   function placeNotes() {
     $$("section.ch").forEach(function (ch) {
       var lead = $(":scope > .lead", ch), notes = $$(":scope > .mnote", ch);
