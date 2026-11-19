@@ -3,21 +3,21 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>GATE DA: GATE Data Science & AI, explained clearly</title>
+<title>GATE DA: free GATE Data Science & AI preparation</title>
 <meta name="description" content="A free, interactive course for the GATE DA (Data Science and Artificial Intelligence) exam. Explains every idea visually, includes maths refreshers, and works through real previous-year questions.">
 <meta name="theme-color" content="#F6F2EC" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#14110F" media="(prefers-color-scheme: dark)">
 <meta property="og:type" content="website">
-<meta property="og:title" content="GATE DA: GATE Data Science & AI, explained clearly">
+<meta property="og:title" content="GATE DA: free GATE Data Science & AI preparation">
 <meta property="og:description" content="A free, interactive course for the GATE DA (Data Science and Artificial Intelligence) exam. Explains every idea visually, includes maths refreshers, and works through real previous-year questions.">
 <meta property="og:site_name" content="GATE DA">
 <meta property="og:url" content="https://courses.rahuldevsharma.com/gate-da/">
 <meta property="og:image" content="https://courses.rahuldevsharma.com/gate-da/preview.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="GATE DA: GATE Data Science & AI, explained clearly">
+<meta property="og:image:alt" content="GATE DA: free GATE Data Science & AI preparation">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="GATE DA: GATE Data Science & AI, explained clearly">
+<meta name="twitter:title" content="GATE DA: free GATE Data Science & AI preparation">
 <meta name="twitter:description" content="A free, interactive course for the GATE DA (Data Science and Artificial Intelligence) exam. Explains every idea visually, includes maths refreshers, and works through real previous-year questions.">
 <meta name="twitter:image" content="https://courses.rahuldevsharma.com/gate-da/preview.png">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 26 26'%3E%3Ccircle cx='13' cy='13' r='10' fill='%230E6B6B'/%3E%3C/svg%3E">
@@ -27,7 +27,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <!-- Google Fonts load without blocking the page; if they are blocked, the system fallbacks are used -->
-<link rel="stylesheet" media="print" onload="this.media='all'" href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;600&family=Figtree:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,300..600&family=Source+Serif+4:opsz,wght@8..60,400..700&family=JetBrains+Mono:wght@400;600&display=swap">
+<link rel="stylesheet" media="print" onload="this.media='all'" href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,300..600&family=Source+Serif+4:opsz,wght@8..60,400..700&family=JetBrains+Mono:wght@400;600&display=swap">
 <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,300..600&family=Source+Serif+4:opsz,wght@8..60,400..700&display=swap"></noscript>
 <!-- KaTeX is served from this site (vendor/katex, copied by build.py), so maths works where CDNs are blocked -->
 <link rel="stylesheet" href="./vendor/katex/katex.min.css">
@@ -55,7 +55,7 @@
   --plum:#7A4FB0; --plum-soft:rgba(122,79,176,.10); --warn:#C2571F; --warn-soft:rgba(194,87,31,.10);
   --gold:#A8780F; --gold-soft:rgba(168,120,15,.12); --plot-bg:#FFFDF9;
   --code-bg:#1B1915; --code-fg:#EDE6D8; --code-dim:#958C7C;
-  --serif:Fraunces,Georgia,serif; --read:"Source Serif 4","Source Serif Pro",Georgia,serif; --sans:Figtree,system-ui,-apple-system,"Segoe UI",sans-serif; --hand:Caveat,"Bradley Hand",cursive;
+  --display:Fraunces,Georgia,serif; --serif:"Source Serif 4","Source Serif Pro",Georgia,serif; --read:"Source Serif 4","Source Serif Pro",Georgia,serif; --sans:Figtree,system-ui,-apple-system,"Segoe UI",sans-serif; 
   --font-display:var(--serif); --font-ui:var(--sans); --font-body:var(--read);
   --font-mono:"JetBrains Mono",ui-monospace,"SF Mono",Menlo,Consolas,monospace;
   --r:14px; color-scheme:light;
@@ -1078,6 +1078,138 @@ dialog.revdlg::backdrop { background:rgba(24,18,10,.45); backdrop-filter:blur(3p
 .skip:focus { top:12px; }
 @media (max-width:900px) { .mnote.exam > summary { min-height:44px; align-items:center; } }
 
+/* ==========================================================================
+   PHASE 1, VISUAL CALM (2026-11-19, after the six-reviewer audit)
+   Type: Fraunces (--display) only for the one page title; Source Serif 4 for all reading and headings;
+   Figtree for anything you click or answer; mono only for code.
+   Colour: teal = anything you act on; coral = GATE/exam material; green/red = right/wrong; all else neutral.
+   Frames: one level. Blocks are "label + rule + content", not tinted boxes inside boxes.
+   ========================================================================== */
+:root { --q:var(--brand); --ex:var(--tx2); --thm:var(--tx2); }
+:root[data-theme="dark"] { --q:var(--brand); --ex:var(--tx2); --thm:var(--tx2); }
+@media (prefers-color-scheme:dark) { :root:not([data-theme="light"]) { --q:var(--brand); --ex:var(--tx2); --thm:var(--tx2); } }
+
+/* type */
+h1, .ch-head h2, .part-divider h2, .brand { font-family:var(--display); }
+h1, .ch-head h2 { letter-spacing:-.012em; font-weight:400; font-variation-settings:"opsz" 72; }
+h2, h3, h4, .block-h, .quiz-head h3, .takeaways h3 { font-family:var(--serif); letter-spacing:-.005em; font-variation-settings:normal; }
+.prose h3, section.ch > h3 { font-weight:600; font-size:clamp(23px,2.6vw,27px); letter-spacing:-.01em; }
+.lead .lead-idea { font-family:var(--serif); font-weight:400; letter-spacing:0; font-variation-settings:normal; }
+.box > .label b, .pager button b, .pager a b, .mod-card .mc-top b, .mp-t b, .mx-ch b, .dash-last b, .hub-more > summary b, .dash-pct, .mp-n, .takeaways ol > li::before { font-family:var(--serif); letter-spacing:0; }
+.hub-sec > h2, .plan-head h2, .mod-exam h2, .rv-end h3 { font-weight:500; letter-spacing:-.01em; }
+.callout::before { content:"Careful"; font:600 13px var(--sans); letter-spacing:0; color:var(--careful); margin-bottom:4px; }
+.prose h3::before, section.ch > h3::before { display:none; }
+
+/* labels: sentence case, quiet; only the chapter meta line keeps small caps */
+.label, .box > .label, .example > .label, .panel.try > .label, .predict > .label, .mnote .mn-k, .rv-k, .dash-k, .hub-sec .kicker, .plan-head .kicker, .mod-exam .kicker, .hub-more > summary .kicker, .eyebrow, .rv-from, .mn-qk, .q-text > .q-from {
+  text-transform:none !important; letter-spacing:0 !important; font:600 13px/1.4 var(--sans) !important; }
+.eyebrow, .hub-sec .kicker, .plan-head .kicker, .mod-exam .kicker, .hub-more > summary .kicker, .dash-k, .rv-from, .q-text > .q-from { color:var(--tx3) !important; }
+.practice > .block-h::before, .quiz:not(.review) .quiz-head h3::before, .quiz.review .quiz-head h3::before, .takeaways h3::before { display:none; }
+
+/* definition / theorem / key idea: a hairline rule and a label, no fill */
+.box, .box.def, .box.thm, .box.plain, .box.alg { --c:var(--line2); background:transparent; border:0; border-left:2px solid var(--c); border-radius:0; padding:2px 0 2px 22px; }
+.box > .label { color:var(--tx3); }
+.box > .label b { color:var(--tx); font-size:19px; font-weight:600; }
+.box.def > .label, .box.plain > .label { color:var(--brand); }
+.box.trick { --c:var(--brand2); background:transparent; }
+.box.trick > .label { color:var(--brand2); }
+.box.trick > .label::before { content:none; }
+.callout { background:transparent; border-left:2px solid var(--careful); border-radius:0; padding:2px 0 2px 22px; }
+
+/* worked example: no wash; the exam question is a quote with a coral rule; steps are plain */
+.example { background:transparent; box-shadow:none; border-top:1px solid var(--line); border-bottom:1px solid var(--line); border-radius:0; padding:22px 0; }
+.example > .label { color:var(--tx3); }
+.pyq { border:0; border-left:2px solid var(--brand2); border-radius:0; background:transparent; box-shadow:none; padding:0 0 0 20px; gap:10px; background-image:none; }
+.pyq > .label { padding:0; border:0; background:none; color:var(--brand2) !important; }
+.pyq > *:not(.label) { margin-inline:0; }
+.prob .pyq { padding-left:18px; }
+.step::before { background:transparent; color:var(--tx2); box-shadow:inset 0 0 0 1.5px var(--line2); }
+.step::after { background:var(--line); }
+.step .why-step { background:transparent; border:0; padding:4px 0 0; font-size:14.5px; color:var(--tx3); }
+.step .why-step::before { color:var(--tx3); letter-spacing:0; text-transform:none; font-size:13px; }
+
+/* try it: a plain label, no dotted band */
+.panel.try > .label { background:transparent; border-bottom:1px solid var(--line); color:var(--brand); }
+.panel.try > .label::before { animation:none; box-shadow:none; width:7px; height:7px; }
+
+/* "In GATE DA" chips and radar: exam = coral, sans not mono */
+.radar .pyqs span, .mx-qs span, .radar .heat, .fmt-grid .tag { font-family:var(--sans); }
+
+/* key points: a quiet card, not an inverted slab */
+.takeaways { background:var(--panel); color:var(--tx); border:1px solid var(--line); box-shadow:none; }
+.takeaways::after { content:none; }
+.takeaways h3 { color:var(--tx); }
+.takeaways ol > li { color:var(--tx); border-top-color:var(--line); }
+.takeaways ol > li::before { color:var(--brand); }
+.tk-test { border-color:var(--line2); color:var(--tx2); }
+.tk-test:hover { background:var(--hover); }
+.takeaways.recall ol > li:not(.seen) { text-shadow:0 0 10px color-mix(in srgb,var(--tx) 55%,transparent); }
+.takeaways.recall ol > li:not(.seen)::after { color:var(--tx3); }
+.dodont > div { border-radius:var(--r); }
+.dodont h4 { font-family:var(--sans); font-size:15px; font-weight:600; }
+
+/* pager: quiet; the next step is teal text, not a slab */
+.pager button.next, .pager a.next { background:var(--panel); color:var(--tx); border:1px solid color-mix(in srgb,var(--brand) 45%,var(--line)); box-shadow:none; }
+.pager button.next small, .pager a.next small { color:var(--brand); }
+:root[data-theme="dark"] .pager .next { color:var(--tx); }
+@media (prefers-color-scheme:dark) { :root:not([data-theme="light"]) .pager .next { color:var(--tx); } }
+.pager button.next:hover, .pager a.next:hover { border-color:var(--brand); transform:none; }
+
+/* every action is teal */
+.cmd, .ans-row .cmd, .steps-ctrl .cmd, .rv-grade .cmd, .rv-end .cmd { background:var(--brand); color:#fff; }
+:root[data-theme="dark"] .cmd { color:#0D1514; }
+@media (prefers-color-scheme:dark) { :root:not([data-theme="light"]) .cmd { color:#0D1514; } }
+
+/* the last flourishes */
+.hub-art { opacity:.9; }
+.lead .lead-like::before { content:none; }
+
+/* ---------- minimal home page (phase 1): title, one line, the button, a quiet list of modules ---------- */
+.hero.hub { gap:44px; }
+.hero.hub .hub-top { padding-right:0 !important; min-height:0 !important; max-width:680px; gap:14px; }
+.hero.hub h1 { font-size:clamp(48px,7vw,80px); line-height:1; letter-spacing:-.02em; }
+.hero.hub .lede { font-size:clamp(18px,2vw,21px); }
+.hub-art, .hub-facts { display:none !important; }
+main > .hero.hub { max-width:880px; }
+.modplan { display:flex !important; flex-direction:column; gap:0; border-top:1px solid var(--line); }
+.mod-card { display:grid !important; grid-template-columns:minmax(0,1fr) 190px; grid-template-areas:"top prog" "blurb meta"; gap:4px 28px; align-items:center; padding:18px 4px !important; border:0 !important; border-bottom:1px solid var(--line) !important; border-radius:0 !important; background:transparent !important; box-shadow:none !important; transition:background .2s; }
+.mod-card:hover { transform:none !important; background:var(--hover) !important; }
+.mod-card .mc-top { grid-area:top; flex-wrap:nowrap; }
+.mod-card .mc-top b { font-size:20px; font-weight:600; }
+.mod-card .mn { width:28px; height:28px; font-size:12.5px; background:transparent !important; color:var(--tx3) !important; border:1px solid var(--line2); }
+.mod-card.complete .mn { background:var(--ok) !important; color:#fff !important; border-color:var(--ok); }
+.mod-card .mc-blurb { grid-area:blurb; padding-left:38px; font-size:15px; color:var(--tx3); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.mod-card .mc-meta { grid-area:meta; font-size:12.5px; text-align:right; }
+.mod-card .mc-prog { grid-area:prog; margin:0; }
+.mod-card .mc-prog small { text-align:right; }
+.mod-card.current { box-shadow:inset 3px 0 0 var(--brand) !important; }
+.mc-st { margin-left:10px; }
+.hub-foot { display:flex; flex-wrap:wrap; justify-content:space-between; gap:8px 20px; margin-top:14px; font:400 14px var(--sans); color:var(--tx3); }
+.hub-foot a { color:var(--brand); text-decoration:none; font-weight:600; }
+.hub-foot a:hover { text-decoration:underline; }
+@media (max-width:700px) {
+  .mod-card { grid-template-columns:minmax(0,1fr); grid-template-areas:"top" "prog" "meta"; }
+  .mod-card .mc-blurb { display:none; }
+  .mod-card .mc-meta, .mod-card .mc-prog small { text-align:left; padding-left:38px; }
+  .mod-card .mc-prog .bar { margin-left:38px; }
+}
+/* the exam page */
+.hero.about { gap:40px; }
+main > .hero.about { max-width:880px; }
+.hero.about h1 { font-size:clamp(38px,5vw,56px); line-height:1.05; }
+.back-link { font:600 14px var(--sans); color:var(--tx3); text-decoration:none; }
+.back-link:hover { color:var(--brand); }
+.mod-card .mc-prog.zero .bar { display:none; }
+.opt { border-width:1px; }
+/* home dashboard: one quiet line (the Continue button already says where you were) */
+.dash { grid-template-columns:minmax(0,1fr) !important; gap:12px; }
+.dash-last { display:none !important; }
+.dash-main { flex-direction:row !important; flex-wrap:wrap; align-items:center; gap:8px 16px; padding:0 !important; border:0 !important; background:transparent !important; box-shadow:none !important; }
+.dash-main .dash-k, .dash-main .dash-pct { display:none; }
+.dash-main .bar { flex:0 0 140px; }
+.dash-main .dash-sub { font-size:14px; color:var(--tx3); }
+.dash-rev { border-radius:var(--r) !important; box-shadow:none !important; }
+
 /* site theme */
 
 </style>
@@ -1121,82 +1253,16 @@ dialog.revdlg::backdrop { background:rgba(24,18,10,.45); backdrop-filter:blur(3p
   <main id="top" tabindex="-1">
     <header class="hero hub" id="welcome">
       <div class="hub-top">
-        <svg class="hub-art" viewBox="0 0 290 300" aria-hidden="true">
-          <rect x="6" y="6" width="278" height="288" rx="26" fill="var(--panel)" stroke="var(--line2)"/>
-          <g stroke="var(--line)"><path d="M30 60H262M30 110H262M30 160H262M30 210H262"/></g>
-          <path d="M30 210 C 80 210, 100 72, 146 72 S 212 210, 262 210 Z" fill="var(--brand)" fill-opacity=".09"/>
-          <path d="M30 210 C 80 210, 100 72, 146 72 S 212 210, 262 210" fill="none" stroke="var(--brand)" stroke-width="2.5"/>
-          <path d="M146 72V210" stroke="var(--brand)" stroke-dasharray="3 5" stroke-width="1.5"/>
-          <g fill="var(--brand2)"><circle cx="58" cy="182" r="4"/><circle cx="84" cy="166" r="4"/><circle cx="104" cy="140" r="4"/><circle cx="126" cy="122" r="4"/><circle cx="170" cy="118" r="4"/><circle cx="198" cy="150" r="4"/><circle cx="226" cy="176" r="4"/></g>
-          <g font-family="Figtree,sans-serif" font-size="11" fill="var(--tx3)"><text x="30" y="40" letter-spacing="1.5">P(X ≤ x)</text><text x="152" y="66">μ</text></g>
-          <g transform="translate(30 232)"><rect width="22" height="22" rx="5" fill="var(--brand)"/><rect x="26" width="22" height="22" rx="5" fill="var(--brand-soft)" stroke="var(--line2)"/><rect x="52" width="22" height="22" rx="5" fill="var(--brand-soft)" stroke="var(--line2)"/><rect x="78" width="22" height="22" rx="5" fill="var(--brand2)" opacity=".85"/><rect x="104" width="22" height="22" rx="5" fill="var(--brand-soft)" stroke="var(--line2)"/></g>
-          <g transform="translate(196 232)" stroke="var(--tx3)" stroke-width="1.5" fill="var(--panel)"><path d="M33 4L12 30M33 4L54 30" fill="none"/><circle cx="33" cy="6" r="6" fill="var(--brand)" stroke="none"/><circle cx="12" cy="32" r="6"/><circle cx="54" cy="32" r="6" fill="var(--brand2)" stroke="none"/></g>
-        </svg>
-        <span class="eyebrow">GATE Data Science & AI, explained clearly</span>
-        <h1>GATE DA, explained clearly, one idea at a time.</h1>
-        <p class="lede">Short lessons, pictures you can drag around, and real GATE questions solved step by step. Free, no sign-up, at your own pace.</p>
-        <ul class="hub-facts" aria-label="At a glance">
-          <li><b data-n="mods">7</b> modules</li>
-          <li><b data-n="qs">560</b> graded questions</li>
-          <li>PYQs <b>2024–2026</b>, checked against the official keys</li>
-        </ul>
+        <h1>GATE DA</h1>
+        <p class="lede">Free, interactive preparation for the GATE Data Science &amp; AI paper.</p>
       </div>
 
       <section class="dash" id="dash" aria-label="Your progress" hidden></section>
 
-      <section class="hub-sec" aria-labelledby="h-modules">
-        <span class="kicker">YOUR ROUTE</span>
-        <h2 id="h-modules">Seven modules, in a sensible order</h2>
-        <p>Start with the refreshers if the maths feels rusty, or jump straight to probability. Each module opens with a short overview, then one chapter per screen. Progress is saved in this browser.</p>
+      <section class="hub-sec" aria-label="Modules">
         <div class="modplan" id="modplan"></div>
-        <div class="modplan">
-          <div class="mod-card soon"><span class="mc-top"><span class="mn">·</span><b>Coming next</b></span><span class="mc-blurb">Machine learning, AI, and an exam lab with full past papers and timed mocks.</span></div>
-        </div>
+        <p class="hub-foot"><span>Coming next: machine learning, AI and timed mocks.</span><a href="about/">How the GATE DA exam works →</a></p>
       </section>
-
-      <section class="hub-sec" aria-labelledby="h-marks">
-        <span class="kicker">WHERE THE MARKS ARE</span>
-        <h2 id="h-marks">Maths is about 40% of the subject marks</h2>
-        <p>Every subject question in the three real papers so far (2024, 2025, 2026), sorted by topic. Probability, linear algebra and calculus together average about 35 of the 85 subject marks, which is why we start there.</p>
-        <figure class="wchart" aria-labelledby="wc-t">
-          <span class="wc-title" id="wc-t">Average marks per subject, GATE DA 2024–2026 (out of 85)</span>
-          <span class="wc-sub">Small numbers under each subject: 2024 · 2025 · 2026</span>
-          <div class="wrow-bar" tabindex="0"><span class="wl">Probability &amp; statistics<small>15 · 19 · 21</small></span><span class="wt"><i class="maths" style="width:86%"></i><b style="left:86%">18.3</b></span><span class="tip">2024: 15 · 2025: 19 · 2026: 21 marks</span></div>
-          <div class="wrow-bar" tabindex="0"><span class="wl">Python &amp; DSA<small>20 · 14 · 14</small></span><span class="wt"><i style="width:75%"></i><b style="left:75%">16.0</b></span><span class="tip">2024: 20 · 2025: 14 · 2026: 14 marks</span></div>
-          <div class="wrow-bar" tabindex="0"><span class="wl">Machine learning<small>15 · 12 · 14</small></span><span class="wt"><i style="width:64%"></i><b style="left:64%">13.7</b></span><span class="tip">2024: 15 · 2025: 12 · 2026: 14 marks</span></div>
-          <div class="wrow-bar" tabindex="0"><span class="wl">Databases &amp; warehousing<small>7 · 11 · 18</small></span><span class="wt"><i style="width:56%"></i><b style="left:56%">12.0</b></span><span class="tip">2024: 7 · 2025: 11 · 2026: 18 marks</span></div>
-          <div class="wrow-bar" tabindex="0"><span class="wl">Linear algebra<small>10 · 12 · 8</small></span><span class="wt"><i class="maths" style="width:47%"></i><b style="left:47%">10.0</b></span><span class="tip">2024: 10 · 2025: 12 · 2026: 8 marks</span></div>
-          <div class="wrow-bar" tabindex="0"><span class="wl">Artificial intelligence<small>10 · 6 · 8</small></span><span class="wt"><i style="width:38%"></i><b style="left:38%">8.0</b></span><span class="tip">2024: 10 · 2025: 6 · 2026: 8 marks</span></div>
-          <div class="wrow-bar" tabindex="0"><span class="wl">Calculus &amp; optimization<small>8 · 11 · 2</small></span><span class="wt"><i class="maths" style="width:33%"></i><b style="left:33%">7.0</b></span><span class="tip">2024: 8 · 2025: 11 · 2026: 2 marks</span></div>
-          <div class="wc-key"><span class="maths">Maths subjects</span><span>Other subjects</span></div>
-        </figure>
-        <p>Some things come up every single year: a Bayes' theorem calculation, the exponential distribution, eigenvalue shortcuts, projection matrices. When a chapter covers one of these, it says so at the top, with the exact questions.</p>
-      </section>
-
-      <div class="hub-mores">
-      <details class="hub-more">
-        <summary><span class="kicker">THE EXAM IN TWO MINUTES</span><b>How the GATE DA paper works</b></summary>
-        <div class="hm-body">
-        <div class="fmt-grid">
-          <div><span class="tag">Shape</span><b>65 questions, 100 marks, 3 hours</b><p>General Aptitude: 10 questions for 15 marks. The DA subject: 55 questions for 85 marks (25 one-markers and 30 two-markers).</p></div>
-          <div><span class="tag">MCQ</span><b>Pick one of four</b><p>The only type with negative marking: you lose ⅓ of a mark on a wrong 1-mark answer and ⅔ on a wrong 2-mark answer.</p></div>
-          <div><span class="tag">MSQ</span><b>Select all that apply</b><p>One or more options are right. You get the marks only if you pick exactly the right set. No negative marking, so guessing is never punished.</p></div>
-          <div><span class="tag">NAT</span><b>Type in a number</b><p>No options to guess from, often "rounded off to two decimal places". No negative marking. An on-screen calculator is provided.</p></div>
-        </div>
-        <p>About half of each paper is MSQ or NAT. You can't eliminate your way to those, so you have to actually understand and compute. That's why every chapter here ends with questions in all three formats.</p>
-      </div>
-      </details>
-      <details class="hub-more">
-        <summary><span class="kicker">THE RUNNING STORY</span><b>You are the new analyst for the Data Premier League</b></summary>
-        <div class="hm-body">
-        <div class="prose">
-          <p>Five teams: the <b>Kalinga Kernels</b>, the <b>Haryana Heuristics</b>, the <b>Bengaluru Backprops</b>, the <b>Nagpur Neural Nets</b> and the <b>Hyderabad Hyperplanes</b>. They play a lot of cricket and produce a lot of data: tosses, scores, strike rates, player ratings, match results. The teams and every number about them are made up, so we can bend the data to teach whatever we need.</p>
-          <p>Every module uses this league as its playground. In probability you'll work out the chance a team wins after winning the toss. In linear algebra, a player's season becomes a vector and a whole squad becomes a matrix. Later, the same data turns into SQL tables, a regression model and a game tree. GATE itself loves cricket and kabaddi tables, so you'll feel at home on exam day.</p>
-        </div>
-      </div>
-      </details>
-      </div>
-
     </header>
 
     <div id="parts">
@@ -1223,7 +1289,7 @@ dialog.revdlg::backdrop { background:rgba(24,18,10,.45); backdrop-filter:blur(3p
 <canvas id="confetti" hidden></canvas>
 
 <script>
-window.SITE = {"name": "GATE DA", "key": "gateda", "path": "gate-da", "domain": "courses.rahuldevsharma.com/gate-da", "author": "Rahul Dev Sharma", "tagline": "GATE Data Science & AI, explained clearly", "description": "A free, interactive course for the GATE DA (Data Science and Artificial Intelligence) exam. Explains every idea visually, includes maths refreshers, and works through real previous-year questions.", "certTitle": ["GATE DA", "Maths, Python, DSA & databases"], "certBody": ["answered every quiz and practice question correctly across", "GATE DA's refreshers, probability, statistics, linear algebra,", "calculus & optimization, Python & DSA, and databases modules."], "footer_html": "      <p><b>Acknowledgement.</b> Previous-year questions are quoted from the official GATE Data Science and Artificial Intelligence (DA) papers: 2024 (organised by IISc Bengaluru), 2025 (IIT Roorkee) and 2026 (IIT Guwahati), and from the 2024 DA sample paper; one LU question is quoted from GATE CS 2025 (set 2, IIT Roorkee). Each is cited by year and question number, and every answer is checked against the official answer keys. The syllabus followed is the GATE 2027 DA syllabus (IIT Madras).</p>\n      <p><b>Disclaimer.</b> An independent study resource. The Data Premier League, its teams and all their data are fictional. Not affiliated with, reviewed by or endorsed by GATE, IISc or any IIT. Solutions and explanations are the author's own; any mistakes are the author's too.</p>", "modules": [{"slug": "refreshers", "title": "Maths refreshers", "short": "Refreshers", "kind": "prereq", "blurb": "The maths toolkit, recapped: algebra, logs, sums, sets, derivatives, integrals and vectors. Everything the later modules lean on."}, {"slug": "probability", "title": "Probability", "short": "Probability", "kind": "", "blurb": "Counting, Bayes, random variables and the distributions GATE loves. The single biggest block of marks in the paper."}, {"slug": "statistics", "title": "Statistics", "short": "Statistics", "kind": "", "blurb": "Describing data, estimators, the Central Limit Theorem, confidence intervals and hypothesis tests (z, t and \u03c7\u00b2), built on the probability module."}, {"slug": "linear-algebra", "title": "Linear algebra", "short": "Linear algebra", "kind": "", "blurb": "Vectors, subspaces, rank, eigenvalues, projections and SVD, taught as pictures and exam shortcuts."}, {"slug": "calculus", "title": "Calculus & optimization", "short": "Calculus", "kind": "", "blurb": "Limits, continuity and differentiability, Taylor series, and finding maxima and minima: the single-variable calculus GATE DA tests, plus the optimisation ML relies on."}, {"slug": "python-dsa", "title": "Python & DSA", "short": "Python & DSA", "kind": "", "blurb": "The Python that GATE's code-tracing questions test, then complexity, searching and sorting, stacks, queues, hashing, trees and graph algorithms."}, {"slug": "dbms", "title": "Databases & warehousing", "short": "Databases", "kind": "", "blurb": "ER design, relational algebra, tuple calculus, SQL, functional dependencies and normal forms, B+ tree indexes, data transformation and OLAP cubes, all on the league's own tables."}], "manifest": {"refreshers": ["r-functions-p1", "r-functions-p2", "r-functions-p3", "r-functions-p4", "r-functions/0", "r-functions/1", "r-functions/2", "r-functions/3", "r-explog-p1", "r-explog-p2", "r-explog-p3", "r-explog-p4", "r-explog/0", "r-explog/1", "r-explog/2", "r-explog/3", "r1-review/0", "r1-review/1", "r1-review/2", "r1-review/3", "r-sums-p1", "r-sums-p2", "r-sums-p3", "r-sums-p4", "r-sums/0", "r-sums/1", "r-sums/2", "r-sums/3", "r-sets-p1", "r-sets-p2", "r-sets-p3", "r-sets-p4", "r-sets/0", "r-sets/1", "r-sets/2", "r-sets/3", "r2-review/0", "r2-review/1", "r2-review/2", "r2-review/3", "r-deriv-p1", "r-deriv-p2", "r-deriv-p3", "r-deriv-p4", "r-deriv/0", "r-deriv/1", "r-deriv/2", "r-deriv/3", "r-integ-p1", "r-integ-p2", "r-integ-p3", "r-integ-p4", "r-integ/0", "r-integ/1", "r-integ/2", "r-integ/3", "r-grad-p1", "r-grad-p2", "r-grad-p3", "r-grad-p4", "r-grad/0", "r-grad/1", "r-grad/2", "r3-review/0", "r3-review/1", "r3-review/2", "r3-review/3", "r-vectors-p1", "r-vectors-p2", "r-vectors-p3", "r-vectors-p4", "r-vectors/0", "r-vectors/1", "r-vectors/2", "r-matrices-p1", "r-matrices-p2", "r-matrices-p3", "r-matrices-p4", "r-matrices/0", "r-matrices/1", "r-matrices/2", "r4-review/0", "r4-review/1", "r4-review/2", "r4-review/3", "r4-review/4"], "probability": ["pr-counting-p1", "pr-counting-p2", "pr-counting-p3", "pr-counting-p4", "pr-counting/0", "pr-counting/1", "pr-counting/2", "pr-events-p1", "pr-events-p2", "pr-events-p3", "pr-events-p4", "pr-events/0", "pr-events/1", "pr-events/2", "pr-events/3", "pr1-review/0", "pr1-review/1", "pr1-review/2", "pr1-review/3", "pr-conditional-p1", "pr-conditional-p2", "pr-conditional-p3", "pr-conditional-p4", "pr-conditional/0", "pr-conditional/1", "pr-conditional/2", "pr-bayes-p1", "pr-bayes-p2", "pr-bayes-p3", "pr-bayes-p4", "pr-bayes/0", "pr-bayes/1", "pr-bayes/2", "pr2-review/0", "pr2-review/1", "pr2-review/2", "pr-rv-p1", "pr-rv-p2", "pr-rv-p3", "pr-rv-p4", "pr-rv/0", "pr-rv/1", "pr-rv/2", "pr-expect-p1", "pr-expect-p2", "pr-expect-p3", "pr-expect-p4", "pr-expect/0", "pr-expect/1", "pr-expect/2", "pr-expect/3", "pr3-review/0", "pr3-review/1", "pr3-review/2", "pr-discrete-p1", "pr-discrete-p2", "pr-discrete-p3", "pr-discrete-p4", "pr-discrete/0", "pr-discrete/1", "pr-discrete/2", "pr-continuous-p1", "pr-continuous-p2", "pr-continuous-p3", "pr-continuous-p4", "pr-continuous/0", "pr-continuous/1", "pr-continuous/2", "pr-continuous/3", "pr4-review/0", "pr4-review/1", "pr4-review/2", "pr-joint-p1", "pr-joint-p2", "pr-joint-p3", "pr-joint-p4", "pr-joint/0", "pr-joint/1", "pr-joint/2", "pr-condexp-p1", "pr-condexp-p2", "pr-condexp-p3", "pr-condexp/0", "pr-condexp/1", "pr-condexp/2", "pr5-review/0", "pr5-review/1", "pr5-review/2", "pr5-review/3", "pr5-review/4"], "statistics": ["st-descriptive-p1", "st-descriptive-p2", "st-descriptive-p3", "st-descriptive-p4", "st-descriptive/0", "st-descriptive/1", "st-descriptive/2", "st-correlation-p1", "st-correlation-p2", "st-correlation-p3", "st-correlation-p4", "st-correlation/0", "st-correlation/1", "st-correlation/2", "st1-review/0", "st1-review/1", "st1-review/2", "st-estimators-p1", "st-estimators-p2", "st-estimators-p3", "st-estimators-p4", "st-estimators/0", "st-estimators/1", "st-estimators/2", "st-clt-p1", "st-clt-p2", "st-clt-p3", "st-clt-p4", "st-clt/0", "st-clt/1", "st-clt/2", "st2-review/0", "st2-review/1", "st2-review/2", "st-tchi-p1", "st-tchi-p2", "st-tchi-p3", "st-tchi-p4", "st-tchi/0", "st-tchi/1", "st-tchi/2", "st-ci-p1", "st-ci-p2", "st-ci-p3", "st-ci-p4", "st-ci/0", "st-ci/1", "st-ci/2", "st3-review/0", "st3-review/1", "st3-review/2", "st-tests-p1", "st-tests-p2", "st-tests-p3", "st-tests-p4", "st-tests/0", "st-tests/1", "st-tests/2", "st-ttest-chi-p1", "st-ttest-chi-p2", "st-ttest-chi-p3", "st-ttest-chi-p4", "st-ttest-chi/0", "st-ttest-chi/1", "st-ttest-chi/2", "st4-review/0", "st4-review/1", "st4-review/2", "st4-review/3", "st4-review/4"], "linear-algebra": ["la-spaces-p1", "la-spaces-p2", "la-spaces-p3", "la-spaces/0", "la-spaces/1", "la-spaces/2", "la-independence-p1", "la-independence-p2", "la-independence-p3", "la-independence-p4", "la-independence/0", "la-independence/1", "la-independence/2", "la1-review/0", "la1-review/1", "la1-review/2", "la-systems-p1", "la-systems-p2", "la-systems-p3", "la-systems-p4", "la-systems/0", "la-systems/1", "la-systems/2", "la-rank-p1", "la-rank-p2", "la-rank-p3", "la-rank-p4", "la-rank/0", "la-rank/1", "la-rank/2", "la-det-p1", "la-det-p2", "la-det-p3", "la-det-p4", "la-det/0", "la-det/1", "la-det/2", "la2-review/0", "la2-review/1", "la2-review/2", "la-eigen-p1", "la-eigen-p2", "la-eigen-p3", "la-eigen-p4", "la-eigen/0", "la-eigen/1", "la-eigen/2", "la-special-p1", "la-special-p2", "la-special-p3", "la-special-p4", "la-special/0", "la-special/1", "la-special/2", "la-quad-p1", "la-quad-p2", "la-quad-p3", "la-quad-p4", "la-quad/0", "la-quad/1", "la-quad/2", "la3-review/0", "la3-review/1", "la3-review/2", "la-lu-p1", "la-lu-p2", "la-lu-p3", "la-lu-p4", "la-lu/0", "la-lu/1", "la-lu/2", "la-svd-p1", "la-svd-p2", "la-svd-p3", "la-svd-p4", "la-svd/0", "la-svd/1", "la-svd/2", "la4-review/0", "la4-review/1", "la4-review/2", "la4-review/3", "la4-review/4"], "calculus": ["ca-limits-p1", "ca-limits-p2", "ca-limits-p3", "ca-limits-p4", "ca-limits/0", "ca-limits/1", "ca-limits/2", "ca-continuity-p1", "ca-continuity-p2", "ca-continuity-p3", "ca-continuity-p4", "ca-continuity/0", "ca-continuity/1", "ca-continuity/2", "ca1-review/0", "ca1-review/1", "ca1-review/2", "ca-taylor-p1", "ca-taylor-p2", "ca-taylor-p3", "ca-taylor-p4", "ca-taylor/0", "ca-taylor/1", "ca-taylor/2", "ca-extrema-p1", "ca-extrema-p2", "ca-extrema-p3", "ca-extrema-p4", "ca-extrema/0", "ca-extrema/1", "ca-extrema/2", "ca2-review/0", "ca2-review/1", "ca2-review/2", "ca-optim-p1", "ca-optim-p2", "ca-optim-p3", "ca-optim-p4", "ca-optim/0", "ca-optim/1", "ca-optim/2", "ca-convex-p1", "ca-convex-p2", "ca-convex-p3", "ca-convex/0", "ca-convex/1", "ca-convex/2", "ca3-review/0", "ca3-review/1", "ca3-review/2", "ca3-review/3", "ca3-review/4"], "python-dsa": ["py-basics-p1", "py-basics-p2", "py-basics-p3", "py-basics-p4", "py-basics/0", "py-basics/1", "py-basics/2", "py-functions-p1", "py-functions-p2", "py-functions-p3", "py-functions-p4", "py-functions/0", "py-functions/1", "py-functions/2", "py1-review/0", "py1-review/1", "py1-review/2", "ds-complexity-p1", "ds-complexity-p2", "ds-complexity-p3", "ds-complexity-p4", "ds-complexity/0", "ds-complexity/1", "ds-complexity/2", "ds-sorting-p1", "ds-sorting-p2", "ds-sorting-p3", "ds-sorting-p4", "ds-sorting/0", "ds-sorting/1", "ds-sorting/2", "ds-dc-p1", "ds-dc-p2", "ds-dc-p3", "ds-dc-p4", "ds-dc/0", "ds-dc/1", "ds-dc/2", "py2-review/0", "py2-review/1", "py2-review/2", "ds-linear-p1", "ds-linear-p2", "ds-linear-p3", "ds-linear-p4", "ds-linear/0", "ds-linear/1", "ds-linear/2", "ds-hashing-p1", "ds-hashing-p2", "ds-hashing-p3", "ds-hashing-p4", "ds-hashing/0", "ds-hashing/1", "ds-hashing/2", "ds-trees-p1", "ds-trees-p2", "ds-trees-p3", "ds-trees-p4", "ds-trees/0", "ds-trees/1", "ds-trees/2", "py3-review/0", "py3-review/1", "py3-review/2", "ds-graphs-p1", "ds-graphs-p2", "ds-graphs-p3", "ds-graphs-p4", "ds-graphs/0", "ds-graphs/1", "ds-graphs/2", "ds-shortest-p1", "ds-shortest-p2", "ds-shortest-p3", "ds-shortest-p4", "ds-shortest/0", "ds-shortest/1", "ds-shortest/2", "py4-review/0", "py4-review/1", "py4-review/2", "py4-review/3", "py4-review/4"], "dbms": ["db-relational-p1", "db-relational-p2", "db-relational-p3", "db-relational-p4", "db-relational/0", "db-relational/1", "db-relational/2", "db-er-p1", "db-er-p2", "db-er-p3", "db-er-p4", "db-er/0", "db-er/1", "db-er/2", "db1-review/0", "db1-review/1", "db1-review/2", "db1-review/3", "db-algebra-p1", "db-algebra-p2", "db-algebra-p3", "db-algebra-p4", "db-algebra-p5", "db-algebra/0", "db-algebra/1", "db-algebra/2", "db-trc-p1", "db-trc-p2", "db-trc-p3", "db-trc-p4", "db2-review/0", "db2-review/1", "db2-review/2", "db2-review/3", "db-sql-p1", "db-sql-p2", "db-sql-p3", "db-sql-p4", "db-sql/0", "db-sql/1", "db-sql/2", "db-subq-p1", "db-subq-p2", "db-subq-p3", "db-subq-p4", "db-subq/0", "db-subq/1", "db-subq/2", "db3-review/0", "db3-review/1", "db3-review/2", "db3-review/3", "db-fd-p1", "db-fd-p2", "db-fd-p3", "db-fd-p4", "db-fd/0", "db-fd/1", "db-fd/2", "db-nf-p1", "db-nf-p2", "db-nf-p3", "db-nf-p4", "db-nf/0", "db-nf/1", "db-nf/2", "db4-review/0", "db4-review/1", "db4-review/2", "db4-review/3", "db-index-p1", "db-index-p2", "db-index-p3", "db-index-p4", "db-index/0", "db-index/1", "db-index/2", "db-transform-p1", "db-transform-p2", "db-transform-p3", "db-transform-p4", "db-transform/0", "db-transform/1", "db-transform/2", "db-olap-p1", "db-olap-p2", "db-olap-p3", "db-olap-p4", "db-olap/0", "db-olap/1", "db-olap/2", "db5-review/0", "db5-review/1", "db5-review/2", "db5-review/3"]}, "modinfo": {"refreshers": {"parts": 4, "chs": 9, "min": 405}, "probability": {"parts": 5, "chs": 10, "min": 525}, "statistics": {"parts": 4, "chs": 8, "min": 395}, "linear-algebra": {"parts": 4, "chs": 10, "min": 490}, "calculus": {"parts": 3, "chs": 6, "min": 300}, "python-dsa": {"parts": 4, "chs": 10, "min": 500}, "dbms": {"parts": 5, "chs": 11, "min": 515}}, "module": "", "root": "./"};
+window.SITE = {"name": "GATE DA", "key": "gateda", "path": "gate-da", "domain": "courses.rahuldevsharma.com/gate-da", "author": "Rahul Dev Sharma", "tagline": "free GATE Data Science & AI preparation", "description": "A free, interactive course for the GATE DA (Data Science and Artificial Intelligence) exam. Explains every idea visually, includes maths refreshers, and works through real previous-year questions.", "certTitle": ["GATE DA", "Maths, Python, DSA & databases"], "certBody": ["answered every quiz and practice question correctly across", "GATE DA's refreshers, probability, statistics, linear algebra,", "calculus & optimization, Python & DSA, and databases modules."], "footer_html": "      <p><b>Acknowledgement.</b> Previous-year questions are quoted from the official GATE Data Science and Artificial Intelligence (DA) papers: 2024 (organised by IISc Bengaluru), 2025 (IIT Roorkee) and 2026 (IIT Guwahati), and from the 2024 DA sample paper; one LU question is quoted from GATE CS 2025 (set 2, IIT Roorkee). Each is cited by year and question number, and every answer is checked against the official answer keys. The syllabus followed is the GATE 2027 DA syllabus (IIT Madras).</p>\n      <p><b>Disclaimer.</b> An independent study resource. The Data Premier League, its teams and all their data are fictional. Not affiliated with, reviewed by or endorsed by GATE, IISc or any IIT. Solutions and explanations are the author's own; any mistakes are the author's too.</p>", "modules": [{"slug": "refreshers", "title": "Maths refreshers", "short": "Refreshers", "kind": "prereq", "blurb": "The maths toolkit, recapped: algebra, logs, sums, sets, derivatives, integrals and vectors. Everything the later modules lean on."}, {"slug": "probability", "title": "Probability", "short": "Probability", "kind": "", "blurb": "Counting, Bayes, random variables and the distributions GATE loves. The single biggest block of marks in the paper."}, {"slug": "statistics", "title": "Statistics", "short": "Statistics", "kind": "", "blurb": "Describing data, estimators, the Central Limit Theorem, confidence intervals and hypothesis tests (z, t and \u03c7\u00b2), built on the probability module."}, {"slug": "linear-algebra", "title": "Linear algebra", "short": "Linear algebra", "kind": "", "blurb": "Vectors, subspaces, rank, eigenvalues, projections and SVD, taught as pictures and exam shortcuts."}, {"slug": "calculus", "title": "Calculus & optimization", "short": "Calculus", "kind": "", "blurb": "Limits, continuity and differentiability, Taylor series, and finding maxima and minima: the single-variable calculus GATE DA tests, plus the optimisation ML relies on."}, {"slug": "python-dsa", "title": "Python & DSA", "short": "Python & DSA", "kind": "", "blurb": "The Python that GATE's code-tracing questions test, then complexity, searching and sorting, stacks, queues, hashing, trees and graph algorithms."}, {"slug": "dbms", "title": "Databases & warehousing", "short": "Databases", "kind": "", "blurb": "ER design, relational algebra, tuple calculus, SQL, functional dependencies and normal forms, B+ tree indexes, data transformation and OLAP cubes, all on the league's own tables."}], "manifest": {"refreshers": ["r-functions-p1", "r-functions-p2", "r-functions-p3", "r-functions-p4", "r-functions/0", "r-functions/1", "r-functions/2", "r-functions/3", "r-explog-p1", "r-explog-p2", "r-explog-p3", "r-explog-p4", "r-explog/0", "r-explog/1", "r-explog/2", "r-explog/3", "r1-review/0", "r1-review/1", "r1-review/2", "r1-review/3", "r-sums-p1", "r-sums-p2", "r-sums-p3", "r-sums-p4", "r-sums/0", "r-sums/1", "r-sums/2", "r-sums/3", "r-sets-p1", "r-sets-p2", "r-sets-p3", "r-sets-p4", "r-sets/0", "r-sets/1", "r-sets/2", "r-sets/3", "r2-review/0", "r2-review/1", "r2-review/2", "r2-review/3", "r-deriv-p1", "r-deriv-p2", "r-deriv-p3", "r-deriv-p4", "r-deriv/0", "r-deriv/1", "r-deriv/2", "r-deriv/3", "r-integ-p1", "r-integ-p2", "r-integ-p3", "r-integ-p4", "r-integ/0", "r-integ/1", "r-integ/2", "r-integ/3", "r-grad-p1", "r-grad-p2", "r-grad-p3", "r-grad-p4", "r-grad/0", "r-grad/1", "r-grad/2", "r3-review/0", "r3-review/1", "r3-review/2", "r3-review/3", "r-vectors-p1", "r-vectors-p2", "r-vectors-p3", "r-vectors-p4", "r-vectors/0", "r-vectors/1", "r-vectors/2", "r-matrices-p1", "r-matrices-p2", "r-matrices-p3", "r-matrices-p4", "r-matrices/0", "r-matrices/1", "r-matrices/2", "r4-review/0", "r4-review/1", "r4-review/2", "r4-review/3", "r4-review/4"], "probability": ["pr-counting-p1", "pr-counting-p2", "pr-counting-p3", "pr-counting-p4", "pr-counting/0", "pr-counting/1", "pr-counting/2", "pr-events-p1", "pr-events-p2", "pr-events-p3", "pr-events-p4", "pr-events/0", "pr-events/1", "pr-events/2", "pr-events/3", "pr1-review/0", "pr1-review/1", "pr1-review/2", "pr1-review/3", "pr-conditional-p1", "pr-conditional-p2", "pr-conditional-p3", "pr-conditional-p4", "pr-conditional/0", "pr-conditional/1", "pr-conditional/2", "pr-bayes-p1", "pr-bayes-p2", "pr-bayes-p3", "pr-bayes-p4", "pr-bayes/0", "pr-bayes/1", "pr-bayes/2", "pr2-review/0", "pr2-review/1", "pr2-review/2", "pr-rv-p1", "pr-rv-p2", "pr-rv-p3", "pr-rv-p4", "pr-rv/0", "pr-rv/1", "pr-rv/2", "pr-expect-p1", "pr-expect-p2", "pr-expect-p3", "pr-expect-p4", "pr-expect/0", "pr-expect/1", "pr-expect/2", "pr-expect/3", "pr3-review/0", "pr3-review/1", "pr3-review/2", "pr-discrete-p1", "pr-discrete-p2", "pr-discrete-p3", "pr-discrete-p4", "pr-discrete/0", "pr-discrete/1", "pr-discrete/2", "pr-continuous-p1", "pr-continuous-p2", "pr-continuous-p3", "pr-continuous-p4", "pr-continuous/0", "pr-continuous/1", "pr-continuous/2", "pr-continuous/3", "pr4-review/0", "pr4-review/1", "pr4-review/2", "pr-joint-p1", "pr-joint-p2", "pr-joint-p3", "pr-joint-p4", "pr-joint/0", "pr-joint/1", "pr-joint/2", "pr-condexp-p1", "pr-condexp-p2", "pr-condexp-p3", "pr-condexp/0", "pr-condexp/1", "pr-condexp/2", "pr5-review/0", "pr5-review/1", "pr5-review/2", "pr5-review/3", "pr5-review/4"], "statistics": ["st-descriptive-p1", "st-descriptive-p2", "st-descriptive-p3", "st-descriptive-p4", "st-descriptive/0", "st-descriptive/1", "st-descriptive/2", "st-correlation-p1", "st-correlation-p2", "st-correlation-p3", "st-correlation-p4", "st-correlation/0", "st-correlation/1", "st-correlation/2", "st1-review/0", "st1-review/1", "st1-review/2", "st-estimators-p1", "st-estimators-p2", "st-estimators-p3", "st-estimators-p4", "st-estimators/0", "st-estimators/1", "st-estimators/2", "st-clt-p1", "st-clt-p2", "st-clt-p3", "st-clt-p4", "st-clt/0", "st-clt/1", "st-clt/2", "st2-review/0", "st2-review/1", "st2-review/2", "st-tchi-p1", "st-tchi-p2", "st-tchi-p3", "st-tchi-p4", "st-tchi/0", "st-tchi/1", "st-tchi/2", "st-ci-p1", "st-ci-p2", "st-ci-p3", "st-ci-p4", "st-ci/0", "st-ci/1", "st-ci/2", "st3-review/0", "st3-review/1", "st3-review/2", "st-tests-p1", "st-tests-p2", "st-tests-p3", "st-tests-p4", "st-tests/0", "st-tests/1", "st-tests/2", "st-ttest-chi-p1", "st-ttest-chi-p2", "st-ttest-chi-p3", "st-ttest-chi-p4", "st-ttest-chi/0", "st-ttest-chi/1", "st-ttest-chi/2", "st4-review/0", "st4-review/1", "st4-review/2", "st4-review/3", "st4-review/4"], "linear-algebra": ["la-spaces-p1", "la-spaces-p2", "la-spaces-p3", "la-spaces/0", "la-spaces/1", "la-spaces/2", "la-independence-p1", "la-independence-p2", "la-independence-p3", "la-independence-p4", "la-independence/0", "la-independence/1", "la-independence/2", "la1-review/0", "la1-review/1", "la1-review/2", "la-systems-p1", "la-systems-p2", "la-systems-p3", "la-systems-p4", "la-systems/0", "la-systems/1", "la-systems/2", "la-rank-p1", "la-rank-p2", "la-rank-p3", "la-rank-p4", "la-rank/0", "la-rank/1", "la-rank/2", "la-det-p1", "la-det-p2", "la-det-p3", "la-det-p4", "la-det/0", "la-det/1", "la-det/2", "la2-review/0", "la2-review/1", "la2-review/2", "la-eigen-p1", "la-eigen-p2", "la-eigen-p3", "la-eigen-p4", "la-eigen/0", "la-eigen/1", "la-eigen/2", "la-special-p1", "la-special-p2", "la-special-p3", "la-special-p4", "la-special/0", "la-special/1", "la-special/2", "la-quad-p1", "la-quad-p2", "la-quad-p3", "la-quad-p4", "la-quad/0", "la-quad/1", "la-quad/2", "la3-review/0", "la3-review/1", "la3-review/2", "la-lu-p1", "la-lu-p2", "la-lu-p3", "la-lu-p4", "la-lu/0", "la-lu/1", "la-lu/2", "la-svd-p1", "la-svd-p2", "la-svd-p3", "la-svd-p4", "la-svd/0", "la-svd/1", "la-svd/2", "la4-review/0", "la4-review/1", "la4-review/2", "la4-review/3", "la4-review/4"], "calculus": ["ca-limits-p1", "ca-limits-p2", "ca-limits-p3", "ca-limits-p4", "ca-limits/0", "ca-limits/1", "ca-limits/2", "ca-continuity-p1", "ca-continuity-p2", "ca-continuity-p3", "ca-continuity-p4", "ca-continuity/0", "ca-continuity/1", "ca-continuity/2", "ca1-review/0", "ca1-review/1", "ca1-review/2", "ca-taylor-p1", "ca-taylor-p2", "ca-taylor-p3", "ca-taylor-p4", "ca-taylor/0", "ca-taylor/1", "ca-taylor/2", "ca-extrema-p1", "ca-extrema-p2", "ca-extrema-p3", "ca-extrema-p4", "ca-extrema/0", "ca-extrema/1", "ca-extrema/2", "ca2-review/0", "ca2-review/1", "ca2-review/2", "ca-optim-p1", "ca-optim-p2", "ca-optim-p3", "ca-optim-p4", "ca-optim/0", "ca-optim/1", "ca-optim/2", "ca-convex-p1", "ca-convex-p2", "ca-convex-p3", "ca-convex/0", "ca-convex/1", "ca-convex/2", "ca3-review/0", "ca3-review/1", "ca3-review/2", "ca3-review/3", "ca3-review/4"], "python-dsa": ["py-basics-p1", "py-basics-p2", "py-basics-p3", "py-basics-p4", "py-basics/0", "py-basics/1", "py-basics/2", "py-functions-p1", "py-functions-p2", "py-functions-p3", "py-functions-p4", "py-functions/0", "py-functions/1", "py-functions/2", "py1-review/0", "py1-review/1", "py1-review/2", "ds-complexity-p1", "ds-complexity-p2", "ds-complexity-p3", "ds-complexity-p4", "ds-complexity/0", "ds-complexity/1", "ds-complexity/2", "ds-sorting-p1", "ds-sorting-p2", "ds-sorting-p3", "ds-sorting-p4", "ds-sorting/0", "ds-sorting/1", "ds-sorting/2", "ds-dc-p1", "ds-dc-p2", "ds-dc-p3", "ds-dc-p4", "ds-dc/0", "ds-dc/1", "ds-dc/2", "py2-review/0", "py2-review/1", "py2-review/2", "ds-linear-p1", "ds-linear-p2", "ds-linear-p3", "ds-linear-p4", "ds-linear/0", "ds-linear/1", "ds-linear/2", "ds-hashing-p1", "ds-hashing-p2", "ds-hashing-p3", "ds-hashing-p4", "ds-hashing/0", "ds-hashing/1", "ds-hashing/2", "ds-trees-p1", "ds-trees-p2", "ds-trees-p3", "ds-trees-p4", "ds-trees/0", "ds-trees/1", "ds-trees/2", "py3-review/0", "py3-review/1", "py3-review/2", "ds-graphs-p1", "ds-graphs-p2", "ds-graphs-p3", "ds-graphs-p4", "ds-graphs/0", "ds-graphs/1", "ds-graphs/2", "ds-shortest-p1", "ds-shortest-p2", "ds-shortest-p3", "ds-shortest-p4", "ds-shortest/0", "ds-shortest/1", "ds-shortest/2", "py4-review/0", "py4-review/1", "py4-review/2", "py4-review/3", "py4-review/4"], "dbms": ["db-relational-p1", "db-relational-p2", "db-relational-p3", "db-relational-p4", "db-relational/0", "db-relational/1", "db-relational/2", "db-er-p1", "db-er-p2", "db-er-p3", "db-er-p4", "db-er/0", "db-er/1", "db-er/2", "db1-review/0", "db1-review/1", "db1-review/2", "db1-review/3", "db-algebra-p1", "db-algebra-p2", "db-algebra-p3", "db-algebra-p4", "db-algebra-p5", "db-algebra/0", "db-algebra/1", "db-algebra/2", "db-trc-p1", "db-trc-p2", "db-trc-p3", "db-trc-p4", "db2-review/0", "db2-review/1", "db2-review/2", "db2-review/3", "db-sql-p1", "db-sql-p2", "db-sql-p3", "db-sql-p4", "db-sql/0", "db-sql/1", "db-sql/2", "db-subq-p1", "db-subq-p2", "db-subq-p3", "db-subq-p4", "db-subq/0", "db-subq/1", "db-subq/2", "db3-review/0", "db3-review/1", "db3-review/2", "db3-review/3", "db-fd-p1", "db-fd-p2", "db-fd-p3", "db-fd-p4", "db-fd/0", "db-fd/1", "db-fd/2", "db-nf-p1", "db-nf-p2", "db-nf-p3", "db-nf-p4", "db-nf/0", "db-nf/1", "db-nf/2", "db4-review/0", "db4-review/1", "db4-review/2", "db4-review/3", "db-index-p1", "db-index-p2", "db-index-p3", "db-index-p4", "db-index/0", "db-index/1", "db-index/2", "db-transform-p1", "db-transform-p2", "db-transform-p3", "db-transform-p4", "db-transform/0", "db-transform/1", "db-transform/2", "db-olap-p1", "db-olap-p2", "db-olap-p3", "db-olap-p4", "db-olap/0", "db-olap/1", "db-olap/2", "db5-review/0", "db5-review/1", "db5-review/2", "db5-review/3"]}, "modinfo": {"refreshers": {"parts": 4, "chs": 9, "min": 405}, "probability": {"parts": 5, "chs": 10, "min": 525}, "statistics": {"parts": 4, "chs": 8, "min": 395}, "linear-algebra": {"parts": 4, "chs": 10, "min": 490}, "calculus": {"parts": 3, "chs": 6, "min": 300}, "python-dsa": {"parts": 4, "chs": 10, "min": 500}, "dbms": {"parts": 5, "chs": 11, "min": 515}}, "module": "", "root": "./"};
 /* ---- expr.js ---- */
 /* Safe expression parser: no eval. Grammar (precedence low → high):
    sum := prod (('+'|'-') prod)* ; prod := unary (('*'|'/'| implicit) unary)* ; unary := '-' unary | pow ; pow := atom ('^' unary)?
@@ -2377,7 +2443,7 @@ window.SITE = {"name": "GATE DA", "key": "gateda", "path": "gate-da", "domain": 
       var done = MODS.filter(function (m) { var s = modScore(m.slug); return s[1] && s[0] === s[1]; }).length;
       var dueMods = MODS.map(function (m) { return { m: m, n: dueIds(m.slug).length }; }).filter(function (x) { return x.n; });
       var dueAll = dueMods.reduce(function (n, x) { return n + x.n; }, 0);
-      dash.hidden = !(g[0] || w);
+      dash.hidden = !(g[0] || dueAll);
       var pct = g[1] ? Math.round(100 * g[0] / g[1]) : 0, wm = w ? MODS.filter(function (m) { return m.slug === w.mod; })[0] : null;
       dash.innerHTML = '<div class="dash-main"><span class="dash-k">Your progress</span><span class="dash-pct">' + (g[0] && pct === 0 ? "&lt;1" : pct) + '<small>%</small></span>' +
         '<span class="bar"><i style="width:' + pct + '%"></i></span>' +
@@ -2396,7 +2462,7 @@ window.SITE = {"name": "GATE DA", "key": "gateda", "path": "gate-da", "domain": 
       var a = h("a", { href: ROOT + m.slug + "/" + (cur ? "#resume" : ""), class: "mod-card " + (m.kind || "") + (cur ? " current" : "") + (fin ? " complete" : "") },
         '<span class="mc-top"><span class="mn">' + (i + 1) + '</span><b>' + m.title + '</b>' + status + '</span><span class="mc-blurb">' + m.blurb + '</span>' +
         (meta ? '<span class="mc-meta">' + meta + '</span>' : '') +
-        '<span class="mc-prog"><span class="bar"><i style="width:' + pct + '%"></i></span><small>' + (s[1] ? (s[0] ? s[0] + " of " + s[1] + " right" : s[1] + " questions") : "Coming soon") + "</small></span>");
+        '<span class="mc-prog' + (s[0] ? '' : ' zero') + '"><span class="bar"><i style="width:' + pct + '%"></i></span><small>' + (s[1] ? (s[0] ? s[0] + " of " + s[1] + " right" : s[1] + " questions") : "Coming soon") + "</small></span>");
       box.appendChild(a);
     });
   }
@@ -2408,7 +2474,7 @@ window.SITE = {"name": "GATE DA", "key": "gateda", "path": "gate-da", "domain": 
       cta.appendChild(h("a", { class: "cta", href: ROOT + wm.slug + "/#resume" }, "Continue: " + w.label + " →" + (w.part ? "<small>" + wm.title + "</small>" : "")));
       var dm = MODS.filter(function (m) { return dueIds(m.slug).length; }), dn = dm.reduce(function (n, m) { return n + dueIds(m.slug).length; }, 0);
       if (dn) cta.appendChild(h("a", { class: "alt rv-cta", href: ROOT + dm[0].slug + "/#review" }, "Review · <b>" + dn + "</b> due"));
-      else cta.appendChild(h("a", { class: "alt", href: "#h-modules" }, "See all modules"));
+
     } else if (MODS[0]) {
       var m0 = (SITE.modinfo || {})[MODS[0].slug] || {};
       cta.appendChild(h("a", { class: "cta", href: ROOT + MODS[0].slug + "/" }, "Start: " + MODS[0].title + " →" + (m0.min ? "<small>" + hours(m0.min) + ", or dip in as needed</small>" : "")));
