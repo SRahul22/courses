@@ -1505,6 +1505,9 @@ section.ch > .guess { order:-1 !important; }
 .mod-card .mc-prog small { font-weight:600 !important; color:var(--tx2) !important; font-size:13px !important; }
 .home-streak { display:flex; align-items:center; gap:10px; margin-top:4px; font:500 14.5px var(--sans); color:var(--tx2); }
 .home-streak b { color:var(--brand2); font-weight:700; }
+/* on the module overview, its row is highlighted like the current chapter */
+.toc .part > button[data-part="-1"].active { background:var(--brand-soft) !important; color:var(--brand) !important; }
+.toc .part > button[data-part="-1"].active b { color:var(--brand) !important; }
 
 /* site theme */
 
@@ -2926,7 +2929,7 @@ window.SITE = {"name": "GATE DA", "key": "gateda", "path": "gate-da", "domain": 
       store.set(CHKEY, page.id);
       if (MOD) store.set(SITE.key + "-where", JSON.stringify({ mod: MOD, label: pageLabel(art, page), part: art.dataset.title, at: Date.now() }));
       $$(".toc .chs a").forEach(function (a) { var on = a.dataset.ch === page.id; a.classList.toggle("on", on); if (on) a.setAttribute("aria-current", "page"); else a.removeAttribute("aria-current"); });
-    } else if (!art) curPage = -1;
+    } else if (!art) { curPage = -1; $$(".toc .chs a.on").forEach(function (a) { a.classList.remove("on"); a.removeAttribute("aria-current"); }); }
     if (changed) { buildPager(); placeNotes(); updateScores(); document.body.classList.toggle("reading", current >= 0); var on = $(".toc .chs a.on"); if (on && wideNav.matches && on.scrollIntoView) on.scrollIntoView({ block: "nearest" }); }
     if (changed && art && current >= 0 && booted) { var t2 = $(".ch-head h2", art._pages[pg]); if (t2) { t2.setAttribute("tabindex", "-1"); try { t2.focus({ preventScroll: true }); } catch (e) {} } }
     if (hero) hero.hidden = i !== -1;
