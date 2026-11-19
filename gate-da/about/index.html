@@ -1509,6 +1509,30 @@ section.ch > .guess { order:-1 !important; }
 .practice.hard { border-top:2px solid var(--brand2); padding-top:14px; }
 .practice.hard > .block-h { color:var(--brand2) !important; }
 .practice.hard > .block-h small { display:block; font:500 13.5px var(--sans); color:var(--tx3); letter-spacing:0; margin-top:2px; }
+/* SIDEBAR ANIMATION (2026-11-20): going from the home page into a module, the clicked module's row rises into the
+   sidebar title (shared name vt-m-<i>), the other modules sink away and the module's outline drops in row by row;
+   going back reverses it. Rows are named in core.js (vtName). Off when the reader prefers reduced motion. */
+@media (prefers-reduced-motion: no-preference) {
+  @view-transition { navigation: auto; }
+  ::view-transition-group(*) { animation-duration: .36s; animation-timing-function: cubic-bezier(.2, .8, .2, 1); }
+  ::view-transition-old(root), ::view-transition-new(root) { animation-duration: .22s; }
+  /* the leaving rows clear out first (0.16 s), then the arriving rows come in one after another */
+  ::view-transition-old(*.vt-mod):only-child { animation: vt-sink .16s ease-in both; }
+  ::view-transition-old(*.vt-row):only-child { animation: vt-lift .16s ease-in both; }
+  ::view-transition-new(*.vt-mod):only-child { animation: vt-rise .3s cubic-bezier(.2, .8, .2, 1) .12s both; }
+  ::view-transition-new(*.vt-row):only-child { animation: vt-drop .3s cubic-bezier(.2, .8, .2, 1) .12s both; }
+  ::view-transition-new(vt-r-1):only-child, ::view-transition-new(vt-m-1):only-child { animation-delay: .16s; }
+  ::view-transition-new(vt-r-2):only-child, ::view-transition-new(vt-m-2):only-child { animation-delay: .2s; }
+  ::view-transition-new(vt-r-3):only-child, ::view-transition-new(vt-m-3):only-child { animation-delay: .24s; }
+  ::view-transition-new(vt-r-4):only-child, ::view-transition-new(vt-m-4):only-child { animation-delay: .28s; }
+  ::view-transition-new(vt-r-5):only-child, ::view-transition-new(vt-m-5):only-child { animation-delay: .32s; }
+  ::view-transition-new(vt-r-6):only-child, ::view-transition-new(vt-m-6):only-child { animation-delay: .36s; }
+  ::view-transition-new(vt-r-7):only-child { animation-delay: .4s; }
+}
+@keyframes vt-sink { to { opacity: 0; transform: translateY(28px); } }
+@keyframes vt-rise { from { opacity: 0; transform: translateY(28px); } }
+@keyframes vt-drop { from { opacity: 0; transform: translateY(-14px); } }
+@keyframes vt-lift { to { opacity: 0; transform: translateY(-14px); } }
 /* on the module overview, its row is highlighted like the current chapter */
 .toc .part > button[data-part="-1"].active { background:var(--brand-soft) !important; color:var(--brand) !important; }
 .toc .part > button[data-part="-1"].active b { color:var(--brand) !important; }
@@ -2680,9 +2704,15 @@ window.SITE = {"name": "GATE DA", "key": "gateda", "path": "gate-da", "domain": 
   }
 
   /* ---------- rail ---------- */
+  /* page-to-page animation (cross-document view transitions, see "SIDEBAR ANIMATION" in styles.css): named rows on the
+     two pages are matched by the browser; browsers without support simply load the page as before */
+  function vtName(el, name, cls) { el.style.viewTransitionName = name; if (cls) el.style.setProperty("view-transition-class", cls); }
   var toc = $("#toc");
+  if ($("#rail")) vtName($("#rail"), "vt-rail");   // the sidebar card itself grows or shrinks between the two pages
   if (MOD && toc) {
-    toc.parentNode.insertBefore(h("span", { class: "mod-label" }, (THISMOD ? THISMOD.title : "This module")), toc);
+    var ml = h("span", { class: "mod-label" }, (THISMOD ? THISMOD.title : "This module"));
+    vtName(ml, "vt-m-" + MODS.indexOf(THISMOD), "vt-mod");   // the home page's module row morphs into this title
+    toc.parentNode.insertBefore(ml, toc);
     var mn = $("#modnav"), foot = $(".rail-foot"); if (mn && foot) foot.parentNode.insertBefore(mn, foot);   // other modules below this one's chapters
   }
   (function () {
@@ -2708,6 +2738,8 @@ window.SITE = {"name": "GATE DA", "key": "gateda", "path": "gate-da", "domain": 
     li.appendChild(ul);
     toc.appendChild(li);
   });
+  // moving between the home page and a module, the module's outline drops in row by row (and lifts out going back)
+  if (MOD && toc) $$(":scope > li", toc).forEach(function (li, i) { vtName(li, "vt-r-" + i, "vt-row"); });
   // module front page: what's inside, then how GATE DA asks it
   var plan = $("#plan");
   if (plan) {
@@ -2806,6 +2838,7 @@ window.SITE = {"name": "GATE DA", "key": "gateda", "path": "gate-da", "domain": 
       var a = h("a", { href: ROOT + m.slug + "/", class: "mod-link" + (m.slug === MOD ? " on" : "") + (done ? " complete" : "") },
         '<span class="mn">' + (i + 1) + '</span><span class="mt">' + m.title + '</span><span class="score' + (done ? " done" : "") + '">' + (s[1] ? (s[0] ? s[0] + "/" + s[1] : "") : "soon") + "</span>");
       if (m.slug === MOD) a.setAttribute("aria-current", "page");
+      if (!MOD) vtName(a, "vt-m-" + i, "vt-mod");   // home page only: each module row has a partner in that module's sidebar
       nav.appendChild(a);
     });
   }
