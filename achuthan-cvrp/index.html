@@ -766,6 +766,8 @@ details.why .why-k { font:700 15px var(--ui); color:var(--brand); }
 /* labels: quiet sentence-case, like GATE DA */
 .label, .prob .stem::before, .pfb .solution::before, .step .why-step::before { font:700 12.5px/1.3 var(--ui); letter-spacing:.02em; text-transform:none; }
 @media (max-width:900px) { .tb-where span + b::before { content:none !important; } }
+/* phones: a slightly smaller reading size so wide inline maths fits 375 px */
+@media (max-width:600px) { section.ch { font-size:17px; } .lead .lead-idea { font-size:20px; } }
 
 /* site theme */
 
