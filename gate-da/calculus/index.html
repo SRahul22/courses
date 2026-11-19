@@ -1171,35 +1171,16 @@ h2, h3, h4, .block-h, .quiz-head h3, .takeaways h3 { font-family:var(--serif); l
 .hero.hub .lede { font-size:clamp(18px,2vw,21px); }
 .hub-art, .hub-facts { display:none !important; }
 main > .hero.hub { max-width:880px; }
-.modplan { display:flex !important; flex-direction:column; gap:0; border-top:1px solid var(--line); }
-.mod-card { display:grid !important; grid-template-columns:minmax(0,1fr) 190px; grid-template-areas:"top prog" "blurb meta"; gap:4px 28px; align-items:center; padding:18px 4px !important; border:0 !important; border-bottom:1px solid var(--line) !important; border-radius:0 !important; background:transparent !important; box-shadow:none !important; transition:background .2s; }
-.mod-card:hover { transform:none !important; background:var(--hover) !important; }
-.mod-card .mc-top { grid-area:top; flex-wrap:nowrap; }
-.mod-card .mc-top b { font-size:20px; font-weight:600; }
-.mod-card .mn { width:28px; height:28px; font-size:12.5px; background:transparent !important; color:var(--tx3) !important; border:1px solid var(--line2); }
-.mod-card.complete .mn { background:var(--ok) !important; color:#fff !important; border-color:var(--ok); }
-.mod-card .mc-blurb { grid-area:blurb; padding-left:38px; font-size:15px; color:var(--tx3); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-.mod-card .mc-meta { grid-area:meta; font-size:12.5px; text-align:right; }
-.mod-card .mc-prog { grid-area:prog; margin:0; }
-.mod-card .mc-prog small { text-align:right; }
-.mod-card.current { box-shadow:inset 3px 0 0 var(--brand) !important; }
-.mc-st { margin-left:10px; }
-.hub-foot { display:flex; flex-wrap:wrap; justify-content:space-between; gap:8px 20px; margin-top:14px; font:400 14px var(--sans); color:var(--tx3); }
+main > .hero.hub { max-width:1120px; }
+.hub-foot { display:flex; flex-wrap:wrap; justify-content:space-between; gap:8px 20px; margin-top:18px; font:400 14px var(--sans); color:var(--tx3); }
 .hub-foot a { color:var(--brand); text-decoration:none; font-weight:600; }
 .hub-foot a:hover { text-decoration:underline; }
-@media (max-width:700px) {
-  .mod-card { grid-template-columns:minmax(0,1fr); grid-template-areas:"top" "prog" "meta"; }
-  .mod-card .mc-blurb { display:none; }
-  .mod-card .mc-meta, .mod-card .mc-prog small { text-align:left; padding-left:38px; }
-  .mod-card .mc-prog .bar { margin-left:38px; }
-}
 /* the exam page */
 .hero.about { gap:40px; }
 main > .hero.about { max-width:880px; }
 .hero.about h1 { font-size:clamp(38px,5vw,56px); line-height:1.05; }
 .back-link { font:600 14px var(--sans); color:var(--tx3); text-decoration:none; }
 .back-link:hover { color:var(--brand); }
-.mod-card .mc-prog.zero .bar { display:none; }
 .opt { border-width:1px; }
 /* home dashboard: one quiet line (the Continue button already says where you were) */
 .dash { grid-template-columns:minmax(0,1fr) !important; gap:12px; }
@@ -1209,6 +1190,37 @@ main > .hero.about { max-width:880px; }
 .dash-main .bar { flex:0 0 140px; }
 .dash-main .dash-sub { font-size:14px; color:var(--tx3); }
 .dash-rev { border-radius:var(--r) !important; box-shadow:none !important; }
+
+/* opening Contents only dims the page slightly; no blur */
+.scrim { background:rgba(24,18,10,.16) !important; backdrop-filter:none !important; -webkit-backdrop-filter:none !important; }
+
+/* ---------- phase 2, the play loop (2026-11-19) ---------- */
+.topbar { grid-template-columns:auto auto minmax(0,1fr) auto auto auto; }
+.tb-next { border:1px solid color-mix(in srgb,var(--brand) 45%,var(--line)); background:transparent; color:var(--brand); border-radius:99px; padding:6px 14px; font:600 13.5px var(--sans); white-space:nowrap; }
+.tb-next:hover { background:var(--brand-soft); }
+@media (max-width:900px) { .topbar { grid-template-columns:auto auto minmax(0,1fr) auto auto; } .tb-next { padding:6px 12px; } }
+/* take a guess */
+.guess { font-family:var(--sans); font-size:16px; display:flex; flex-direction:column; gap:12px; padding:18px 0 4px; border-top:1px solid var(--line); }
+.guess > .label { color:var(--brand) !important; }
+.guess .q-text { font-size:17px; }
+.guess .opts { gap:6px; }
+.guess .opt { padding-top:9px; padding-bottom:9px; min-height:44px; }
+.guess-note { font-size:14.5px; color:var(--tx2); }
+/* honest scoring: right after a retry is shown, but marked as not counting yet */
+.q.assisted, .prob.assisted { border-color:color-mix(in srgb,var(--brand2) 40%,var(--line)); }
+.why .late { color:var(--tx3); font-size:14px; }
+/* a small, quiet confirmation when you get it right */
+@keyframes okpop { 0% { transform:translateY(-50%) scale(.6); } 60% { transform:translateY(-50%) scale(1.15); } 100% { transform:translateY(-50%) scale(1); } }
+.opt.right::before { animation:okpop .32s ease-out; }
+@keyframes solvedglow { 0% { box-shadow:0 0 0 0 color-mix(in srgb,var(--ok) 35%,transparent); } 100% { box-shadow:0 0 0 10px transparent; } }
+.q.solved, .prob.solved { animation:solvedglow .6s ease-out; }
+/* contents drawer: this module first */
+.rail-body > .mod-label { margin:2px 0 -6px 8px; font:600 13px var(--sans); color:var(--tx); }
+.rail-body > .modnav { padding-top:12px; border-top:1px solid var(--line); }
+.toc .part > button[aria-expanded] { cursor:pointer; }
+.mod-card .mc-top { flex-wrap:nowrap !important; align-items:flex-start; }
+.mod-card .mc-top b { min-width:0; line-height:1.25; padding-top:3px; }
+.mod-card .mc-top .mc-st { flex:none; margin-top:5px; }
 
 /* site theme */
 
@@ -2249,10 +2261,11 @@ window.SITE = {"name": "GATE DA", "key": "gateda", "path": "gate-da", "domain": 
   // grade: 0 = missed or guessed, 1 = unsure, 2 = knew it
   function schedule(id, g) {
     var r = rev[id], b = r ? r.b : -1;
-    b = g === 0 ? 0 : g === 1 ? Math.max(1, b) : Math.min(GAPS.length - 1, Math.max(2, b + 1));
-    rev[id] = { b: b, due: today() + GAPS[b], m: r ? r.m : modOf(id) };
+    b = g === 0 ? 0 : g === 1 ? Math.min(GAPS.length - 1, Math.max(1, b + 1)) : Math.min(GAPS.length - 1, Math.max(2, b + 1));
+    var gap = g === 1 ? Math.max(GAPS[1], Math.round(GAPS[b] / 2)) : GAPS[b];   // unsure: half the gap
+    rev[id] = { b: b, due: today() + gap, m: r ? r.m : modOf(id) };
     store.set(REVKEY, JSON.stringify(rev));
-    return GAPS[b];
+    return gap;
   }
   function dueIds(mod) { var t = today(); return Object.keys(rev).filter(function (id) { return rev[id].m === mod && rev[id].due <= t; }); }
   // questions solved before spaced review existed join the deck gradually over the next week
@@ -2422,6 +2435,7 @@ window.SITE = {"name": "GATE DA", "key": "gateda", "path": "gate-da", "domain": 
     });
     $$(".example", art).forEach(buildExample);
     $$(".practice", art).forEach(function (pr) {
+      $$(":scope > .prob", pr).filter(function (x) { return $(".pyq", x); }).forEach(function (x) { pr.appendChild(x); });
       if (!$(":scope > .label", pr)) pr.insertBefore(h("h3", { class: "block-h" }, "Practice"), pr.firstChild);
       $$(".prob", pr).forEach(function (p, i) { buildProb(p, i + 1); });
     });
@@ -2445,6 +2459,29 @@ window.SITE = {"name": "GATE DA", "key": "gateda", "path": "gate-da", "domain": 
       if (map) map.appendChild(h("a", { href: "#" + rv.id }, '<span class="cn">✓</span> Part review'));
     }
     art._pages = pages;
+  });
+  // pretesting: a guess before the explanation makes the explanation stick; not scored, not scheduled
+  parts.forEach(function (art) {
+    $$(":scope > section.ch", art).forEach(function (ch) {
+      var qz = $(":scope > .quiz:not(.review)", ch), lead = $(":scope > .lead", ch), raw = qz && RAW[qz.dataset.id + "/0"];
+      if (!raw || !lead) return;
+      var el = raw.el.cloneNode(true), box = h("div", { class: "guess" });
+      box.appendChild(h("span", { class: "label" }, "Take a guess"));
+      var t = $(":scope > .q-text", el); if (t) box.appendChild(t);
+      var opts = h("div", { class: "opts" }), note = h("p", { class: "guess-note" }); note.hidden = true; var done = false;
+      $$(":scope > .o", el).forEach(function (o) {
+        var e = $(".e", o); if (e) o.removeChild(e);
+        var b = h("button", { class: "opt", type: "button" }, o.innerHTML), ok = o.classList.contains("ok");
+        b.addEventListener("click", function () {
+          if (done) return; done = true;
+          b.classList.add(ok ? "right" : "wrong"); b.setAttribute("aria-pressed", "true");
+          note.hidden = false; note.textContent = ok ? "Good instinct. Read on to see why." : "Not quite. Read on; it comes back at the end of the chapter.";
+        });
+        opts.appendChild(b);
+      });
+      box.appendChild(opts); box.appendChild(note);
+      lead.insertAdjacentElement("afterend", box);
+    });
   });
   function pageLabel(art, pg) {
     var i = art._pages.indexOf(pg);
@@ -2518,6 +2555,9 @@ window.SITE = {"name": "GATE DA", "key": "gateda", "path": "gate-da", "domain": 
     if (multi) p.appendChild(h("span", { class: "msq-note" }, "Select all that apply, then press Check. Like GATE's MSQs, every right option must be chosen and no wrong one."));
     if (!choices && p.dataset.fmt) p.appendChild(h("span", { class: "fmt" }, p.dataset.fmt));
     p.appendChild(fb); p.appendChild(showSol);
+    var assisted = false;
+    if (!R) showSol.hidden = true;            // try first: the full solution appears after one attempt
+    showSol.addEventListener("click", function () { assisted = true; });
     function revealSolution() {
       var s = $(".solution", fb); if (s || !sol) return;
       s = h("div", { class: "solution" }, sol.innerHTML); fb.appendChild(s); fb.hidden = false; DH.renderMath(fb); showSol.hidden = true;
@@ -2548,12 +2588,16 @@ window.SITE = {"name": "GATE DA", "key": "gateda", "path": "gate-da", "domain": 
         if (sol) revealSolution(); DH.renderMath(fb); R.onResult(ok); return;
       }
       if (!tried) { tried = true; if (ok) setTimeout(function () { confRow(showSol.hidden ? fb : showSol, id); }, 0); else schedule(id, 0); }
-      if (ok) {
+      if (ok && (assisted || fails > 0) && !prog.p[id]) {
+        // honest scoring: right after a retry or a peek doesn't count yet; the review deck brings it back
+        fb.innerHTML = "<span><b class=\"ok\">Correct.</b> It took a retry or the solution, so it will come back in your review; get it right there and it counts.</span>";
+        p.classList.add("assisted"); if (sol) revealSolution();
+      } else if (ok) {
         fb.innerHTML = "<span><b class=\"ok\">Correct.</b> " + (p.dataset.ok || "Nicely done.") + "</span>";
         p.classList.add("solved"); prog.p[id] = 1; save(); updateScores();
         if (sol) revealSolution();
       } else {
-        fails++;
+        fails++; if (!$(".solution", fb)) showSol.hidden = false;
         var msg = "<span><b class=\"no\">Not yet.</b> " + (fails === 1 && hint ? "Hint: " + hint.innerHTML : (hint ? hint.innerHTML : "Check your working and try again.")) + "</span>";
         fb.innerHTML = msg;
         if (fails >= 2 && sol) { fb.innerHTML = msg; revealSolution(); }
@@ -2593,6 +2637,7 @@ window.SITE = {"name": "GATE DA", "key": "gateda", "path": "gate-da", "domain": 
         var e = $(".e", o); if (e) o.removeChild(e);
         var b = h("button", { class: "opt", type: "button" }, o.innerHTML);
         var right = o.classList.contains("ok");
+        b._ok = right;   // for tests only (not in the DOM)
         b.addEventListener("click", function () {
           $$(".opt", opts).forEach(function (x) { x.classList.remove("right", "wrong"); x.removeAttribute("aria-pressed"); var sr = $(".sr", x); if (sr) sr.remove(); });
           b.classList.add(right ? "right" : "wrong");
@@ -2600,8 +2645,10 @@ window.SITE = {"name": "GATE DA", "key": "gateda", "path": "gate-da", "domain": 
           why.hidden = false;
           why.innerHTML = (right ? "<b class=\"ok\">Right.</b> " : "<b class=\"no\">Not quite.</b> ") + (e ? e.innerHTML : "") + (right ? "" : " <i>Try another option.</i>");
           DH.renderMath(why);
+          var first = !tried;
           if (!tried) { tried = true; if (right) confRow(why, id); else schedule(id, 0); }
-          if (right) { q.classList.add("solved"); if (!prog.q[id]) { prog.q[id] = 1; save(); updateScores(); } }
+          if (right && (first || prog.q[id])) { q.classList.add("solved"); if (!prog.q[id]) { prog.q[id] = 1; save(); updateScores(); } }
+          else if (right) { q.classList.add("assisted"); why.insertAdjacentHTML("beforeend", " <span class=\"late\">Not on the first try, so it will come back in your review to count.</span>"); }
         });
         opts.appendChild(b); o.remove();
       });
@@ -2635,7 +2682,10 @@ window.SITE = {"name": "GATE DA", "key": "gateda", "path": "gate-da", "domain": 
 
   /* ---------- rail ---------- */
   var toc = $("#toc");
-  if (MOD && toc) toc.parentNode.insertBefore(h("span", { class: "mod-label" }, "In this module"), toc);
+  if (MOD && toc) {
+    toc.parentNode.insertBefore(h("span", { class: "mod-label" }, (THISMOD ? THISMOD.title : "This module")), toc);
+    var mn = $("#modnav"), foot = $(".rail-foot"); if (mn && foot) foot.parentNode.insertBefore(mn, foot);   // other modules below this one's chapters
+  }
   (function () {
     var li = h("li", { class: "part home" });
     var b = h("button", { type: "button", "data-part": "-1" }, '<span class="pn"><svg width="16" height="16" viewBox="0 0 20 20" aria-hidden="true"><path d="M3.5 9.5L10 4l6.5 5.5V16a1 1 0 0 1-1 1h-3.5v-4.5h-4V17H4.5a1 1 0 0 1-1-1z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg></span><span class="pt"><b>' + (MOD ? 'Module overview' : 'Home') + '</b></span>');
@@ -2646,7 +2696,8 @@ window.SITE = {"name": "GATE DA", "key": "gateda", "path": "gate-da", "domain": 
     var li = h("li", { class: "part" });
     var nch = $$("section.ch", art).length;
     var b = h("button", { type: "button", "data-part": pi, "aria-label": "Part " + art.dataset.num + ": " + art.dataset.title }, "<span class=\"pn\">" + art.dataset.num + "</span><span class=\"pt\"><b>" + art.dataset.title + "</b><small>" + nch + " chapter" + (nch === 1 ? "" : "s") + "</small></span><span class=\"score\" data-pscore=\"" + pi + "\"></span>");
-    b.addEventListener("click", function () { closeDrawer(true); showPart(pi, true); });
+    b.setAttribute("aria-expanded", "false");
+    b.addEventListener("click", function () { var u = $(".chs", li); if (!u) return; u.hidden = !u.hidden; b.setAttribute("aria-expanded", u.hidden ? "false" : "true"); });
     li.appendChild(b);
     var ul = h("ul", { class: "chs" });
     art._pages.forEach(function (ch) {
@@ -2806,7 +2857,7 @@ window.SITE = {"name": "GATE DA", "key": "gateda", "path": "gate-da", "domain": 
       var a = h("a", { href: ROOT + m.slug + "/" + (cur ? "#resume" : ""), class: "mod-card " + (m.kind || "") + (cur ? " current" : "") + (fin ? " complete" : "") },
         '<span class="mc-top"><span class="mn">' + (i + 1) + '</span><b>' + m.title + '</b>' + status + '</span><span class="mc-blurb">' + m.blurb + '</span>' +
         (meta ? '<span class="mc-meta">' + meta + '</span>' : '') +
-        '<span class="mc-prog' + (s[0] ? '' : ' zero') + '"><span class="bar"><i style="width:' + pct + '%"></i></span><small>' + (s[1] ? (s[0] ? s[0] + " of " + s[1] + " right" : s[1] + " questions") : "Coming soon") + "</small></span>");
+        '<span class="mc-prog"><span class="bar"><i style="width:' + pct + '%"></i></span><small>' + (s[1] ? (s[0] ? s[0] + " of " + s[1] + " right" : s[1] + " questions") : "Coming soon") + "</small></span>");
       box.appendChild(a);
     });
   }
@@ -2821,8 +2872,8 @@ window.SITE = {"name": "GATE DA", "key": "gateda", "path": "gate-da", "domain": 
 
     } else if (MODS[0]) {
       var m0 = (SITE.modinfo || {})[MODS[0].slug] || {};
-      cta.appendChild(h("a", { class: "cta", href: ROOT + MODS[0].slug + "/" }, "Start: " + MODS[0].title + " →" + (m0.min ? "<small>" + hours(m0.min) + ", or dip in as needed</small>" : "")));
-      if (MODS[1]) cta.appendChild(h("a", { class: "alt", href: ROOT + MODS[1].slug + "/" }, "Maths is fine: go to " + MODS[1].title.toLowerCase()));
+      cta.appendChild(h("a", { class: "cta", href: ROOT + MODS[0].slug + "/#start" }, "Start: " + MODS[0].title + " →" + (m0.min ? "<small>" + hours(m0.min) + ", or dip in as needed</small>" : "")));
+      if (MODS[1]) cta.appendChild(h("a", { class: "alt", href: ROOT + MODS[1].slug + "/#start" }, "Maths is fine: go to " + MODS[1].title.toLowerCase()));
     }
   }
 
@@ -2845,7 +2896,7 @@ window.SITE = {"name": "GATE DA", "key": "gateda", "path": "gate-da", "domain": 
       current = i; store.set(PARTKEY, String(i));
       if (art) { store.set(LASTKEY, String(i)); if (MOD) store.set(SITE.key + "-mod", MOD); renderMath(art); }
       $$(".toc .part > button").forEach(function (b) { var on = +b.dataset.part === i; b.classList.toggle("active", on); b.setAttribute("aria-current", on ? "true" : "false"); });
-      $$(".toc .chs").forEach(function (u, k) { u.hidden = k !== i; });
+      $$(".toc .chs").forEach(function (u, k) { u.hidden = k !== i; var pb = u.parentNode.querySelector(":scope > button"); if (pb) pb.setAttribute("aria-expanded", k === i ? "true" : "false"); });
     }
     if (art && changed) {
       curPage = pg;
@@ -2881,7 +2932,12 @@ window.SITE = {"name": "GATE DA", "key": "gateda", "path": "gate-da", "domain": 
   }, { passive: true });
 
   /* the one slim top bar: where you are, and a reading-progress line */
-  var tbWhere = $("#tbWhere"), tbBar = $("#tbBar"), tbKey = "";
+  var tbWhere = $("#tbWhere"), tbBar = $("#tbBar"), tbKey = "", tbNext = null;
+  if (MOD && tbWhere) {
+    tbNext = h("button", { type: "button", class: "tb-next", "aria-label": "Next page" }, "Next <span aria-hidden=\"true\">›</span>");
+    tbNext.addEventListener("click", function () { var n = neighbour(1); if (n) n.go(); });
+    tbWhere.insertAdjacentElement("afterend", tbNext);
+  }
   function updateLocbar() {
     if (!tbWhere) return;
     var key = current + "/" + curPage;
@@ -2890,6 +2946,7 @@ window.SITE = {"name": "GATE DA", "key": "gateda", "path": "gate-da", "domain": 
       tbWhere.innerHTML = "<span></span><b></b>";
       $("span", tbWhere).textContent = THISMOD ? THISMOD.title : "";
       $("b", tbWhere).textContent = current >= 0 ? pageLabel(parts[current], parts[current]._pages[curPage]) : "";
+      if (tbNext) tbNext.hidden = current < 0 || !neighbour(1);
     }
     if (current < 0) { if (tbBar) tbBar.style.width = "0"; return; }
     var page = parts[current]._pages[curPage];
@@ -3017,6 +3074,7 @@ window.SITE = {"name": "GATE DA", "key": "gateda", "path": "gate-da", "domain": 
           g.innerHTML = "<span>It will come back tomorrow.</span>";
           var nb = h("button", { type: "button", class: "cmd" }, "Next →"); nb.addEventListener("click", function () { i++; next(); }); g.appendChild(nb);
         } else {
+          if (raw.kind === "q") prog.q[id] = 1; else prog.p[id] = 1; save();
           g.appendChild(h("span", null, "How well did you know it?"));
           [["Guessed", 0], ["Unsure", 1], ["Knew it", 2]].forEach(function (x) {
             var b = h("button", { type: "button", class: x[1] === 2 ? "cmd" : "ghost" }, x[0]);
@@ -3208,6 +3266,7 @@ window.SITE = {"name": "GATE DA", "key": "gateda", "path": "gate-da", "domain": 
     updateScores();
     var startHash = location.hash.slice(1);
     if (startHash === "resume") resume(false);
+    else if (startHash === "start" && parts.length) show(0, 0, { setHash: true, top: true });
     else if (startHash === "review") { show(-1, 0, { top: true }); history.replaceState(null, "", "#welcome"); setTimeout(openReview, 60); }
     else if (startHash && document.getElementById(startHash)) route();
     else {
