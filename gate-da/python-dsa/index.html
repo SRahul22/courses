@@ -1000,6 +1000,51 @@ section.ch > .ch-head + *, section.pg-review > .ch-head + * { margin-top:36px; }
 .mx-heat::first-letter { text-transform:uppercase; }
 .home-prog { display:none; }
 
+/* ---------- retention (2026-11-19): confidence, review deck, self-test key points, chapter complete ---------- */
+.conf { display:flex; flex-wrap:wrap; align-items:center; gap:6px 8px; font:400 13px var(--sans); color:var(--tx3); }
+.conf button { border:1px solid var(--line2); background:transparent; color:var(--tx2); border-radius:99px; padding:4px 12px; font:500 12.5px var(--sans); }
+.conf button:hover { color:var(--tx); border-color:var(--tx3); }
+.conf button.on { background:var(--brand-soft); border-color:color-mix(in srgb,var(--brand) 45%,transparent); color:var(--brand); }
+.conf .conf-n { flex-basis:100%; color:var(--tx3); font-size:12.5px; }
+.rv-cta b { font-weight:700; color:var(--brand2); }
+dialog.revdlg { border:0; padding:0; width:min(720px,calc(100vw - 24px)); max-height:calc(100dvh - 32px); border-radius:22px; background:var(--bg); color:var(--tx); box-shadow:0 40px 120px -30px rgba(0,0,0,.5); display:flex; flex-direction:column; overflow:hidden; }
+dialog.revdlg:not([open]) { display:none; }
+dialog.revdlg::backdrop { background:rgba(24,18,10,.45); backdrop-filter:blur(3px); }
+.rv-top { display:flex; align-items:center; gap:14px; padding:14px 18px 12px 24px; }
+.rv-k { flex:1; font:600 11px var(--sans); letter-spacing:.14em; text-transform:uppercase; color:var(--brand2); }
+.rv-n { font:500 13px var(--sans); color:var(--tx3); font-variant-numeric:tabular-nums; }
+.rv-bar { height:2px; background:var(--line); }
+.rv-bar > i { display:block; height:100%; width:0; background:var(--brand); transition:width .3s ease; }
+.rv-body { overflow-y:auto; padding:22px 24px 26px; display:flex; flex-direction:column; gap:16px; font-family:var(--sans); }
+.rv-from { font:600 11px var(--sans); letter-spacing:.1em; text-transform:uppercase; color:var(--tx3); }
+.rv-body .q, .rv-body .prob { box-shadow:none; }
+.rv-body .prob > .linkbtn { display:none; }
+.rv-grade { display:flex; flex-wrap:wrap; align-items:center; gap:8px; padding-top:4px; font-size:14.5px; color:var(--tx2); }
+.rv-grade > span { margin-right:auto; }
+.rv-grade .cmd, .rv-grade .ghost { border-radius:99px; padding:9px 18px; align-self:auto; }
+.rv-grade .cmd { background:var(--brand); color:#fff; }
+.rv-end { display:flex; flex-direction:column; gap:12px; align-items:flex-start; padding:24px 0; }
+.rv-end h3 { font-size:30px; font-weight:350; }
+.rv-end p { color:var(--tx2); font-size:16px; }
+.rv-end .cmd { border-radius:99px; background:var(--brand); color:#fff; padding:10px 20px; }
+.dash-rev { grid-column:1 / -1; display:flex; flex-wrap:wrap; align-items:baseline; gap:6px 16px; padding:16px 20px; border-radius:20px; background:var(--brand2-soft); border:1px solid color-mix(in srgb,var(--brand2) 25%,var(--line)); }
+.dash-rev b { font:400 22px var(--serif); }
+.dash-rev-mods { display:flex; flex-wrap:wrap; gap:8px; margin-left:auto; }
+.dash-rev-mods a { font:500 13.5px var(--sans); padding:6px 12px; border-radius:99px; background:var(--panel); border:1px solid var(--line); color:var(--tx); text-decoration:none; }
+.dash-rev-mods a b { font:700 13px var(--sans); color:var(--brand2); margin-left:4px; }
+.dash-rev-mods a:hover { border-color:var(--brand2); }
+.takeaways { display:flex; flex-direction:column; }
+.tk-test { position:absolute; right:24px; top:26px; z-index:2; border:1px solid color-mix(in srgb,var(--bg) 30%,transparent); background:transparent; color:color-mix(in srgb,var(--bg) 85%,transparent); border-radius:99px; padding:5px 14px; font:500 12.5px var(--sans); }
+.tk-test:hover { background:color-mix(in srgb,var(--bg) 12%,transparent); }
+.takeaways.recall ol > li { cursor:pointer; }
+.takeaways.recall ol > li:not(.seen) { color:transparent !important; text-shadow:0 0 10px color-mix(in srgb,var(--bg) 70%,transparent); user-select:none; }
+.takeaways.recall ol > li:not(.seen) .katex { color:transparent; }
+.takeaways.recall ol > li:not(.seen)::after { content:"Tap to reveal"; position:absolute; left:52px; top:14px; font:500 13px var(--sans); color:color-mix(in srgb,var(--bg) 60%,transparent); text-shadow:none; }
+.pg-done { grid-column:1 / -1; font:400 14.5px var(--sans); color:var(--tx2); padding:12px 16px; border-radius:14px; background:color-mix(in srgb,var(--ok) 9%,var(--panel)); border:1px solid color-mix(in srgb,var(--ok) 30%,var(--line)); }
+.pg-done b { color:var(--ok); font-weight:600; }
+@media (max-width:900px) { .tk-test { right:16px; top:20px; } .rv-body { padding:18px 16px 22px; } .dash-rev-mods { margin-left:0; } }
+.dash-rev { order:3; }
+
 /* site theme */
 
 </style>
@@ -2323,6 +2368,60 @@ window.SITE = {"name": "GATE DA", "key": "gateda", "path": "gate-da", "domain": 
   var parts = $$("#parts > article.part");
   var current = -2;   // -1 = Home, 0.. = parts
 
+  /* ---------- spaced review ----------
+     Every question answered gets a review date in SITE.key-rev: {id: {b: box, due: day, m: module}}.
+     A miss comes back tomorrow; otherwise the gap grows 3, 7, 16, 35, 90 days. RAW keeps a pristine copy
+     of each question (taken before the page builds it) so the review deck can rebuild it on its own. */
+  var RAW = {};
+  parts.forEach(function (art) {
+    $$(".quiz", art).forEach(function (qz) { $$(":scope > .q", qz).forEach(function (q, i) { RAW[qz.dataset.id + "/" + i] = { kind: "q", el: q.cloneNode(true), home: q }; }); });
+    $$(".prob", art).forEach(function (pr) { RAW[pr.dataset.id] = { kind: "p", el: pr.cloneNode(true), home: pr }; });
+  });
+  var REVKEY = SITE.key + "-rev", rev;
+  try { rev = JSON.parse(store.get(REVKEY, "{}")) || {}; } catch (e) { rev = {}; }
+  var GAPS = [1, 3, 7, 16, 35, 90];
+  function today() { var d = new Date(); return Math.floor((d.getTime() - d.getTimezoneOffset() * 6e4) / 864e5); }
+  function modOf(id) { for (var k = 0; k < (SITE.modules || []).length; k++) { var m = SITE.modules[k].slug; if ((SITE.manifest[m] || []).indexOf(id) >= 0) return m; } return MOD; }
+  // grade: 0 = missed or guessed, 1 = unsure, 2 = knew it
+  function schedule(id, g) {
+    var r = rev[id], b = r ? r.b : -1;
+    b = g === 0 ? 0 : g === 1 ? Math.max(1, b) : Math.min(GAPS.length - 1, Math.max(2, b + 1));
+    rev[id] = { b: b, due: today() + GAPS[b], m: r ? r.m : modOf(id) };
+    store.set(REVKEY, JSON.stringify(rev));
+    return GAPS[b];
+  }
+  function dueIds(mod) { var t = today(); return Object.keys(rev).filter(function (id) { return rev[id].m === mod && rev[id].due <= t; }); }
+  // questions solved before spaced review existed join the deck gradually over the next week
+  (function seed() {
+    var changed = false, t = today();
+    (SITE.modules || []).forEach(function (m) {
+      (SITE.manifest[m.slug] || []).forEach(function (id) {
+        if ((prog.q[id] || prog.p[id]) && !rev[id]) {
+          var x = 0; for (var k = 0; k < id.length; k++) x = (x * 31 + id.charCodeAt(k)) % 997;
+          rev[id] = { b: 1, due: t + 1 + x % 7, m: m.slug }; changed = true;
+        }
+      });
+    });
+    if (changed) store.set(REVKEY, JSON.stringify(rev));
+  })();
+  // "How sure were you?" after a first-try right answer; skipping it counts as "unsure"
+  function confRow(after, id) {
+    var old = after.parentNode.querySelector(":scope > .conf"); if (old) old.remove();
+    schedule(id, 1);
+    var row = h("div", { class: "conf" }, '<span>How sure were you?</span>');
+    [["Guessed", 0], ["Unsure", 1], ["Knew it", 2]].forEach(function (x) {
+      var b = h("button", { type: "button", class: x[1] === 1 ? "on" : "" }, x[0]);
+      b.addEventListener("click", function () {
+        var d = schedule(id, x[1]);
+        $$("button", row).forEach(function (y) { y.classList.toggle("on", y === b); });
+        var n = $(".conf-n", row) || row.appendChild(h("small", { class: "conf-n" }));
+        n.textContent = "Back in your review " + (d === 1 ? "tomorrow" : "in " + d + " days") + ".";
+      });
+      row.appendChild(b);
+    });
+    after.insertAdjacentElement("afterend", row);
+  }
+
   /* ---------- math ---------- */
   function renderMath(root) {
     if (!window.renderMathInElement || root.dataset.math === "1") return;
@@ -2426,6 +2525,13 @@ window.SITE = {"name": "GATE DA", "key": "gateda", "path": "gate-da", "domain": 
     $$("ol.takeaways", art).forEach(function (ol) {
       var d = h("div", { class: "takeaways" }); d.appendChild(h("h3", null, "Key points"));
       ol.replaceWith(d); ol.classList.remove("takeaways"); d.appendChild(ol);
+      var tb = h("button", { type: "button", class: "tk-test" }, "Test yourself");
+      tb.addEventListener("click", function () {
+        var on = d.classList.toggle("recall"); tb.textContent = on ? "Show all" : "Test yourself";
+        $$("li", ol).forEach(function (li) { li.classList.remove("seen"); });
+      });
+      $$(":scope > li", ol).forEach(function (li) { li.addEventListener("click", function () { if (d.classList.contains("recall")) li.classList.toggle("seen"); }); });
+      d.insertBefore(tb, ol);
     });
     // questions first, then the summary: key points and mistakes close the chapter, after its quiz
     chs.forEach(function (ch) {
@@ -2481,25 +2587,12 @@ window.SITE = {"name": "GATE DA", "key": "gateda", "path": "gate-da", "domain": 
     var steps = $(".steps", ex); if (!steps) return;
     var lis = $$(":scope > li", steps);
     var holder = h("div", { class: "steps" });
-    var cards = lis.map(function (li) {
+    lis.forEach(function (li) {
       var d = h("div", { class: "step" }); var inner = h("div");
       while (li.firstChild) inner.appendChild(li.firstChild);
-      $$(".why-step", inner).forEach(function () {});
-      d.appendChild(inner); holder.appendChild(d); return d;
+      d.appendChild(inner); holder.appendChild(d);
     });
-    steps.replaceWith(holder);
-    var ctrl = h("div", { class: "steps-ctrl" });
-    var next = h("button", { class: "cmd", type: "button" }, "Show step 1 of " + cards.length);
-    var all = h("button", { class: "ghost", type: "button" }, "Show all steps");
-    var shown = 0;
-    function upd() {
-      cards.forEach(function (c, i) { c.hidden = i >= shown; });
-      if (shown >= cards.length) { next.hidden = true; all.hidden = true; }
-      else next.textContent = "Show step " + (shown + 1) + " of " + cards.length;
-    }
-    next.addEventListener("click", function () { shown++; upd(); var c = cards[shown - 1]; if (c) c.scrollIntoView({ block: "nearest", behavior: "smooth" }); });
-    all.addEventListener("click", function () { shown = cards.length; upd(); });
-    // steps are shown open: reading a derivation should not need clicks
+    steps.replaceWith(holder);   // every step is shown: reading a derivation should not need clicks
   }
 
   /* ---------- practice problems ---------- */
@@ -2508,11 +2601,12 @@ window.SITE = {"name": "GATE DA", "key": "gateda", "path": "gate-da", "domain": 
     if (s === "") return NaN;
     try { var v = DH.expr.evalConst(s); return v; } catch (e) { return NaN; }
   }
-  function buildProb(p, n) {
-    var id = p.dataset.id; allP.push({ id: id, el: p });
+  // R (review deck only): { label, onResult(ok) }; the first Check is final and nothing is saved to progress
+  function buildProb(p, n, R) {
+    var id = p.dataset.id, tried = false; if (!R) allP.push({ id: id, el: p });
     var stem = $(".stem", p), chEl = p.closest("section.ch"), artEl = p.closest("article.part");
     var chNo = chEl && artEl ? artEl.dataset.num + "." + ($$("section.ch", artEl).indexOf(chEl) + 1) + "." : "";
-    stem.dataset.n = "Exercise " + chNo + n;
+    stem.dataset.n = R ? R.label : "Exercise " + chNo + n;
     var choices = p.dataset.choices ? p.dataset.choices.split("|") : null;
     var multi = !!p.dataset.multi;   // MSQ: select all that apply; data-ans lists the right choices separated by ";"
     var answers = (p.dataset.ans || "").split(";").map(function (s) { return s.trim(); });
@@ -2542,7 +2636,7 @@ window.SITE = {"name": "GATE DA", "key": "gateda", "path": "gate-da", "domain": 
       answers.forEach(function (a, i) {
         var lab = h("label");
         lab.appendChild(h("span", null, labels[i] ? labels[i] : (answers.length > 1 ? "Answer " + (i + 1) : "Your answer")));
-        var inp = h("input", { type: "text", inputmode: "text", autocomplete: "off", spellcheck: "false", placeholder: "e.g. 3/4", title: "Numbers, fractions like 3/4, or expressions like sqrt(2)/2", "aria-label": (labels[i] || "Answer").replace(/\$/g, "") });
+        var inp = h("input", { type: "text", inputmode: "text", autocomplete: "off", spellcheck: "false", title: "Numbers, fractions like 3/4, or expressions like sqrt(2)/2", "aria-label": (labels[i] || "Answer").replace(/\$/g, "") });
         inp.addEventListener("keydown", function (e) { if (e.key === "Enter") check.click(); });
         lab.appendChild(inp); row.appendChild(lab); inputs.push(inp);
       });
@@ -2577,6 +2671,12 @@ window.SITE = {"name": "GATE DA", "key": "gateda", "path": "gate-da", "domain": 
         }
       }
       fb.hidden = false;
+      if (R) {
+        if (R.done) return; R.done = true;
+        fb.innerHTML = ok ? "<span><b class=\"ok\">Correct.</b></span>" : "<span><b class=\"no\">Not this time.</b> Answer: " + answers.join(", ") + "</span>";
+        if (sol) revealSolution(); DH.renderMath(fb); R.onResult(ok); return;
+      }
+      if (!tried) { tried = true; if (ok) setTimeout(function () { confRow(showSol.hidden ? fb : showSol, id); }, 0); else schedule(id, 0); }
       if (ok) {
         fb.innerHTML = "<span><b class=\"ok\">Correct.</b> " + (p.dataset.ok || "Nicely done.") + "</span>";
         p.classList.add("solved"); prog.p[id] = 1; save(); updateScores();
@@ -2590,7 +2690,7 @@ window.SITE = {"name": "GATE DA", "key": "gateda", "path": "gate-da", "domain": 
       }
       DH.renderMath(fb);
     }
-    if (prog.p[id]) {
+    if (prog.p[id] && !R) {
       p.classList.add("solved");
       fb.hidden = false; fb.innerHTML = "<span><b class=\"ok\">Solved earlier.</b> You can try it again any time.</span>";
       if (multi) { $$(".chip", row).forEach(function (b) { if (answers.indexOf(b.textContent.trim()) >= 0) b.classList.add("on"); }); }
@@ -2616,7 +2716,7 @@ window.SITE = {"name": "GATE DA", "key": "gateda", "path": "gate-da", "domain": 
         var first = text.querySelector("p") || text;
         first.insertAdjacentHTML("afterbegin", (i + 1) + ". ");
       }
-      var opts = h("div", { class: "opts" });
+      var opts = h("div", { class: "opts" }), tried = false;
       var why = h("div", { class: "why", "aria-live": "polite" }); why.hidden = true;
       $$(":scope > .o", q).forEach(function (o) {
         var e = $(".e", o); if (e) o.removeChild(e);
@@ -2628,6 +2728,7 @@ window.SITE = {"name": "GATE DA", "key": "gateda", "path": "gate-da", "domain": 
           why.hidden = false;
           why.innerHTML = (right ? "<b class=\"ok\">Right.</b> " : "<b class=\"no\">Not quite.</b> ") + (e ? e.innerHTML : "") + (right ? "" : " <i>Try another option.</i>");
           DH.renderMath(why);
+          if (!tried) { tried = true; if (right) confRow(why, id); else schedule(id, 0); }
           if (right) { q.classList.add("solved"); if (!prog.q[id]) { prog.q[id] = 1; save(); updateScores(); } }
         });
         opts.appendChild(b); o.remove();
@@ -2739,6 +2840,12 @@ window.SITE = {"name": "GATE DA", "key": "gateda", "path": "gate-da", "domain": 
     if (hp) { hp.hidden = done === 0; hp.textContent = "You have answered " + Math.round(100 * done / TOTAL) + "% of the course's questions."; }
     $("#topProg").textContent = "";
     updateLocbar();
+    var pgr = $("#pager");
+    if (pgr && current >= 0 && parts[current]._pages) {
+      var cp = parts[current]._pages[curPage], sc = cp ? scoreOf(cp) : [0, 0], dl = $(".pg-done", pgr), fin = sc[1] > 0 && sc[0] === sc[1];
+      if (fin && !dl) pgr.insertBefore(h("p", { class: "pg-done" }, "<b>✓ " + (cp.classList.contains("pg-review") ? "Part review" : "Chapter") + " complete.</b> Its questions will come back in your reviews."), pgr.firstChild);
+      else if (!fin && dl) dl.remove();
+    }
     parts.forEach(function (art, pi) {
       var s = scoreOf(art), el = $('[data-pscore="' + pi + '"]');
       el.textContent = s[0] ? s[0] + "/" + s[1] : ""; el.classList.toggle("done", s[1] > 0 && s[0] === s[1]);
@@ -2806,11 +2913,15 @@ window.SITE = {"name": "GATE DA", "key": "gateda", "path": "gate-da", "domain": 
     if (dash) {
       var started = MODS.filter(function (m) { return modScore(m.slug)[0] > 0; }).length;
       var done = MODS.filter(function (m) { var s = modScore(m.slug); return s[1] && s[0] === s[1]; }).length;
+      var dueMods = MODS.map(function (m) { return { m: m, n: dueIds(m.slug).length }; }).filter(function (x) { return x.n; });
+      var dueAll = dueMods.reduce(function (n, x) { return n + x.n; }, 0);
       dash.hidden = !(g[0] || w);
       var pct = g[1] ? Math.round(100 * g[0] / g[1]) : 0, wm = w ? MODS.filter(function (m) { return m.slug === w.mod; })[0] : null;
       dash.innerHTML = '<div class="dash-main"><span class="dash-k">Your progress</span><span class="dash-pct">' + (g[0] && pct === 0 ? "&lt;1" : pct) + '<small>%</small></span>' +
         '<span class="bar"><i style="width:' + pct + '%"></i></span>' +
         '<span class="dash-sub">' + g[0] + ' of ' + g[1] + ' questions answered right · ' + started + ' of ' + MODS.length + ' modules started' + (done ? ' · ' + done + ' finished' : '') + '</span></div>' +
+        (dueAll ? '<div class="dash-rev"><span class="dash-k">Review due today</span><b>' + dueAll + ' question' + (dueAll === 1 ? '' : 's') + '</b><span class="dash-rev-mods">' +
+          dueMods.map(function (x) { return '<a href="' + ROOT + x.m.slug + '/#review">' + x.m.title + ' <b>' + x.n + '</b></a>'; }).join('') + '</span></div>' : '') +
         (wm ? '<a class="dash-last" href="' + ROOT + wm.slug + '/#resume"><span class="dash-k">Last studied' + (w.at ? ' ' + ago(w.at) : '') + '</span><b>' + w.label + '</b><span>' + (w.part ? wm.title + ' · ' + w.part : 'Pick up where you left off') + '</span><span class="dash-go">Continue →</span></a>' : '');
     }
     var box = $("#modplan"); if (!box) return;
@@ -2833,7 +2944,9 @@ window.SITE = {"name": "GATE DA", "key": "gateda", "path": "gate-da", "domain": 
     var w = where(), wm = w ? MODS.filter(function (m) { return m.slug === w.mod; })[0] : null;
     if (wm) {
       cta.appendChild(h("a", { class: "cta", href: ROOT + wm.slug + "/#resume" }, "Continue: " + w.label + " →" + (w.part ? "<small>" + wm.title + "</small>" : "")));
-      cta.appendChild(h("a", { class: "alt", href: "#h-modules" }, "See all modules"));
+      var dm = MODS.filter(function (m) { return dueIds(m.slug).length; }), dn = dm.reduce(function (n, m) { return n + dueIds(m.slug).length; }, 0);
+      if (dn) cta.appendChild(h("a", { class: "alt rv-cta", href: ROOT + dm[0].slug + "/#review" }, "Review · <b>" + dn + "</b> due"));
+      else cta.appendChild(h("a", { class: "alt", href: "#h-modules" }, "See all modules"));
     } else if (MODS[0]) {
       var m0 = (SITE.modinfo || {})[MODS[0].slug] || {};
       cta.appendChild(h("a", { class: "cta", href: ROOT + MODS[0].slug + "/" }, "Start: " + MODS[0].title + " →" + (m0.min ? "<small>" + hours(m0.min) + ", or dip in as needed</small>" : "")));
@@ -2951,6 +3064,11 @@ window.SITE = {"name": "GATE DA", "key": "gateda", "path": "gate-da", "domain": 
   function renderCta() {
     if (!cta) return;
     if (!MOD) { renderHubCta(); return; }
+    setTimeout(function () {
+      var dn = dueIds(MOD).filter(function (id) { return RAW[id]; }).length, old = $(".rv-cta", cta);
+      if (old) old.remove();
+      if (dn) { var rb = h("button", { type: "button", class: "alt rv-cta" }, "Review · <b>" + dn + "</b> due"); rb.addEventListener("click", openReview); cta.appendChild(rb); }
+    }, 0);
     var last = parseInt(store.get(LASTKEY, "-1"), 10);
     var first = parts[0];
     cta.innerHTML = "";
@@ -2973,6 +3091,75 @@ window.SITE = {"name": "GATE DA", "key": "gateda", "path": "gate-da", "domain": 
     var pos = null; try { pos = JSON.parse(store.get(POSKEY, "null")); } catch (e) {}
     show(last, Math.max(0, lpg), { push: push, setHash: !push, y: lpg >= 0 && pos && pos.id === lc.id ? pos.y : null });
   }
+  var revDlg = null;
+  function homeLabel(el) { var pg = el.closest("section.ch, section.pg-review"), art = el.closest("article.part"); return art && pg ? pageLabel(art, pg) : ""; }
+  function reviewQ(el, done) {
+    var card = h("div", { class: "q" }), text = $(":scope > .q-text", el);
+    if (text) card.appendChild(text);
+    var opts = h("div", { class: "opts" }), why = h("div", { class: "why" }), answered = false; why.hidden = true;
+    $$(":scope > .o", el).forEach(function (o) {
+      var e = $(".e", o); if (e) o.removeChild(e);
+      var b = h("button", { class: "opt", type: "button" }, o.innerHTML); b._ok = o.classList.contains("ok");
+      b.addEventListener("click", function () {
+        if (answered) return; answered = true;
+        $$(".opt", opts).forEach(function (x) { if (x._ok) x.classList.add("right"); });
+        if (!b._ok) b.classList.add("wrong");
+        why.hidden = false; why.innerHTML = (b._ok ? "<b class=\"ok\">Right.</b> " : "<b class=\"no\">Not this time.</b> ") + (e ? e.innerHTML : "");
+        DH.renderMath(why); done(b._ok);
+      });
+      opts.appendChild(b);
+    });
+    card.appendChild(opts); card.appendChild(why); return card;
+  }
+  function openReview() {
+    var ids = dueIds(MOD).filter(function (id) { return RAW[id]; }).sort(function (a, b) { return rev[a].due - rev[b].due; }).slice(0, 12);
+    if (!revDlg) {
+      revDlg = h("dialog", { class: "revdlg", "aria-label": "Review" }); document.body.appendChild(revDlg);
+      revDlg.addEventListener("close", function () { if (current === -1) renderCta(); updateScores(); });
+    }
+    var i = 0, missed = 0;
+    revDlg.innerHTML = '<div class="rv-top"><span class="rv-k">Review · ' + (THISMOD ? THISMOD.title : "") + '</span><span class="rv-n"></span><button type="button" class="icon-btn rv-x" aria-label="Close review">✕</button></div><div class="rv-bar"><i></i></div><div class="rv-body"></div>';
+    $(".rv-x", revDlg).addEventListener("click", function () { revDlg.close(); });
+    var body = $(".rv-body", revDlg);
+    function nextDue() { var t = today(), ds = Object.keys(rev).filter(function (id) { return rev[id].m === MOD && rev[id].due > t; }).map(function (id) { return rev[id].due - t; }); return ds.length ? Math.min.apply(null, ds) : 0; }
+    function finish(first) {
+      $(".rv-n", revDlg).textContent = ""; $(".rv-bar > i", revDlg).style.width = "100%";
+      var nd = nextDue();
+      body.innerHTML = '<div class="rv-end"><h3>' + (first ? "Nothing to review right now." : "Done for today.") + '</h3><p>' +
+        (first ? "" : ids.length + " reviewed" + (missed ? ", " + missed + " coming back tomorrow" : ", all of them right") + ". ") +
+        (nd ? "Your next review is " + (nd === 1 ? "tomorrow" : "in " + nd + " days") + "." : "Answer questions in the chapters and they will start coming back here.") + '</p><button type="button" class="cmd">Back to the module</button></div>';
+      $(".rv-end .cmd", body).addEventListener("click", function () { revDlg.close(); });
+    }
+    function next() {
+      if (i >= ids.length) { finish(!ids.length); return; }
+      var id = ids[i], raw = RAW[id];
+      $(".rv-n", revDlg).textContent = (i + 1) + " of " + ids.length;
+      $(".rv-bar > i", revDlg).style.width = (100 * i / ids.length) + "%";
+      body.innerHTML = ""; body.appendChild(h("p", { class: "rv-from" }, "From " + homeLabel(raw.home)));
+      var el = raw.el.cloneNode(true), card;
+      function done(ok) {
+        var g = h("div", { class: "rv-grade" });
+        if (!ok) {
+          missed++; schedule(id, 0);
+          g.innerHTML = "<span>It will come back tomorrow.</span>";
+          var nb = h("button", { type: "button", class: "cmd" }, "Next →"); nb.addEventListener("click", function () { i++; next(); }); g.appendChild(nb);
+        } else {
+          g.appendChild(h("span", null, "How well did you know it?"));
+          [["Guessed", 0], ["Unsure", 1], ["Knew it", 2]].forEach(function (x) {
+            var b = h("button", { type: "button", class: x[1] === 2 ? "cmd" : "ghost" }, x[0]);
+            b.addEventListener("click", function () { if (x[1] === 0) missed++; schedule(id, x[1]); i++; next(); }); g.appendChild(b);
+          });
+        }
+        body.appendChild(g); g.scrollIntoView({ block: "nearest" });
+      }
+      if (raw.kind === "q") { card = reviewQ(el, done); body.appendChild(card); }
+      else { el.classList.remove("solved"); body.appendChild(el); buildProb(el, 0, { label: "Practice", onResult: done }); card = el; }
+      DH.renderMath(body); body.scrollTop = 0;
+    }
+    next();
+    if (revDlg.showModal) revDlg.showModal(); else revDlg.setAttribute("open", "");
+  }
+  DH.openReview = openReview;
   DH.showPart = showPart;
   function buildPager() {
     var pg = $("#pager"); pg.innerHTML = "";
@@ -3129,6 +3316,7 @@ window.SITE = {"name": "GATE DA", "key": "gateda", "path": "gate-da", "domain": 
     updateScores();
     var startHash = location.hash.slice(1);
     if (startHash === "resume") resume(false);
+    else if (startHash === "review") { show(-1, 0, { top: true }); history.replaceState(null, "", "#welcome"); setTimeout(openReview, 60); }
     else if (startHash && document.getElementById(startHash)) route();
     else {
       var sp = parseInt(store.get(PARTKEY, "-1"), 10); sp = isNaN(sp) ? -1 : Math.min(parts.length - 1, Math.max(-1, sp));
