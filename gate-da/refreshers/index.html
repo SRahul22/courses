@@ -1594,6 +1594,17 @@ section.ch > .guess { order:-1 !important; }
 .brand-name .bn-short { display:none; }
 @media (max-width:600px) { .brand-name .bn-full { display:none; } .brand-name .bn-short { display:inline; } }
 
+/* THEME SWITCH (2026-11-20): the dark/light button is an animated switch: moon on the left, sun on the right,
+   a knob that slides under the active mode, and the active icon lit. role="switch" + aria-checked in core.js. */
+.theme-btn { position:relative !important; width:56px !important; min-width:56px !important; height:30px !important; padding:0 8px !important; border:0 !important; border-radius:99px !important; background:color-mix(in srgb, var(--tx) 10%, transparent) !important; display:inline-flex !important; align-items:center !important; justify-content:space-between !important; cursor:pointer; }
+.theme-btn svg, .theme-btn.is-dark svg { display:block !important; width:14px !important; height:14px !important; position:relative; z-index:1; color:var(--tx3); transition:color .25s ease; }
+.theme-btn::after { content:""; position:absolute; top:3px; left:3px; width:24px; height:24px; border-radius:50%; background:var(--panel); box-shadow:0 1px 3px rgba(0,0,0,.22); transform:translateX(26px); transition:transform .3s cubic-bezier(.3, .9, .3, 1); }
+.theme-btn.is-dark::after { transform:translateX(0); }
+.theme-btn:not(.is-dark) .ic-sun { color:#C27A0E; }
+.theme-btn.is-dark .ic-moon { color:#9CC3E6; }
+.theme-btn:focus-visible { outline:2px solid var(--brand); outline-offset:2px; }
+@media (prefers-reduced-motion: reduce) { .theme-btn::after, .theme-btn svg { transition:none; } }
+
 /* site theme */
 
 </style>
@@ -4273,7 +4284,7 @@ window.SITE = {"name": "GATE Data Science & AI", "key": "gateda", "path": "gate-
     return window.matchMedia && matchMedia("(prefers-color-scheme: dark)").matches;
   }
   function syncThemeBtns() {
-    $$(".theme-btn").forEach(function (b) { b.classList.toggle("is-dark", isDark()); b.setAttribute("aria-label", isDark() ? "Switch to light mode" : "Switch to dark mode"); });
+    $$(".theme-btn").forEach(function (b) { b.classList.toggle("is-dark", isDark()); b.setAttribute("role", "switch"); b.setAttribute("aria-checked", isDark() ? "true" : "false"); b.setAttribute("aria-label", "Dark mode"); });
   }
   $$(".theme-btn").forEach(function (b) {
     b.addEventListener("click", function () {
