@@ -23,7 +23,7 @@
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 26 26'%3E%3Ccircle cx='13' cy='13' r='10' fill='%230E6B6B'/%3E%3C/svg%3E">
 <!-- inline scripts first: they must never wait behind a slow or blocked stylesheet -->
 <script>/* one-time import of progress carried over from an old address (#import=...): never overwrites existing keys */try{var m=location.hash.match(/^#import=([^&]+)/);if(m){var o=JSON.parse(decodeURIComponent(escape(atob(decodeURIComponent(m[1])))));for(var k in o.d){if(localStorage.getItem(k)===null)localStorage.setItem(k,o.d[k]);}history.replaceState(null,"",location.pathname+location.search+(o.h?"#"+o.h:""));}}catch(e){}</script>
-<script>try { var t = localStorage.getItem("gateda-theme"); if (t === "dark" || t === "light") document.documentElement.setAttribute("data-theme", t); } catch (e) {}</script>
+<script>/* one theme for the whole site: courses-theme is shared with the catalogue and every course (falls back to this course's old key once) */try { var t = localStorage.getItem("courses-theme") || localStorage.getItem("gateda-theme"); if (t === "dark" || t === "light") { document.documentElement.setAttribute("data-theme", t); localStorage.setItem("courses-theme", t); } } catch (e) {}</script>
 <!-- fonts are served from this site (vendor/fonts, copied by build.py from @fontsource-variable in ~/Dev/tools) -->
 <link rel="preload" href="../vendor/fonts/figtree.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="../vendor/fonts/source-serif-4.woff2" as="font" type="font/woff2" crossorigin>
@@ -4275,7 +4275,7 @@ window.SITE = {"name": "GATE DA", "key": "gateda", "path": "gate-da", "domain": 
   $$(".theme-btn").forEach(function (b) {
     b.addEventListener("click", function () {
       var next = isDark() ? "light" : "dark";
-      document.documentElement.setAttribute("data-theme", next); store.set(SITE.key + "-theme", next);
+      document.documentElement.setAttribute("data-theme", next); store.set("courses-theme", next); store.set(SITE.key + "-theme", next);   // courses-theme is shared site-wide
       syncThemeBtns(); window.dispatchEvent(new Event("dh-theme"));
     });
   });
