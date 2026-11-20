@@ -4,108 +4,133 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Courses by Rahul Dev Sharma</title>
-<meta name="description" content="Free, interactive, self-paced courses: optimization methods, software engineering basics, and more.">
+<meta name="description" content="Free interactive courses: IISc optimization and logistics, GATE Data Science & AI preparation, and a field guide for new software engineers.">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Courses by Rahul Dev Sharma">
-<meta property="og:description" content="Free, interactive, self-paced courses: optimization methods, software engineering basics, and more.">
+<meta property="og:description" content="Free interactive courses: IISc optimization and logistics, GATE Data Science & AI preparation, and a field guide for new software engineers.">
 <meta property="og:url" content="https://courses.rahuldevsharma.com/">
 <meta name="theme-color" content="#F4F6F7" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#11151A" media="(prefers-color-scheme: dark)">
-<!-- fonts are served from this site (fonts/, copied from @fontsource-variable in ~/Dev/tools); design: GATE DA "design v5" -->
+<!-- hand-written catalogue (design v5, as in every course); fonts are served from this site (fonts/) -->
 <link rel="preload" href="fonts/figtree.woff2" as="font" type="font/woff2" crossorigin>
 <script>try { var t = localStorage.getItem("courses-theme"); if (t === "dark" || t === "light") document.documentElement.setAttribute("data-theme", t); } catch (e) {}</script>
 <style>
 @font-face { font-family:Figtree; font-style:normal; font-weight:300 900; font-display:swap; src:url(fonts/figtree.woff2) format("woff2"); }
 @font-face { font-family:"Source Serif 4"; font-style:normal; font-weight:200 900; font-display:swap; src:url(fonts/source-serif-4.woff2) format("woff2"); }
-:root { --bg:#F4F6F7; --panel:#FFFFFF; --tx:#182029; --tx2:#46505C; --tx3:#5E6874; --line:rgba(24,32,41,.10); --brand:#1F5F8B; --brand-soft:rgba(31,95,139,.09); --brand2:#A9532F; --ui:Figtree,system-ui,-apple-system,"Segoe UI",sans-serif; --read:"Source Serif 4",Georgia,serif; color-scheme:light; }
-@media (prefers-color-scheme:dark) { :root:not([data-theme="light"]) { --bg:#11151A; --panel:#1A2027; --tx:#E4E8EC; --tx2:#B3BCC6; --tx3:#8A95A1; --line:rgba(228,232,236,.09); --brand:#79AEDB; --brand-soft:rgba(121,174,219,.13); --brand2:#EE9068; color-scheme:dark; } }
-:root[data-theme="dark"] { --bg:#11151A; --panel:#1A2027; --tx:#E4E8EC; --tx2:#B3BCC6; --tx3:#8A95A1; --line:rgba(228,232,236,.09); --brand:#79AEDB; --brand-soft:rgba(121,174,219,.13); --brand2:#EE9068; color-scheme:dark; }
+:root { --bg:#F4F6F7; --panel:#FFFFFF; --tx:#182029; --tx2:#46505C; --tx3:#5E6874; --line:rgba(24,32,41,.10); --line2:rgba(24,32,41,.18); --brand:#1F5F8B; --brand-soft:rgba(31,95,139,.09); --brand2:#A9532F; --brand2-soft:rgba(169,83,47,.09); --ui:Figtree,system-ui,-apple-system,"Segoe UI",sans-serif; --read:"Source Serif 4",Georgia,serif; color-scheme:light; }
+@media (prefers-color-scheme:dark) { :root:not([data-theme="light"]) { --bg:#11151A; --panel:#1A2027; --tx:#E4E8EC; --tx2:#B3BCC6; --tx3:#8A95A1; --line:rgba(228,232,236,.09); --line2:rgba(228,232,236,.17); --brand:#79AEDB; --brand-soft:rgba(121,174,219,.13); --brand2:#EE9068; --brand2-soft:rgba(238,144,104,.12); color-scheme:dark; } }
+:root[data-theme="dark"] { --bg:#11151A; --panel:#1A2027; --tx:#E4E8EC; --tx2:#B3BCC6; --tx3:#8A95A1; --line:rgba(228,232,236,.09); --line2:rgba(228,232,236,.17); --brand:#79AEDB; --brand-soft:rgba(121,174,219,.13); --brand2:#EE9068; --brand2-soft:rgba(238,144,104,.12); color-scheme:dark; }
 * { box-sizing:border-box; }
 body { margin:0; background:var(--bg); color:var(--tx); font:16.5px/1.6 var(--ui); -webkit-font-smoothing:antialiased; }
 .topbar { position:sticky; top:0; z-index:10; display:flex; align-items:center; gap:12px; height:56px; padding:0 20px; background:color-mix(in srgb,var(--bg) 72%,transparent); backdrop-filter:saturate(1.8) blur(22px); -webkit-backdrop-filter:saturate(1.8) blur(22px); border-bottom:1px solid var(--line); }
-.brand { font:700 17px var(--ui); letter-spacing:-.018em; color:var(--tx); text-decoration:none; }
-.where { flex:1; font-size:13.5px; color:var(--tx3); }
-.where::before { content:"/"; margin-right:10px; color:var(--line); }
+.brand { display:flex; align-items:center; gap:10px; font:700 17px var(--ui); letter-spacing:-.018em; color:var(--tx); text-decoration:none; flex:1; }
 .theme { display:grid; place-items:center; width:40px; height:40px; border:0; border-radius:99px; background:transparent; color:var(--tx2); cursor:pointer; }
 .theme:hover { background:color-mix(in srgb,var(--tx) 6%,transparent); }
 .theme .sun, :root[data-theme="dark"] .theme .moon { display:none; }
 :root[data-theme="dark"] .theme .sun { display:block; }
 @media (prefers-color-scheme:dark) { :root:not([data-theme="light"]) .theme .moon { display:none; } :root:not([data-theme="light"]) .theme .sun { display:block; } }
-main { max-width:1040px; margin:0 auto; padding:56px 20px 80px; display:flex; flex-direction:column; gap:40px; }
-h1 { font:700 clamp(34px,5.4vw,54px)/1.06 var(--ui); letter-spacing:-.03em; margin:0 0 14px; max-width:18ch; }
-.lede { font:400 clamp(18px,2.2vw,20px)/1.55 var(--read); color:var(--tx2); max-width:58ch; margin:0; }
-.grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(290px,1fr)); gap:16px; }
-a.card { display:flex; flex-direction:column; gap:6px; padding:22px 22px 18px; text-decoration:none; color:inherit; background:var(--panel); border:1px solid var(--line); border-radius:22px; transition:border-color .15s; }
+main { max-width:1080px; margin:0 auto; padding:56px 20px 80px; display:flex; flex-direction:column; gap:48px; }
+.intro h1 { font:700 clamp(36px,5.6vw,56px)/1.04 var(--ui); letter-spacing:-.032em; margin:0 0 12px; }
+.intro p { font:400 clamp(17px,2vw,19px)/1.55 var(--read); color:var(--tx2); margin:0; max-width:52ch; }
+.group { display:flex; flex-direction:column; gap:16px; }
+.g-head { display:flex; flex-wrap:wrap; align-items:baseline; gap:4px 14px; }
+.g-head h2 { font:700 22px var(--ui); letter-spacing:-.018em; margin:0; }
+.g-head p { margin:0; font-size:14.5px; color:var(--tx3); }
+.grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:14px; }
+a.card { display:grid; grid-template-columns:52px minmax(0,1fr); grid-template-areas:"ic kick" "ic title" "line line" "facts facts"; column-gap:14px; align-items:center; padding:20px 22px; text-decoration:none; color:inherit; background:var(--panel); border:1px solid var(--line); border-radius:22px; transition:border-color .15s; }
 a.card:hover { border-color:var(--brand); }
 a.card:focus-visible { outline:2px solid var(--brand); outline-offset:3px; }
-.kick { font:600 13px var(--ui); color:var(--brand2); }
-.card h2 { font:700 22px/1.2 var(--ui); letter-spacing:-.018em; margin:0; }
-.card p { font:400 16px/1.55 var(--read); color:var(--tx2); margin:0 0 8px; }
-.row { margin-top:auto; display:flex; align-items:center; justify-content:space-between; gap:12px; }
-.meta { font-size:13.5px; color:var(--tx3); }
-.go { border-radius:99px; padding:6px 14px; background:var(--brand-soft); color:var(--brand); font:600 14px var(--ui); }
-a.card:hover .go { background:var(--brand); color:var(--panel); }
+.ic { grid-area:ic; display:grid; place-items:center; width:52px; height:52px; border-radius:15px; background:var(--brand-soft); }
+.kick { grid-area:kick; align-self:end; font:600 13px var(--ui); color:var(--brand2); }
+.card h3 { grid-area:title; align-self:start; font:700 21px/1.2 var(--ui); letter-spacing:-.018em; margin:0; }
+.card p { grid-area:line; margin:14px 0 0; font:400 16px/1.5 var(--read); color:var(--tx2); }
+.facts { grid-area:facts; list-style:none; margin:14px 0 0; padding:0; display:flex; flex-wrap:wrap; gap:6px; }
+.facts li { font:600 12.5px var(--ui); color:var(--tx2); background:color-mix(in srgb,var(--tx) 5%,transparent); border-radius:99px; padding:3px 10px; }
+.pair { display:grid; grid-template-columns:repeat(auto-fit,minmax(300px,1fr)); gap:48px 14px; }
+.pair .grid { grid-template-columns:minmax(0,1fr); }
 footer { color:var(--tx3); font-size:14px; border-top:1px solid var(--line); padding-top:20px; }
 footer a { color:var(--brand); }
-@media (max-width:600px) { main { padding:36px 16px 64px; gap:28px; } .topbar { padding:0 10px 0 16px; } }
+@media (max-width:600px) { main { padding:32px 16px 64px; gap:36px; } .topbar { padding:0 10px 0 16px; } a.card { padding:18px; } }
 @media (prefers-reduced-motion:reduce) { a.card { transition:none; } }
 </style>
 </head>
 <body>
 <header class="topbar">
-  <a class="brand" href="/">Courses</a><span class="where">Rahul Dev Sharma</span>
+  <a class="brand" href="/"><svg width="26" height="26" viewBox="0 0 26 26" aria-hidden="true"><rect x="3" y="3" width="8.5" height="8.5" rx="2.4" fill="var(--brand)"/><rect x="14.5" y="3" width="8.5" height="8.5" rx="2.4" fill="var(--brand2)"/><rect x="3" y="14.5" width="8.5" height="8.5" rx="2.4" fill="var(--brand2)"/><rect x="14.5" y="14.5" width="8.5" height="8.5" rx="2.4" fill="var(--brand)"/></svg>Courses</a>
   <button class="theme" type="button" aria-label="Switch light or dark mode"><svg class="moon" width="20" height="20" viewBox="0 0 20 20" aria-hidden="true"><path d="M16.5 12.2A7 7 0 0 1 7.8 3.5a7 7 0 1 0 8.7 8.7z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg><svg class="sun" width="20" height="20" viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="3.6" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M10 1.8v2.2M10 16v2.2M1.8 10H4M16 10h2.2M4.2 4.2l1.6 1.6M14.2 14.2l1.6 1.6M4.2 15.8l1.6-1.6M14.2 5.8l1.6-1.6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></button>
 </header>
 <main>
-  <header>
-    <h1>Interactive courses, built to be understood</h1>
-    <p class="lede">Plain-language ideas first, then hands-on practice with real questions. Free, no sign-up; your progress stays in your browser.</p>
+  <header class="intro">
+    <h1>Courses</h1>
+    <p>Free interactive courses. No sign-up; your progress stays in your browser.</p>
   </header>
-  <section class="grid" aria-label="Courses">
-    <a class="card" href="optimization/">
-      <span class="kick">IISc E0 230</span>
-      <h2>Downhill</h2>
-      <p>How computers find the best answer: optimality conditions, convexity, gradient descent, conjugate gradients and quasi-Newton methods.</p>
-      <span class="row"><span class="meta">14 parts</span><span class="go">Open <span aria-hidden="true">›</span></span></span>
-    </a>
-    <a class="card" href="head-start/">
-      <span class="kick">Career skills</span>
-      <h2>HEAD Start</h2>
-      <p>A field guide for new software engineers: Git, code review, databases, APIs, testing and shipping safely.</p>
-      <span class="row"><span class="meta">11 parts</span><span class="go">Open <span aria-hidden="true">›</span></span></span>
-    </a>
-    <a class="card" href="tour-guide/">
-      <span class="kick">IISc SL 225</span>
-      <h2>Tour Guide</h2>
-      <p>From linear and integer programs to branch and bound, the travelling salesman problem and vehicle routing.</p>
-      <span class="row"><span class="meta">12 parts</span><span class="go">Open <span aria-hidden="true">›</span></span></span>
-    </a>
-    <a class="card" href="inventory/">
-      <span class="kick">IISc SL 225 · Lecture 15</span>
-      <h2>Restock</h2>
-      <p>Inventory optimization: how much to order and when, from the EOQ to Wagner–Whitin, the newsvendor and (s, S) policies.</p>
-      <span class="row"><span class="meta">5 parts</span><span class="go">Open <span aria-hidden="true">›</span></span></span>
-    </a>
-    <a class="card" href="achuthan-cvrp/">
-      <span class="kick">Paper explainer</span>
-      <h2>Tight Cuts</h2>
-      <p>Achuthan, Caccetta and Hill's branch-and-cut for vehicle routing, every cut shown on a worked instance.</p>
-      <span class="row"><span class="meta">7 parts</span><span class="go">Open <span aria-hidden="true">›</span></span></span>
-    </a>
-    <a class="card" href="gate-da/">
-      <span class="kick">Exam prep</span>
-      <h2>GATE DA</h2>
-      <p>Maths, Python &amp; DSA and databases for the GATE Data Science &amp; AI exam, with real past questions.</p>
-      <span class="row"><span class="meta">7 modules</span><span class="go">Open <span aria-hidden="true">›</span></span></span>
-    </a>
-    <a class="card" href="lno-quiz/">
-      <span class="kick">IISc E1 251</span>
-      <h2>Quiz Day</h2>
-      <p>Convexity, duality and linear programming as short stories, with two click-to-answer mock quizzes.</p>
-      <span class="row"><span class="meta">2 chapters</span><span class="go">Open <span aria-hidden="true">›</span></span></span>
-    </a>
+  <section class="group" aria-labelledby="g-iisc">
+    <div class="g-head"><h2 id="g-iisc">IISc courses</h2><p>Companions to courses at the Indian Institute of Science, Bengaluru.</p></div>
+    <div class="grid">
+      <a class="card" href="optimization/">
+        <span class="ic"><svg width="28" height="28" viewBox="0 0 26 26" aria-hidden="true"><path d="M3 4.5C9.5 4.5 10.5 21 23.5 21.5" fill="none" stroke="var(--brand)" stroke-width="2.4" stroke-linecap="round"/><circle cx="19.6" cy="16.6" r="3.3" fill="var(--brand2)"/></svg></span>
+        <span class="kick">E0 230</span>
+        <h3>Downhill</h3>
+        <p>Computational methods of optimization, from optimality conditions to quasi-Newton methods.</p>
+        <ul class="facts"><li>15 parts</li><li>52 chapters</li><li>504 questions</li></ul>
+      </a>
+      <a class="card" href="tour-guide/">
+        <span class="ic"><svg width="28" height="28" viewBox="0 0 26 26" aria-hidden="true"><path d="M13 13L4.5 7 4 18.5zM13 13l8.5-6 .5 11.5z" fill="none" stroke="var(--brand)" stroke-width="2.2" stroke-linejoin="round"/><rect x="10" y="10" width="6" height="6" rx="1.4" fill="var(--brand2)"/></svg></span>
+        <span class="kick">SL 225</span>
+        <h3>Tour Guide</h3>
+        <p>Logistics and freight modelling: linear programs to vehicle routing.</p>
+        <ul class="facts"><li>12 parts</li><li>41 chapters</li><li>442 questions</li></ul>
+      </a>
+      <a class="card" href="inventory/">
+        <span class="ic"><svg width="28" height="28" viewBox="0 0 26 26" aria-hidden="true"><path d="M3.5 6.5L9.5 19V6.5l6 12.5V6.5l6 12.5" fill="none" stroke="var(--brand)" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round"/><circle cx="21.5" cy="6.5" r="2.6" fill="var(--brand2)"/></svg></span>
+        <span class="kick">SL 225 · Lecture 15</span>
+        <h3>Restock</h3>
+        <p>Inventory optimization: how much to order, and when.</p>
+        <ul class="facts"><li>5 parts</li><li>14 chapters</li><li>123 questions</li></ul>
+      </a>
+      <a class="card" href="achuthan-cvrp/">
+        <span class="ic"><svg width="28" height="28" viewBox="0 0 26 26" aria-hidden="true"><path d="M4 20.5V6.5L13.5 4l8.5 8-4 9z" fill="none" stroke="var(--brand)" stroke-width="2.2" stroke-linejoin="round"/><path d="M8 2.5l16 15" stroke="var(--brand2)" stroke-width="2.4" stroke-linecap="round"/></svg></span>
+        <span class="kick">SL 225 · project</span>
+        <h3>Tight Cuts</h3>
+        <p>A branch-and-cut paper for vehicle routing, worked through.</p>
+        <ul class="facts"><li>7 parts</li><li>14 chapters</li><li>110 questions</li></ul>
+      </a>
+      <a class="card" href="lno-quiz/">
+        <span class="ic"><svg width="28" height="28" viewBox="0 0 26 26" aria-hidden="true"><rect x="3.5" y="3.5" width="19" height="19" rx="5" fill="none" stroke="var(--brand)" stroke-width="2.2"/><path d="M8.5 13.5l3.2 3.2 6-7" fill="none" stroke="var(--brand2)" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+        <span class="kick">E1 251</span>
+        <h3>Quiz Day</h3>
+        <p>Convexity, duality and linear programming, with two mock quizzes.</p>
+        <ul class="facts"><li>2 chapters</li><li>40 questions</li></ul>
+      </a>
+    </div>
   </section>
-  <footer>Made by <a href="https://rahuldevsharma.com">Rahul Dev Sharma</a>. Independent learning resources; see each course's acknowledgement for credits.</footer>
+  <div class="pair">
+  <section class="group" aria-labelledby="g-exam">
+    <div class="g-head"><h2 id="g-exam">Exam preparation</h2></div>
+    <div class="grid">
+      <a class="card" href="gate-da/">
+        <span class="ic"><svg width="28" height="28" viewBox="0 0 26 26" aria-hidden="true"><path d="M2.5 21.5C7 21.5 8.5 5 13 5s6 16.5 10.5 16.5" fill="none" stroke="var(--brand)" stroke-width="2.4" stroke-linecap="round"/><circle cx="13" cy="5" r="3.2" fill="var(--brand2)"/></svg></span>
+        <span class="kick">GATE</span>
+        <h3>GATE DA</h3>
+        <p>Maths, Python, databases, ML and AI for the GATE Data Science & AI paper.</p>
+        <ul class="facts"><li>9 modules</li><li>1,000+ questions</li><li>past papers</li></ul>
+      </a>
+    </div>
+  </section>
+  <section class="group" aria-labelledby="g-engineering">
+    <div class="g-head"><h2 id="g-engineering">Engineering</h2></div>
+    <div class="grid">
+      <a class="card" href="head-start/">
+        <span class="ic"><svg width="28" height="28" viewBox="0 0 26 26" aria-hidden="true"><path d="M6 4v18M6 13c0-5 14-3 14-9" fill="none" stroke="var(--brand)" stroke-width="2.4" stroke-linecap="round"/><circle cx="6" cy="4" r="3" fill="var(--brand)"/><circle cx="6" cy="22" r="3" fill="var(--brand)"/><circle cx="20" cy="4" r="3" fill="var(--brand2)"/></svg></span>
+        <span class="kick">Career</span>
+        <h3>HEAD Start</h3>
+        <p>Git, code review, databases, APIs and testing for new software engineers.</p>
+        <ul class="facts"><li>11 parts</li><li>27 chapters</li><li>101 questions</li></ul>
+      </a>
+    </div>
+  </section>
+  </div>
+  <footer>By <a href="https://rahuldevsharma.com">Rahul Dev Sharma</a>.</footer>
 </main>
 <script>
 document.querySelector(".theme").addEventListener("click", function () {
