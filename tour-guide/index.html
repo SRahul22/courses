@@ -20,7 +20,9 @@
 <meta name="twitter:title" content="Logistics and Freight Modelling: IISc SL 225 · “Tour Guide”">
 <meta name="twitter:description" content="An interactive course companion for SL 225 Logistics and Freight Modelling at IISc. It builds up linear programming, integer programming, branch and bound, the travelling salesman problem and vehicle routing, with draggable widgets and self-checked practice.">
 <meta name="twitter:image" content="https://courses.rahuldevsharma.com/tour-guide/preview.png">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 26 26%22%3E%3Crect width=%2226%22 height=%2226%22 rx=%227%22 fill=%22%231E7465%22/%3E%3Cpath d=%22M13 13.5L6 8.5v9.5zM13 13.5l7-5v9.5z%22 fill=%22none%22 stroke=%22%23fff%22 stroke-width=%222.2%22 stroke-linejoin=%22round%22/%3E%3Crect x=%2210.6%22 y=%2211.1%22 width=%224.8%22 height=%224.8%22 rx=%221.2%22 fill=%22%23FFE2CF%22/%3E%3C/svg%3E">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="icon" href="favicon-32.png" type="image/png" sizes="32x32">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
 <!-- fonts and KaTeX are served from this site (vendor/, copied by build.py from ~/Dev/tools/node_modules) -->
 <link rel="preload" href="vendor/fonts/figtree.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="vendor/fonts/source-serif-4.woff2" as="font" type="font/woff2" crossorigin>
@@ -745,6 +747,17 @@ section.pg-review { display:flex; flex-direction:column; gap:26px; }
 /* long paths in a chapter's sources line wrap instead of widening the page */
 .ch-head .src, .ch-head .meta { overflow-wrap:anywhere; }
 
+/* THEME SWITCH (2026-11-20): the dark/light button is an animated switch: moon on the left, sun on the right,
+   a knob that slides under the active mode, and the active icon lit. role="switch" + aria-checked in core.js. */
+.theme-btn { position:relative !important; width:56px !important; min-width:56px !important; height:30px !important; padding:0 8px !important; border:0 !important; border-radius:99px !important; background:color-mix(in srgb, var(--tx) 10%, transparent) !important; display:inline-flex !important; align-items:center !important; justify-content:space-between !important; cursor:pointer; }
+.theme-btn svg, .theme-btn.is-dark svg { display:block !important; width:14px !important; height:14px !important; position:relative; z-index:1; color:var(--tx3); transition:color .25s ease; }
+.theme-btn::after { content:""; position:absolute; top:3px; left:3px; width:24px; height:24px; border-radius:50%; background:var(--panel); box-shadow:0 1px 3px rgba(0,0,0,.22); transform:translateX(26px); transition:transform .3s cubic-bezier(.3, .9, .3, 1); }
+.theme-btn.is-dark::after { transform:translateX(0); }
+.theme-btn:not(.is-dark) .ic-sun { color:#C27A0E; }
+.theme-btn.is-dark .ic-moon { color:#9CC3E6; }
+.theme-btn:focus-visible { outline:2px solid var(--brand); outline-offset:2px; }
+@media (prefers-reduced-motion: reduce) { .theme-btn::after, .theme-btn svg { transition:none; } }
+
 /* site theme */
 :root { --accent: #C2570C; --accent-soft: #FCEBDD; --warn: #B3261E; --warn-soft: #FBE3E1; }
 @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --accent: #FF9A57; --accent-soft: #3A2414; --warn: #FF8A80; --warn-soft: #3B1B1A; } }
@@ -761,7 +774,7 @@ section.pg-review { display:flex; flex-direction:column; gap:26px; }
     <a class="brand" href="#welcome"><svg width="26" height="26" viewBox="0 0 26 26" aria-hidden="true"><rect width="26" height="26" rx="7" fill="#1E7465"/><path d="M13 13.5L6 8.5v9.5zM13 13.5l7-5v9.5z" fill="none" stroke="#fff" stroke-width="2.2" stroke-linejoin="round"/><rect x="10.6" y="11.1" width="4.8" height="4.8" rx="1.2" fill="#FFE2CF"/></svg><span class="brand-name">Logistics and Freight Modelling</span></a>
     <div class="tb-where" id="tbWhere" aria-live="polite"></div>
     <span class="top-prog" id="topProg" aria-label="Questions answered right"></span>
-    <button class="icon-btn theme-btn" type="button" aria-label="Switch to dark mode"><svg class="ic-moon" width="20" height="20" viewBox="0 0 20 20" aria-hidden="true"><path d="M16.5 12.2A7 7 0 0 1 7.8 3.5a7 7 0 1 0 8.7 8.7z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg><svg class="ic-sun" width="20" height="20" viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="3.6" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M10 1.8v2.2M10 16v2.2M1.8 10H4M16 10h2.2M4.2 4.2l1.6 1.6M14.2 14.2l1.6 1.6M4.2 15.8l1.6-1.6M14.2 5.8l1.6-1.6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></button>
+    <button class="icon-btn theme-btn" type="button" role="switch" aria-checked="false" aria-label="Dark mode"><svg class="ic-moon" width="20" height="20" viewBox="0 0 20 20" aria-hidden="true"><path d="M16.5 12.2A7 7 0 0 1 7.8 3.5a7 7 0 1 0 8.7 8.7z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg><svg class="ic-sun" width="20" height="20" viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="3.6" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M10 1.8v2.2M10 16v2.2M1.8 10H4M16 10h2.2M4.2 4.2l1.6 1.6M14.2 14.2l1.6 1.6M4.2 15.8l1.6-1.6M14.2 5.8l1.6-1.6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></button>
     <i class="tb-line"><i id="tbBar"></i></i>
   </header>
   <div class="scrim" id="scrim" hidden></div>
@@ -770,7 +783,7 @@ section.pg-review { display:flex; flex-direction:column; gap:26px; }
     <div class="rail-head">
       <a class="brand" href="#welcome"><svg width="26" height="26" viewBox="0 0 26 26" aria-hidden="true"><rect width="26" height="26" rx="7" fill="#1E7465"/><path d="M13 13.5L6 8.5v9.5zM13 13.5l7-5v9.5z" fill="none" stroke="#fff" stroke-width="2.2" stroke-linejoin="round"/><rect x="10.6" y="11.1" width="4.8" height="4.8" rx="1.2" fill="#FFE2CF"/></svg><span class="brand-name">Logistics and Freight Modelling</span></a>
       <div class="rail-actions">
-        <button class="icon-btn theme-btn" type="button" aria-label="Switch to dark mode"><svg class="ic-moon" width="20" height="20" viewBox="0 0 20 20" aria-hidden="true"><path d="M16.5 12.2A7 7 0 0 1 7.8 3.5a7 7 0 1 0 8.7 8.7z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg><svg class="ic-sun" width="20" height="20" viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="3.6" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M10 1.8v2.2M10 16v2.2M1.8 10H4M16 10h2.2M4.2 4.2l1.6 1.6M14.2 14.2l1.6 1.6M4.2 15.8l1.6-1.6M14.2 5.8l1.6-1.6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></button>
+        <button class="icon-btn theme-btn" type="button" role="switch" aria-checked="false" aria-label="Dark mode"><svg class="ic-moon" width="20" height="20" viewBox="0 0 20 20" aria-hidden="true"><path d="M16.5 12.2A7 7 0 0 1 7.8 3.5a7 7 0 1 0 8.7 8.7z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg><svg class="ic-sun" width="20" height="20" viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="3.6" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M10 1.8v2.2M10 16v2.2M1.8 10H4M16 10h2.2M4.2 4.2l1.6 1.6M14.2 14.2l1.6 1.6M4.2 15.8l1.6-1.6M14.2 5.8l1.6-1.6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></button>
         <button class="icon-btn" id="railToggle" type="button" aria-label="Close contents" aria-controls="rail"><span class="ic-collapse"><svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true"><rect x="2.5" y="3.5" width="15" height="13" rx="2" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M8 3.5v13" stroke="currentColor" stroke-width="1.6"/></svg></span><span class="ic-close"><svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true"><path d="M5 5l10 10M15 5L5 15" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></span></button>
       </div>
     </div>
@@ -7048,7 +7061,7 @@ window.SITE = {"name": "Logistics and Freight Modelling", "key": "tourguide", "p
     return window.matchMedia && matchMedia("(prefers-color-scheme: dark)").matches;
   }
   function syncThemeBtns() {
-    $$(".theme-btn").forEach(function (b) { b.classList.toggle("is-dark", isDark()); b.setAttribute("aria-label", isDark() ? "Switch to light mode" : "Switch to dark mode"); });
+    $$(".theme-btn").forEach(function (b) { b.classList.toggle("is-dark", isDark()); b.setAttribute("role", "switch"); b.setAttribute("aria-checked", isDark() ? "true" : "false"); b.setAttribute("aria-label", "Dark mode"); });
   }
   $$(".theme-btn").forEach(function (b) {
     b.addEventListener("click", function () {
