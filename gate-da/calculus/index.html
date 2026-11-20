@@ -1514,25 +1514,30 @@ section.ch > .guess { order:-1 !important; }
    going back reverses it. Rows are named in core.js (vtName). Off when the reader prefers reduced motion. */
 @media (prefers-reduced-motion: no-preference) {
   @view-transition { navigation: auto; }
-  ::view-transition-group(*) { animation-duration: .36s; animation-timing-function: cubic-bezier(.2, .8, .2, 1); }
-  ::view-transition-old(root), ::view-transition-new(root) { animation-duration: .22s; }
-  /* the leaving rows clear out first (0.16 s), then the arriving rows come in one after another */
-  ::view-transition-old(*.vt-mod):only-child { animation: vt-sink .16s ease-in both; }
-  ::view-transition-old(*.vt-row):only-child { animation: vt-lift .16s ease-in both; }
-  ::view-transition-new(*.vt-mod):only-child { animation: vt-rise .3s cubic-bezier(.2, .8, .2, 1) .12s both; }
-  ::view-transition-new(*.vt-row):only-child { animation: vt-drop .3s cubic-bezier(.2, .8, .2, 1) .12s both; }
-  ::view-transition-new(vt-r-1):only-child, ::view-transition-new(vt-m-1):only-child { animation-delay: .16s; }
-  ::view-transition-new(vt-r-2):only-child, ::view-transition-new(vt-m-2):only-child { animation-delay: .2s; }
-  ::view-transition-new(vt-r-3):only-child, ::view-transition-new(vt-m-3):only-child { animation-delay: .24s; }
-  ::view-transition-new(vt-r-4):only-child, ::view-transition-new(vt-m-4):only-child { animation-delay: .28s; }
-  ::view-transition-new(vt-r-5):only-child, ::view-transition-new(vt-m-5):only-child { animation-delay: .32s; }
-  ::view-transition-new(vt-r-6):only-child, ::view-transition-new(vt-m-6):only-child { animation-delay: .36s; }
-  ::view-transition-new(vt-r-7):only-child { animation-delay: .4s; }
+  ::view-transition-group(*) { animation-duration: .3s; animation-timing-function: cubic-bezier(.25, .9, .3, 1); }
+  /* the lesson area swaps at once (a whole-page cross-fade reads as a blurry double image); only the sidebar moves */
+  ::view-transition-old(root), ::view-transition-new(root) { animation: none; }
+  ::view-transition-old(vt-rail), ::view-transition-new(vt-rail) { animation-duration: .16s; }
+  /* the module name slides into the title without being stretched */
+  ::view-transition-old(*.vt-mod), ::view-transition-new(*.vt-mod) { height: 100%; width: auto; object-fit: none; object-position: left center; }
+  /* the leaving rows clear out quickly, then the arriving rows follow each other closely */
+  ::view-transition-old(*.vt-mod):only-child { animation: vt-sink .14s ease-in both; }
+  ::view-transition-old(*.vt-row):only-child { animation: vt-lift .14s ease-in both; }
+  ::view-transition-new(*.vt-mod):only-child { animation: vt-rise .26s cubic-bezier(.25, .9, .3, 1) .08s both; }
+  ::view-transition-new(*.vt-row):only-child { animation: vt-drop .26s cubic-bezier(.25, .9, .3, 1) .08s both; }
+  ::view-transition-new(vt-r-1):only-child, ::view-transition-new(vt-m-1):only-child { animation-delay: .105s; }
+  ::view-transition-new(vt-r-2):only-child, ::view-transition-new(vt-m-2):only-child { animation-delay: .13s; }
+  ::view-transition-new(vt-r-3):only-child, ::view-transition-new(vt-m-3):only-child { animation-delay: .155s; }
+  ::view-transition-new(vt-r-4):only-child, ::view-transition-new(vt-m-4):only-child { animation-delay: .18s; }
+  ::view-transition-new(vt-r-5):only-child, ::view-transition-new(vt-m-5):only-child { animation-delay: .205s; }
+  ::view-transition-new(vt-r-6):only-child, ::view-transition-new(vt-m-6):only-child { animation-delay: .23s; }
+  ::view-transition-new(vt-r-7):only-child, ::view-transition-new(vt-m-7):only-child { animation-delay: .255s; }
+  ::view-transition-new(vt-r-8):only-child, ::view-transition-new(vt-m-8):only-child { animation-delay: .28s; }
 }
-@keyframes vt-sink { to { opacity: 0; transform: translateY(28px); } }
-@keyframes vt-rise { from { opacity: 0; transform: translateY(28px); } }
-@keyframes vt-drop { from { opacity: 0; transform: translateY(-14px); } }
-@keyframes vt-lift { to { opacity: 0; transform: translateY(-14px); } }
+@keyframes vt-sink { to { opacity: 0; transform: translateY(16px); } }
+@keyframes vt-rise { from { opacity: 0; transform: translateY(16px); } }
+@keyframes vt-drop { from { opacity: 0; transform: translateY(-10px); } }
+@keyframes vt-lift { to { opacity: 0; transform: translateY(-10px); } }
 /* on the module overview, its row is highlighted like the current chapter */
 .toc .part > button[data-part="-1"].active { background:var(--brand-soft) !important; color:var(--brand) !important; }
 .toc .part > button[data-part="-1"].active b { color:var(--brand) !important; }
