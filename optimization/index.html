@@ -3,21 +3,21 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Downhill</title>
-<meta name="description" content="Downhill: a free, interactive course on the computational methods of optimization, covering optimality conditions, convexity, gradient descent, line search, conjugate gradients and quasi-Newton methods, with hands-on plots, worked examples, practice problems and quizzes.">
+<title>Optimization Methods</title>
+<meta name="description" content="Optimization Methods (“Downhill”): a free, interactive course on the computational methods of optimization, covering optimality conditions, convexity, gradient descent, line search, conjugate gradients and quasi-Newton methods, with hands-on plots, worked examples, practice problems and quizzes.">
 <meta name="theme-color" content="#FFFFFF" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#0F141A" media="(prefers-color-scheme: dark)">
 <meta property="og:type" content="website">
-<meta property="og:title" content="Downhill: how computers find the best answer">
+<meta property="og:title" content="Optimization Methods: how computers find the best answer">
 <meta property="og:description" content="A free, interactive course on how computers find the best answer: optimality conditions, convexity, gradient descent, line search, convergence rates, conjugate gradients, Newton and quasi-Newton methods. Hands-on plots, worked examples, practice and quizzes.">
-<meta property="og:site_name" content="Downhill">
+<meta property="og:site_name" content="Optimization Methods">
 <meta property="og:url" content="https://courses.rahuldevsharma.com/optimization/">
 <meta property="og:image" content="https://courses.rahuldevsharma.com/optimization/preview.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Downhill: how computers find the best answer. A path of gradient-descent steps rolling down into the valley of a contour plot.">
+<meta property="og:image:alt" content="Optimization Methods: how computers find the best answer. A path of gradient-descent steps rolling down into the valley of a contour plot.">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Downhill: how computers find the best answer">
+<meta name="twitter:title" content="Optimization Methods: how computers find the best answer">
 <meta name="twitter:description" content="A free, interactive course on how computers find the best answer: optimality, convexity, gradient descent, conjugate gradients and quasi-Newton methods.">
 <meta name="twitter:image" content="https://courses.rahuldevsharma.com/optimization/preview.png">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 26 26'%3E%3Cpath d='M3 4.5C9.5 4.5 10.5 21 23.5 21.5' fill='none' stroke='%232C57CF' stroke-width='2.6' stroke-linecap='round'/%3E%3Ccircle cx='19.6' cy='16.6' r='3.4' fill='%2312806A'/%3E%3C/svg%3E">
@@ -720,6 +720,14 @@ section.pg-review { display:flex; flex-direction:column; gap:26px; }
 .toc .part > button[data-part="-1"].active, .rail .toc .part.home > button.active { background:var(--brand-soft) !important; color:var(--brand) !important; box-shadow:none !important; }
 .toc .part > button[data-part="-1"].active b, .toc .part > button[data-part="-1"].active .pn, .rail .toc .part.home > button.active b, .rail .toc .part.home > button.active .pn { color:var(--brand) !important; }
 
+/* one product: the Home route is a grid of part cards, like GATE DA's module cards */
+.plan { display:grid; grid-template-columns:repeat(auto-fill,minmax(230px,1fr)); gap:12px; }
+.plan > li { display:flex; }
+.plan button { height:100%; align-items:start; grid-template-columns:36px minmax(0,1fr) auto; padding:16px 18px 16px 14px; border-radius:20px; }
+.plan .pn { width:30px; height:30px; }
+.plan .pc b { font-size:17px; line-height:1.3; }
+@media (max-width:600px) { .plan { grid-template-columns:minmax(0,1fr); gap:8px; } .plan button { padding:12px 16px 12px 12px; } }
+
 </style>
 <script>/* one-time import of progress carried over from an old address (#import=...): never overwrites existing keys */try{var m=location.hash.match(/^#import=([^&]+)/);if(m){var o=JSON.parse(decodeURIComponent(escape(atob(decodeURIComponent(m[1])))));for(var k in o.d){if(localStorage.getItem(k)===null)localStorage.setItem(k,o.d[k]);}history.replaceState(null,"",location.pathname+location.search+(o.h?"#"+o.h:""));}}catch(e){}</script>
 <script>try { var t = localStorage.getItem("downhill-theme"); if (t === "dark" || t === "light") document.documentElement.setAttribute("data-theme", t); } catch (e) {}</script>
@@ -728,7 +736,7 @@ section.pg-review { display:flex; flex-direction:column; gap:26px; }
 <div class="shell">
   <header class="topbar">
     <button class="icon-btn menu-btn" id="menuOpen" type="button" aria-label="Open contents" aria-controls="rail" aria-expanded="false"><svg width="18" height="18" viewBox="0 0 20 20" aria-hidden="true"><path d="M3 5h14M3 10h14M3 15h9" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg><span>Contents</span></button>
-    <a class="brand" href="#welcome"><svg width="26" height="26" viewBox="0 0 26 26" aria-hidden="true"><path d="M3 4.5C9.5 4.5 10.5 21 23.5 21.5" fill="none" stroke="var(--accent)" stroke-width="2.4" stroke-linecap="round"/><circle cx="19.6" cy="16.6" r="3.3" fill="var(--mint)"/></svg><span class="brand-name">Downhill</span></a>
+    <a class="brand" href="#welcome"><svg width="26" height="26" viewBox="0 0 26 26" aria-hidden="true"><path d="M3 4.5C9.5 4.5 10.5 21 23.5 21.5" fill="none" stroke="var(--brand)" stroke-width="2.4" stroke-linecap="round"/><circle cx="19.6" cy="16.6" r="3.3" fill="var(--brand2)"/></svg><span class="brand-name">Optimization Methods</span></a>
     <div class="tb-where" id="tbWhere" aria-live="polite"></div>
     <span class="top-prog" id="topProg" aria-label="Questions answered right"></span>
     <button class="icon-btn theme-btn" type="button" aria-label="Switch to dark mode"><svg class="ic-moon" width="20" height="20" viewBox="0 0 20 20" aria-hidden="true"><path d="M16.5 12.2A7 7 0 0 1 7.8 3.5a7 7 0 1 0 8.7 8.7z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg><svg class="ic-sun" width="20" height="20" viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="3.6" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M10 1.8v2.2M10 16v2.2M1.8 10H4M16 10h2.2M4.2 4.2l1.6 1.6M14.2 14.2l1.6 1.6M4.2 15.8l1.6-1.6M14.2 5.8l1.6-1.6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></button>
@@ -738,7 +746,7 @@ section.pg-review { display:flex; flex-direction:column; gap:26px; }
 
   <aside class="rail" id="rail" aria-label="Parts and chapters" tabindex="-1">
     <div class="rail-head">
-      <a class="brand" href="#welcome"><svg width="26" height="26" viewBox="0 0 26 26" aria-hidden="true"><path d="M3 4.5C9.5 4.5 10.5 21 23.5 21.5" fill="none" stroke="var(--accent)" stroke-width="2.4" stroke-linecap="round"/><circle cx="19.6" cy="16.6" r="3.3" fill="var(--mint)"/></svg><span class="brand-name">Downhill</span></a>
+      <a class="brand" href="#welcome"><svg width="26" height="26" viewBox="0 0 26 26" aria-hidden="true"><path d="M3 4.5C9.5 4.5 10.5 21 23.5 21.5" fill="none" stroke="var(--brand)" stroke-width="2.4" stroke-linecap="round"/><circle cx="19.6" cy="16.6" r="3.3" fill="var(--brand2)"/></svg><span class="brand-name">Optimization Methods</span></a>
       <div class="rail-actions">
         <button class="icon-btn theme-btn" type="button" aria-label="Switch to dark mode"><svg class="ic-moon" width="20" height="20" viewBox="0 0 20 20" aria-hidden="true"><path d="M16.5 12.2A7 7 0 0 1 7.8 3.5a7 7 0 1 0 8.7 8.7z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg><svg class="ic-sun" width="20" height="20" viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="3.6" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M10 1.8v2.2M10 16v2.2M1.8 10H4M16 10h2.2M4.2 4.2l1.6 1.6M14.2 14.2l1.6 1.6M4.2 15.8l1.6-1.6M14.2 5.8l1.6-1.6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></button>
         <button class="icon-btn" id="railToggle" type="button" aria-label="Close contents" aria-controls="rail"><span class="ic-collapse"><svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true"><rect x="2.5" y="3.5" width="15" height="13" rx="2" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M8 3.5v13" stroke="currentColor" stroke-width="1.6"/></svg></span><span class="ic-close"><svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true"><path d="M5 5l10 10M15 5L5 15" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></span></button>
@@ -760,11 +768,11 @@ section.pg-review { display:flex; flex-direction:column; gap:26px; }
 
   <main id="top">
     <header class="hero" id="welcome">
-      <span class="eyebrow">E0 230 · Computational methods of optimization</span>
+      <span class="eyebrow">IISc E0 230 · “Downhill”</span>
       <h1>How computers find the best answer, one step downhill at a time</h1>
-      <p class="lede">Fitting a model to data, routing a delivery van, choosing a diet, training a neural network: each comes down to finding the lowest point of a function. This course covers how that search works and why it works, from optimality conditions and convexity to gradient descent, line search, conjugate gradients and quasi-Newton methods.</p>
+      <p class="lede">Fitting a model to data, routing a delivery van, choosing a diet, training a neural network: each comes down to finding the lowest point of a function. This course covers how that search works and why it works, from optimality conditions and convexity to gradient descent, line search, conjugate gradients and quasi-Newton methods, and on to constraints: the KKT conditions, duality, gradient projection, active sets and linear programming.</p>
       <p class="stack">Based on E0 230 at IISc, taught by Prof. Chiranjib Bhattacharyya.</p>
-      <p class="prereq">The course is self-contained. Parts 0a and 0b set up the notation, calculus and matrix tools used later; if you already have them, start at Part 1. Part 12 has exam-level practice.</p>
+      <p class="prereq">The course is self-contained. Parts 0a and 0b set up the notation, calculus and matrix tools used later; if you already have them, start at Part 1. Part 16 has exam-level practice.</p>
       <div class="plan-head"><h3>The route</h3></div>
       <ol class="plan" id="plan"></ol>
     </header>
@@ -9917,8 +9925,1405 @@ $$H_2\boldsymbol\gamma_1=\frac1{242}\cdot\big(-\tfrac4{11}\big)(150-29,\ -290+41
 </div>
 </article>
 
-<article class="part" data-id="p11" data-num="11" data-title="Exam kit: everything in one place" data-min="75" data-kind="exam">
-<p class="part-lede">The whole course (Lectures 1–14) on a few screens: every key statement with a link back to where it's taught, a method chooser, the three proof templates behind every convergence theorem, and a final mixed review. Use it the week before an exam, after you've worked through the parts.</p>
+<article class="part" data-id="pc11" data-num="11" data-title="Constraints: feasible directions, separation, Farkas" data-min="110">
+<p class="part-lede">From Lecture 16 on, the course minimizes over a feasible set instead of all of $\R^n$. This part covers the geometry that the KKT conditions are built from: feasible directions and the first-order condition over a set (13 Oct), the projection onto a closed convex set and the separating hyperplane theorems (13 Oct), and Farkas' lemma (15 Oct), which turns "no feasible downhill direction" into multipliers.</p>
+<p class="youneed"><b>You need:</b> Part 3 (the first-order condition $\grad f(\x^\star)=\0$ and its proof by Taylor), Part 4 (convex sets, convex functions, the tangent inequality), and the Weierstrass theorem and compactness from Part 2.</p>
+
+<!-- ============ Chapter 1 ============ -->
+<section class="ch" id="cs-feasible" data-level="b" data-min="35" data-title="Feasible directions and the first-order condition" data-src="Lecture 16 (13 Oct); Book Ch. 20 §1 (Def. feasible direction, Thm. FONC over a set, Cor., [LD] Example 2, Thm. convex optimality); [LD] §7.1 Prop. 1 (p.184–186)">
+<h2>Feasible directions and the first-order condition over a set</h2>
+<div class="opener">
+<p>At a minimizer over a set $\Omega$ you cannot go downhill in any direction that keeps you inside $\Omega$; the gradient no longer has to vanish, it only has to point "into the wall".</p>
+<p>Every method so far minimized over all of $\R^n$. Real problems have budgets, capacities and sign constraints. This chapter extends Part 3's condition $\grad f(\x^\star)=\0$ to the constrained problem $\min f(\x)$ subject to $\x\in\Omega$, and shows that for convex problems the extended condition is also sufficient.</p>
+<p>A ball rolling on a tilted floor stops against a wall. The floor still slopes there, but every direction the ball is allowed to take goes uphill or along the wall.</p>
+</div>
+
+<div class="prose">
+<h3>The problem</h3>
+<p>We study $\min f(\x)$ subject to $\x\in\Omega$, where $\Omega\subseteq\R^n$ is the <b>feasible set</b> and $f$ is $C^1$ on an open set containing $\Omega$. Points of $\Omega$ are <b>feasible</b>. Existence is settled as in Part 2: a continuous $f$ on a nonempty compact $\Omega$ attains its minimum (Weierstrass).</p>
+</div>
+<div class="box def" data-k="Definition" data-name="Local and global minimum over a set ([LD] §7.1)">
+<p>$\x^\star\in\Omega$ is a <b>local minimum point of $f$ over $\Omega$</b> if there is $\eps\gt0$ with $f(\x)\ge f(\x^\star)$ for all $\x\in\Omega$ with $\norm{\x-\x^\star}\lt\eps$. It is a <b>global</b> minimum point over $\Omega$ if $f(\x)\ge f(\x^\star)$ for all $\x\in\Omega$.</p>
+</div>
+<div class="box def" data-k="Definition" data-name="Feasible direction ([LD] p.184)">
+<p>Let $\x\in\Omega$. A vector $\d$ is a <b>feasible direction at $\x$</b> if there is $\bar\alpha\gt0$ such that $\x+\alpha\d\in\Omega$ for all $0\le\alpha\le\bar\alpha$.</p>
+</div>
+<div class="prose">
+<p>If $\d$ is feasible, so is $t\d$ for every $t\gt0$ (use $\bar\alpha/t$): the feasible directions form a <b>cone</b>. At an interior point of $\Omega$ every direction is feasible. At a point on a flat wall, roughly half of them are. At a point on a curved wall, such as the unit circle, a direction tangent to the wall is <i>not</i> feasible in this sense, because the straight segment leaves the disc at once; Chapter 12.1 meets a more forgiving notion.</p>
+</div>
+
+<div class="box thm" data-k="Theorem" data-name="First-order necessary condition over a set ([LD] §7.1 Prop. 1)">
+<p>If $\x^\star$ is a local minimum point of $f$ over $\Omega$, then
+$$\grad f(\x^\star)^\top\d\ \ge\ 0\qquad\text{for every feasible direction $\d$ at $\x^\star$.}$$
+If, in addition, $\x^\star$ is an interior point of $\Omega$, then $\grad f(\x^\star)=\0$.</p>
+</div>
+
+<div class="example">
+<p class="problem">Prove the theorem (an exam proof: it is Part 3's proof restricted to one side).</p>
+<ol class="steps">
+<li><p>Fix a feasible direction $\d$ with its $\bar\alpha$, and put $g(\alpha)=f(\x^\star+\alpha\d)$ for $0\le\alpha\le\bar\alpha$. Then $g$ has a local minimum at $\alpha=0$ over $[0,\bar\alpha]$.</p><p class="why-step">Every point $\x^\star+\alpha\d$ is feasible, so local minimality over $\Omega$ applies to them.</p></li>
+<li><p>Taylor: $g(\alpha)-g(0)=\alpha\,g'(0)+o(\alpha)$ with $g'(0)=\grad f(\x^\star)^\top\d$ (chain rule).</p><p class="why-step">This is the first-order expansion along a line, as in Part 3.</p></li>
+<li><p>If $g'(0)\lt0$, then for small $\alpha\gt0$ the term $o(\alpha)$ is smaller than $|g'(0)|\alpha/2$, so $g(\alpha)\lt g(0)$: feasible points arbitrarily close to $\x^\star$ have smaller $f$. Contradiction. Hence $g'(0)\ge0$.</p><p class="why-step">Only $\alpha\gt0$ is allowed, which is why we get an inequality and not an equation.</p></li>
+<li><p>Interior case: every $\d$ is feasible, so both $\grad f(\x^\star)^\top\d\ge0$ and $\grad f(\x^\star)^\top(-\d)\ge0$. Take $\d=-\grad f(\x^\star)$: $-\norm{\grad f(\x^\star)}^2\ge0$, so $\grad f(\x^\star)=\0$.</p><p class="why-step">With both signs allowed, the inequality becomes the equation of Part 3.</p></li>
+</ol>
+</div>
+
+<div class="example">
+<p class="problem">Minimize $f(x_1,x_2)=x_1^2-x_1+x_2+x_1x_2$ over the quadrant $\Omega=\{x_1\ge0,\ x_2\ge0\}$ ([LD] §7.1 Example 2). Find the minimizer and check the theorem there.</p>
+<ol class="steps">
+<li><p>On $\Omega$, write $f=(x_1^2-x_1)+x_2(1+x_1)$. The second term is $\ge0$, and equals $0$ exactly when $x_2=0$.</p><p class="why-step">Grouping the terms that contain $x_2$ shows that $x_2$ should be as small as possible.</p></li>
+<li><p>So the minimum has $x_2=0$ and minimizes $x_1^2-x_1$ over $x_1\ge0$: $x_1=\tfrac12$. The global minimizer is $\x^\star=(\tfrac12,0)$ with $f^\star=-\tfrac14$.</p><p class="why-step">A one-variable parabola with vertex at $\tfrac12$, which is inside $x_1\ge0$.</p></li>
+<li><p>$\grad f=(2x_1-1+x_2,\ 1+x_1)$, so $\grad f(\x^\star)=(0,\tfrac32)\ne\0$.</p><p class="why-step">The gradient does not vanish: $\x^\star$ is on the wall $x_2=0$.</p></li>
+<li><p>The feasible directions at $(\tfrac12,0)$ are the $\d$ with $d_2\ge0$. For them $\grad f(\x^\star)^\top\d=\tfrac32d_2\ge0$, as the theorem requires.</p><p class="why-step">The gradient points into the feasible region, perpendicular to the active wall. Every allowed move goes uphill or stays level to first order.</p></li>
+</ol>
+</div>
+
+<div class="prose">
+<h3>Convex problems: the condition is also sufficient</h3>
+<p>If $\Omega$ is convex, every feasible $\x$ can be reached from $\x^\star$ along the feasible direction $\d=\x-\x^\star$ (with $\bar\alpha=1$, because the segment stays in $\Omega$). Combined with Part 4's tangent inequality this gives a complete test.</p>
+</div>
+<div class="box thm" data-k="Theorem" data-name="Optimality for convex problems (variational inequality)">
+<p>Let $\Omega$ be convex and $f$ convex and $C^1$. Then $\x^\star\in\Omega$ is a global minimizer of $f$ over $\Omega$ if and only if
+$$\grad f(\x^\star)^\top(\x-\x^\star)\ \ge\ 0\qquad\text{for all }\x\in\Omega.$$</p>
+<p><b>Proof.</b> ($\Rightarrow$) $\x-\x^\star$ is a feasible direction; apply the theorem above. ($\Leftarrow$) The tangent inequality gives $f(\x)\ge f(\x^\star)+\grad f(\x^\star)^\top(\x-\x^\star)\ge f(\x^\star)$.</p>
+</div>
+<div class="callout"><b>Careful:</b> without convexity the condition is only necessary. In the example above, $(0,0)$ fails it ($\grad f(0,0)=(-1,1)$ and $\d=(1,0)$ give $-1\lt0$), so it is correctly ruled out. But a saddle point in the interior of $\Omega$ passes the test and is not a minimizer.</div>
+
+<div class="practice">
+<div class="prob" data-id="cs-feasible-p1" data-ans="1;0" data-labels="x₁*;x₂*">
+<div class="stem"><p>Minimize $f(\x)=(x_1-1)^2+(x_2+2)^2$ over $\Omega=\{x_1\ge0,\ x_2\ge0\}$. Enter the minimizer.</p></div>
+<div class="hint"><p>The unconstrained minimizer $(1,-2)$ is infeasible. The two coordinates separate: minimize each square over its own half-line.</p></div>
+<div class="sol"><p>$(x_1-1)^2$ is smallest at $x_1=1$ (allowed), and $(x_2+2)^2$ over $x_2\ge0$ is smallest at $x_2=0$. So $\x^\star=(1,0)$, $f^\star=4$. Check: $\grad f(\x^\star)=(0,4)$, and the feasible directions at $(1,0)$ have $d_2\ge0$, so $\grad f^\top\d=4d_2\ge0$. The problem is convex, so the variational inequality confirms a global minimizer.</p></div>
+</div>
+<div class="prob" data-id="cs-feasible-p2" data-ans="-1" data-labels="∇f(0,0)ᵀd">
+<div class="stem"><p>For $f(x_1,x_2)=x_1^2-x_1+x_2+x_1x_2$ on the quadrant, compute $\grad f(0,0)^\top\d$ for the feasible direction $\d=(1,0)$ at the corner $(0,0)$.</p></div>
+<div class="hint"><p>$\grad f=(2x_1-1+x_2,\ 1+x_1)$.</p></div>
+<div class="sol"><p>$\grad f(0,0)=(-1,1)$, so $\grad f(0,0)^\top(1,0)=-1\lt0$. Moving right along the wall $x_2=0$ goes downhill, so $(0,0)$ is not a local minimizer.</p></div>
+</div>
+<div class="prob" data-id="cs-feasible-p3" data-ans="(−1, 1)" data-choices="(−1, 1)|(0, 1)|(1, 0)|(1, 1)">
+<div class="stem"><p>$\Omega$ is the closed unit disc and $\x=(1,0)$. Which of these is a feasible direction at $\x$ in the sense of the definition above?</p></div>
+<div class="hint"><p>Expand $\norm{\x+\alpha\d}^2$ for small $\alpha\gt0$. The tangent direction is the trap.</p></div>
+<div class="sol"><p>For $\d=(-1,1)$: $(1-\alpha)^2+\alpha^2=1-2\alpha+2\alpha^2\le1$ for $0\le\alpha\le1$. Feasible. For $(0,1)$: $1+\alpha^2\gt1$ for every $\alpha\gt0$, so the tangent direction is <b>not</b> feasible: the straight segment leaves the disc at once. $(1,0)$ and $(1,1)$ point outwards.</p></div>
+</div>
+<div class="prob" data-id="cs-feasible-p4" data-ans="3;-4" data-labels="x*;f′(x*)">
+<div class="stem"><p>Minimize $f(x)=(x-5)^2$ over $\Omega=[1,3]$. Enter the minimizer $x^\star$ and $f'(x^\star)$.</p></div>
+<div class="hint"><p>The unconstrained minimizer $5$ is to the right of the interval.</p></div>
+<div class="sol"><p>$x^\star=3$ and $f'(3)=2(3-5)=-4\ne0$. Variational inequality: $f'(3)(x-3)=-4(x-3)\ge0$ for every $x\le3$, so $3$ is the global minimizer. The derivative is negative (downhill to the right), but the only moves allowed from $3$ go left.</p></div>
+</div>
+</div>
+
+<div class="dodont">
+<ul><li>List the feasible directions at the candidate point before testing $\grad f^\top\d\ge0$</li><li>For a convex problem, check the variational inequality $\grad f(\x^\star)^\top(\x-\x^\star)\ge0$ for all feasible $\x$: it proves global optimality</li><li>Expect $\grad f(\x^\star)\ne\0$ at a boundary minimizer</li></ul>
+<ul><li>Setting $\grad f=\0$ for a constrained problem and discarding the boundary</li><li>Calling a tangent direction to a curved wall "feasible" in [LD]'s straight-segment sense</li><li>Treating the first-order test as sufficient without convexity</li></ul>
+</div>
+<ol class="takeaways">
+<li>$\d$ is feasible at $\x$ if $\x+\alpha\d\in\Omega$ for all small $\alpha\ge0$; these directions form a cone.</li>
+<li>At a local minimizer over $\Omega$, $\grad f(\x^\star)^\top\d\ge0$ for every feasible direction; at interior points this is $\grad f(\x^\star)=\0$.</li>
+<li>For convex $f$ and convex $\Omega$, $\grad f(\x^\star)^\top(\x-\x^\star)\ge0$ for all $\x\in\Omega$ is necessary and sufficient.</li>
+</ol>
+<div class="quiz" data-id="cs-feasible-quiz">
+<div class="q"><div class="q-text"><p>$\x^\star$ minimizes $f$ over $\Omega$ and lies on the boundary of $\Omega$. Which statement must hold?</p></div>
+<div class="o">$\grad f(\x^\star)=\0$<div class="e">The [LD] quadrant example has $\grad f(\x^\star)=(0,\tfrac32)$. What does the theorem say instead?</div></div>
+<div class="o ok">$\grad f(\x^\star)^\top\d\ge0$ for every feasible direction $\d$<div class="e">That is the first-order necessary condition over a set.</div></div>
+<div class="o">$\grad f(\x^\star)^\top\d\le0$ for every feasible direction $\d$<div class="e">Check the sign with a one-variable example: $\min x$ on $[0,1]$ at $x^\star=0$ with $d=1$.</div></div>
+</div>
+<div class="q"><div class="q-text"><p>Why does the proof of the theorem give an inequality and not an equation?</p></div>
+<div class="o">Because $f$ is only $C^1$<div class="e">Smoothness is the same as in Part 3. What changed is the set of allowed moves.</div></div>
+<div class="o ok">Because only $\alpha\ge0$ is allowed along a feasible direction, so only one side of $\alpha=0$ can be compared<div class="e">With both signs (an interior point) the two inequalities combine into $\grad f=\0$.</div></div>
+<div class="o">Because $\Omega$ is convex<div class="e">The theorem holds for any $\Omega$. Look at the range of $\alpha$.</div></div>
+</div>
+<div class="q"><div class="q-text"><p>$f$ is convex, $\Omega$ is convex, and $\grad f(\x^\star)^\top(\x-\x^\star)\ge0$ for all $\x\in\Omega$. Then $\x^\star$ is…</p></div>
+<div class="o">a local minimizer over $\Omega$ only<div class="e">Which inequality from Part 4 turns a first-order statement into a global one?</div></div>
+<div class="o">a global minimizer of $f$ over $\R^n$<div class="e">Points outside $\Omega$ are not covered by the condition.</div></div>
+<div class="o ok">a global minimizer of $f$ over $\Omega$<div class="e">The tangent inequality gives $f(\x)\ge f(\x^\star)+\grad f(\x^\star)^\top(\x-\x^\star)\ge f(\x^\star)$.</div></div>
+</div>
+<div class="q"><div class="q-text"><p>At an interior point of $\Omega$, the set of feasible directions is…</p></div>
+<div class="o ok">all of $\R^n$<div class="e">A small ball around the point lies in $\Omega$, so every direction can be followed for a short time.</div></div>
+<div class="o">a half-space<div class="e">That is typical at a point on a flat wall.</div></div>
+<div class="o">empty<div class="e">$\d=\0$ and every short move stay inside.</div></div>
+</div>
+</div>
+</section>
+
+<!-- ============ Chapter 2 ============ -->
+<section class="ch" id="cs-separation" data-level="n" data-min="40" data-title="Projection and separating hyperplanes" data-src="Lecture 16 (13 Oct); Book Ch. 20 §2–5 (Prop. convex ops, hyperplanes, Thm. projection, Thms. separation, supporting, separating hyperplane, worked example); [LD] App. B.1–B.3 (p.515–521)">
+<h2>Projection onto a convex set and separating hyperplanes</h2>
+<div class="opener">
+<p>A closed convex set has a unique nearest point to any outside point, and the hyperplane through that nearest point, perpendicular to the connecting segment, has the whole set on one side and the outside point on the other.</p>
+<p>This separation theorem is the engine behind Farkas' lemma, the KKT conditions, strong duality and the gradient projection method. Its proof uses nothing but the first-order condition of the previous chapter, applied to the squared distance.</p>
+<p>Shine a torch straight down from a point above a table: the nearest point of the table is directly below it. Any plank laid through that point, perpendicular to the beam, has the whole table underneath.</p>
+</div>
+
+<div class="prose">
+<h3>Convex sets you will meet</h3>
+<p>Recall from Part 4 that $C$ is convex if it contains the segment between any two of its points. Scaling ($\beta C$), sums ($C+D=\{\mathbf c+\d\}$) and arbitrary intersections of convex sets are convex. The basic examples are balls, <b>half-spaces</b> $\{\x:\a^\top\x\le b\}$, <b>hyperplanes</b> $\{\x:\a^\top\x=b\}$ with $\a\ne\0$ (the normal), and their intersections, the solution sets of $A\x\le\b$ (polyhedra). The <b>convex hull</b> $\operatorname{conv}(S)$ is the smallest convex set containing $S$; it is the set of all convex combinations $\sum_i\theta_i\x_i$ with $\x_i\in S$, $\theta_i\ge0$, $\sum_i\theta_i=1$.</p>
+</div>
+
+<div class="box thm" data-k="Theorem" data-name="Projection theorem">
+<p>Let $K\subseteq\R^n$ be nonempty, closed and convex, and let $\y\in\R^n$. Then:</p>
+<ol>
+<li>there is a unique nearest point $P_K(\y)\in K$ to $\y$;</li>
+<li>a point $\x_0\in K$ is that nearest point if and only if
+$$(\y-\x_0)^\top(\x-\x_0)\ \le\ 0\qquad\text{for all }\x\in K\qquad\text{(obtuse-angle inequality).}$$</li>
+</ol>
+</div>
+<dl class="notation"><span class="label">Symbols</span>
+<dt>$P_K(\y)$</dt><dd>the projection of $\y$ onto $K$: the point of $K$ closest to $\y$</dd>
+<dt>$(\y-\x_0)^\top(\x-\x_0)\le0$</dt><dd>the angle at $\x_0$ between "towards $\y$" and "towards any $\x\in K$" is at least $90^\circ$</dd>
+</dl>
+<div class="prose">
+<p><b>Proof.</b> <i>Existence:</i> fix $\x_1\in K$; the nearest point, if any, lies in $K\cap\{\x:\norm{\x-\y}\le\norm{\x_1-\y}\}$, which is closed, bounded and nonempty, so compact, and the continuous distance attains its minimum there (Weierstrass). <i>Characterization:</i> $\x_0$ is nearest iff it minimizes the convex function $\phi(\x)=\tfrac12\norm{\x-\y}^2$ over the convex set $K$. Since $\grad\phi(\x_0)=\x_0-\y$, the variational inequality of Chapter 11.1 says exactly $(\x_0-\y)^\top(\x-\x_0)\ge0$ for all $\x\in K$. <i>Uniqueness:</i> if $\x_0$ and $\x_0'$ both satisfy it, add $(\y-\x_0)^\top(\x_0'-\x_0)\le0$ and $(\y-\x_0')^\top(\x_0-\x_0')\le0$ to get $\norm{\x_0-\x_0'}^2\le0$.</p>
+</div>
+
+<div class="box plain" data-k="Key idea" data-name="Projections you can write down">
+<ul>
+<li><b>Ball</b> $\{\norm{\x}\le r\}$: $P(\z)=\z$ if $\norm{\z}\le r$, else $r\,\z/\norm{\z}$.</li>
+<li><b>Box</b> $\{a_i\le x_i\le b_i\}$: clip each coordinate, $P(\z)_i=\min(b_i,\max(a_i,z_i))$.</li>
+<li><b>Half-space</b> $\{\a^\top\x\le b\}$: $P(\z)=\z$ if $\a^\top\z\le b$, else $\z-\dfrac{\a^\top\z-b}{\norm{\a}^2}\,\a$.</li>
+<li><b>Affine set</b> $\{A\x=\b\}$ ($A$ of full row rank): $P(\z)=\z-A^\top(AA^\top)^{-1}(A\z-\b)$.</li>
+</ul>
+<p>Chapter 12.2 derives the ball and box formulas from the KKT conditions; each can be checked with the obtuse-angle inequality.</p>
+</div>
+
+<div class="panel try">
+<span class="label">Try it</span>
+<p class="task">Pick a set and drag $\y$ outside it. The orange arrow is $\y-P(\y)$ and the dashed green line passes through $P(\y)$ perpendicular to it. The readout checks the obtuse-angle inequality over a grid of points of the set: the largest value is never positive. Put $\y$ near a corner of the box or the triangle and notice that the projection sits at the corner while $\y$ moves over a whole wedge of positions.</p>
+<div class="widget" data-w="pc_proj"></div>
+</div>
+
+<div class="box thm" data-k="Theorem" data-name="Separation of a point from a convex set ([LD] App. B.3 Thm. 1)">
+<p>Let $C$ be nonempty and convex, and $\y$ a point not in its closure $\bar C$. With $\x_0=P_{\bar C}(\y)$ and $\a=\x_0-\y\ne\0$,
+$$\a^\top\x\ \ge\ \a^\top\y+\norm{\a}^2\qquad\text{for all }\x\in C.$$
+So the hyperplane $\{\a^\top\x=\a^\top\x_0\}$ has $C$ on one side and $\y$ strictly on the other, with gap $\norm{\a}^2$.</p>
+</div>
+<div class="prose">
+<p><b>Proof.</b> The closure of a convex set is convex, so $\x_0$ exists. The obtuse-angle inequality with $\a=\x_0-\y$ reads $\a^\top(\x-\x_0)\ge0$, i.e. $\a^\top\x\ge\a^\top\x_0=\a^\top\y+\a^\top(\x_0-\y)=\a^\top\y+\norm{\a}^2$.</p>
+</div>
+<div class="box thm" data-k="Theorem" data-name="Supporting and separating hyperplanes ([LD] App. B.3 Thms. 2–3)">
+<ol>
+<li><b>Supporting hyperplane.</b> If $\y$ is a boundary point of a convex set $C$, there is $\a\ne\0$ with $\a^\top\y\le\a^\top\x$ for all $\x\in C$.</li>
+<li><b>Separating hyperplane.</b> If $B$ and $C$ are nonempty convex sets with $B\cap C=\varnothing$, there is $\a\ne\0$ with $\sup_{\b\in B}\a^\top\b\le\inf_{\mathbf c\in C}\a^\top\mathbf c$.</li>
+</ol>
+</div>
+<div class="prose">
+<p><b>Why (1):</b> take outside points $\y_k\to\y$, separate each with a unit normal $\a_k$, and pass to a convergent subsequence of the $\a_k$ (the unit sphere is compact); the strict inequalities become $\le$ in the limit. <b>Why (2):</b> $G=C-B$ is convex and does not contain $\0$. Either $\0\notin\bar G$ and the point theorem applies, or $\0$ is a boundary point of $G$ and (1) applies. Either way some $\a\ne\0$ has $\a^\top(\mathbf c-\b)\ge0$ for all $\b\in B$, $\mathbf c\in C$.</p>
+</div>
+<div class="callout"><b>Careful:</b> disjointness alone gives only $\le$, not a positive gap. $B=\{x_2\le0\}$ and $C=\{x_2\ge e^{x_1}\}$ are disjoint, closed and convex, yet no hyperplane separates them with a gap: $C$ approaches the $x_1$-axis. A strict gap is guaranteed when one set is compact and the other closed.</div>
+
+<div class="example">
+<p class="problem">Separate $\y=(2,1)$ from the closed unit disc $C$, and check the gap.</p>
+<ol class="steps">
+<li><p>Projection onto a ball: $\norm{\y}=\sqrt5\gt1$, so $\x_0=\y/\sqrt5=(2,1)/\sqrt5\approx(0.894,0.447)$.</p><p class="why-step">The nearest point of a ball centred at the origin lies on the ray towards $\y$.</p></li>
+<li><p>$\a=\x_0-\y=(1/\sqrt5-1)(2,1)$, a negative multiple of $(2,1)$. Dividing the theorem's inequality by that negative factor flips it: every $\x\in C$ has $2x_1+x_2\le\sqrt5$, while $2y_1+y_2=5\gt\sqrt5$. The separating line is $2x_1+x_2=\sqrt5$, which passes through $\x_0$.</p><p class="why-step">Cauchy–Schwarz confirms the bound directly: $2x_1+x_2\le\norm{(2,1)}\,\norm{\x}\le\sqrt5$ on the disc.</p></li>
+<li><p>Gap in the theorem's normalization: $\norm{\a}=\norm{\x_0-\y}=\sqrt5-1\approx1.236$, so $\inf_C\a^\top\x-\a^\top\y=\norm{\a}^2=(\sqrt5-1)^2=6-2\sqrt5\approx1.528$.</p><p class="why-step">A numerical check over $2\times10^5$ boundary points of the disc gives the same $1.528$: the infimum is attained at $\x_0$ itself.</p></li>
+</ol>
+</div>
+
+<div class="practice">
+<div class="prob" data-id="cs-separation-p1" data-ans="0.6;0.8" data-labels="P₁;P₂">
+<div class="stem"><p>Project $\z=(3,4)$ onto the closed unit disc.</p></div>
+<div class="hint"><p>$\norm{\z}=5\gt1$; scale $\z$ back to length 1.</p></div>
+<div class="sol"><p>$P(\z)=\z/\norm{\z}=(0.6,0.8)$. Check the obtuse-angle inequality: $\z-P=(2.4,3.2)=4P$, and $P^\top(\x-P)=P^\top\x-1\le0$ for every $\norm{\x}\le1$ by Cauchy–Schwarz.</p></div>
+</div>
+<div class="prob" data-id="cs-separation-p2" data-ans="1;0;0.4" data-labels="P₁;P₂;P₃">
+<div class="stem"><p>Project $\z=(1.5,\ -0.3,\ 0.4)$ onto the box $[0,1]^3$.</p></div>
+<div class="hint"><p>Clip each coordinate to $[0,1]$ separately.</p></div>
+<div class="sol"><p>$(\min(1,1.5),\ \max(0,-0.3),\ 0.4)=(1,0,0.4)$. The squared distance is a sum of one-variable terms, each minimized over its own interval.</p></div>
+</div>
+<div class="prob" data-id="cs-separation-p3" data-ans="1.2;0.4" data-labels="P₁;P₂">
+<div class="stem"><p>Project $\z=(2,2)$ onto the half-plane $\{\x: x_1+2x_2\le2\}$.</p></div>
+<div class="hint"><p>$\a=(1,2)$, $\a^\top\z=6\gt2$. Move back along $\a$ by $(\a^\top\z-b)/\norm{\a}^2$.</p></div>
+<div class="sol"><p>$\z-\frac{6-2}{5}(1,2)=(2-0.8,\ 2-1.6)=(1.2,0.4)$. Check: $1.2+0.8=2$, on the line, and $\z-P=(0.8,1.6)$ is a positive multiple of the normal.</p></div>
+</div>
+<div class="prob" data-id="cs-separation-p4" data-ans="2" data-labels="gap">
+<div class="stem"><p>Let $C=[0,1]^2$ and $\z=(2,-1)$. With $\a=\z-P_C(\z)$, compute the gap $\a^\top\z-\max_{\x\in C}\a^\top\x$.</p></div>
+<div class="hint"><p>$P_C(\z)=(1,0)$ by clipping. The maximum of a linear function over the box is at a corner.</p></div>
+<div class="sol"><p>$\a=(2,-1)-(1,0)=(1,-1)$. $\a^\top\z=3$. Over the corners, $x_1-x_2$ is largest at $(1,0)$, with value $1$. Gap $=3-1=2=\norm{\a}^2$, as the separation theorem predicts. The separating line through $P_C(\z)$ is $x_1-x_2=1$.</p></div>
+</div>
+</div>
+
+<div class="dodont">
+<ul><li>Write the nearest point first; the separating normal is $\y-P(\y)$ (or its negative)</li><li>Check a claimed projection with the obtuse-angle inequality</li><li>Prove "two disjoint convex sets can be separated" by separating $\0$ from $C-B$</li></ul>
+<ul><li>Projecting onto a nonconvex set and expecting uniqueness (the nearest point of a circle to its centre is not unique)</li><li>Claiming a strict gap for two disjoint closed sets that are both unbounded</li><li>Forgetting that a hyperplane needs $\a\ne\0$</li></ul>
+</div>
+<ol class="takeaways">
+<li>A nonempty closed convex set has a unique nearest point $P_K(\y)$, characterized by $(\y-P_K(\y))^\top(\x-P_K(\y))\le0$ for all $\x\in K$.</li>
+<li>A point outside the closure of a convex set is strictly separated from it by the hyperplane through $P(\y)$ with normal $\y-P(\y)$.</li>
+<li>Boundary points have supporting hyperplanes, and two disjoint convex sets can be separated by a hyperplane ($\le$, not always with a gap).</li>
+</ol>
+<div class="quiz" data-id="cs-separation-quiz">
+<div class="q"><div class="q-text"><p>Which hypothesis makes the projection onto $K$ <b>unique</b>?</p></div>
+<div class="o">$K$ closed<div class="e">Closedness gives existence. Think of the unit circle and its centre.</div></div>
+<div class="o ok">$K$ convex<div class="e">Uniqueness comes from adding the two obtuse-angle inequalities, which needs convexity.</div></div>
+<div class="o">$K$ bounded<div class="e">Half-spaces are unbounded and still have unique projections.</div></div>
+</div>
+<div class="q"><div class="q-text"><p>$\x_0\in K$ and $(\y-\x_0)^\top(\x-\x_0)=0.3$ for some $\x\in K$. Then…</p></div>
+<div class="o ok">$\x_0$ is not the projection of $\y$ onto $K$<div class="e">The obtuse-angle inequality fails: moving from $\x_0$ towards $\x$ gets closer to $\y$.</div></div>
+<div class="o">$\x_0$ is the projection, since the value is small<div class="e">The inequality is sign-based: any positive value breaks it.</div></div>
+<div class="o">$K$ is not convex<div class="e">The test says nothing about $K$; it rules out the candidate point.</div></div>
+</div>
+<div class="q"><div class="q-text"><p>The separating hyperplane theorem for disjoint convex $B,C$ is proved by…</p></div>
+<div class="o">projecting each point of $B$ onto $C$<div class="e">That would give many hyperplanes. Which single set does the proof look at?</div></div>
+<div class="o ok">separating the point $\0$ from the convex set $C-B$<div class="e">$\0\notin C-B$ because the sets are disjoint; a normal $\a$ with $\a^\top(\mathbf c-\b)\ge0$ is the answer.</div></div>
+<div class="o">Weierstrass on $B\times C$<div class="e">Neither set need be compact.</div></div>
+</div>
+<div class="q"><div class="q-text"><p>The projection of $\z=(0.5,3)$ onto the box $[0,1]^2$ is…</p></div>
+<div class="o">$(0.5,3)$<div class="e">Is it in the box?</div></div>
+<div class="o">$(0.16,0.99)$<div class="e">That would be the disc's projection direction. The box is clipped coordinate by coordinate.</div></div>
+<div class="o ok">$(0.5,1)$<div class="e">Clip each coordinate: $0.5$ stays, $3$ becomes $1$.</div></div>
+</div>
+</div>
+</section>
+
+<!-- ============ Chapter 3 ============ -->
+<section class="ch" id="cs-farkas" data-level="n" data-min="35" data-title="Cones and Farkas' lemma" data-src="Lecture 17 (15 Oct); Book Ch. 21 §2.3 (Lemmas 9.2.4–9.2.5, cone closed, Cor. equality form); [FR] §9.2 Lemmas 9.2.4–9.2.5 (p.205–207); Book Ch. 20 §6">
+<h2>Cones and Farkas' lemma</h2>
+<div class="opener">
+<p>Either a vector $\g$ is a nonnegative combination of $\a_1,\dots,\a_m$, or there is a direction $\mathbf s$ that makes a nonnegative angle-product with every $\a_i$ and a negative one with $\g$; never both, never neither.</p>
+<p>Read $\g$ as $\grad f$ and the $\a_i$ as normals of the active constraints, and $\mathbf s$ becomes a downhill direction that no constraint blocks. Farkas' lemma is the step from "no feasible descent direction" (geometry) to "multipliers exist" (algebra): the heart of the KKT theorem.</p>
+<p>A tent held up by poles: the force on the apex is balanced by the poles exactly when it lies in the cone of pole directions. If it points elsewhere, there is a direction the apex can slide without any pole resisting.</p>
+</div>
+
+<div class="box def" data-k="Definition" data-name="Cone, polyhedral cone">
+<p>$K$ is a <b>cone</b> if $\x\in K$ implies $t\x\in K$ for every $t\gt0$; a <b>convex cone</b> is also convex (closed under nonnegative combinations). Given $\a_1,\dots,\a_m\in\R^n$, the <b>polyhedral cone</b> they generate is
+$$\operatorname{cone}(\a_1,\dots,\a_m)=\Big\{\textstyle\sum_{i=1}^m\lambda_i\a_i:\ \lambda_i\ge0\Big\}.$$</p>
+</div>
+
+<div class="box thm" data-k="Lemma" data-name="Farkas' lemma ([FR] Lemma 9.2.4)">
+<p>Given $\a_1,\dots,\a_m$ and $\g$ in $\R^n$, the set
+$$S=\{\mathbf s:\ \mathbf s^\top\g\lt0,\ \ \mathbf s^\top\a_i\ge0,\ i=1,\dots,m\}$$
+is empty if and only if $\g=\sum_i\lambda_i\a_i$ for some $\lambda_i\ge0$. With $A=[\a_1\cdots\a_m]$: exactly one of (I) $A\boldsymbol\lambda=\g$, $\boldsymbol\lambda\ge\0$ and (II) $A^\top\mathbf s\ge\0$, $\g^\top\mathbf s\lt0$ has a solution.</p>
+</div>
+
+<div class="panel try">
+<span class="label">Try it</span>
+<p class="task">The shaded wedge is the cone of $\a_1,\a_2$. Drag $\g$ into the wedge: both coefficients $\lambda_1,\lambda_2$ in the readout are nonnegative. Drag it out: one coefficient turns negative, and the orange vector $\mathbf s=\hat\g-\g$ appears, where $\hat\g$ is the nearest point of the cone. Check in the readout that $\mathbf s^\top\a_i\ge0$ for both $i$ while $\mathbf s^\top\g=-\norm{\mathbf s}^2\lt0$. Then move $\a_1$ or $\a_2$ and watch the cone change.</p>
+<div class="widget" data-w="pc_farkas"></div>
+</div>
+
+<div class="prose">
+<h3>The proof (examinable)</h3>
+<p>One direction is a line: if $\g=\sum\lambda_i\a_i$ with $\lambda_i\ge0$, then for any $\mathbf s$ with all $\mathbf s^\top\a_i\ge0$, $\mathbf s^\top\g=\sum\lambda_i\,\mathbf s^\top\a_i\ge0$, so $S$ is empty. The other direction needs two facts.</p>
+</div>
+<div class="box thm" data-k="Lemma" data-name="Two facts used in the proof">
+<ol>
+<li><b>The polyhedral cone $K$ is closed</b> (and convex). (Every point of $K$ is a nonnegative combination of a linearly independent subset of the $\a_i$, and each such sub-cone is closed; a finite union of closed sets is closed.)</li>
+<li><b>Separating a point from a closed convex cone</b> ([FR] Lemma 9.2.5). If $\g\notin K$, let $\hat\g=P_K(\g)$ and $\mathbf s=\hat\g-\g$. Then $\mathbf s^\top\x\ge0$ for all $\x\in K$ and $\mathbf s^\top\g=-\norm{\mathbf s}^2\lt0$.</li>
+</ol>
+</div>
+<div class="example">
+<p class="problem">Prove fact 2, and finish Farkas' lemma.</p>
+<ol class="steps">
+<li><p>$\hat\g$ exists because $K$ is nonempty, closed and convex (Chapter 11.2). Since $K$ is a cone, $t\hat\g\in K$ for all $t\ge0$, and $t\mapsto\norm{t\hat\g-\g}^2$ is smallest at $t=1$. Its derivative there is zero: $\hat\g^\top(\hat\g-\g)=0$, i.e. $\hat\g^\top\mathbf s=0$ ([FR] (9.2.8)).</p><p class="why-step">This is the extra information a cone gives: the separating hyperplane can pass through the origin.</p></li>
+<li><p>The obtuse-angle inequality for the projection: $(\g-\hat\g)^\top(\x-\hat\g)\le0$ for all $\x\in K$, i.e. $\mathbf s^\top(\x-\hat\g)\ge0$. With $\mathbf s^\top\hat\g=0$ this is $\mathbf s^\top\x\ge0$.</p><p class="why-step">[FR] derives the same inequality directly by perturbing $\hat\g$ towards $\x$ and letting the step go to zero.</p></li>
+<li><p>$\mathbf s^\top\g=\mathbf s^\top(\hat\g-\mathbf s)=0-\norm{\mathbf s}^2\lt0$, since $\mathbf s\ne\0$ (as $\g\notin K$).</p><p class="why-step">The vector $\g$ lies strictly on the negative side of the hyperplane $\mathbf s^\top\x=0$.</p></li>
+<li><p>Farkas, "only if": if no $\lambda_i\ge0$ give $\g=\sum\lambda_i\a_i$, then $\g\notin K$; fact 2 gives $\mathbf s$ with $\mathbf s^\top\a_i\ge0$ (take $\x=\a_i\in K$) and $\mathbf s^\top\g\lt0$. So $\mathbf s\in S$ and $S\ne\varnothing$.</p><p class="why-step">The contrapositive of "only if" is exactly this construction.</p></li>
+</ol>
+</div>
+
+<div class="example">
+<p class="problem">Let $\a_1=(2,1)$, $\a_2=(1,3)$. Decide whether $\g=(3,4)$ and $\g'=(-1,2)$ lie in $\operatorname{cone}(\a_1,\a_2)$; for the one that does not, produce $\mathbf s$.</p>
+<ol class="steps">
+<li><p>Solve $\lambda_1\a_1+\lambda_2\a_2=\g$: $2\lambda_1+\lambda_2=3$, $\lambda_1+3\lambda_2=4$, so $\boldsymbol\lambda=(1,1)\ge\0$. $\g$ is in the cone.</p><p class="why-step">With two independent generators in the plane the coefficients are unique, so their signs decide.</p></li>
+<li><p>For $\g'$: $2\lambda_1+\lambda_2=-1$, $\lambda_1+3\lambda_2=2$ gives $\boldsymbol\lambda=(-1,1)$. $\lambda_1\lt0$: not in the cone.</p><p class="why-step">The negative coefficient says $\g'$ lies on the far side of the ray through $\a_2$.</p></li>
+<li><p>Nearest cone point: on the ray of $\a_2$, $\hat\g=\frac{\g'^\top\a_2}{\norm{\a_2}^2}\a_2=\frac{5}{10}(1,3)=(0.5,1.5)$. Then $\mathbf s=\hat\g-\g'=(1.5,-0.5)$.</p><p class="why-step">A nonnegative least-squares solve confirms $\boldsymbol\lambda=(0,0.5)$ as the nearest point's coefficients.</p></li>
+<li><p>Check: $\mathbf s^\top\a_1=3-0.5=2.5\ge0$, $\mathbf s^\top\a_2=1.5-1.5=0\ge0$, $\mathbf s^\top\g'=-1.5-1=-2.5=-\norm{\mathbf s}^2$.</p><p class="why-step">Alternative (II) of Farkas holds for $\g'$, as it must.</p></li>
+</ol>
+</div>
+
+<div class="box thm" data-k="Corollary" data-name="Farkas with equalities ([FR] p.205)">
+<p>The set $\{\mathbf s:\ \mathbf s^\top\g\lt0,\ \mathbf s^\top\a_i=0\ (i\in E),\ \mathbf s^\top\a_i\ge0\ (i\in I)\}$ is empty if and only if $\g=\sum_{i\in E\cup I}\lambda_i\a_i$ with $\lambda_i\ge0$ for $i\in I$ and $\lambda_i$ of any sign for $i\in E$.</p>
+<p><b>Why:</b> write each equality as the two inequalities $\mathbf s^\top\a_i\ge0$ and $\mathbf s^\top(-\a_i)\ge0$, apply Farkas, and set $\lambda_i=\lambda_i^+-\lambda_i^-$.</p>
+</div>
+<div class="prose">
+<p><b>The linear-programming form.</b> Applied to the columns of a matrix, Farkas reads: $A\x=\b$, $\x\ge\0$ has no solution if and only if some $\y$ has $A^\top\y\ge\0$ and $\b^\top\y\lt0$. Such a $\y$ is a <b>certificate of infeasibility</b>: it proves in one line that the system has no nonnegative solution. Part 13 returns to this.</p>
+</div>
+
+<div class="practice">
+<div class="prob" data-id="cs-farkas-p1" data-ans="0.5;0.5" data-labels="λ₁;λ₂">
+<div class="stem"><p>Write $\g=(1,1)$ as $\lambda_1\a_1+\lambda_2\a_2$ with $\a_1=(1,0)$, $\a_2=(1,2)$. Is $\g$ in the cone?</p></div>
+<div class="hint"><p>The second coordinate involves only $\lambda_2$.</p></div>
+<div class="sol"><p>$2\lambda_2=1$ gives $\lambda_2=0.5$; then $\lambda_1+0.5=1$ gives $\lambda_1=0.5$. Both are $\ge0$: $\g$ is in the cone, so no $\mathbf s$ has $\mathbf s^\top\a_i\ge0$ and $\mathbf s^\top\g\lt0$.</p></div>
+</div>
+<div class="prob" data-id="cs-farkas-p2" data-ans="(0, 1)" data-choices="(0, 1)|(1, 0)|(0, −1)|(−1, 1)">
+<div class="stem"><p>With $\a_1=(1,0)$, $\a_2=(1,2)$ and $\g=(0,-1)$, which $\mathbf s$ satisfies $\mathbf s^\top\a_1\ge0$, $\mathbf s^\top\a_2\ge0$ and $\mathbf s^\top\g\lt0$?</p></div>
+<div class="hint"><p>Compute the three products for each candidate. Only one passes all three.</p></div>
+<div class="sol"><p>$(0,1)$: products $0$, $2$, $-1$. Passes. $(1,0)$: $\mathbf s^\top\g=0$, not negative. $(0,-1)$: $\mathbf s^\top\a_2=-2$. $(-1,1)$: $\mathbf s^\top\a_1=-1$. Consistently, $\g=0.5\a_1-0.5\a_2$ has a negative coefficient, so $\g$ is outside the cone.</p></div>
+</div>
+<div class="prob" data-id="cs-farkas-p3" data-ans="0;1;-2" data-labels="(Aᵀy)₁;(Aᵀy)₂;bᵀy">
+<div class="stem"><p>$A=\begin{pmatrix}1&1\\1&2\end{pmatrix}$, $\b=(1,-1)$. The system $A\x=\b$ has the unique solution $(3,-2)$, so it has no solution with $\x\ge\0$. Verify the certificate $\y=(-1,1)$: compute $A^\top\y$ and $\b^\top\y$.</p></div>
+<div class="hint"><p>$A^\top\y=(1\cdot(-1)+1\cdot1,\ 1\cdot(-1)+2\cdot1)$.</p></div>
+<div class="sol"><p>$A^\top\y=(0,1)\ge\0$ and $\b^\top\y=-1-1=-2\lt0$. If some $\x\ge\0$ had $A\x=\b$, then $\b^\top\y=\x^\top A^\top\y\ge0$, a contradiction. That one line is the whole infeasibility proof.</p></div>
+</div>
+</div>
+
+<div class="dodont">
+<ul><li>Decide cone membership by solving for the coefficients and reading their signs</li><li>Produce the separating $\mathbf s$ as $\hat\g-\g$, with $\hat\g$ the nearest point of the cone</li><li>Turn each equality into two inequalities when you need the equality version</li></ul>
+<ul><li>Requiring $\lambda_i\ge0$ on equality constraints</li><li>Forgetting that the cone must be closed for the projection argument (it is, for finitely many generators)</li><li>Asserting both alternatives, or neither: exactly one holds</li></ul>
+</div>
+<ol class="takeaways">
+<li>Farkas: no $\mathbf s$ with $\mathbf s^\top\g\lt0\le\mathbf s^\top\a_i$ for all $i$ $\iff$ $\g=\sum\lambda_i\a_i$ with $\lambda_i\ge0$.</li>
+<li>The proof separates $\g$ from the closed cone through the origin: $\mathbf s=P_K(\g)-\g$ has $\mathbf s^\top\a_i\ge0$ and $\mathbf s^\top\g=-\norm{\mathbf s}^2$.</li>
+<li>Equalities get multipliers of either sign; in matrix form, $A\x=\b,\ \x\ge\0$ is infeasible iff some $\y$ has $A^\top\y\ge\0$, $\b^\top\y\lt0$.</li>
+</ol>
+<div class="quiz" data-id="cs-farkas-quiz">
+<div class="q"><div class="q-text"><p>In the proof of [FR] Lemma 9.2.5, why can the separating hyperplane pass through the origin?</p></div>
+<div class="o">Because $\g\ne\0$<div class="e">The point being separated can be anything outside the cone. Which property of $K$ is used?</div></div>
+<div class="o ok">Because $K$ is a cone, so $t\hat\g\in K$ and minimizing over $t$ gives $\hat\g^\top(\hat\g-\g)=0$<div class="e">That orthogonality puts $\hat\g$, and hence the whole hyperplane, through the origin.</div></div>
+<div class="o">Because $K$ is bounded<div class="e">A cone other than $\{\0\}$ is never bounded.</div></div>
+</div>
+<div class="q"><div class="q-text"><p>$\g=2\a_1-\a_2$ with $\a_1,\a_2$ linearly independent. Then…</p></div>
+<div class="o">$\g$ is in $\operatorname{cone}(\a_1,\a_2)$<div class="e">With independent generators the coefficients are unique. What is the sign of the second one?</div></div>
+<div class="o ok">some $\mathbf s$ has $\mathbf s^\top\a_1\ge0$, $\mathbf s^\top\a_2\ge0$, $\mathbf s^\top\g\lt0$<div class="e">The unique coefficients include $-1\lt0$, so $\g$ is outside the cone and alternative (II) holds.</div></div>
+<div class="o">neither alternative holds<div class="e">Farkas says exactly one holds.</div></div>
+</div>
+<div class="q"><div class="q-text"><p>In the KKT reading of Farkas, $\mathbf s$ with $\mathbf s^\top\grad f\lt0$ and $\mathbf s^\top\a_i\ge0$ for the active constraint normals is…</p></div>
+<div class="o">an ascent direction<div class="e">$\mathbf s^\top\grad f\lt0$ means $f$ decreases along $\mathbf s$.</div></div>
+<div class="o ok">a direction that is downhill and, to first order, keeps the active constraints satisfied<div class="e">Chapter 12.1 makes this precise: such $\mathbf s$ cannot exist at a regular minimizer.</div></div>
+<div class="o">a direction along which every constraint becomes inactive<div class="e">$\mathbf s^\top\a_i=0$ is allowed, which keeps constraint $i$ active to first order.</div></div>
+</div>
+</div>
+</section>
+
+<div class="quiz review" data-id="pc11-review" data-title="Part 11 review (with Parts 3 and 4)">
+<div class="q" data-from="Ch. 11.1"><div class="q-text"><p>$\min x$ over $[0,1]$ has minimizer $x^\star=0$ with $f'(0)=1$. Which statement explains why this does not contradict Part 3?</p></div>
+<div class="o">Part 3's condition only applies to quadratics<div class="e">It applies to any $C^1$ function. Where is $x^\star$?</div></div>
+<div class="o ok">$x^\star$ is a boundary point; only $d\ge0$ is feasible, and $f'(0)d\ge0$ for those<div class="e">$\grad f=\0$ is the interior case of the condition $\grad f(\x^\star)^\top\d\ge0$.</div></div>
+<div class="o">The minimizer is actually $x=1$<div class="e">$f(1)=1\gt0=f(0)$.</div></div>
+</div>
+<div class="q" data-from="Ch. 4.2"><div class="q-text"><p>The proof that "$\grad f(\x^\star)^\top(\x-\x^\star)\ge0$ on $\Omega$ implies global optimality" uses which fact from Part 4?</p></div>
+<div class="o">The Hessian is positive definite at $\x^\star$<div class="e">That is a local statement. A global inequality is needed.</div></div>
+<div class="o ok">The tangent inequality $f(\x)\ge f(\x^\star)+\grad f(\x^\star)^\top(\x-\x^\star)$<div class="e">Convexity makes the tangent plane a global under-estimator.</div></div>
+<div class="o">Local minimizers of convex functions are global<div class="e">True, but the proof goes straight through the tangent inequality.</div></div>
+</div>
+<div class="q" data-from="Ch. 11.2"><div class="q-text"><p>Which set has a <b>non-unique</b> nearest point to some $\y$?</p></div>
+<div class="o">A closed half-plane<div class="e">Closed and convex: unique.</div></div>
+<div class="o ok">The unit circle $\{\norm{\x}=1\}$ (not the disc)<div class="e">Every point of the circle is nearest to its centre. The circle is not convex.</div></div>
+<div class="o">The box $[0,1]^2$<div class="e">Closed and convex: unique, by clipping.</div></div>
+</div>
+<div class="q" data-from="Ch. 11.3"><div class="q-text"><p>Farkas' lemma is proved by separating…</p></div>
+<div class="o">two disjoint polyhedra<div class="e">Only one set and one point are involved.</div></div>
+<div class="o ok">the point $\g$ from the closed convex cone generated by the $\a_i$<div class="e">The normal is $\mathbf s=P_K(\g)-\g$.</div></div>
+<div class="o">the origin from the convex hull of the $\a_i$<div class="e">That is a different theorem of the alternative (Chapter 13.3).</div></div>
+</div>
+<div class="q" data-from="Ch. 3.1"><div class="q-text"><p>An interior point $\x$ of $\Omega$ has $\grad f(\x)=(1,-2)$. Is it a local minimizer of $f$ over $\Omega$?</p></div>
+<div class="o">Yes, if $f$ is convex<div class="e">At an interior point the necessary condition is $\grad f=\0$, whatever $f$ is.</div></div>
+<div class="o ok">No: $\d=-\grad f(\x)$ is feasible and $\grad f(\x)^\top\d=-5\lt0$<div class="e">Every direction is feasible at an interior point, including steepest descent.</div></div>
+<div class="o">Cannot tell without the Hessian<div class="e">The first-order condition already fails.</div></div>
+</div>
+</div>
+</article>
+
+<article class="part" data-id="pc12" data-num="12" data-title="The KKT conditions" data-min="125">
+<p class="part-lede">The first-order conditions for constrained problems. You'll see why the gradient must be a combination of the active constraint normals, with nonnegative weights on inequalities (15 Oct); how to solve small problems by guessing the active set, including projections onto boxes and balls; and why, for convex programs, a KKT point is a global minimizer (22 Oct). Notation follows [FR]: constraints $c_i(\x)\ge0$ and Lagrangian $f-\sum\lambda_ic_i$.</p>
+<p class="youneed"><b>You need:</b> Part 11 (feasible directions, projection, Farkas' lemma), Part 4 (convexity tests and the tangent inequality), and Part 3 (Taylor expansions).</p>
+
+<!-- ============ Chapter 1 ============ -->
+<section class="ch" id="kkt-conditions" data-level="n" data-min="45" data-title="Lagrange multipliers and the KKT theorem" data-src="Lecture 17 (15 Oct); Book Ch. 21 §1–2 (Lagrange multipliers, sign argument, Thm. 9.1.1, cones F′ and 𝓕′, Lemmas 9.2.1–9.2.3, regularity, cusp example, proof of KKT); [FR] §9.1–9.2 (p.195–207)">
+<h2>Lagrange multipliers and the KKT theorem</h2>
+<div class="opener">
+<p>At a constrained minimizer, the gradient of $f$ is balanced by the normals of the active constraints: $\grad f(\x^\star)=\sum_i\lambda_i^\star\grad c_i(\x^\star)$, with $\lambda_i^\star\ge0$ for inequalities and $\lambda_i^\star=0$ for constraints that are not active.</p>
+<p>These are the Karush–Kuhn–Tucker (KKT) conditions. They turn a minimization over a set into a system of equations and inequalities that you can solve by hand, and almost every constrained question in this course starts by writing them down.</p>
+<p>A puck pressed against two walls by a slope stays put when the push of the slope is exactly cancelled by the walls pushing back. Walls can only push, never pull: that is the sign condition.</p>
+</div>
+
+<div class="prose">
+<h3>The problem and its vocabulary</h3>
+<p>Following [FR], we study
+$$\min_{\x\in\R^n}f(\x)\quad\text{subject to}\quad c_i(\x)=0,\ i\in E,\qquad c_i(\x)\ge0,\ i\in I,$$
+with $f$ and all $c_i$ in $C^1$; $E$ and $I$ index the equality and inequality constraints.</p>
+</div>
+<dl class="notation"><span class="label">Symbols</span>
+<dt>$\g=\grad f$, $\ \a_i=\grad c_i$</dt><dd>gradient of $f$ and the constraint normals; a star means "evaluated at $\x^\star$"</dd>
+<dt>$\mathcal A(\x)$</dt><dd>the active set: $E$ together with the inequalities that hold with equality, $c_i(\x)=0$</dd>
+<dt>$\mathcal L(\x,\boldsymbol\lambda)=f(\x)-\sum_i\lambda_ic_i(\x)$</dt><dd>the Lagrangian ([FR] (9.1.6))</dd>
+</dl>
+
+<div class="prose">
+<h3>Equality constraints: Lagrange multipliers</h3>
+<p>Near $\x^\star$, Taylor gives $c_i(\x^\star+\boldsymbol\delta)\approx\boldsymbol\delta^\top\a_i^\star$, so a feasible small step $\mathbf s$ satisfies $\mathbf s^\top\a_i^\star=0$ for $i\in E$ to first order. At a minimizer no such $\mathbf s$ can also have $\mathbf s^\top\g^\star\lt0$. That happens exactly when $\g^\star$ is a linear combination of the $\a_i^\star$: otherwise split $\g^\star=A^\star\boldsymbol\lambda+\boldsymbol\mu$ with $\boldsymbol\mu\ne\0$ orthogonal to every $\a_i^\star$, and $\mathbf s=-\boldsymbol\mu$ is a downhill direction along the constraints, since $\mathbf s^\top\g^\star=-\norm{\boldsymbol\mu}^2\lt0$. The coefficients are the <b>Lagrange multipliers</b>. For an equality they can have either sign.</p>
+<h3>Inequality constraints: the sign</h3>
+<p>An inactive inequality ($c_i^\star\gt0$) does not restrict small moves, so it gets $\lambda_i^\star=0$. An active one restricts them only on one side: $\mathbf s^\top\a_i^\star\ge0$. Now "no downhill feasible $\mathbf s$" is exactly Farkas' lemma (Chapter 11.3), and it gives $\g^\star=\sum_{i\in\mathcal A^\star}\lambda_i^\star\a_i^\star$ with $\lambda_i^\star\ge0$ on the active inequalities. If some active $\lambda_p^\star$ were negative (and the active normals independent), the direction with $\mathbf s^\top\a_p^\star=1$ and $\mathbf s^\top\a_i^\star=0$ for the others would have $\mathbf s^\top\g^\star=\lambda_p^\star\lt0$: stepping off constraint $p$ into its interior lowers $f$. This is the basic move of the active-set method (Chapter 14.2).</p>
+</div>
+
+<div class="box thm" data-k="Theorem" data-name="First-order necessary (KKT) conditions ([FR] Thm. 9.1.1)">
+<p>If $\x^\star$ is a local minimizer and a regularity assumption holds at $\x^\star$ (for example: all active constraints are linear, or the active normals are linearly independent), then there are multipliers $\boldsymbol\lambda^\star$ with</p>
+<ol>
+<li><b>stationarity:</b> $\grad_{\x}\mathcal L(\x^\star,\boldsymbol\lambda^\star)=\g^\star-\sum_i\lambda_i^\star\a_i^\star=\0$;</li>
+<li><b>primal feasibility:</b> $c_i(\x^\star)=0$ for $i\in E$, $c_i(\x^\star)\ge0$ for $i\in I$;</li>
+<li><b>dual feasibility:</b> $\lambda_i^\star\ge0$ for $i\in I$;</li>
+<li><b>complementarity:</b> $\lambda_i^\star c_i(\x^\star)=0$ for all $i$.</li>
+</ol>
+<p>A point satisfying 1–4 is a <b>KKT point</b>.</p>
+</div>
+<div class="prose">
+<p>Complementarity packs "inactive $\Rightarrow\lambda_i^\star=0$" into one equation. The case $\lambda_i^\star=c_i^\star=0$ (weakly active) is allowed; if it never occurs, <b>strict complementarity</b> holds.</p>
+</div>
+<div class="callout"><b>Careful with conventions:</b> [FR] and [NW] write $c_i\ge0$ and $\grad f=\sum\lambda_i\grad c_i$. Boyd–Vandenberghe (Part 13) write $g_i\le0$ and $\grad f+\sum\mu_i\grad g_i=\0$. They are the same conditions with $g_i=-c_i$. Rewrite every constraint in your convention before writing the conditions: $x_1+x_2\le2$ becomes $c(\x)=2-x_1-x_2\ge0$, with normal $(-1,-1)$.</div>
+
+<div class="panel try">
+<span class="label">Try it</span>
+<p class="task">Here the arrows are $\grad f$ and the normals $\grad c_1,\grad c_2$ of two active constraints at a point. KKT holds exactly when $\grad f$ lies in the shaded cone ($\lambda_1,\lambda_2\ge0$). Drag $\grad f$ out of the cone: the orange $\mathbf s$ that appears is downhill ($\mathbf s^\top\grad f\lt0$) and keeps both constraints satisfied to first order ($\mathbf s^\top\grad c_i\ge0$), so the point cannot be a regular minimizer.</p>
+<div class="widget" data-w="pc_farkas" data-cfg='{"mode":"kkt"}'></div>
+</div>
+
+<div class="prose">
+<h3>Why a regularity assumption is needed</h3>
+<p>The proof compares two cones at $\x^\star$: the directions $\mathcal F^\star$ along which feasible sequences really approach $\x^\star$ (the tangent cone), and the <b>linearized</b> feasible directions $F^\star=\{\mathbf s:\mathbf s^\top\a_i^\star=0\ (i\in E),\ \mathbf s^\top\a_i^\star\ge0\ (i\in I^\star)\}$. Always $\mathcal F^\star\subseteq F^\star$ ([FR] Lemma 9.2.1), and at a local minimizer no direction in $\mathcal F^\star$ is downhill (Lemma 9.2.3). Farkas needs the statement for $F^\star$, which involves only gradients. The <b>regularity assumption</b> $F^\star\cap\mathcal D^\star=\mathcal F^\star\cap\mathcal D^\star$ (with $\mathcal D^\star$ the downhill directions) bridges the gap; it holds when the active constraints are linear or their normals are linearly independent (LICQ, [FR] Lemma 9.2.2).</p>
+</div>
+<div class="box plain" data-k="Key idea" data-name="The cusp: a minimizer that is not a KKT point ([FR] Fig. 9.2.1)">
+<p>Take $c_1=x_1^3-x_2\ge0$, $c_2=x_2\ge0$: the region $0\le x_2\le x_1^3$ is a cusp at $\0$ pointing along the positive $x_1$-axis. Minimize $f=x_1$. The minimizer is $\x^\star=\0$, but $\g^\star=(1,0)$ is not a combination of $\a_1^\star=(0,-1)$ and $\a_2^\star=(0,1)$. The linearization sees $\mathbf s=(-1,0)$ as feasible, although no feasible point has $x_1\lt0$. Both active normals are parallel, so LICQ fails, and the theorem does not apply.</p>
+</div>
+
+<div class="example">
+<p class="problem">Minimize $f=-x_1-x_2$ subject to $c_1=x_2-x_1^2\ge0$ and $c_2=1-x_1^2-x_2^2\ge0$ ([FR] (9.1.15)): the part of the unit disc above the parabola. Check the KKT conditions at $\x^\star=(\tfrac1{\sqrt2},\tfrac1{\sqrt2})$ and at the corner where both constraints are active.</p>
+<ol class="steps">
+<li><p>At $\x^\star$: $c_1^\star=\tfrac1{\sqrt2}-\tfrac12\approx0.207\gt0$, so only $c_2$ is active and $\lambda_1^\star=0$. $\g^\star=(-1,-1)$ and $\a_2^\star=(-2x_1,-2x_2)=(-\sqrt2,-\sqrt2)$.</p><p class="why-step">Always find the active set first: inactive constraints get zero multipliers by complementarity.</p></li>
+<li><p>Stationarity $\g^\star=\lambda_2\a_2^\star$ gives $\lambda_2^\star=1/\sqrt2\approx0.707\ge0$. All four conditions hold: $\x^\star$ is a KKT point.</p><p class="why-step">The gradient of $f$ points straight into the circular wall, so the wall holds the point.</p></li>
+<li><p>The corner: $x_2=x_1^2$ and $x_1^2+x_2^2=1$ give $x_2=\tfrac{\sqrt5-1}2\approx0.618$, $x_1\approx0.786$. There $\a_1'=(-1.572,1)$, $\a_2'=(-1.572,-1.236)$, and solving $\g'=\lambda_1\a_1'+\lambda_2\a_2'$ gives $\boldsymbol\lambda'\approx(-0.096,\ 0.732)$.</p><p class="why-step">With two independent active normals in the plane the multipliers are unique.</p></li>
+<li><p>$\lambda_1'\lt0$, so the corner is <b>not</b> a local minimizer. The direction with $\mathbf s^\top\a_1'=1$, $\mathbf s^\top\a_2'=0$ is $\mathbf s\approx(-0.352,0.447)$, and $\mathbf s^\top\g'=\lambda_1'\approx-0.096\lt0$: moving along the circle, off the parabola, lowers $f$ and leads to $\x^\star$.</p><p class="why-step">This is the sign argument above, with numbers.</p></li>
+</ol>
+</div>
+
+<div class="practice">
+<div class="prob" data-id="kkt-conditions-p1" data-ans="-0.5;0.25;-1" data-labels="x₁*;x₂*;λ*">
+<div class="stem"><p>Minimize $x_1+x_2$ subject to $c(\x)=x_1^2-x_2=0$ ([FR] p.196). Use $\grad f=\lambda\grad c$ and feasibility. Enter $x_1^\star$, $x_2^\star$ and $\lambda^\star$.</p></div>
+<div class="hint"><p>$\grad f=(1,1)$, $\grad c=(2x_1,-1)$. The second component fixes $\lambda$.</p></div>
+<div class="sol"><p>$(1,1)=\lambda(2x_1,-1)$. Second row: $\lambda^\star=-1$. First row: $1=-2x_1$, so $x_1^\star=-\tfrac12$, and $x_2^\star=x_1^2=\tfrac14$. Substituting $x_2=x_1^2$ and minimizing $x_1+x_1^2$ gives the same point. The multiplier is negative, which is allowed for an equality.</p></div>
+</div>
+<div class="prob" data-id="kkt-conditions-p2" data-ans="1" data-labels="λ*">
+<div class="stem"><p>Minimize $x_1^2+x_2^2$ subject to $x_1+x_2\ge1$. The solution is $\x^\star=(\tfrac12,\tfrac12)$. Find the multiplier $\lambda^\star$.</p></div>
+<div class="hint"><p>$c=x_1+x_2-1\ge0$ is active at $\x^\star$, with normal $(1,1)$. $\grad f(\x^\star)=(1,1)$.</p></div>
+<div class="sol"><p>$(2x_1,2x_2)=(1,1)=\lambda(1,1)$, so $\lambda^\star=1\ge0$. Sensitivity check: with $x_1+x_2\ge1+\eps$ the optimum is $\tfrac12(1+\eps)^2$, whose derivative at $\eps=0$ is $1=\lambda^\star$.</p></div>
+</div>
+<div class="prob" data-id="kkt-conditions-p3" data-ans="a minimizer that is not a KKT point" data-choices="a KKT point with λ₂ = 1|a minimizer that is not a KKT point|not a minimizer|infeasible">
+<div class="stem"><p>For $\min x_1$ subject to $x_1^3-x_2\ge0$, $x_2\ge0$, the origin is…</p></div>
+<div class="hint"><p>Every feasible point has $x_1\ge0$. Then try to write $(1,0)$ as a combination of the two active normals.</p></div>
+<div class="sol"><p>Feasible points satisfy $0\le x_2\le x_1^3$, so $x_1\ge0$ and $\0$ is the minimizer. But $(1,0)=\lambda_1(0,-1)+\lambda_2(0,1)$ has no solution. The active normals are parallel (LICQ fails), so the KKT theorem's assumption does not hold. With objective $x_2$ instead, the origin <i>is</i> a KKT point with $\lambda_2=1$.</p></div>
+</div>
+<div class="prob" data-id="kkt-conditions-p4" data-ans="(−1, −1)" data-choices="(1, 1)|(−1, −1)|(1, −1)|(0, 0)">
+<div class="stem"><p>In [FR]'s convention ($c_i\ge0$), what is the normal $\a=\grad c$ for the constraint $x_1+x_2\le2$?</p></div>
+<div class="hint"><p>Rewrite the constraint as $c(\x)\ge0$ first.</p></div>
+<div class="sol"><p>$x_1+x_2\le2$ is $c(\x)=2-x_1-x_2\ge0$, so $\grad c=(-1,-1)$. It points into the feasible side, the direction in which $c$ grows. Using $(1,1)$ flips the sign of the multiplier.</p></div>
+</div>
+</div>
+
+<div class="dodont">
+<ul><li>Put every constraint in one convention ($c_i\ge0$ here) before writing the Lagrangian</li><li>Find the active set first; give inactive constraints $\lambda_i=0$</li><li>Check the regularity assumption (linear constraints or independent active normals) before claiming a minimizer must be a KKT point</li></ul>
+<ul><li>Imposing $\lambda_i\ge0$ on equality multipliers</li><li>Treating the KKT conditions as sufficient for a nonconvex problem</li><li>Forgetting complementarity, which is what forces $\lambda_i=0$ on inactive constraints</li></ul>
+</div>
+<ol class="takeaways">
+<li>KKT: $\grad f(\x^\star)=\sum_i\lambda_i^\star\grad c_i(\x^\star)$, feasibility, $\lambda_i^\star\ge0$ on inequalities, and $\lambda_i^\star c_i(\x^\star)=0$.</li>
+<li>The proof: no feasible downhill direction, plus regularity, plus Farkas' lemma on the active normals.</li>
+<li>A negative inequality multiplier means stepping off that constraint lowers $f$; without regularity (the cusp) a minimizer need not be a KKT point.</li>
+</ol>
+<div class="quiz" data-id="kkt-conditions-quiz">
+<div class="q"><div class="q-text"><p>At a KKT point, constraint $3$ is an inequality with $c_3(\x^\star)=0.4$. Then…</p></div>
+<div class="o">$\lambda_3^\star$ can be any nonnegative number<div class="e">Which of the four conditions involves both $\lambda_3$ and $c_3$?</div></div>
+<div class="o ok">$\lambda_3^\star=0$<div class="e">Complementarity: $\lambda_3^\star\cdot0.4=0$.</div></div>
+<div class="o">$\lambda_3^\star\lt0$<div class="e">Inequality multipliers are never negative at a KKT point.</div></div>
+</div>
+<div class="q"><div class="q-text"><p>Why may an equality multiplier be negative?</p></div>
+<div class="o ok">An equality restricts moves in both directions, so the normal can push either way<div class="e">Formally, $c=0$ is the pair $c\ge0$ and $-c\ge0$, and $\lambda=\lambda^+-\lambda^-$.</div></div>
+<div class="o">Because equality constraints are always linear<div class="e">$x_1^2-x_2=0$ is an equality constraint and is not linear.</div></div>
+<div class="o">It may not: all multipliers are nonnegative<div class="e">[FR]'s example $\min x_1+x_2$ on $x_2=x_1^2$ has $\lambda^\star=-1$.</div></div>
+</div>
+<div class="q"><div class="q-text"><p>Which condition guarantees that a local minimizer is a KKT point?</p></div>
+<div class="o">$f$ is convex<div class="e">Convexity helps sufficiency (Chapter 12.3). The cusp shows what can fail on the constraint side.</div></div>
+<div class="o">The feasible set is bounded<div class="e">The cusp example can be cut down to a bounded set and still fail.</div></div>
+<div class="o ok">The active constraint gradients are linearly independent (or all active constraints are linear)<div class="e">Either makes the linearized cone equal to the tangent cone ([FR] Lemma 9.2.2).</div></div>
+</div>
+<div class="q"><div class="q-text"><p>At a feasible point the active multipliers solve to $\lambda=(0.5,-0.2)$ (both inequalities, independent normals). Then the point…</p></div>
+<div class="o">is a local minimizer, since the gradient is a combination of the normals<div class="e">The combination exists, but check the signs.</div></div>
+<div class="o ok">is not a local minimizer: moving off constraint 2 lowers $f$<div class="e">The direction with $\mathbf s^\top\a_2=1$ and $\mathbf s^\top\a_1=0$ has $\mathbf s^\top\g=\lambda_2=-0.2\lt0$.</div></div>
+<div class="o">is a local maximizer<div class="e">A negative multiplier only shows one feasible downhill direction.</div></div>
+</div>
+</div>
+</section>
+
+<!-- ============ Chapter 2 ============ -->
+<section class="ch" id="kkt-solving" data-level="n" data-min="40" data-title="Solving KKT systems; projections; sensitivity" data-src="Lectures 17–18 (15, 22 Oct); Book Ch. 21 §3 (Ex. KKT case analysis), Ch. 22 Ex. disc projection; [FR] (9.1.9)–(9.1.10); Midterm 3 notes, Units 03–04">
+<h2>Solving KKT systems by cases; projections; what a multiplier measures</h2>
+<div class="opener">
+<p>To solve a small constrained problem, guess which inequalities are active, solve the resulting equations, and keep the guesses whose answers pass the feasibility and sign checks.</p>
+<p>Each guess turns the KKT system into ordinary equations, and with $m$ inequalities there are at most $2^m$ guesses. Projections onto boxes and balls, the most common exam computation, fall out in a few lines, and the multipliers you find come with a meaning: the rate at which the optimal value changes when a constraint is moved.</p>
+<p>Fitting furniture into a room: try it against the left wall, then against the back wall, then in the corner, and keep the arrangement in which nothing is pushing the wrong way.</p>
+</div>
+
+<div class="box alg" data-k="Method" data-name="KKT by cases">
+<ol>
+<li>Write each constraint as $c_i\ge0$ (or $=0$), compute $\grad f$ and each $\a_i=\grad c_i$.</li>
+<li>Choose a candidate active set $\mathcal A$. Set $\lambda_i=0$ for $i\notin\mathcal A$ and $c_i=0$ for $i\in\mathcal A$.</li>
+<li>Solve stationarity $\grad f=\sum_{i\in\mathcal A}\lambda_i\a_i$ together with $c_i=0$ ($i\in\mathcal A$).</li>
+<li>Keep the solution only if it is feasible (inactive $c_i\ge0$) and the inequality multipliers in $\mathcal A$ are $\ge0$.</li>
+</ol>
+<p>For a convex problem (Chapter 12.3), the first surviving candidate is the global minimizer and you can stop.</p>
+</div>
+
+<div class="example">
+<p class="problem">Minimize $f=(x_1-2)^2+(x_2-1)^2$ subject to $x_1+x_2\le2$ and $x_2\ge0$ (Book Ch. 21 example).</p>
+<ol class="steps">
+<li><p>[FR] form: $c_1=2-x_1-x_2\ge0$, $c_2=x_2\ge0$; $\a_1=(-1,-1)$, $\a_2=(0,1)$; $\g=(2(x_1-2),\ 2(x_2-1))$.</p><p class="why-step">Step 1 of the method: one convention for every constraint.</p></li>
+<li><p><b>Neither active:</b> $\g=\0$ gives $(2,1)$, but $c_1=-1\lt0$. Infeasible: reject.</p><p class="why-step">The unconstrained minimizer violates constraint 1, so constraint 1 is a natural first guess.</p></li>
+<li><p><b>Only $c_1$ active:</b> $2(x_1-2)=-\lambda_1$, $2(x_2-1)=-\lambda_1$, $x_1+x_2=2$. So $x_1-2=x_2-1$, giving $\x=(\tfrac32,\tfrac12)$, $\lambda_1=1\ge0$, and $c_2=\tfrac12\gt0$. <b>All conditions hold.</b></p><p class="why-step">This is the projection of $(2,1)$ onto the line $x_1+x_2=2$.</p></li>
+<li><p><b>Both active:</b> $\x=(2,0)$, $\g=(0,-2)=\lambda_1(-1,-1)+\lambda_2(0,1)$ gives $\lambda_1=0$, $\lambda_2=-2\lt0$. Reject. (Only $c_2$ active leads to the same point.)</p><p class="why-step">A negative multiplier on $x_2\ge0$ says the wall is pulling, not pushing.</p></li>
+<li><p>The unique KKT point is $(\tfrac32,\tfrac12)$, $\boldsymbol\lambda=(1,0)$, $f^\star=\tfrac12$. The problem is convex, so it is the global minimizer.</p><p class="why-step">Convex objective, linear constraints: KKT is necessary and sufficient here.</p></li>
+</ol>
+</div>
+
+<div class="box thm" data-k="Proposition" data-name="Multipliers measure sensitivity ([FR] (9.1.9)–(9.1.10))">
+<p>Perturb constraint $i$ to $c_i(\x)\ge\eps_i$ (or $=\eps_i$) and let $f^\star(\boldsymbol\eps)$ be the optimal value. Under smoothness assumptions,
+$$\frac{\partial f^\star}{\partial\eps_i}=\lambda_i^\star.$$
+Tightening an active inequality ($\eps_i\gt0$) shrinks the feasible set, so $f^\star$ cannot decrease: another reason why $\lambda_i^\star\ge0$.</p>
+</div>
+<div class="prose">
+<p>In the example, tightening to $x_1+x_2\le2-\eps$ gives $f^\star(\eps)=\tfrac12(1+\eps)^2$, with slope $1=\lambda_1^\star$ at $\eps=0$. In linear programming the multipliers are called <b>shadow prices</b>: the value of one more unit of a resource.</p>
+<h3>Projections via KKT</h3>
+<p><b>Box.</b> $\min\tfrac12\norm{\x-\z}^2$ subject to $0\le x_i\le1$. With multipliers $\mu_i$ for $x_i\ge0$ and $\nu_i$ for $1-x_i\ge0$, stationarity reads $x_i-z_i=\mu_i-\nu_i$. If $z_i\lt0$: $x_i=0$, $\mu_i=-z_i\gt0$. If $z_i\gt1$: $x_i=1$, $\nu_i=z_i-1\gt0$. Otherwise $x_i=z_i$ with both multipliers zero. The projection clips each coordinate.</p>
+<p><b>Ball.</b> $\min\tfrac12\norm{\x-\z}^2$ subject to $c=r^2-\norm{\x}^2\ge0$. Stationarity: $\x-\z=-2\lambda\x$, so $\x=\z/(1+2\lambda)$. If $\norm{\z}\le r$, take $\lambda=0$, $\x=\z$. Otherwise the constraint is active, $\norm{\x}=r$, so $1+2\lambda=\norm{\z}/r$ and $\x=r\z/\norm{\z}$, with $\lambda=\tfrac12(\norm{\z}/r-1)\gt0$.</p>
+</div>
+
+<div class="practice">
+<div class="prob" data-id="kkt-solving-p1" data-ans="1.6641;1.1094;0.8028" data-labels="x₁*;x₂*;λ₁*" data-tol="0.002">
+<div class="stem"><p>Minimize $(x_1-3)^2+(x_2-2)^2$ subject to $c_1=4-x_1^2-x_2^2\ge0$ and $c_2=x_1\ge0$. Guess $c_1$ active and $c_2$ inactive; find $\x^\star$ and $\lambda_1^\star$ (to 4 decimals).</p></div>
+<div class="hint"><p>Stationarity: $2(\x-\mathbf p)=-2\lambda_1\x$ with $\mathbf p=(3,2)$, so $\mathbf p=(1+\lambda_1)\x$. Use $\norm{\x}=2$.</p></div>
+<div class="sol"><p>$\x$ is a positive multiple of $\mathbf p$ with length $2$: $\x^\star=2\mathbf p/\sqrt{13}\approx(1.6641,1.1094)$. Then $1+\lambda_1=\norm{\mathbf p}/2=\sqrt{13}/2$, so $\lambda_1^\star=\sqrt{13}/2-1\approx0.8028\ge0$. $c_2=1.6641\gt0$, so $\lambda_2^\star=0$. All conditions hold; $f^\star=(\sqrt{13}-2)^2\approx2.5778$.</p></div>
+</div>
+<div class="prob" data-id="kkt-solving-p2" data-ans="2;1;4" data-labels="x₁*;x₂*;λ*">
+<div class="stem"><p>Minimize $x_1^2+2x_2^2$ subject to $x_1+x_2\ge3$.</p></div>
+<div class="hint"><p>The unconstrained minimizer $\0$ is infeasible, so the constraint is active. Stationarity: $(2x_1,4x_2)=\lambda(1,1)$.</p></div>
+<div class="sol"><p>$x_1=\lambda/2$, $x_2=\lambda/4$; then $x_1+x_2=3\lambda/4=3$ gives $\lambda=4\ge0$ and $\x^\star=(2,1)$, $f^\star=6$. The problem is convex, so this is the global minimizer.</p></div>
+</div>
+<div class="prob" data-id="kkt-solving-p3" data-ans="1" data-labels="smallest a">
+<div class="stem"><p>For $f=(x_1-a)^2+x_2^2$ with constraints $x_1\le1$ and $x_2\ge0$, the point $(1,0)$ is a KKT point exactly when $a$ is at least some value. Find it.</p></div>
+<div class="hint"><p>$c_1=1-x_1$ with $\a_1=(-1,0)$, $c_2=x_2$ with $\a_2=(0,1)$, both active at $(1,0)$. $\grad f(1,0)=(2(1-a),0)$.</p></div>
+<div class="sol"><p>$(2(1-a),0)=\lambda_1(-1,0)+\lambda_2(0,1)$ gives $\lambda_2=0$ and $\lambda_1=2(a-1)$. Dual feasibility $\lambda_1\ge0$ holds iff $a\ge1$. For $a\lt1$ the unconstrained minimizer $(a,0)$ is feasible and $(1,0)$ is not optimal.</p></div>
+</div>
+<div class="prob" data-id="kkt-solving-p4" data-ans="0.605" data-labels="f*" data-tol="0.002">
+<div class="stem"><p>In the worked example, replace $x_1+x_2\le2$ by $x_1+x_2\le1.9$. The multiplier $\lambda_1^\star=1$ predicts $f^\star\approx0.5+0.1=0.6$. Compute the exact new optimal value.</p></div>
+<div class="hint"><p>The solution is still the projection of $(2,1)$ onto the line, now $x_1+x_2=1.9$.</p></div>
+<div class="sol"><p>The point $(2,1)$ is at distance $(3-1.9)/\sqrt2=1.1/\sqrt2$ from the line, so $f^\star=1.1^2/2=0.605$. The first-order prediction $0.6$ is off by $0.005$, the second-order term of $\tfrac12(1+\eps)^2$.</p></div>
+</div>
+</div>
+
+<div class="dodont">
+<ul><li>Start with the active set suggested by the unconstrained minimizer (which constraints does it violate?)</li><li>Check all four conditions for every candidate, and reject on the first failure</li><li>Read a positive multiplier as the price of tightening that constraint</li></ul>
+<ul><li>Stopping at the first solution of the equations without checking signs and feasibility</li><li>Dropping a case without writing why it fails</li><li>Projecting onto a box with the ball formula, or the other way round</li></ul>
+</div>
+<ol class="takeaways">
+<li>Solve KKT by guessing the active set, solving equations, and keeping feasible candidates with nonnegative inequality multipliers.</li>
+<li>Box projection clips each coordinate; ball projection is $r\z/\norm{\z}$ when $\norm{\z}\gt r$.</li>
+<li>$\lambda_i^\star=\partial f^\star/\partial\eps_i$: the multiplier is the rate at which the optimal value rises as constraint $i$ is tightened.</li>
+</ol>
+<div class="quiz" data-id="kkt-solving-quiz">
+<div class="q"><div class="q-text"><p>With 3 inequality constraints, how many active-set guesses does a full case analysis consider at most?</p></div>
+<div class="o">3<div class="e">Each constraint is either active or not, independently.</div></div>
+<div class="o ok">8<div class="e">$2^3$ subsets, from none active to all active.</div></div>
+<div class="o">6<div class="e">That counts ordered pairs. Count subsets.</div></div>
+</div>
+<div class="q"><div class="q-text"><p>Projecting $\z=(-0.5,\ 0.3,\ 2)$ onto $[0,1]^3$, which multipliers are positive?</p></div>
+<div class="o ok">the one for $x_1\ge0$ and the one for $x_3\le1$<div class="e">Coordinate 1 is clipped up to 0 and coordinate 3 down to 1; coordinate 2 is interior.</div></div>
+<div class="o">all six<div class="e">Complementarity forces zeros on the inactive bounds.</div></div>
+<div class="o">none, since the box is convex<div class="e">Convexity does not make multipliers vanish. Which bounds are active?</div></div>
+</div>
+<div class="q"><div class="q-text"><p>A constraint has multiplier $\lambda^\star=3$. Tightening it by $0.01$ changes the optimal value by about…</p></div>
+<div class="o">$-0.03$<div class="e">Tightening shrinks the feasible set. Can the minimum go down?</div></div>
+<div class="o ok">$+0.03$<div class="e">$\Delta f^\star\approx\lambda^\star\Delta\eps=3\times0.01$.</div></div>
+<div class="o">$0$, because the constraint stays active<div class="e">Active constraints with positive multipliers cost something to tighten.</div></div>
+</div>
+<div class="q"><div class="q-text"><p>In the case "only $c_1$ active", you find $\lambda_1=2$ but $c_2=-0.3$. You should…</p></div>
+<div class="o">accept it, since $\lambda_1\ge0$<div class="e">Every condition must hold, including primal feasibility.</div></div>
+<div class="o ok">reject it: the point is infeasible<div class="e">Primal feasibility fails; try an active set that includes $c_2$.</div></div>
+<div class="o">set $\lambda_2=-0.3$<div class="e">Multipliers come from stationarity, not from constraint values.</div></div>
+</div>
+</div>
+</section>
+
+<!-- ============ Chapter 3 ============ -->
+<section class="ch" id="kkt-convex" data-level="n" data-min="40" data-title="Convex programs: KKT is sufficient" data-src="Lecture 18 (22 Oct); Book Ch. 22 (Def. convex program, Lemma 9.4.3, Thms. 9.4.1–9.4.2, Slater, counterexamples, Examtip); [FR] §9.4 (p.213–218)">
+<h2>Convex programs: when a KKT point is the global minimizer</h2>
+<div class="opener">
+<p>If $f$ is convex and every inequality constraint function $c_i$ is concave (equalities linear), then every KKT point is a global minimizer, with no regularity assumption needed.</p>
+<p>This is the constrained version of Part 4's "local means global". It is what lets you stop a case analysis at the first surviving candidate, and the four-line proof, in which every KKT condition is used, is a standard exam question.</p>
+<p>In a bowl-shaped valley fenced by straight or outward-bulging fences, the first place where the slope is balanced by the fences is the lowest point of the whole enclosure.</p>
+</div>
+
+<div class="box def" data-k="Definition" data-name="Convex programming problem ([FR] (9.4.8))">
+<p>A <b>convex program</b> is $\min f(\x)$ subject to $c_i(\x)\ge0$, $i=1,\dots,m$, with $f$ convex and every $c_i$ <b>concave</b>. Linear equalities $\a_i^\top\x=b_i$ may be added, and no other equalities.</p>
+</div>
+<div class="prose">
+<p><b>Why concave:</b> $\{c\ge0\}$ is a superlevel set of $c$, and superlevel sets of concave functions are convex ([FR] Lemma 9.4.3: if $c(\x_0),c(\x_1)\ge0$ then $c(\x_\theta)\ge(1-\theta)c(\x_0)+\theta c(\x_1)\ge0$). An intersection of convex sets is convex, so the feasible region is convex. In the $g_i\le0$ convention the same requirement reads "$g_i=-c_i$ convex". <b>Why only linear equalities:</b> $\{c=0\}=\{c\ge0\}\cap\{-c\ge0\}$ needs both $c$ and $-c$ concave, so $c$ affine. A circle $x_1^2+x_2^2=1$ is never a convex set.</p>
+</div>
+<div class="box thm" data-k="Theorem" data-name="Local is global ([FR] Thm. 9.4.1)">
+<p>Every local solution of a convex program is a global solution, and the set of global solutions is convex. If $f$ is strictly convex, the solution (if one exists) is unique.</p>
+</div>
+<div class="box thm" data-k="Theorem" data-name="KKT is sufficient for convex programs ([FR] Thm. 9.4.2)">
+<p>In a convex program with $f$ and $c_i$ in $C^1$, if $(\x^\star,\boldsymbol\lambda^\star)$ satisfies the KKT conditions, then $\x^\star$ is a global solution.</p>
+</div>
+
+<div class="example">
+<p class="problem">Prove [FR] Theorem 9.4.2, naming which KKT condition each step uses.</p>
+<ol class="steps">
+<li><p>Let $\x'$ be any feasible point. Since $\lambda_i^\star\ge0$ and $c_i(\x')\ge0$: $f(\x')\ge f(\x')-\sum_i\lambda_i^\star c_i(\x')$.</p><p class="why-step">Dual feasibility (first use) and feasibility of $\x'$: the "penalty" $-\sum\lambda_i^\star c_i$ is $\le0$ on the feasible set.</p></li>
+<li><p>Tangent inequalities: $f$ convex gives $f(\x')\ge f(\x^\star)+(\x'-\x^\star)^\top\g^\star$; each $c_i$ concave gives $c_i(\x')\le c_i(\x^\star)+(\x'-\x^\star)^\top\a_i^\star$. Multiply the latter by $-\lambda_i^\star\le0$ and add: $f(\x')-\sum\lambda_i^\star c_i(\x')\ge f(\x^\star)-\sum\lambda_i^\star c_i(\x^\star)+(\x'-\x^\star)^\top\big(\g^\star-\sum\lambda_i^\star\a_i^\star\big)$.</p><p class="why-step">Dual feasibility again (second use): multiplying by a nonpositive number flips the concave inequality into the right direction.</p></li>
+<li><p>The bracket is $\0$ by stationarity, and $\sum\lambda_i^\star c_i(\x^\star)=0$ by complementarity. So the right side is $f(\x^\star)$.</p><p class="why-step">Stationarity and complementarity.</p></li>
+<li><p>Chaining: $f(\x')\ge f(\x^\star)$ for every feasible $\x'$, and $\x^\star$ is feasible (primal feasibility), so it is a global solution.</p><p class="why-step">All four conditions were used, and no regularity assumption. Regularity is only needed for the converse.</p></li>
+</ol>
+</div>
+<div class="prose">
+<p><b>In Lagrangian language:</b> for fixed $\boldsymbol\lambda^\star\ge\0$, $\mathcal L(\x,\boldsymbol\lambda^\star)=f-\sum\lambda_i^\star c_i$ is convex in $\x$, and stationarity says $\x^\star$ minimizes it. So $f(\x')\ge\mathcal L(\x',\boldsymbol\lambda^\star)\ge\mathcal L(\x^\star,\boldsymbol\lambda^\star)=f(\x^\star)$. The first inequality holds for every $\boldsymbol\lambda\ge\0$; that observation is the start of duality (Part 13).</p>
+</div>
+<div class="box thm" data-k="Theorem" data-name="Slater's condition makes KKT necessary">
+<p>In a convex program with $f,c_i\in C^1$, suppose some <b>Slater point</b> $\hat\x$ has $c_i(\hat\x)\gt0$ for every nonlinear inequality and satisfies the linear constraints. Then every solution is a KKT point. With linear constraints, no Slater point is needed. So for convex programs with a Slater point, or with linear constraints: solution $\iff$ KKT point.</p>
+</div>
+<div class="callout"><b>Careful:</b> convexity alone gives sufficiency, not necessity. With $c_1=x_2-x_1^2\ge0$ and $c_2=-x_2\ge0$ (both concave) the feasible set is the single point $\0$, so there is no Slater point. For $f=x_1$ the solution is $\0$, but $(1,0)$ is not a combination of $\a_1=(0,1)$ and $\a_2=(0,-1)$: the solution is not a KKT point.</div>
+
+<div class="box plain" data-k="Key idea" data-name="Each hypothesis is needed">
+<ul>
+<li><b>$f$ not convex:</b> $\min-x^2$ on $-1\le x\le2$. At $x=0$ both constraints are inactive and $f'(0)=0$: a KKT point with $\boldsymbol\lambda=\0$, and the global <i>maximizer</i>. The minimizer is $x=2$.</li>
+<li><b>Feasible set not convex:</b> $\min x_1$ subject to $c_1=x_1^2+x_2^2-1\ge0$ (outside the unit disc; $c_1$ is convex, not concave) in the box $[-2,2]^2$. At $(1,0)$, $\g=(1,0)=\tfrac12\a_1$: a KKT point with $\lambda_1=\tfrac12$. But the feasible points $(1-\eps,\sqrt{2\eps-\eps^2})$ on the circle approach it with $f=1-\eps\lt1$: not even a local minimizer.</li>
+</ul>
+</div>
+
+<div class="practice">
+<div class="prob" data-id="kkt-convex-p1" data-ans="0.31492;0.68508" data-labels="x₁*;x₂*" data-tol="0.002">
+<div class="stem"><p>Minimize $e^{x_1}+x_2^2$ subject to $x_1+x_2\ge1$ (a convex program). Find the KKT point; you will need to solve $e^{x_1}=2(1-x_1)$ numerically.</p></div>
+<div class="hint"><p>Stationarity: $(e^{x_1},2x_2)=\lambda(1,1)$, so $e^{x_1}=2x_2$. If the constraint were inactive, $\lambda=0$ would force $e^{x_1}=0$, which is impossible; so it is active and $x_2=1-x_1$.</p></div>
+<div class="sol"><p>$e^{x_1}=2(1-x_1)$ has the root $x_1\approx0.31492$ (bisection on $[0,1]$), so $x_2=1-x_1\approx0.68508$ and $\lambda=e^{x_1}\approx1.3702\ge0$. $e^{x_1}$ and $x_2^2$ are convex and the constraint is linear, so this KKT point is the global minimizer; $f$ is strictly convex, so it is unique. $f^\star\approx1.8395$.</p></div>
+</div>
+<div class="prob" data-id="kkt-convex-p2" data-ans="-4" data-labels="min value">
+<div class="stem"><p>$x=0$ is a KKT point of $\min -x^2$ subject to $-1\le x\le2$. What is the true minimum value?</p></div>
+<div class="hint"><p>$-x^2$ is concave: its minimum over an interval is at an endpoint.</p></div>
+<div class="sol"><p>$f(-1)=-1$ and $f(2)=-4$, so the minimum value is $-4$ at $x=2$. At $x=2$ the constraint $2-x\ge0$ is active with $\a=-1$ and $f'(2)=-4=\lambda(-1)$, $\lambda=4\ge0$: also a KKT point. KKT points of a nonconvex problem have to be compared.</p></div>
+</div>
+<div class="prob" data-id="kkt-convex-p3" data-ans="No" data-choices="Yes|No">
+<div class="stem"><p>Is $\min\ x_1+x_2$ subject to $x_1^2+x_2^2=1$ a convex program?</p></div>
+<div class="hint"><p>Which equalities does the definition allow?</p></div>
+<div class="sol"><p>No. Only linear equalities are allowed, and the unit circle is not a convex set: the midpoint of $(1,0)$ and $(-1,0)$ is not on it. Its KKT points $\pm(\tfrac1{\sqrt2},\tfrac1{\sqrt2})$ include a maximizer. (Relaxing to $x_1^2+x_2^2\le1$ gives a convex program with the same minimizer $-(\tfrac1{\sqrt2},\tfrac1{\sqrt2})$.)</p></div>
+</div>
+</div>
+
+<div class="dodont">
+<ul><li>Before calling a KKT point optimal, check: $f$ convex, each $c_i$ concave (Hessian $\preceq0$), equalities linear</li><li>Name the KKT condition used at each step of the sufficiency proof</li><li>For necessity, check Slater (a strictly feasible point) or linearity of the constraints</li></ul>
+<ul><li>Writing "the $c_i$ are convex" in [FR]'s $c_i\ge0$ convention (they must be concave)</li><li>Claiming every solution of a convex program is a KKT point without a constraint qualification</li><li>Treating a nonlinear equality constraint as part of a convex program</li></ul>
+</div>
+<ol class="takeaways">
+<li>Convex program: convex $f$, concave $c_i$ in $c_i\ge0$, linear equalities; its feasible set is convex and local solutions are global.</li>
+<li>Every KKT point of a convex program is a global solution: $f(\x')\ge\mathcal L(\x',\boldsymbol\lambda^\star)\ge\mathcal L(\x^\star,\boldsymbol\lambda^\star)=f(\x^\star)$.</li>
+<li>With a Slater point (or linear constraints), solutions and KKT points coincide; drop convexity and KKT points can be maximizers or non-minimizers.</li>
+</ol>
+<div class="quiz" data-id="kkt-convex-quiz">
+<div class="q"><div class="q-text"><p>In the sufficiency proof, where is $\lambda_i^\star\ge0$ used?</p></div>
+<div class="o">Nowhere: it is only needed for necessity<div class="e">Look at the first two lines of the proof.</div></div>
+<div class="o ok">Twice: to drop $-\sum\lambda_i^\star c_i(\x')\le0$, and to flip the concave tangent inequality<div class="e">Both steps need nonnegative weights.</div></div>
+<div class="o">Only in complementarity<div class="e">Complementarity removes $\sum\lambda_i^\star c_i(\x^\star)$; the sign matters elsewhere.</div></div>
+</div>
+<div class="q"><div class="q-text"><p>A convex program has a KKT point $\x^\star$ and $f$ is strictly convex. Then…</p></div>
+<div class="o">there may be other global solutions<div class="e">Strict convexity rules out two different minimizers on a convex set.</div></div>
+<div class="o ok">$\x^\star$ is the unique global solution<div class="e">KKT gives global optimality, strict convexity gives uniqueness.</div></div>
+<div class="o">$\x^\star$ is only a local solution<div class="e">For convex programs local and global coincide.</div></div>
+</div>
+<div class="q"><div class="q-text"><p>Why is $\{x_2-x_1^2\ge0,\ -x_2\ge0\}$ a useful counterexample?</p></div>
+<div class="o">Its constraints are not concave<div class="e">$x_2-x_1^2$ and $-x_2$ are both concave.</div></div>
+<div class="o ok">It is convex but has no Slater point, and its solution for $f=x_1$ is not a KKT point<div class="e">Necessity of KKT needs a constraint qualification even for convex programs.</div></div>
+<div class="o">It shows KKT points can be maximizers<div class="e">That is the role of $\min-x^2$ on an interval.</div></div>
+</div>
+<div class="q"><div class="q-text"><p>In [FR]'s convention, $c(\x)=1-\norm{\x}^2\ge0$ describes the unit disc. Is $c$ the right kind of function for a convex program?</p></div>
+<div class="o ok">Yes: $\hess c=-2I\preceq0$, so $c$ is concave<div class="e">Concave $c_i$ in $c_i\ge0$ is exactly what the definition asks.</div></div>
+<div class="o">No: $c$ must be convex<div class="e">In the $c_i\ge0$ convention, convex sets come from concave $c_i$.</div></div>
+<div class="o">No: only linear constraints are allowed<div class="e">Only the <i>equalities</i> must be linear.</div></div>
+</div>
+</div>
+</section>
+
+<div class="quiz review" data-id="pc12-review" data-title="Part 12 review (with Parts 4 and 11)">
+<div class="q" data-from="Ch. 12.1"><div class="q-text"><p>At a regular local minimizer, which statement is part of the KKT conditions?</p></div>
+<div class="o">$\grad f(\x^\star)=\0$<div class="e">Only when no constraint is active.</div></div>
+<div class="o ok">$\grad f(\x^\star)$ is a combination of active constraint normals, with nonnegative weights on inequalities<div class="e">Stationarity plus dual feasibility, with zero weights on inactive constraints.</div></div>
+<div class="o">every constraint is active<div class="e">Inactive constraints are allowed; they get zero multipliers.</div></div>
+</div>
+<div class="q" data-from="Ch. 11.3"><div class="q-text"><p>The step from "no linearized feasible descent direction" to "multipliers exist" is…</p></div>
+<div class="o">Taylor's theorem<div class="e">Taylor produces the linearization. Which lemma produces the multipliers?</div></div>
+<div class="o ok">Farkas' lemma<div class="e">No $\mathbf s$ with $\mathbf s^\top\g\lt0\le\mathbf s^\top\a_i$ $\iff$ $\g=\sum\lambda_i\a_i$, $\lambda_i\ge0$.</div></div>
+<div class="o">the Weierstrass theorem<div class="e">That gives existence of a minimizer, not multipliers.</div></div>
+</div>
+<div class="q" data-from="Ch. 12.2"><div class="q-text"><p>Projection of $\z=(3,4)$ onto the ball of radius 2: the multiplier of $4-\norm{\x}^2\ge0$ is…</p></div>
+<div class="o">$0$, since the ball is convex<div class="e">$\z$ is outside the ball, so the constraint is active.</div></div>
+<div class="o ok">$\tfrac12(\norm{\z}/r-1)=0.75$<div class="e">$\x=\z/(1+2\lambda)$ with $1+2\lambda=5/2$.</div></div>
+<div class="o">$-0.75$<div class="e">Inequality multipliers are nonnegative at a KKT point.</div></div>
+</div>
+<div class="q" data-from="Ch. 4.2"><div class="q-text"><p>To show that $c(\x)=x_2-x_1^2$ is concave, compute…</p></div>
+<div class="o ok">$\hess c=\begin{pmatrix}-2&0\\0&0\end{pmatrix}\preceq0$<div class="e">Negative semidefinite everywhere: concave.</div></div>
+<div class="o">$\grad c$ at one point<div class="e">Concavity is a statement about curvature at every point.</div></div>
+<div class="o">$c(\0)$<div class="e">A function value says nothing about concavity.</div></div>
+</div>
+<div class="q" data-from="Ch. 12.3"><div class="q-text"><p>A convex program with linear constraints has two KKT points. What can you conclude?</p></div>
+<div class="o">One of them must be a maximizer<div class="e">For convex programs KKT points are global minimizers.</div></div>
+<div class="o ok">Both are global minimizers, with the same objective value<div class="e">Sufficiency applies to each, and the solution set is convex (so the segment between them is optimal too).</div></div>
+<div class="o">The problem is not convex<div class="e">Convex problems can have many minimizers, e.g. a flat objective.</div></div>
+</div>
+</div>
+</article>
+
+<article class="part" data-id="pc13" data-num="13" data-title="Lagrangian duality" data-min="120">
+<p class="part-lede">Lecture 19 (27 Oct), following Boyd–Vandenberghe Ch. 5, with the LP dual from the 3 Nov class and the feasibility dual from the 31 Oct class. Every choice of nonnegative multipliers gives a lower bound on the optimal value; the dual problem looks for the best one. You'll see weak duality, strong duality under Slater's condition, complementary slackness, the KKT conditions recovered from duality, and the dual LP and QP.</p>
+<p class="youneed"><b>You need:</b> Part 12 (KKT conditions, convex programs, Slater point), Part 11 (separating hyperplanes) and Part 4 (concave functions).</p>
+
+<!-- ============ Chapter 1 ============ -->
+<section class="ch" id="dual-weak" data-level="n" data-min="40" data-title="The dual function and weak duality" data-src="Lecture 19 (27 Oct); Book Ch. 23 §1–3 (Lagrangian, dual function, concavity, lower bound, examples least-norm, LP, QP, weak duality, duality gap); [BV] §5.1–5.2.2">
+<h2>The dual function and weak duality</h2>
+<div class="opener">
+<p>Replace each constraint by a price: allow every $\x$, but charge $\lambda_i$ per unit of violation. With nonnegative prices no feasible point is overcharged, so the cheapest priced point costs at most the true optimum. That cheapest price is the dual function, and it is a lower bound for every $\boldsymbol\lambda\ge\0$.</p>
+<p>Lower bounds are certificates: a feasible point whose value equals a lower bound is provably optimal, and the gap between a feasible value and a bound tells you how far from optimal you can be, without knowing the optimum.</p>
+<p>A company allowed to exceed its emissions quota must pay a fee per tonne. Whatever the fee, the cheapest plan under the fee costs no more than the cheapest plan that respects the quota, as long as staying under the quota earns nothing negative.</p>
+</div>
+
+<div class="prose">
+<h3>The [BV] convention</h3>
+<p>This part follows Boyd–Vandenberghe, whose constraints are $f_i(\x)\le0$:
+$$p^\star=\inf\ f_0(\x)\quad\text{s.t.}\quad f_i(\x)\le0,\ i=1,\dots,m,\qquad h_j(\x)=0,\ j=1,\dots,p.$$
+No convexity is assumed until Chapter 13.2. If the problem is infeasible, $p^\star=+\infty$; if it is unbounded below, $p^\star=-\infty$.</p>
+</div>
+<div class="box def" data-k="Definition" data-name="Lagrangian and dual function ([BV] §5.1)">
+<p>The <b>Lagrangian</b> is $\mathcal L(\x,\boldsymbol\lambda,\boldsymbol\nu)=f_0(\x)+\sum_i\lambda_if_i(\x)+\sum_j\nu_jh_j(\x)$. The <b>dual function</b> is
+$$q(\boldsymbol\lambda,\boldsymbol\nu)=\inf_{\x}\ \mathcal L(\x,\boldsymbol\lambda,\boldsymbol\nu)\ \in\ \R\cup\{-\infty\},$$
+an <i>unconstrained</i> infimum over all $\x$, feasible or not. ([BV] writes $g$; here $q$, since $\g$ is the gradient.)</p>
+</div>
+<div class="callout"><b>Translating from [FR]:</b> [FR]'s $c_i\ge0$ is $f_i=-c_i\le0$, so $f_0+\sum\lambda_if_i=f-\sum\lambda_ic_i$: the inequality multipliers are the same numbers with the same sign. [FR]'s "$c_i$ concave" is [BV]'s "$f_i$ convex".</div>
+
+<div class="box thm" data-k="Theorem" data-name="Two properties of the dual function">
+<ol>
+<li><b>$q$ is concave</b>, even if the problem is not convex: for each fixed $\x$, $\mathcal L$ is affine in $(\boldsymbol\lambda,\boldsymbol\nu)$, and a pointwise infimum of affine functions is concave.</li>
+<li><b>Lower bound:</b> for every $\boldsymbol\lambda\ge\0$ and every $\boldsymbol\nu$, $q(\boldsymbol\lambda,\boldsymbol\nu)\le p^\star$. Proof: if $\tilde\x$ is feasible, $\sum\lambda_if_i(\tilde\x)\le0$ and $h_j(\tilde\x)=0$, so $q\le\mathcal L(\tilde\x,\boldsymbol\lambda,\boldsymbol\nu)\le f_0(\tilde\x)$. Take the infimum over feasible $\tilde\x$.</li>
+</ol>
+</div>
+<div class="box def" data-k="Definition" data-name="Dual problem, weak duality ([BV] §5.2)">
+<p>The <b>dual problem</b> is $d^\star=\sup\ q(\boldsymbol\lambda,\boldsymbol\nu)$ subject to $\boldsymbol\lambda\ge\0$. It is always a convex problem (maximize a concave function over a convex set). <b>Weak duality:</b> $d^\star\le p^\star$, for every problem. The number $p^\star-d^\star\ge0$ is the <b>duality gap</b>.</p>
+</div>
+
+<div class="panel try">
+<span class="label">Try it</span>
+<p class="task">The black curve is $f_0$ and the blue curve is the Lagrangian $L(x,\lambda)=f_0(x)+\lambda f_1(x)$. Its lowest point (orange) is $q(\lambda)$. Move the price $\lambda$: the orange line never rises above the green line $p^\star$. In the convex example the best price lifts $q$ exactly to $p^\star$. In the nonconvex example the best $q$ stalls at $0$, below $p^\star\approx0.294$: the Lagrangian cannot tell the feasible well at $x\approx-1$ from the infeasible one at $x\approx+1$.</p>
+<div class="widget" data-w="pc_dual"></div>
+</div>
+
+<div class="example">
+<p class="problem">Compute the dual of $\min x_1^2+x_2^2$ subject to $x_1+x_2=2$, solve it, and compare with the primal (least-norm solution, [BV] §5.1.3).</p>
+<ol class="steps">
+<li><p>$\mathcal L=x_1^2+x_2^2+\nu(x_1+x_2-2)$. For fixed $\nu$ this is a strictly convex quadratic in $\x$, minimized where $2x_i+\nu=0$: $x_1=x_2=-\nu/2$.</p><p class="why-step">The infimum over $\x$ is unconstrained, so set the gradient in $\x$ to zero.</p></li>
+<li><p>Substitute: $q(\nu)=2\cdot\tfrac{\nu^2}4+\nu(-\nu-2)=-\tfrac{\nu^2}{2}-2\nu$.</p><p class="why-step">In general $q(\boldsymbol\nu)=-\tfrac14\boldsymbol\nu^\top AA^\top\boldsymbol\nu-\b^\top\boldsymbol\nu$; here $A=[1\ 1]$, $AA^\top=2$, $b=2$.</p></li>
+<li><p>Maximize the concave $q$: $q'(\nu)=-\nu-2=0$ at $\nu^\star=-2$, $d^\star=q(-2)=-2+4=2$.</p><p class="why-step">$\nu$ multiplies an equality, so it has no sign restriction.</p></li>
+<li><p>Primal: the point of the line $x_1+x_2=2$ nearest the origin is $(1,1)$, with $p^\star=2$. So $d^\star=p^\star$, and $\x(\nu^\star)=(1,1)$ is the primal solution.</p><p class="why-step">The bound is tight here: this is strong duality (Chapter 13.2).</p></li>
+</ol>
+</div>
+
+<div class="prose">
+<h3>Where $q=-\infty$ carries information</h3>
+<p>For the standard-form LP $\min\mathbf c^\top\x$ s.t. $A\x=\b$, $\x\ge\0$ (so $f_i=-x_i$), $\mathcal L=-\b^\top\boldsymbol\nu+(\mathbf c+A^\top\boldsymbol\nu-\boldsymbol\lambda)^\top\x$ is linear in $\x$, and a linear function is bounded below only if it is constant. So $q=-\b^\top\boldsymbol\nu$ when $\mathbf c+A^\top\boldsymbol\nu-\boldsymbol\lambda=\0$, and $-\infty$ otherwise. The "$-\infty$ region" becomes a constraint of the dual problem (Chapter 13.3).</p>
+<h3>A duality gap</h3>
+<p>Minimize $f_0(x)=(x^2-1)^2-0.3x$ subject to $f_1(x)=x\le0$. The feasible minimizer is near the left well: $p^\star\approx0.2941$ at $x\approx-0.9602$. But trying $x=\pm1$ in the Lagrangian shows $q(\lambda)\le-|\lambda-0.3|$, with $q(0.3)=0$; so $d^\star=0\lt p^\star$, a gap of about $0.294$. Weak duality is all you get without convexity.</p>
+</div>
+
+<div class="practice">
+<div class="prob" data-id="dual-weak-p1" data-ans="1;0.5" data-labels="λ*;d*">
+<div class="stem"><p>For $\min x_1^2+x_2^2$ subject to $f_1=1-x_1-x_2\le0$, compute $q(\lambda)$, then the dual optimum $\lambda^\star$ and $d^\star$.</p></div>
+<div class="hint"><p>$\mathcal L=x_1^2+x_2^2+\lambda(1-x_1-x_2)$ is minimized at $x_1=x_2=\lambda/2$.</p></div>
+<div class="sol"><p>$q(\lambda)=2\cdot\tfrac{\lambda^2}4+\lambda(1-\lambda)=\lambda-\tfrac{\lambda^2}2$. On $\lambda\ge0$ its maximum is at $\lambda^\star=1$, with $d^\star=\tfrac12$. The primal optimum is $(\tfrac12,\tfrac12)$ with $p^\star=\tfrac12$: no gap, and $\lambda^\star=1$ is the KKT multiplier of Chapter 12.1.</p></div>
+</div>
+<div class="prob" data-id="dual-weak-p2" data-ans="0.375" data-labels="q(0.5, 0)">
+<div class="stem"><p>For $\min(x_1-2)^2+(x_2-1)^2$ s.t. $f_1=x_1+x_2-2\le0$, $f_2=-x_2\le0$, the dual function is $q(\lambda_1,\lambda_2)=-\tfrac12\lambda_1^2+\tfrac12\lambda_1\lambda_2-\tfrac14\lambda_2^2+\lambda_1-\lambda_2$. Evaluate $q(0.5,0)$, a lower bound on $p^\star=\tfrac12$.</p></div>
+<div class="hint"><p>Substitute: only the $\lambda_1$ terms survive.</p></div>
+<div class="sol"><p>$q(0.5,0)=-\tfrac12(0.25)+0.5=0.375\le0.5$. The best bound, $q(1,0)=\tfrac12$, equals $p^\star$.</p></div>
+</div>
+<div class="prob" data-id="dual-weak-p3" data-ans="0.4" data-labels="bound">
+<div class="stem"><p>A feasible $\x$ has $f_0(\x)=3$, and a dual feasible $(\boldsymbol\lambda,\boldsymbol\nu)$ has $q=2.6$. What is the best upper bound on $f_0(\x)-p^\star$ that these two numbers give?</p></div>
+<div class="hint"><p>$q\le p^\star\le f_0(\x)$.</p></div>
+<div class="sol"><p>$f_0(\x)-p^\star\le f_0(\x)-q=3-2.6=0.4$. The point is at most $0.4$ above optimal, a guarantee computed without knowing $p^\star$. Primal–dual algorithms stop when this gap falls below a tolerance.</p></div>
+</div>
+</div>
+
+<div class="dodont">
+<ul><li>Compute $q$ by minimizing $\mathcal L$ over <i>all</i> $\x$, and record where the infimum is $-\infty$</li><li>Keep $\lambda_i\ge0$ for inequalities and $\nu_j$ free for equalities</li><li>Use a dual feasible point as a certificate: $f_0(\x)-p^\star\le f_0(\x)-q$</li></ul>
+<ul><li>Minimizing $\mathcal L$ only over feasible $\x$</li><li>Expecting $d^\star=p^\star$ without convexity</li><li>Forgetting that $q$ is concave even for nonconvex problems</li></ul>
+</div>
+<ol class="takeaways">
+<li>$q(\boldsymbol\lambda,\boldsymbol\nu)=\inf_{\x}\mathcal L$ is concave and, for $\boldsymbol\lambda\ge\0$, a lower bound on $p^\star$.</li>
+<li>Weak duality $d^\star\le p^\star$ holds for every problem; the dual is always a convex problem.</li>
+<li>A feasible $\x$ and a dual feasible point bracket $p^\star$; without convexity the best bound can leave a gap.</li>
+</ol>
+<div class="quiz" data-id="dual-weak-quiz">
+<div class="q"><div class="q-text"><p>Why is $q$ concave even when $f_0$ is not convex?</p></div>
+<div class="o">Because the dual problem is a maximization<div class="e">Concavity is a property of $q$ itself. How does $\mathcal L$ depend on the multipliers?</div></div>
+<div class="o ok">It is an infimum over $\x$ of functions that are affine in $(\boldsymbol\lambda,\boldsymbol\nu)$<div class="e">A pointwise infimum of affine functions is concave.</div></div>
+<div class="o">Because $\boldsymbol\lambda\ge\0$<div class="e">The sign restriction is a constraint of the dual problem, not the reason for concavity.</div></div>
+</div>
+<div class="q"><div class="q-text"><p>In the lower-bound proof, which fact makes $\mathcal L(\tilde\x,\boldsymbol\lambda,\boldsymbol\nu)\le f_0(\tilde\x)$ for feasible $\tilde\x$?</p></div>
+<div class="o ok">$\lambda_i\ge0$ and $f_i(\tilde\x)\le0$, so each $\lambda_if_i(\tilde\x)\le0$; and $h_j(\tilde\x)=0$<div class="e">The added terms can only lower the value at a feasible point.</div></div>
+<div class="o">Convexity of $f_0$<div class="e">The lower bound holds for every problem.</div></div>
+<div class="o">$\tilde\x$ minimizes $\mathcal L$<div class="e">Any feasible $\tilde\x$ works.</div></div>
+</div>
+<div class="q"><div class="q-text"><p>In the dual of the standard-form LP, the condition $\mathbf c+A^\top\boldsymbol\nu-\boldsymbol\lambda=\0$ comes from…</p></div>
+<div class="o">complementary slackness<div class="e">It appears before any optimality argument. Look at the infimum of a linear function.</div></div>
+<div class="o ok">requiring the infimum over $\x$ of a linear function to be finite<div class="e">A linear function of $\x$ is bounded below only if its coefficient vector is zero.</div></div>
+<div class="o">primal feasibility<div class="e">Primal feasibility involves $A\x=\b$ and $\x\ge\0$.</div></div>
+</div>
+</div>
+</section>
+
+<!-- ============ Chapter 2 ============ -->
+<section class="ch" id="dual-strong" data-level="d" data-min="45" data-title="Strong duality, Slater, complementary slackness" data-src="Lecture 19 (27 Oct); Book Ch. 23 §4–8 (Slater's theorem and proof, examples, geometric and saddle-point views, complementary slackness, KKT and duality, water-filling, sensitivity); [BV] §5.2.3–5.6">
+<h2>Strong duality, Slater's condition and complementary slackness</h2>
+<div class="opener">
+<p>For a convex problem with a strictly feasible point, the best lower bound is exact: $d^\star=p^\star$, and the dual optimum is attained.</p>
+<p>Then primal and dual optima satisfy complementary slackness and the KKT conditions, the optimal multipliers measure how the optimal value responds to relaxing each constraint, and solving the dual (often smaller or simpler) solves the primal.</p>
+<p>When the market is "convex", there is a fair price at which nobody gains by breaking the rules: the fee you would pay for one more unit of violation exactly balances what it would save you.</p>
+</div>
+
+<div class="box thm" data-k="Theorem" data-name="Slater's theorem ([BV] §5.2.3)">
+<p>Let the problem be convex ($f_0,\dots,f_m$ convex, $h_j$ affine, $A\x=\b$), and suppose a <b>Slater point</b> $\tilde\x$ exists: $f_i(\tilde\x)\lt0$ for all $i$ and $A\tilde\x=\b$. Then $d^\star=p^\star$, and if $p^\star\gt-\infty$ the dual optimum is attained. Affine inequalities need not hold strictly; for problems with only affine constraints, feasibility suffices.</p>
+</div>
+
+<div class="example">
+<p class="problem">Prove Slater's theorem for inequality constraints only, with $p^\star$ finite (the separating-hyperplane proof).</p>
+<ol class="steps">
+<li><p>In $\R^m\times\R$ define $\mathcal A=\{(\u,t):\ \exists\x\text{ with }f_i(\x)\le u_i\ \forall i,\ f_0(\x)\le t\}$ and $\mathcal B=\{(\0,s):\ s\lt p^\star\}$.</p><p class="why-step">$\mathcal A$ collects achievable (constraint levels, cost) pairs, enlarged upwards; $\mathcal B$ is the open ray of costs below the optimum at zero violation.</p></li>
+<li><p>Both are convex ($\mathcal A$ because the $f_i$ are convex: mix the two witnessing $\x$'s), and they are disjoint: $(\0,s)\in\mathcal A$ would give a feasible $\x$ with $f_0(\x)\le s\lt p^\star$.</p><p class="why-step">This is the only place convexity of the problem enters.</p></li>
+<li><p>Separate (Chapter 11.2): some $(\tilde{\boldsymbol\lambda},\mu)\ne\0$ has $\mu s\le\tilde{\boldsymbol\lambda}^\top\u+\mu t$ for all $(\0,s)\in\mathcal B$, $(\u,t)\in\mathcal A$. Since $\mathcal A$ is closed upwards, $\tilde{\boldsymbol\lambda}\ge\0$ and $\mu\ge0$ (otherwise one side could be sent to $\mp\infty$). Letting $s\uparrow p^\star$ and using $(\u,t)=(f_1(\x),\dots,f_m(\x),f_0(\x))$: $\mu p^\star\le\sum_i\tilde\lambda_if_i(\x)+\mu f_0(\x)$ for all $\x$.</p><p class="why-step">The separating normal will become the dual solution.</p></li>
+<li><p>If $\mu\gt0$: divide by $\mu$ and set $\boldsymbol\lambda^\star=\tilde{\boldsymbol\lambda}/\mu\ge\0$. Then $\mathcal L(\x,\boldsymbol\lambda^\star)\ge p^\star$ for all $\x$, so $q(\boldsymbol\lambda^\star)\ge p^\star$, and with weak duality $q(\boldsymbol\lambda^\star)=d^\star=p^\star$.</p><p class="why-step">A non-vertical separating hyperplane is exactly a dual solution.</p></li>
+<li><p>If $\mu=0$: then $\tilde{\boldsymbol\lambda}\ge\0$, $\ne\0$, and $\sum_i\tilde\lambda_if_i(\x)\ge0$ for all $\x$. At the Slater point every $f_i(\tilde\x)\lt0$, so the sum is negative: contradiction.</p><p class="why-step">Slater's point is used only to rule out a vertical hyperplane, which would say nothing about $f_0$.</p></li>
+</ol>
+</div>
+
+<div class="callout"><b>Careful:</b> without a Slater point, strong duality can hold with no dual optimum. $\min x$ s.t. $x^2\le0$ has $p^\star=0$ (only $x=0$ is feasible). For $\lambda\gt0$, $q(\lambda)=\inf_x(x+\lambda x^2)=-\tfrac1{4\lambda}$, so $d^\star=\sup q=0=p^\star$, but no $\lambda$ attains it; correspondingly, $x^\star=0$ is not a KKT point ($1+2\lambda\cdot0\ne0$).</div>
+
+<div class="box thm" data-k="Theorem" data-name="Complementary slackness ([BV] §5.5.2)">
+<p>Suppose $d^\star=p^\star$, $\x^\star$ is primal optimal and $(\boldsymbol\lambda^\star,\boldsymbol\nu^\star)$ dual optimal. Then
+$$f_0(\x^\star)=q(\boldsymbol\lambda^\star,\boldsymbol\nu^\star)\le\mathcal L(\x^\star,\boldsymbol\lambda^\star,\boldsymbol\nu^\star)=f_0(\x^\star)+\sum_i\lambda_i^\star f_i(\x^\star)\le f_0(\x^\star),$$
+so both inequalities are equalities: $\lambda_i^\star f_i(\x^\star)=0$ for every $i$ (a sum of nonpositive terms equal to zero), and $\x^\star$ minimizes $\mathcal L(\cdot,\boldsymbol\lambda^\star,\boldsymbol\nu^\star)$.</p>
+</div>
+<div class="box thm" data-k="Theorem" data-name="KKT and duality ([BV] §5.5.3)">
+<ol>
+<li><b>Any problem:</b> if strong duality holds and the optima are attained, primal and dual optima satisfy the KKT conditions ($\grad f_0+\sum\lambda_i\grad f_i+\sum\nu_j\grad h_j=\0$, feasibility, $\boldsymbol\lambda\ge\0$, $\lambda_if_i=0$).</li>
+<li><b>Convex problems:</b> any $(\tilde\x,\tilde{\boldsymbol\lambda},\tilde{\boldsymbol\nu})$ satisfying KKT is primal and dual optimal with zero gap.</li>
+<li><b>Convex + Slater:</b> $\x$ is optimal if and only if KKT multipliers exist.</li>
+</ol>
+</div>
+<div class="box thm" data-k="Corollary" data-name="Sensitivity ([BV] §5.6)">
+<p>Perturb to $f_i(\x)\le u_i$, $h_j(\x)=v_j$ with optimal value $p^\star(\u,\v)$. If strong duality holds with dual optimum attained, then $p^\star(\u,\v)\ge p^\star-\boldsymbol\lambda^{\star\top}\u-\boldsymbol\nu^{\star\top}\v$ for all $(\u,\v)$, and where $p^\star$ is differentiable, $\lambda_i^\star=-\partial p^\star/\partial u_i$.</p>
+</div>
+<details class="deeper"><summary>Go deeper: saddle points and the min–max view</summary>
+<p>For fixed $\x$, $\sup_{\boldsymbol\lambda\ge\0}\mathcal L(\x,\boldsymbol\lambda)$ is $f_0(\x)$ if $\x$ is feasible and $+\infty$ otherwise. So $p^\star=\inf_{\x}\sup_{\boldsymbol\lambda\ge\0}\mathcal L$ and $d^\star=\sup_{\boldsymbol\lambda\ge\0}\inf_{\x}\mathcal L$: weak duality is the max–min inequality, and strong duality says the order can be swapped. $(\tilde\x,\tilde{\boldsymbol\lambda})$ is a <b>saddle point</b> ($\mathcal L(\tilde\x,\boldsymbol\lambda)\le\mathcal L(\tilde\x,\tilde{\boldsymbol\lambda})\le\mathcal L(\x,\tilde{\boldsymbol\lambda})$ for all $\x$ and $\boldsymbol\lambda\ge\0$) if and only if $\tilde\x$ is primal optimal, $\tilde{\boldsymbol\lambda}$ dual optimal and $p^\star=d^\star$. In game terms: one player picks $\x$, the other picks prices, and a saddle point is an equilibrium where the order of play does not matter.</p>
+</details>
+
+<div class="prose">
+<h3>Solving the primal through the dual: water-filling</h3>
+<p>Allocate one unit of power over channels with noise levels $\alpha_i\gt0$: minimize $-\sum_i\log(\alpha_i+x_i)$ s.t. $\x\ge\0$, $\mathbf1^\top\x=1$ ([BV] §5.5.3). The problem is convex and $\x=\tfrac1n\mathbf1$ is a Slater point, so KKT is necessary and sufficient. Stationarity, $-\frac1{\alpha_i+x_i}-\lambda_i+\nu=0$, with $\lambda_ix_i=0$ gives $x_i=\max\{0,\ 1/\nu-\alpha_i\}$, with the level $1/\nu$ chosen so that $\sum_ix_i=1$. Picture each channel as a vessel with floor at height $\alpha_i$: pour in one unit of water, and it settles at level $1/\nu$.</p>
+</div>
+
+<div class="practice">
+<div class="prob" data-id="dual-strong-p1" data-ans="0.85;0.65;0.35" data-labels="level 1/ν;x₁;x₂">
+<div class="stem"><p>Water-filling with $\boldsymbol\alpha=(0.2,\ 0.5,\ 0.9,\ 1.6)$. Find the water level $1/\nu^\star$ and the allocations $x_1,x_2$ (the other two are $0$).</p></div>
+<div class="hint"><p>Guess that only the two quietest channels get power: $(L-0.2)+(L-0.5)=1$. Then check $L\le0.9$.</p></div>
+<div class="sol"><p>$2L-0.7=1$ gives $L=0.85$, so $\x^\star=(0.65,0.35,0,0)$. The level is below $0.9$ and $1.6$, so channels 3 and 4 stay dry, consistently. Their multipliers $\lambda_i=\nu-1/\alpha_i$ are $1/0.85-1/0.9\approx0.0654$ and $1/0.85-1/1.6\approx0.5515$, both positive, as complementary slackness allows for $x_i=0$.</p></div>
+</div>
+<div class="prob" data-id="dual-strong-p2" data-ans="0.32" data-labels="p*(0.2)">
+<div class="stem"><p>For $\min(x_1-2)^2+(x_2-1)^2$ s.t. $x_1+x_2\le2+u$, $x_2\ge0$, the dual optimum has $\lambda_1^\star=1$ and $p^\star(0)=\tfrac12$. Compute $p^\star(0.2)$ exactly, and compare with the bound $p^\star(u)\ge p^\star(0)-\lambda_1^\star u$.</p></div>
+<div class="hint"><p>For small $u$ the solution is still the projection of $(2,1)$ onto the line $x_1+x_2=2+u$.</p></div>
+<div class="sol"><p>Distance from $(2,1)$ to the line: $(1-u)/\sqrt2$, so $p^\star(u)=\tfrac12(1-u)^2$ and $p^\star(0.2)=0.32$. The global sensitivity bound gives $0.5-0.2=0.3\le0.32$, and the slope at $u=0$ is $-1=-\lambda_1^\star$.</p></div>
+</div>
+<div class="prob" data-id="dual-strong-p3" data-ans="-0.5" data-labels="q(0.5)">
+<div class="stem"><p>For $\min x$ s.t. $x^2\le0$, compute $q(0.5)$.</p></div>
+<div class="hint"><p>Minimize $x+0.5x^2$ over all $x$.</p></div>
+<div class="sol"><p>The minimum is at $x=-1$: $q(0.5)=-1+0.5=-0.5=-\tfrac1{4\cdot0.5}$. As $\lambda\to\infty$, $q(\lambda)=-\tfrac1{4\lambda}\to0=p^\star$, but no finite $\lambda$ reaches it: there is no Slater point.</p></div>
+</div>
+<div class="prob" data-id="dual-strong-p4" data-ans="f₃(x*) = 0" data-choices="f₃(x*) = 0|f₃(x*) &lt; 0|λ₃* = 0|nothing">
+<div class="stem"><p>Strong duality holds, and the dual optimum has $\lambda_3^\star=0.7$. What does complementary slackness say about constraint 3 at a primal optimum $\x^\star$?</p></div>
+<div class="hint"><p>$\lambda_3^\star f_3(\x^\star)=0$.</p></div>
+<div class="sol"><p>$0.7\,f_3(\x^\star)=0$ forces $f_3(\x^\star)=0$: a constraint with a positive price is active. The converse fails: an active constraint may have $\lambda_i^\star=0$.</p></div>
+</div>
+</div>
+
+<div class="dodont">
+<ul><li>Check convexity and exhibit a Slater point before claiming $d^\star=p^\star$</li><li>Recover $\x^\star$ from $\boldsymbol\lambda^\star$ by minimizing $\mathcal L(\cdot,\boldsymbol\lambda^\star)$; if that minimizer is unique and feasible, it is the primal solution</li><li>Read $\lambda_i^\star\gt0$ as "constraint $i$ is active"</li></ul>
+<ul><li>Reading complementary slackness backwards ("active $\Rightarrow\lambda_i\gt0$")</li><li>Assuming the dual optimum is attained without Slater</li><li>Mixing the sensitivity signs of [FR] ($c_i\ge\eps_i$, slope $+\lambda_i$) and [BV] ($f_i\le u_i$, slope $-\lambda_i$)</li></ul>
+</div>
+<ol class="takeaways">
+<li>Convex problem plus a Slater point $\Rightarrow$ $d^\star=p^\star$ with the dual optimum attained; the proof separates two convex sets in the $(\u,t)$ plane.</li>
+<li>Under strong duality, $\lambda_i^\star f_i(\x^\star)=0$ and $\x^\star$ minimizes $\mathcal L(\cdot,\boldsymbol\lambda^\star)$: the KKT conditions.</li>
+<li>Optimal multipliers are sensitivities, $\lambda_i^\star=-\partial p^\star/\partial u_i$.</li>
+</ol>
+<div class="quiz" data-id="dual-strong-quiz">
+<div class="q"><div class="q-text"><p>In the proof of Slater's theorem, what is the Slater point used for?</p></div>
+<div class="o">To show $\mathcal A$ is convex<div class="e">Convexity of $\mathcal A$ comes from convexity of the $f_i$.</div></div>
+<div class="o ok">To rule out a vertical separating hyperplane ($\mu=0$)<div class="e">At the Slater point, $\sum\tilde\lambda_if_i\lt0$ contradicts $\sum\tilde\lambda_if_i\ge0$.</div></div>
+<div class="o">To show $\mathcal A$ and $\mathcal B$ are disjoint<div class="e">Disjointness comes from the definition of $p^\star$.</div></div>
+</div>
+<div class="q"><div class="q-text"><p>Which statement holds for every optimization problem?</p></div>
+<div class="o">$d^\star=p^\star$<div class="e">The nonconvex example $(x^2-1)^2-0.3x$ has a gap.</div></div>
+<div class="o ok">$d^\star\le p^\star$<div class="e">Weak duality needs nothing.</div></div>
+<div class="o">The dual optimum is attained<div class="e">$\min x$ s.t. $x^2\le0$ is a counterexample.</div></div>
+</div>
+<div class="q"><div class="q-text"><p>A convex problem has a Slater point and $\x$ satisfies the KKT conditions with some multipliers. Then…</p></div>
+<div class="o">$\x$ is a local minimizer only<div class="e">For convex problems KKT points are global minimizers.</div></div>
+<div class="o ok">$\x$ is optimal, the multipliers solve the dual, and the gap is zero<div class="e">Part (b) of the KKT-and-duality theorem.</div></div>
+<div class="o">nothing, until the dual is solved<div class="e">The KKT conditions already certify optimality here.</div></div>
+</div>
+</div>
+</section>
+
+<!-- ============ Chapter 3 ============ -->
+<section class="ch" id="dual-lp-qp" data-level="n" data-min="35" data-title="LP and QP duals; certificates" data-src="Lectures 19–21 (27 Oct, 31 Oct, 3 Nov); Book Ch. 23 §9 (Wolfe dual, LP and QP duals); [FR] §9.5 (9.5.2)–(9.5.8) (p.219–222); [LD] §4.1–4.2 (Duality Theorem, p.80–84); Goodnotes CMO 6 pp.3–6; 31 Oct recording part 1 (feasibility dual)">
+<h2>The LP and QP duals, and certificates of infeasibility</h2>
+<div class="opener">
+<p>The dual of a linear program is another linear program: $\min\mathbf c^\top\x$ s.t. $A\x=\b$, $\x\ge\0$ has dual $\max\b^\top\boldsymbol\mu$ s.t. $A^\top\boldsymbol\mu\le\mathbf c$, and if either has a finite optimum, both do and the values agree.</p>
+<p>LP duality needs no Slater condition, and its "theorem of the alternative" form gives one-line proofs that a system has no solution. The dual of a strictly convex QP turns general linear constraints into simple sign bounds, which is what makes it useful for algorithms.</p>
+<p>A factory chooses production levels to minimize cost; a buyer chooses prices for the factory's resources to maximize what they could charge. At the optimum both arrive at the same number.</p>
+</div>
+
+<div class="box thm" data-k="Theorem" data-name="The dual LP (3 Nov; [LD] §4.1)">
+<p>Write the standard-form LP with multipliers $\boldsymbol\mu$ (free) for $A\x=\b$ and $\boldsymbol\lambda\ge\0$ for $\x\ge\0$: $\mathcal L=\mathbf c^\top\x-\boldsymbol\mu^\top(A\x-\b)-\boldsymbol\lambda^\top\x=(\mathbf c-A^\top\boldsymbol\mu-\boldsymbol\lambda)^\top\x+\b^\top\boldsymbol\mu$. The infimum is $\b^\top\boldsymbol\mu$ if $\mathbf c=A^\top\boldsymbol\mu+\boldsymbol\lambda$ and $-\infty$ otherwise. Eliminating $\boldsymbol\lambda=\mathbf c-A^\top\boldsymbol\mu\ge\0$:</p>
+<p>$$\text{Primal: }\ \min\ \mathbf c^\top\x\ \text{ s.t. }A\x=\b,\ \x\ge\0\qquad\qquad\text{Dual: }\ \max\ \b^\top\boldsymbol\mu\ \text{ s.t. }A^\top\boldsymbol\mu\le\mathbf c.$$</p>
+<p><b>Symmetric form:</b> $\min\mathbf c^\top\x$ s.t. $A\x\ge\b$, $\x\ge\0$ has dual $\max\b^\top\y$ s.t. $A^\top\y\le\mathbf c$, $\y\ge\0$.</p>
+</div>
+<div class="table-wrap"><table>
+<thead><tr><th>Primal (min)</th><th>Dual (max)</th></tr></thead>
+<tbody>
+<tr><td>equality constraint</td><td>free variable</td></tr>
+<tr><td>inequality constraint ($\ge$)</td><td>variable $\ge0$</td></tr>
+<tr><td>variable $\ge0$</td><td>inequality constraint ($\le$)</td></tr>
+<tr><td>free variable</td><td>equality constraint</td></tr>
+</tbody></table></div>
+<div class="box thm" data-k="Theorem" data-name="Duality Theorem of LP ([LD] §4.2)">
+<p><b>Weak duality:</b> if $\x$ is primal feasible and $\boldsymbol\mu$ dual feasible, $\b^\top\boldsymbol\mu=\x^\top A^\top\boldsymbol\mu\le\x^\top\mathbf c$ (since $\x\ge\0$ and $A^\top\boldsymbol\mu\le\mathbf c$). <b>Strong duality:</b> if either problem has a finite optimum, so does the other, and the values are equal. If the primal is unbounded, the dual is infeasible, and vice versa. Both can be infeasible.</p>
+</div>
+
+<div class="example">
+<p class="problem">Solve $\min-x_1-2x_2$ s.t. $x_1+x_2\le4$, $x_2\le3$, $\x\ge\0$ and its dual, and confirm equal values.</p>
+<ol class="steps">
+<li><p>Standard form with slacks $s_1,s_2\ge0$: variables $(x_1,x_2,s_1,s_2)$, $A=\begin{pmatrix}1&1&1&0\\0&1&0&1\end{pmatrix}$, $\b=(4,3)$, $\mathbf c=(-1,-2,0,0)$.</p><p class="why-step">A slack turns $\a^\top\x\le\beta$ into $\a^\top\x+s=\beta$ with $s\ge0$.</p></li>
+<li><p>Dual: $\max4\mu_1+3\mu_2$ s.t. $A^\top\boldsymbol\mu\le\mathbf c$, i.e. $\mu_1\le-1$, $\mu_1+\mu_2\le-2$, $\mu_1\le0$, $\mu_2\le0$.</p><p class="why-step">One dual constraint per primal variable, one dual variable per primal equation.</p></li>
+<li><p>Primal: the corners of the feasible polygon are $(0,0),(4,0),(1,3),(0,3)$ with costs $0,-4,-7,-6$. So $\x^\star=(1,3)$, $p^\star=-7$.</p><p class="why-step">Chapter 14.3 proves that an LP with an optimum has an optimal corner.</p></li>
+<li><p>Dual: $\boldsymbol\mu=(-1,-1)$ is feasible ($A^\top\boldsymbol\mu=(-1,-2,-1,-1)\le\mathbf c$) with value $-4-3=-7$. Equal values: both are optimal. A solver gives the same pair.</p><p class="why-step">Any primal–dual feasible pair with equal values certifies optimality of both, by weak duality.</p></li>
+<li><p>Complementary slackness: $\boldsymbol\lambda=\mathbf c-A^\top\boldsymbol\mu=(0,0,1,1)$ and $\x^\star=(1,3,0,0)$, so $\lambda_ix_i=0$ for every $i$. Both resources are fully used, and each has shadow price $1$.</p><p class="why-step">Positive slack variables would force zero prices, and the other way round.</p></li>
+</ol>
+</div>
+
+<div class="box thm" data-k="Proposition" data-name="QP dual ([FR] (9.5.8))">
+<p>For $\min\tfrac12\x^\top G\x+\g^\top\x$ s.t. $A^\top\x\ge\b$ with $G\succ0$ ([FR] signs), $\grad_{\x}\mathcal L=G\x+\g-A\boldsymbol\lambda=\0$ gives $\x(\boldsymbol\lambda)=G^{-1}(A\boldsymbol\lambda-\g)$, and the dual is
+$$\max_{\boldsymbol\lambda\ge\0}\ -\tfrac12(A\boldsymbol\lambda-\g)^\top G^{-1}(A\boldsymbol\lambda-\g)+\b^\top\boldsymbol\lambda.$$
+The general constraints have become sign bounds, so projected gradient ascent (Chapter 14.1) applies with projection $\max(\cdot,0)$. Then $\x^\star=\x(\boldsymbol\lambda^\star)$.</p>
+</div>
+<div class="box thm" data-k="Theorem" data-name="The feasibility dual (31 Oct)">
+<p>Given $\a_1,\dots,\a_m$, exactly one holds: (i) some $\x$ has $\a_i^\top\x\lt0$ for all $i$; (ii) $\0\in\operatorname{conv}\{\a_1,\dots,\a_m\}$.</p>
+<p><b>Via duality:</b> pose (i) as $\min0$ s.t. $\a_i^\top\x+1\le0$. Then $\mathcal L=(\sum\lambda_i\a_i)^\top\x+\sum\lambda_i$, so $q(\boldsymbol\lambda)=\sum\lambda_i$ if $\sum\lambda_i\a_i=\0$ and $-\infty$ otherwise. If $\0=\sum\beta_i\a_i$ with $\boldsymbol\beta$ in the simplex, $\boldsymbol\lambda=M\boldsymbol\beta$ is dual feasible with value $M$ for every $M\gt0$: the dual is unbounded, so by weak duality the primal is infeasible. Conversely a feasible $\x$ gives $(\sum\beta_i\a_i)^\top\x\le-1\lt0$ for every $\boldsymbol\beta$ in the simplex, so $\0\notin\operatorname{conv}\{\a_i\}$.</p>
+</div>
+
+<div class="practice">
+<div class="prob" data-id="dual-lp-qp-p1" data-ans="15" data-labels="dual optimum">
+<div class="stem"><p>$\max5x_1+2x_2$ s.t. $x_1+x_2\le3$, $2x_1+3x_2\ge5$, $\x\ge\0$. Its dual is $\min3y_1-5y_2$ s.t. $y_1-2y_2\ge5$, $y_1-3y_2\ge2$, $\y\ge\0$. Find the dual optimal value.</p></div>
+<div class="hint"><p>Solve the primal by its corners, then exhibit a dual feasible point with the same value.</p></div>
+<div class="sol"><p>Primal corners: $(3,0)$ gives $15$, $(0,3)$ gives $6$, $(2.5,0)$ gives $12.5$, $(0,\tfrac53)$ gives $\tfrac{10}3$. So $p^\star=15$ at $(3,0)$. $\y=(5,0)$ satisfies $5\ge5$, $5\ge2$ and has value $15$. Equal values: the dual optimum is $15$.</p></div>
+</div>
+<div class="prob" data-id="dual-lp-qp-p2" data-ans="the primal is unbounded" data-choices="the primal has optimum 0|the primal is unbounded|the primal is infeasible|both are infeasible">
+<div class="stem"><p>$\min x_1-x_2$ s.t. $2x_1+5x_2\ge10$, $x_1+x_2\ge1$, $\x\ge\0$. The symmetric dual requires $2y_1+y_2\le1$ and $5y_1+y_2\le-1$ with $\y\ge\0$. What follows?</p></div>
+<div class="hint"><p>Can $5y_1+y_2\le-1$ hold with $\y\ge\0$? Is the primal feasible?</p></div>
+<div class="sol"><p>$5y_1+y_2\ge0$ for $\y\ge\0$, so the dual is infeasible. The primal is feasible (e.g. $(0,2)$). By the Duality Theorem it cannot have a finite optimum, so it is unbounded: $\x=(0,t)$ is feasible for $t\ge2$ with cost $-t\to-\infty$.</p></div>
+</div>
+<div class="prob" data-id="dual-lp-qp-p3" data-ans="0.8;1.6" data-labels="λ*;d*">
+<div class="stem"><p>Minimize $\tfrac12\norm{\x}^2$ s.t. $\a^\top\x\ge4$ with $\a=(1,2)$. Using the QP dual ($G=I$, $\g=\0$), find $\lambda^\star$ and $d^\star$.</p></div>
+<div class="hint"><p>The dual is $\max_{\lambda\ge0}-\tfrac12\lambda^2\norm{\a}^2+4\lambda$, and $\norm{\a}^2=5$.</p></div>
+<div class="sol"><p>Derivative $-5\lambda+4=0$ gives $\lambda^\star=0.8\ge0$, and $d^\star=-\tfrac12(0.64)(5)+3.2=1.6$. Then $\x^\star=\lambda^\star\a=(0.8,1.6)$, feasible ($0.8+3.2=4$) with $\tfrac12\norm{\x^\star}^2=1.6$. Zero gap.</p></div>
+</div>
+<div class="prob" data-id="dual-lp-qp-p4" data-ans="No such x exists" data-choices="Some x works|No such x exists|Cannot tell">
+<div class="stem"><p>$\a_1=(1,0)$, $\a_2=(-1,1)$, $\a_3=(0,-1)$. Is there $\x$ with $\a_i^\top\x\lt0$ for all three?</p></div>
+<div class="hint"><p>Look for $\boldsymbol\beta\ge\0$, $\sum\beta_i=1$, with $\sum\beta_i\a_i=\0$.</p></div>
+<div class="sol"><p>$\beta_1-\beta_2=0$ and $\beta_2-\beta_3=0$ give $\boldsymbol\beta=(\tfrac13,\tfrac13,\tfrac13)$: $\0$ is in the convex hull. So no $\x$ works. Directly: the three conditions are $x_1\lt0$, $x_2\lt x_1$ and $x_2\gt0$, which contradict each other.</p></div>
+</div>
+</div>
+
+<div class="dodont">
+<ul><li>Convert to standard form before dualizing if you are unsure of signs; then use $\max\b^\top\boldsymbol\mu$, $A^\top\boldsymbol\mu\le\mathbf c$</li><li>Certify an LP optimum with a dual feasible point of equal value</li><li>Use "dual infeasible + primal feasible $\Rightarrow$ primal unbounded"</li></ul>
+<ul><li>Concluding "primal unbounded" from "dual infeasible" alone: both can be infeasible</li><li>Asking for Slater's condition in an LP</li><li>Giving an equality-constrained primal a sign-restricted dual variable</li></ul>
+</div>
+<ol class="takeaways">
+<li>Standard-form LP $\min\mathbf c^\top\x$, $A\x=\b$, $\x\ge\0$ has dual $\max\b^\top\boldsymbol\mu$, $A^\top\boldsymbol\mu\le\mathbf c$; a finite optimum on either side means equal optimal values.</li>
+<li>The strictly convex QP's dual has only the constraints $\boldsymbol\lambda\ge\0$, and $\x^\star=G^{-1}(A\boldsymbol\lambda^\star-\g)$.</li>
+<li>Theorems of the alternative: some $\x$ has all $\a_i^\top\x\lt0$ iff $\0\notin\operatorname{conv}\{\a_i\}$; an unbounded dual proves the primal infeasible.</li>
+</ol>
+<div class="quiz" data-id="dual-lp-qp-quiz">
+<div class="q"><div class="q-text"><p>The primal LP is unbounded below. The dual is…</p></div>
+<div class="o">unbounded above<div class="e">A dual feasible point would give a finite lower bound by weak duality.</div></div>
+<div class="o ok">infeasible<div class="e">Weak duality: any dual feasible $\boldsymbol\mu$ would bound the primal below by $\b^\top\boldsymbol\mu$.</div></div>
+<div class="o">feasible with optimum $-\infty$<div class="e">A maximization with a feasible point has value $\gt-\infty$.</div></div>
+</div>
+<div class="q"><div class="q-text"><p>In the dual of a standard-form LP, why is $\boldsymbol\mu$ free?</p></div>
+<div class="o">Because the dual is a maximization<div class="e">Signs of dual variables come from the primal constraint types.</div></div>
+<div class="o ok">Because it prices the equality constraints $A\x=\b$<div class="e">Equality multipliers have no sign restriction.</div></div>
+<div class="o">Because $\x\ge\0$<div class="e">The sign constraints $\x\ge\0$ are priced by $\boldsymbol\lambda$, which was eliminated.</div></div>
+</div>
+<div class="q"><div class="q-text"><p>What makes the QP dual easier to solve by projected gradient than the primal?</p></div>
+<div class="o">It has fewer variables<div class="e">It has one variable per constraint, which can be more.</div></div>
+<div class="o ok">Its only constraints are $\boldsymbol\lambda\ge\0$, whose projection is $\max(\cdot,0)$<div class="e">Projecting onto a general polyhedron is itself a QP; projecting onto the nonnegative orthant is free.</div></div>
+<div class="o">It is linear<div class="e">The dual objective is a concave quadratic.</div></div>
+</div>
+</div>
+</section>
+
+<div class="quiz review" data-id="pc13-review" data-title="Part 13 review (with Parts 11–12)">
+<div class="q" data-from="Ch. 13.1"><div class="q-text"><p>For a nonconvex problem, a dual feasible point gives…</p></div>
+<div class="o">the optimal value<div class="e">Only with strong duality.</div></div>
+<div class="o ok">a valid lower bound on $p^\star$<div class="e">The lower-bound property needs no convexity.</div></div>
+<div class="o">nothing<div class="e">Weak duality holds for every problem.</div></div>
+</div>
+<div class="q" data-from="Ch. 12.3"><div class="q-text"><p>The KKT sufficiency chain $f(\x')\ge\mathcal L(\x',\boldsymbol\lambda^\star)\ge\mathcal L(\x^\star,\boldsymbol\lambda^\star)=f(\x^\star)$ becomes duality once you notice that…</p></div>
+<div class="o">$\x^\star$ is unique<div class="e">Uniqueness plays no role in the bound.</div></div>
+<div class="o ok">the first inequality holds for every $\boldsymbol\lambda\ge\0$, so each $\min_{\x}\mathcal L(\x,\boldsymbol\lambda)$ is a lower bound<div class="e">Maximizing that bound over $\boldsymbol\lambda$ is the dual problem.</div></div>
+<div class="o">the Lagrangian is linear in $\x$<div class="e">It is convex in $\x$ for a convex program, rarely linear.</div></div>
+</div>
+<div class="q" data-from="Ch. 13.2"><div class="q-text"><p>Slater's condition for $\min f_0$ s.t. $f_1(\x)\le0$, $f_2(\x)=\a^\top\x-b\le0$ ($f_0,f_1$ convex) asks for a point with…</p></div>
+<div class="o">$f_1\lt0$ and $f_2\lt0$<div class="e">Affine inequalities need not be strict.</div></div>
+<div class="o ok">$f_1\lt0$ and $f_2\le0$<div class="e">Strict feasibility is needed only for the nonlinear inequalities.</div></div>
+<div class="o">$f_1=0$ and $f_2=0$<div class="e">That is a point on the boundary, the opposite of what is needed.</div></div>
+</div>
+<div class="q" data-from="Ch. 11.2"><div class="q-text"><p>The proof of Slater's theorem separates…</p></div>
+<div class="o">$\x^\star$ from the feasible set<div class="e">$\x^\star$ is in the feasible set.</div></div>
+<div class="o ok">the set of achievable (constraint, cost) pairs from the ray of costs below $p^\star$<div class="e">The normal $(\tilde{\boldsymbol\lambda},\mu)$, scaled by $\mu$, is the dual solution.</div></div>
+<div class="o">$\grad f$ from the cone of constraint normals<div class="e">That is the Farkas route to KKT (Part 12).</div></div>
+</div>
+<div class="q" data-from="Ch. 13.3"><div class="q-text"><p>An LP's primal and dual are both feasible. Then…</p></div>
+<div class="o">the primal may still be unbounded<div class="e">A dual feasible point bounds the primal below.</div></div>
+<div class="o ok">both have optimal solutions with equal values<div class="e">Weak duality bounds both, and the Duality Theorem closes the gap.</div></div>
+<div class="o">there may be a positive duality gap<div class="e">LPs have no gap whenever an optimum exists.</div></div>
+</div>
+</div>
+</article>
+
+<article class="part" data-id="pc14" data-num="14" data-title="Algorithms with constraints: projection, active sets, LP" data-min="125">
+<p class="part-lede">From recognizing a constrained minimum to computing one. Gradient projection (31 Oct) takes a gradient step and snaps back onto the feasible set. The active-set method (29 Oct) solves a convex QP by guessing which constraints hold with equality and correcting the guess with the multipliers. Linear programs (3 Nov) are solved at corners: basic feasible solutions and the fundamental theorem of LP.</p>
+<p class="youneed"><b>You need:</b> Part 11 (projections and the obtuse-angle inequality), Part 12 (KKT conditions, negative multipliers), Part 13 (the LP dual), and Parts 5–6 (gradient descent, $L$-smoothness and the descent lemma).</p>
+
+<!-- ============ Chapter 1 ============ -->
+<section class="ch" id="alg-gradproj" data-level="n" data-min="40" data-title="Gradient projection" data-src="31 Oct extra class (recording parts 2–3); Midterm 3 notes, Unit 07; [NW] §16.7; Book Ch. 20 (projection theorem), Ch. 11 (descent lemma)">
+<h2>Gradient projection</h2>
+<div class="opener">
+<p>Take an ordinary gradient step; if it leaves the feasible set $C$, snap back to the nearest point of $C$: $\x_{k+1}=P_C\big(\x_k-\alpha\grad f(\x_k)\big)$.</p>
+<p>The KKT conditions recognize a minimum but do not compute one. Gradient projection is the simplest method that does, and it is practical whenever the projection is cheap: boxes, balls, half-spaces and affine sets. Its analysis reuses the obtuse-angle inequality of Chapter 11.2 and the descent lemma of Part 6.</p>
+<p>Walking downhill inside a fenced field: take a stride in the steepest direction, and if it carries you past the fence, step back to the nearest point of the fence.</p>
+</div>
+
+<div class="box alg" data-k="Algorithm" data-name="Gradient projection">
+<p>Given a closed convex $C$, a feasible $\x_0\in C$ and a step $\alpha\gt0$, repeat $\x_{k+1}=P_C\big(\x_k-\alpha\grad f(\x_k)\big)$. Every iterate is feasible. On an affine set $C=\{A\x=\b\}$ with $P=I-A^\top(AA^\top)^{-1}A$, the update for feasible $\x_k$ is $\x_{k+1}=\x_k-\alpha P\grad f(\x_k)$: only the component of the gradient along the constraints is used.</p>
+</div>
+
+<div class="box thm" data-k="Theorem" data-name="Four facts about gradient projection">
+<p>Let $C$ be closed and convex, $\x_k\in C$, $\g_k=\grad f(\x_k)$, and $\d=\x_{k+1}-\x_k$.</p>
+<ol>
+<li><b>Non-expansive:</b> $\norm{P_C(\z_1)-P_C(\z_2)}\le\norm{\z_1-\z_2}$.</li>
+<li><b>Feasible descent:</b> $\g_k^\top\d\le-\tfrac1\alpha\norm{\d}^2$. So $\d\ne\0$ is a descent direction, and it is feasible because $C$ is convex.</li>
+<li><b>Decrease:</b> if $\grad f$ is $L$-Lipschitz, $f(\x_{k+1})\le f(\x_k)-\big(\tfrac1\alpha-\tfrac L2\big)\norm{\d}^2$, so $f$ decreases strictly whenever $0\lt\alpha\lt2/L$ and $\d\ne\0$.</li>
+<li><b>Fixed points are stationary:</b> $\hat\x=P_C(\hat\x-\alpha\grad f(\hat\x))$ if and only if $\grad f(\hat\x)^\top(\x-\hat\x)\ge0$ for all $\x\in C$. For convex $f$, a fixed point is a global minimizer.</li>
+</ol>
+</div>
+<div class="prose">
+<p><b>Proofs.</b> All four come from the obtuse-angle inequality $(\z-P_C(\z))^\top(\x-P_C(\z))\le0$. (1) Apply it at $P_C(\z_1)$ with $\x=P_C(\z_2)$ and vice versa, add, and use Cauchy–Schwarz. (2) Apply it with $\z=\x_k-\alpha\g_k$ and $\x=\x_k$: $(\x_k-\alpha\g_k-\x_{k+1})^\top(\x_k-\x_{k+1})\le0$, i.e. $\norm{\d}^2+\alpha\g_k^\top\d\le0$. (3) The descent lemma $f(\x_{k+1})\le f(\x_k)+\g_k^\top\d+\tfrac L2\norm{\d}^2$ plus (2). (4) With $\z=\hat\x-\alpha\grad f(\hat\x)$ and $P_C(\z)=\hat\x$, the obtuse-angle inequality reads $\alpha\grad f(\hat\x)^\top(\x-\hat\x)\ge0$, which is the variational inequality of Chapter 11.1.</p>
+</div>
+<div class="box thm" data-k="Theorem" data-name="Rate for convex f (31 Oct)">
+<p>If $f$ is convex with $L$-Lipschitz gradient and $\alpha=1/L$, then $f(\x_T)-f^\star\le\dfrac{L\norm{\x_0-\x^\star}^2}{2T}$, the same $O(1/T)$ rate as unconstrained gradient descent (Part 7).</p>
+</div>
+<details class="deeper"><summary>Go deeper: the four-line proof of the rate</summary>
+<p>Write $\g=\grad f(\x_k)$, $\a=\x_{k+1}-\x_k$, $\b=\x^\star-\x_{k+1}$. (1) Descent lemma: $f(\x_{k+1})\le f(\x_k)+\g^\top\a+\tfrac L2\norm{\a}^2$. (2) Convexity: $f(\x_k)\le f^\star+\g^\top(\x_k-\x^\star)$; adding, $f(\x_{k+1})\le f^\star-\g^\top\b+\tfrac L2\norm{\a}^2$. (3) Obtuse angle with $\z=\x_k-\g/L$ and $\x=\x^\star$: $(\a+\g/L)^\top\b\ge0$, so $-\g^\top\b\le L\a^\top\b$. (4) Hence $f(\x_{k+1})-f^\star\le L(\a^\top\b+\tfrac12\norm{\a}^2)=\tfrac L2(\norm{\x_k-\x^\star}^2-\norm{\x_{k+1}-\x^\star}^2)$. Sum over $k=0,\dots,T-1$ (it telescopes) and use that $f(\x_k)$ decreases: $T(f(\x_T)-f^\star)\le\tfrac L2\norm{\x_0-\x^\star}^2$.</p>
+</details>
+
+<div class="panel try">
+<span class="label">Try it</span>
+<p class="task">The objective is $f=(x_1-2)^2+(x_2-2)^2$, so $L=2$ and $2/L=1$. Orange rings are the gradient steps, black dots the projected iterates. With $\alpha=0.25$ on the half-plane, each step overshoots the wall and is dropped back onto it. Raise $\alpha$ past $1$: the readout reports that $f$ goes up. Switch to the box and the disc and watch the iterates stop at the point nearest to $(2,2)$, where the gradient is not zero.</p>
+<div class="widget" data-w="pc_gp"></div>
+</div>
+
+<div class="example">
+<p class="problem">Run gradient projection on $f=(x_1-2)^2+(x_2-2)^2$ over $C=\{x_1+x_2\le2\}$ with $\alpha=\tfrac14$ from $\x_0=(2,0)$.</p>
+<ol class="steps">
+<li><p>$\grad f(\x_0)=2(\x_0-(2,2))=(0,-4)$. Gradient step: $(2,0)-\tfrac14(0,-4)=(2,1)$, which violates $x_1+x_2\le2$.</p><p class="why-step">The unconstrained step heads straight for $(2,2)$ and leaves $C$.</p></li>
+<li><p>Project onto the half-plane: $\z=(2,1)$, $\a=(1,1)$, excess $3-2=1$, so $\x_1=\z-\tfrac12(1,1)=(1.5,0.5)$. $f(\x_1)=0.25+2.25=2.5$.</p><p class="why-step">Half-space formula from Chapter 11.2.</p></li>
+<li><p>Check fact 2: $\d=\x_1-\x_0=(-0.5,0.5)$, $\g_0^\top\d=-2$ and $-\norm{\d}^2/\alpha=-0.5/0.25=-2$. The inequality holds with equality.</p><p class="why-step">Equality here because the iterate moves along the wall.</p></li>
+<li><p>Continuing: $(1.25,0.75)$, $(1.125,0.875)$, …, with $f(\x_k)=2+2\cdot4^{-k}$: $4,\ 2.5,\ 2.125,\ 2.031,\dots\to2$. The limit $(1,1)$ is a fixed point: $(1,1)-\alpha(-2,-2)=(1+2\alpha)(1,1)$ projects back to $(1,1)$ for every $\alpha\gt0$.</p><p class="why-step">At the constrained minimizer $\grad f=(-2,-2)\ne\0$; the fixed-point condition is the variational inequality, not $\grad f=\0$.</p></li>
+</ol>
+</div>
+
+<div class="practice">
+<div class="prob" data-id="alg-gradproj-p1" data-ans="0.8;1.6" data-labels="x₁;x₂">
+<div class="stem"><p>$f=\tfrac52\norm{\x}^2$ (so $L=5$), $C=\{\a^\top\x\ge4\}$ with $\a=(1,2)$, step $\alpha=0.2$. From $\x_k=(4,0)$, on the wall, compute $\x_{k+1}$.</p></div>
+<div class="hint"><p>$\grad f(\x_k)=5\x_k=(20,0)$, so $\z=\x_k-0.2\cdot(20,0)=(0,0)$, which has $\a^\top\z=0\lt4$. Project onto $\a^\top\x\ge4$: $\z+\frac{4-\a^\top\z}{\norm{\a}^2}\a$.</p></div>
+<div class="sol"><p>$\x_{k+1}=\0+\tfrac45(1,2)=(0.8,1.6)$. Then $\g_k^\top(\x_{k+1}-\x_k)=(20,0)\cdot(-3.2,1.6)=-64\lt0$: a descent step. $(0.8,1.6)$ is a fixed point, and indeed the minimizer: the projection of $\0$ onto the half-plane.</p></div>
+</div>
+<div class="prob" data-id="alg-gradproj-p2" data-ans="1;0" data-labels="x₁;x₂">
+<div class="stem"><p>$\min\tfrac12\x^\top Q\x-\mathbf h^\top\x$ over the box $[0,1]^2$, with $Q=\operatorname{diag}(2,1)$, $\mathbf h=(4,-1)$, $\alpha=\tfrac12$. One gradient projection step from $\x_0=\0$ gives…</p></div>
+<div class="hint"><p>$\grad f(\0)=-\mathbf h$, so $\z=\alpha\mathbf h$. Then clip.</p></div>
+<div class="sol"><p>$\z=(2,-0.5)$, clipped to $(1,0)$. Since $Q$ is diagonal the problem splits into two one-variable problems, and $(1,0)$ is already the minimizer ($\alpha=\tfrac12\lt2/\lambda_{\max}(Q)=1$ guarantees decrease).</p></div>
+</div>
+<div class="prob" data-id="alg-gradproj-p3" data-ans="4.88" data-labels="f(x₁)">
+<div class="stem"><p>Redo the worked example with $\alpha=1.1\gt2/L$: from $\x_0=(2,0)$, compute $f(\x_1)$.</p></div>
+<div class="hint"><p>$\z=(2,0)-1.1(0,-4)=(2,4.4)$; project onto $x_1+x_2\le2$.</p></div>
+<div class="sol"><p>Excess $6.4-2=4.4$, so $\x_1=(2,4.4)-2.2(1,1)=(-0.2,2.2)$ and $f(\x_1)=(-2.2)^2+0.2^2=4.88\gt4=f(\x_0)$. Beyond $2/L$ the method can go uphill, as plain gradient descent can.</p></div>
+</div>
+<div class="prob" data-id="alg-gradproj-p4" data-ans="False" data-choices="True|False">
+<div class="stem"><p>True or false: gradient projection on a convex problem converges to a point where $\grad f=\0$.</p></div>
+<div class="hint"><p>Look at the limit of the worked example.</p></div>
+<div class="sol"><p>False. The limit $(1,1)$ has $\grad f=(-2,-2)$. Fixed points satisfy $\grad f(\hat\x)^\top(\x-\hat\x)\ge0$ on $C$, which allows a nonzero gradient pointing into the wall. (Also false: "it reaches the minimizer in finitely many steps". It converges, at rate $O(1/T)$ in general.)</p></div>
+</div>
+</div>
+
+<div class="dodont">
+<ul><li>Use gradient projection when $P_C$ has a formula (box, ball, half-space, affine set)</li><li>Keep $\alpha\lt2/L$ for guaranteed decrease, and $\alpha\le1/L$ for the $O(1/T)$ rate</li><li>Test a limit point with the variational inequality, not with $\grad f=\0$</li></ul>
+<ul><li>Projecting onto a nonconvex set and expecting the four facts to hold</li><li>Expecting finite termination</li><li>Forgetting that every iterate is feasible, so constraint violation is never the issue</li></ul>
+</div>
+<ol class="takeaways">
+<li>$\x_{k+1}=P_C(\x_k-\alpha\grad f(\x_k))$; the step $\d$ satisfies $\grad f(\x_k)^\top\d\le-\norm{\d}^2/\alpha$.</li>
+<li>With $L$-Lipschitz gradient, $0\lt\alpha\lt2/L$ gives monotone decrease; $\alpha=1/L$ gives $f(\x_T)-f^\star\le L\norm{\x_0-\x^\star}^2/(2T)$ for convex $f$.</li>
+<li>Fixed points are exactly the points satisfying the first-order condition over $C$.</li>
+</ol>
+<div class="quiz" data-id="alg-gradproj-quiz">
+<div class="q"><div class="q-text"><p>Which single inequality are all four facts derived from?</p></div>
+<div class="o">The descent lemma<div class="e">It is used in fact 3 only.</div></div>
+<div class="o ok">The obtuse-angle characterization of $P_C$<div class="e">$(\z-P_C(\z))^\top(\x-P_C(\z))\le0$ for all $\x\in C$.</div></div>
+<div class="o">Cauchy–Schwarz<div class="e">It finishes the non-expansiveness proof, but is not the source.</div></div>
+</div>
+<div class="q"><div class="q-text"><p>On the affine set $\{A\x=\b\}$, the update for feasible $\x_k$ is…</p></div>
+<div class="o">$\x_k-\alpha\grad f(\x_k)$<div class="e">That leaves the affine set unless $\grad f$ is already along it.</div></div>
+<div class="o ok">$\x_k-\alpha P\grad f(\x_k)$ with $P=I-A^\top(AA^\top)^{-1}A$<div class="e">$AP=0$, so the iterates stay on $A\x=\b$.</div></div>
+<div class="o">$\x_k-\alpha A^\top\grad f(\x_k)$<div class="e">The dimensions do not even match in general.</div></div>
+</div>
+<div class="q"><div class="q-text"><p>With $L=4$, which step sizes guarantee that $f$ never increases?</p></div>
+<div class="o ok">$0\lt\alpha\lt0.5$<div class="e">$2/L=0.5$.</div></div>
+<div class="o">$0\lt\alpha\lt2$<div class="e">That would be $2/L$ for $L=1$.</div></div>
+<div class="o">every $\alpha\gt0$, since projection never stretches distances<div class="e">The $\alpha=1.1$ example with $L=2$ went uphill.</div></div>
+</div>
+</div>
+</section>
+
+<!-- ============ Chapter 2 ============ -->
+<section class="ch" id="alg-activeset" data-level="d" data-min="45" data-title="The active-set method for convex QPs" data-src="Class of 29 Oct (Ganesh's notes, Part 3; not in the diary); 27 Oct recording (motivation); Midterm 3 notes, Unit 08; [NW] §16.5; Book Ch. 21 §1 (sign argument)">
+<h2>The active-set method for convex quadratic programs</h2>
+<div class="opener">
+<p>If you knew which inequalities are active at the solution, you could treat them as equalities and solve a linear system. The active-set method guesses that set, solves, and corrects the guess: it adds a constraint that blocks a step and drops one whose multiplier is negative.</p>
+<p>Trying all $2^m$ guesses is hopeless; the method visits only a few, decreases $f$ along the way, and stops in finitely many steps at a point whose multipliers prove optimality. Its key identity, that dropping a negative-multiplier constraint gives a feasible descent direction, is a favourite exam proof.</p>
+<p>Leaning on walls in a dark room: slide downhill along the walls you touch; if you bump into a new wall, lean on it too; if a wall is pulling you back rather than holding you up, let go of it.</p>
+</div>
+
+<div class="prose">
+<h3>The problem</h3>
+<p>$\min f(\x)=\tfrac12\x^\top Q\x+\mathbf h^\top\x$ subject to $\a_i^\top\x\ge b_i$, $i=1,\dots,m$, with $Q\succ0$. It is a convex program with linear constraints, so KKT is necessary and sufficient: $\grad f(\x^\star)=\sum_i\lambda_i^\star\a_i$, $\lambda_i^\star\ge0$, $\lambda_i^\star(\a_i^\top\x^\star-b_i)=0$, $\a_i^\top\x^\star\ge b_i$ ([FR] signs).</p>
+</div>
+<div class="box def" data-k="Definition" data-name="Working set and the equality subproblem">
+<p>At a feasible $\x_k$, a <b>working set</b> $W_k$ is a set of constraints active at $\x_k$, treated as equalities. With $\g_k=\grad f(\x_k)$, the subproblem is
+$$\min_{\v}\ \g_k^\top\v+\tfrac12\v^\top Q\v\quad\text{s.t.}\quad\a_j^\top\v=0,\ j\in W_k,$$
+an equality-constrained QP whose KKT conditions are linear: $\g_k+Q\v=\sum_{j\in W_k}\mu_j\a_j$, $\a_j^\top\v=0$.</p>
+</div>
+<div class="box alg" data-k="Algorithm" data-name="Active set (29 Oct)">
+<p>Start from a feasible $\x_0$ and $W_0\subseteq\mathcal A(\x_0)$. Repeat:</p>
+<ol>
+<li>Solve the subproblem for $\v_k$ and $\boldsymbol\mu$.</li>
+<li><b>Case A, $\v_k\ne\0$:</b> step $\alpha_k=\min(1,\bar\alpha)$ with the ratio test $\bar\alpha=\min\Big\{\dfrac{\a_i^\top\x_k-b_i}{-\a_i^\top\v_k}:\ i\notin W_k,\ \a_i^\top\v_k\lt0\Big\}$. Set $\x_{k+1}=\x_k+\alpha_k\v_k$. If $\bar\alpha\lt1$, add the blocking constraint to $W$.</li>
+<li><b>Case B, $\v_k=\0$:</b> if all $\mu_j\ge0$, stop: $\x_k$ is optimal (KKT holds with $\lambda=\mu$ on $W$, $0$ elsewhere). Otherwise drop a constraint $l$ with $\mu_l\lt0$ (usually the most negative).</li>
+</ol>
+</div>
+<div class="prose">
+<p><b>Case A descends:</b> $\v=\0$ is feasible for the subproblem, so its optimal value is $\le0$: $\g_k^\top\v_k+\tfrac12\v_k^\top Q\v_k\le0$, hence $\g_k^\top\v_k\lt0$ when $\v_k\ne\0$. Only constraints outside $W$ with $\a_i^\top\v_k\lt0$ can be violated by the step, which is why only they enter the ratio test.</p>
+</div>
+<div class="box thm" data-k="Proposition" data-name="Dropping a negative multiplier gives a feasible descent direction">
+<p>Suppose $\v=\0$ on $W$ with multipliers $\bar\mu_j$, $\bar\mu_l\lt0$, and the subproblem on $W'=W\setminus\{l\}$ gives $\tilde\v\ne\0$. Then
+$$\tilde\v^\top Q\tilde\v=-\bar\mu_l\,\a_l^\top\tilde\v,$$
+so $\a_l^\top\tilde\v\gt0$ (the step moves off constraint $l$, into its feasible side) and $\g_k^\top\tilde\v=-\tilde\v^\top Q\tilde\v\lt0$ (descent).</p>
+<p><b>Proof.</b> Subtract $\g_k=\sum_{W}\bar\mu_j\a_j$ from $\g_k+Q\tilde\v=\sum_{W'}\hat\mu_j\a_j$: $Q\tilde\v=\sum_{W'}(\hat\mu_j-\bar\mu_j)\a_j-\bar\mu_l\a_l$. Multiply by $\tilde\v^\top$; the $W'$ terms vanish since $\a_j^\top\tilde\v=0$. For descent: $\g_k^\top\tilde\v=-\tilde\v^\top Q\tilde\v+\sum_{W'}\hat\mu_j\a_j^\top\tilde\v=-\tilde\v^\top Q\tilde\v$.</p>
+</div>
+<div class="callout"><b>Careful:</b> the working set can shrink and grow again: a dropped or new constraint may block a later step and be added. And a full step $\alpha=1$ is not always taken. When every step length is positive, $f$ strictly decreases, no working set repeats, and the method terminates; with degenerate steps ($\bar\alpha=0$) it can cycle without an anti-cycling rule.</div>
+
+<div class="example">
+<p class="problem">$\min\tfrac12\norm{\x}^2$ s.t. $\a_1^\top\x\ge3$, $\a_2^\top\x\ge3$ with $\a_1=(1,2)$, $\a_2=(2,1)$. Run the active-set method from $\x_0=(6,0)$.</p>
+<ol class="steps">
+<li><p>Iteration 1: $Q=I$, $\g=\x$. $\a_1^\top\x_0=6$, $\a_2^\top\x_0=12$, both inactive, so $W=\varnothing$ and $\v=-\g=(-6,0)$.</p><p class="why-step">With no working constraints the subproblem is unconstrained: $\v=-Q^{-1}\g$.</p></li>
+<li><p>Ratio test: constraint 1 allows $\frac{6-3}{6}=0.5$, constraint 2 allows $\frac{12-3}{12}=0.75$. $\alpha=0.5$, blocked by 1: $\x_1=(3,0)$, $W=\{1\}$.</p><p class="why-step">Go until the first wall.</p></li>
+<li><p>Iteration 2: on $W=\{1\}$ the subproblem moves to the point of $x_1+2x_2=3$ nearest the origin, $(0.6,1.2)$: $\v=(-2.4,1.2)$. $\a_2^\top\v=-3.6\lt0$, ratio $\frac{6-3}{3.6}=\tfrac56\lt1$: $\x_2=(3,0)+\tfrac56(-2.4,1.2)=(1,1)$, $W=\{1,2\}$.</p><p class="why-step">Constraint 2 blocks before the subproblem minimizer is reached.</p></li>
+<li><p>Iteration 3: two independent constraints in $\R^2$ force $\v=\0$. Multipliers: $(1,1)=\mu_1(1,2)+\mu_2(2,1)$ gives $\boldsymbol\mu=(\tfrac13,\tfrac13)\ge\0$. Stop: $\x^\star=(1,1)$, $f^\star=1$. A QP solver agrees.</p><p class="why-step">All multipliers nonnegative: the KKT conditions hold, and the problem is convex.</p></li>
+</ol>
+</div>
+
+<div class="practice">
+<div class="prob" data-id="alg-activeset-p1" data-ans="1;-1;0" data-labels="μ₁;μ₂;μ₃">
+<div class="stem"><p>At a feasible $\x_k$ with $W=\{1,2,3\}$: $\g_k=(1,-1,1)$, $\a_1=(1,0,1)$, $\a_2=(0,1,0)$, $\a_3=(1,0,-1)$. The three normals are independent, so $\v=\0$. Find the multipliers from $\g_k=\sum\mu_j\a_j$.</p></div>
+<div class="hint"><p>The second component gives $\mu_2$ directly. Then add and subtract the first and third components.</p></div>
+<div class="sol"><p>$\mu_2=-1$. First component: $\mu_1+\mu_3=1$; third: $\mu_1-\mu_3=1$. So $\boldsymbol\mu=(1,-1,0)$. $\mu_2\lt0$: $\x_k$ is not optimal, and constraint 2 should be dropped.</p></div>
+</div>
+<div class="prob" data-id="alg-activeset-p2" data-ans="0.5" data-labels="v₂">
+<div class="stem"><p>Continue with $Q=\operatorname{diag}(1,2,3)$: drop constraint 2 and solve the subproblem on $W'=\{1,3\}$. The constraints force $\v=(0,v_2,0)$. Find $v_2$.</p></div>
+<div class="hint"><p>Minimize $\g_k^\top\v+\tfrac12\v^\top Q\v=-v_2+v_2^2$.</p></div>
+<div class="sol"><p>$-v_2+v_2^2$ is smallest at $v_2=\tfrac12$. Check the identity: $\v^\top Q\v=2\cdot\tfrac14=0.5$ and $-\mu_2\,\a_2^\top\v=-(-1)(0.5)=0.5$. Also $\a_2^\top\v=0.5\gt0$ (moving off constraint 2) and $\g_k^\top\v=-0.5\lt0$ (descent).</p></div>
+</div>
+<div class="prob" data-id="alg-activeset-p3" data-ans="2" data-labels="a₃ᵀu">
+<div class="stem"><p>At $\hat\x$ with $W=\{1,2,3\}$, the subproblem gives $\v=\0$ and $\boldsymbol\mu=(1,2,-3)$. After dropping constraint 3 the new direction $\hat\u$ has $\hat\u^\top Q\hat\u=6$. Find $\a_3^\top\hat\u$.</p></div>
+<div class="hint"><p>Use $\hat\u^\top Q\hat\u=-\mu_3\,\a_3^\top\hat\u$.</p></div>
+<div class="sol"><p>$6=-(-3)\,\a_3^\top\hat\u$, so $\a_3^\top\hat\u=2\gt0$: the step leaves constraint 3 on its feasible side.</p></div>
+</div>
+<div class="prob" data-id="alg-activeset-p4" data-ans="-4" data-labels="f change">
+<div class="stem"><p>After dropping constraint 3 (with $\mu_3\lt0$), the new direction is $\u=r\e_1$ with $|r|=2$, $Q_{11}=2$ and $(\a_3)_1=-\tfrac12$. Find $f(\x_k+\u)-f(\x_k)$.</p></div>
+<div class="hint"><p>First fix the sign of $r$ with $\a_3^\top\u\gt0$. Then $\g_k^\top\u=-\u^\top Q\u$ and $f(\x_k+\u)-f(\x_k)=\g_k^\top\u+\tfrac12\u^\top Q\u$.</p></div>
+<div class="sol"><p>$\a_3^\top\u=r\cdot(-\tfrac12)\gt0$ forces $r=-2$, and then $\a_3^\top\u=1$. $\u^\top Q\u=r^2Q_{11}=8$, so $\g_k^\top\u=-8$ and the change is $-8+4=-4$.</p></div>
+</div>
+</div>
+
+<div class="dodont">
+<ul><li>Keep the working set inside the active set, and $\x_k$ feasible throughout</li><li>Use the ratio test only over constraints outside $W$ with $\a_i^\top\v\lt0$</li><li>Check the sign convention before reading "negative multiplier" ($\grad f=\sum\mu_j\a_j$ with $\a_j^\top\x\ge b_j$ here)</li></ul>
+<ul><li>Taking the full step $\alpha=1$ without the ratio test</li><li>Declaring optimality at $\v=\0$ before checking the multiplier signs</li><li>Believing the working set only shrinks once it starts shrinking</li></ul>
+</div>
+<ol class="takeaways">
+<li>Each iteration solves an equality-constrained QP on the working set: a linear system.</li>
+<li>$\v\ne\0$: step $\min(1,\bar\alpha)$ and add a blocking constraint; $\v=\0$: stop if all $\mu_j\ge0$, else drop a negative one.</li>
+<li>$\tilde\v^\top Q\tilde\v=-\bar\mu_l\,\a_l^\top\tilde\v$ makes the direction after a drop feasible and downhill.</li>
+</ol>
+<div class="quiz" data-id="alg-activeset-quiz">
+<div class="q"><div class="q-text"><p>The subproblem returns $\v=\0$ and all $\mu_j\ge0$. Then…</p></div>
+<div class="o ok">$\x_k$ is the global minimizer<div class="e">KKT holds with $\lambda=\mu$ on $W$ and $0$ elsewhere, and the QP is convex.</div></div>
+<div class="o">a constraint must be dropped<div class="e">Drops happen only for negative multipliers.</div></div>
+<div class="o">$\x_k$ is optimal only on the working set<div class="e">Nonnegative multipliers upgrade that to global optimality.</div></div>
+</div>
+<div class="q"><div class="q-text"><p>Why does the ratio test ignore constraints with $\a_i^\top\v\ge0$?</p></div>
+<div class="o">They are in the working set<div class="e">The ratio test runs over constraints <i>outside</i> $W$.</div></div>
+<div class="o ok">Moving along $\v$ does not decrease $\a_i^\top\x$, so they cannot become violated<div class="e">$\a_i^\top(\x_k+\alpha\v)=\a_i^\top\x_k+\alpha\a_i^\top\v\ge b_i$.</div></div>
+<div class="o">They have negative multipliers<div class="e">Multipliers belong to working-set constraints.</div></div>
+</div>
+<div class="q"><div class="q-text"><p>True or false: once the working set starts shrinking, it cannot grow again.</p></div>
+<div class="o">True<div class="e">A dropped constraint, or a new one, can block a later step.</div></div>
+<div class="o ok">False<div class="e">Blocking constraints are added whenever $\bar\alpha\lt1$, at any stage.</div></div>
+</div>
+</div>
+</section>
+
+<!-- ============ Chapter 3 ============ -->
+<section class="ch" id="alg-lp" data-level="n" data-min="40" data-title="Linear programs: basic solutions and the fundamental theorem" data-src="Class of 3 Nov (recording; Goodnotes CMO 6 pp.2–9); [LD] §2.1–2.5 (standard form, basic solutions, Fundamental Theorem p.21–22, extreme points), §4.2; Midterm 3 notes, Unit 06; class prep of 5 Nov">
+<h2>Linear programs: basic solutions and the fundamental theorem</h2>
+<div class="opener">
+<p>A linear program that has an optimal solution has an optimal corner, and corners have an algebraic description: switch off all but $m$ variables and let the $m$ equations fix the rest.</p>
+<p>This reduces an LP to a finite search, which the simplex method organizes. Together with the KKT conditions for LP and the dual of Chapter 13.3, it lets you certify an LP solution in a few lines.</p>
+<p>Sliding a ruler across a polygon in a fixed direction: the last point it touches is a corner, or a whole edge that contains two corners.</p>
+</div>
+
+<div class="box def" data-k="Definition" data-name="Standard (canonical) form">
+<p>$\min\ \mathbf c^\top\x$ s.t. $A\x=\b$, $\x\ge\0$, with $A\in\R^{m\times d}$, $m\lt d$, $\operatorname{rank}A=m$. (The professor calls this the canonical form; [LD] calls it standard form.) Any LP can be converted: a slack $s\ge0$ turns $\a^\top\x\le\beta$ into $\a^\top\x+s=\beta$; a surplus turns $\ge$ into $\a^\top\x-s=\beta$; a free variable becomes $x_j=u_j-v_j$ with $u_j,v_j\ge0$; and $\max\mathbf c^\top\x=-\min(-\mathbf c^\top\x)$.</p>
+</div>
+<div class="box thm" data-k="Proposition" data-name="KKT for LP, and a direct proof of optimality (3 Nov)">
+<p>With $\mathcal L=\mathbf c^\top\x-\boldsymbol\mu^\top(A\x-\b)-\boldsymbol\lambda^\top\x$, the KKT conditions are $\mathbf c=A^\top\boldsymbol\mu+\boldsymbol\lambda$, $A\x=\b$, $\x\ge\0$, $\boldsymbol\lambda\ge\0$, $\lambda_ix_i=0$. If $(\x^\star,\boldsymbol\mu^\star,\boldsymbol\lambda^\star)$ satisfies them, then for every feasible $\x$:
+$$\mathbf c^\top\x=\x^\top(A^\top\boldsymbol\mu^\star+\boldsymbol\lambda^\star)=\b^\top\boldsymbol\mu^\star+\x^\top\boldsymbol\lambda^\star\ge\b^\top\boldsymbol\mu^\star=\mathbf c^\top\x^\star,$$
+the last equality by complementarity. So $\x^\star$ is optimal, and $\boldsymbol\mu^\star$ solves the dual with the same value.</p>
+</div>
+<div class="box def" data-k="Definition" data-name="Basic solutions ([LD] §2.3)">
+<p>Choose $m$ linearly independent columns of $A$, forming the <b>basis</b> $B$. Setting the other $d-m$ variables to $0$ and solving $B\x_B=\b$ gives a <b>basic solution</b>. If also $\x_B\ge\0$, it is a <b>basic feasible solution</b> (BFS); it is <b>degenerate</b> if some basic variable is $0$. There are at most $\binom dm$ basic solutions, and the BFS are exactly the extreme points (corners) of $\{A\x=\b,\x\ge\0\}$ ([LD] §2.5).</p>
+</div>
+<div class="box thm" data-k="Theorem" data-name="Fundamental Theorem of LP ([LD] §2.4)">
+<p>For an LP in standard form with $\operatorname{rank}A=m$: (i) if there is a feasible solution, there is a basic feasible solution; (ii) if there is an optimal feasible solution, there is an optimal basic feasible solution.</p>
+</div>
+
+<div class="panel try">
+<span class="label">Try it</span>
+<p class="task">The polygon is $x_1+x_2\le4$, $x_2\le3$, $\x\ge\0$. Drag the arrow $-\mathbf c$, the direction in which the cost $\mathbf c^\top\x$ falls. The optimum always lands on a corner, and the readout lists the cost at all four. Make $-\mathbf c$ perpendicular to an edge, for example $-\mathbf c=(1,1)$: two corners tie, and the whole edge between them is optimal, but a corner is still among the optima, as part (ii) says. The orange point $(0,4)$ is a basic solution that is not feasible.</p>
+<div class="widget" data-w="pc_lp"></div>
+</div>
+
+<div class="example">
+<p class="problem">For $\min-x_1-2x_2$ s.t. $x_1+x_2\le4$, $x_2\le3$, $\x\ge\0$, list all basic solutions, then prove part (i) by turning the feasible point $\hat\x=(1,1,2,2)$ into a BFS.</p>
+<ol class="steps">
+<li><p>Standard form: variables $(x_1,x_2,s_1,s_2)$, $A=\begin{pmatrix}1&1&1&0\\0&1&0&1\end{pmatrix}$, $\b=(4,3)$, $\mathbf c=(-1,-2,0,0)$; $m=2$, $d=4$, so at most $\binom42=6$ bases.</p><p class="why-step">Two slacks, one per inequality.</p></li>
+<li><p>Bases: $\{x_1,x_2\}$: $(1,3,0,0)$, cost $-7$. $\{x_1,s_2\}$: $(4,0,0,3)$, $-4$. $\{x_2,s_1\}$: $(0,3,1,0)$, $-6$. $\{s_1,s_2\}$: $(0,0,4,3)$, $0$. $\{x_2,s_2\}$: $(0,4,0,-1)$, infeasible. $\{x_1,s_1\}$: columns $(1,0)$ and $(1,0)$ are dependent, so not a basis.</p><p class="why-step">Four BFS, the four corners; the best is $(1,3)$ with cost $-7$, matching the dual value of Chapter 13.3.</p></li>
+<li><p>Proof of (i), the slide: $\hat\x=(1,1,2,2)$ has four positive entries, whose columns are dependent. Take $\y=(1,0,-1,0)$ with $A\y=\0$. Then $A(\hat\x+\eps\y)=\b$ for every $\eps$, and nonnegativity allows $\eps\le\bar\eps=\min_{y_i\lt0}\hat x_i/(-y_i)=2$. So $\hat\x+2\y=(3,1,0,2)$: feasible, one positive entry fewer.</p><p class="why-step">Slide along a line inside the feasible set until a variable hits $0$.</p></li>
+<li><p>Repeat: $(3,1,0,2)$ still has three positive entries in $\R^2$, so their columns are dependent. With $\y=(1,-1,0,1)$, $A\y=\0$ and $\bar\eps=1/1=1$: $(4,0,0,3)$, a BFS. (With $\y=(-1,1,0,-1)$ instead, $\bar\eps=\min(3,2)=2$ gives $(1,3,0,0)$, the optimal BFS.)</p><p class="why-step">Each slide kills at least one positive entry, so the process ends at a point whose positive entries have independent columns: a BFS.</p></li>
+<li><p>Part (ii): if $\hat\x$ is optimal, then for small $|\eps|$ both $\hat\x\pm\eps\y$ are feasible, with cost $\mathbf c^\top\hat\x\pm\eps\,\mathbf c^\top\y$. Optimality forces $\mathbf c^\top\y=0$, so every slide keeps the cost and ends at an optimal BFS. Here $\hat\x$ is not optimal: $\mathbf c^\top\y=-1$ for $\y=(1,0,-1,0)$, and the slide lowers the cost from $-3$ to $-5$.</p><p class="why-step">At an optimum, a line you can move along in both directions must be flat for the cost.</p></li>
+</ol>
+</div>
+
+<div class="box plain" data-k="Key idea" data-name="A dual solution from an optimal basis">
+<p>If $\x^\star=(\x_B,\0)$ is an optimal BFS with basis $B$, complementary slackness allows $\boldsymbol\lambda_B=\0$, so $\mathbf c_B=B^\top\boldsymbol\mu$: $\boldsymbol\mu^\top=\mathbf c_B^\top B^{-1}$. Then $\boldsymbol\lambda_N=\mathbf c_N-N^\top\boldsymbol\mu\ge\0$ makes $\boldsymbol\mu$ dual feasible, and $\b^\top\boldsymbol\mu=\mathbf c_B^\top B^{-1}\b=\mathbf c^\top\x^\star$: strong duality. From a non-optimal BFS the same formula need not give a dual-feasible point.</p>
+</div>
+
+<div class="practice">
+<div class="prob" data-id="alg-lp-p1" data-ans="4" data-labels="number of BFS">
+<div class="stem"><p>How many basic feasible solutions does $x_1+x_2+s_1=4$, $x_2+s_2=3$, all variables $\ge0$, have?</p></div>
+<div class="hint"><p>Go through the $\binom42$ pairs of columns; discard dependent pairs and solutions with a negative entry.</p></div>
+<div class="sol"><p>Six pairs: one is dependent ($\{x_1,s_1\}$), one is infeasible ($\{x_2,s_2\}$ gives $s_2=-1$), and four are BFS: $(1,3,0,0)$, $(4,0,0,3)$, $(0,3,1,0)$, $(0,0,4,3)$, the four corners of the polygon.</p></div>
+</div>
+<div class="prob" data-id="alg-lp-p2" data-ans="-1;-1" data-labels="μ₁;μ₂">
+<div class="stem"><p>For the same LP with $\mathbf c=(-1,-2,0,0)$ and optimal basis $\{x_1,x_2\}$, $B=\begin{pmatrix}1&1\\0&1\end{pmatrix}$, compute $\boldsymbol\mu$ from $B^\top\boldsymbol\mu=\mathbf c_B$.</p></div>
+<div class="hint"><p>$B^\top=\begin{pmatrix}1&0\\1&1\end{pmatrix}$ and $\mathbf c_B=(-1,-2)$.</p></div>
+<div class="sol"><p>First row: $\mu_1=-1$. Second: $\mu_1+\mu_2=-2$, so $\mu_2=-1$. Check: $A^\top\boldsymbol\mu=(-1,-2,-1,-1)\le\mathbf c$, so $\boldsymbol\mu$ is dual feasible, and $\b^\top\boldsymbol\mu=-7=\mathbf c^\top\x^\star$.</p></div>
+</div>
+<div class="prob" data-id="alg-lp-p3" data-ans="not a basic solution" data-choices="a basic solution|a basic feasible solution|not a basic solution|feasible">
+<div class="stem"><p>For $x_1+x_2-x_3-3x_4+6x_5=2$, $x_2+x_3+5x_4+6x_5=2$, the point $x_1=x_3=x_4=0$, $x_2=8$, $x_5=-1$ satisfies both equations. It is…</p></div>
+<div class="hint"><p>Look at the columns of the two nonzero variables, $x_2$ and $x_5$.</p></div>
+<div class="sol"><p>The columns of $x_2$ and $x_5$ are $(1,1)$ and $(6,6)$, which are linearly dependent, so they do not form a basis: <b>not a basic solution</b>. It is not feasible either ($x_5\lt0$).</p></div>
+</div>
+<div class="prob" data-id="alg-lp-p4" data-ans="3;1;0;2" data-labels="x₁;x₂;s₁;s₂">
+<div class="stem"><p>From $\hat\x=(1,1,2,2)$ in the example, slide along $\y=(1,0,-1,0)$ as far as feasibility allows. Where do you land?</p></div>
+<div class="hint"><p>Only $y_3=-1\lt0$ limits the slide: $\bar\eps=\hat x_3/1$.</p></div>
+<div class="sol"><p>$\bar\eps=2$, so $\hat\x+2\y=(3,1,0,2)$. Check: $3+1+0=4$ and $1+2=3$, all entries $\ge0$, and $s_1$ has hit $0$.</p></div>
+</div>
+</div>
+
+<div class="dodont">
+<ul><li>Convert to standard form before talking about bases</li><li>For each candidate basis, check independence of the columns, then the sign of $\x_B=B^{-1}\b$</li><li>Certify an optimal BFS with $\boldsymbol\mu^\top=\mathbf c_B^\top B^{-1}$ and the check $A^\top\boldsymbol\mu\le\mathbf c$</li></ul>
+<ul><li>Calling every basic solution feasible</li><li>Concluding the optimum is unique because it is at a corner (a whole edge can be optimal)</li><li>Claiming every LP has a minimum (it can be unbounded or infeasible)</li></ul>
+</div>
+<ol class="takeaways">
+<li>Standard form $\min\mathbf c^\top\x$, $A\x=\b$, $\x\ge\0$; basic solutions fix $d-m$ variables at $0$ and solve for the rest; BFS are the corners.</li>
+<li>Fundamental theorem: feasible $\Rightarrow$ a BFS exists; optimal $\Rightarrow$ an optimal BFS exists. The proof slides along $A\y=\0$ until a variable hits zero.</li>
+<li>KKT for LP: $\mathbf c=A^\top\boldsymbol\mu+\boldsymbol\lambda$, $\boldsymbol\lambda\ge\0$, $\lambda_ix_i=0$; from an optimal basis, $\boldsymbol\mu^\top=\mathbf c_B^\top B^{-1}$ solves the dual.</li>
+</ol>
+<div class="quiz" data-id="alg-lp-quiz">
+<div class="q"><div class="q-text"><p>An LP's optimum is attained at two points $A$ and $B$. Which point is also optimal?</p></div>
+<div class="o">Any point on the line through $A$ and $B$<div class="e">Points beyond the segment may be infeasible.</div></div>
+<div class="o ok">$\tfrac12(A+B)$<div class="e">The optimal set of an LP is convex: feasible set convex, cost linear.</div></div>
+<div class="o">None: an LP optimum is unique<div class="e">Edges can be optimal.</div></div>
+</div>
+<div class="q"><div class="q-text"><p>In the proof of part (i), why can the slide $\hat\x+\eps\y$ keep $A\x=\b$?</p></div>
+<div class="o">Because $\y\ge\0$<div class="e">$\y$ has a negative entry; that is what stops the slide.</div></div>
+<div class="o ok">Because $A\y=\0$, which exists when the columns of the positive entries are dependent<div class="e">$A(\hat\x+\eps\y)=\b+\eps A\y=\b$.</div></div>
+<div class="o">Because $\eps$ is small<div class="e">Any $\eps$ keeps the equations; size matters only for $\x\ge\0$.</div></div>
+</div>
+<div class="q"><div class="q-text"><p>True or false: every linear program has a global minimum.</p></div>
+<div class="o">True, since linear functions are convex<div class="e">Convexity does not give existence. Think of $\min x$ over $x\ge0$ versus $x\le0$.</div></div>
+<div class="o ok">False: an LP can be infeasible or unbounded<div class="e">Part (ii) assumes an optimum exists.</div></div>
+</div>
+</div>
+</section>
+
+<div class="quiz review" data-id="pc14-review" data-title="Part 14 review (with Parts 6 and 11–13)">
+<div class="q" data-from="Ch. 14.1"><div class="q-text"><p>Gradient projection stops at $\hat\x$ with $\grad f(\hat\x)\ne\0$. This means…</p></div>
+<div class="o">the step size was too large<div class="e">Fixed points do not depend on $\alpha$.</div></div>
+<div class="o ok">$\hat\x$ is on the boundary and $\grad f(\hat\x)^\top(\x-\hat\x)\ge0$ for all $\x\in C$<div class="e">For convex $f$, $\hat\x$ is a global minimizer over $C$.</div></div>
+<div class="o">the method has not converged<div class="e">A fixed point is where it has converged.</div></div>
+</div>
+<div class="q" data-from="Ch. 6.2"><div class="q-text"><p>The bound $\alpha\lt2/L$ for gradient projection comes from…</p></div>
+<div class="o ok">the descent lemma $f(\y)\le f(\x)+\grad f(\x)^\top(\y-\x)+\tfrac L2\norm{\y-\x}^2$<div class="e">Combined with $\g^\top\d\le-\norm{\d}^2/\alpha$.</div></div>
+<div class="o">the Armijo condition<div class="e">No line search is involved here.</div></div>
+<div class="o">strong convexity<div class="e">Decrease needs only $L$-smoothness.</div></div>
+</div>
+<div class="q" data-from="Ch. 12.1"><div class="q-text"><p>In the active-set method, dropping a constraint with $\mu_l\lt0$ works because…</p></div>
+<div class="o">it makes the subproblem unconstrained<div class="e">Other working constraints remain.</div></div>
+<div class="o ok">a negative multiplier means stepping off that constraint lowers $f$ (the KKT sign argument)<div class="e">The identity $\tilde\v^\top Q\tilde\v=-\mu_l\a_l^\top\tilde\v$ makes it precise.</div></div>
+<div class="o">it reduces the number of iterations<div class="e">It is about descent and feasibility, not counting.</div></div>
+</div>
+<div class="q" data-from="Ch. 13.3"><div class="q-text"><p>From an optimal BFS with basis $B$, a dual optimal solution is…</p></div>
+<div class="o">$\boldsymbol\mu=B^{-1}\b$<div class="e">That is $\x_B$, the primal basic part.</div></div>
+<div class="o ok">$\boldsymbol\mu^\top=\mathbf c_B^\top B^{-1}$<div class="e">From $\boldsymbol\lambda_B=\0$ and $\mathbf c_B=B^\top\boldsymbol\mu$; its value is $\mathbf c^\top\x^\star$.</div></div>
+<div class="o">$\boldsymbol\mu=\0$<div class="e">That is dual feasible only if $\mathbf c\ge\0$.</div></div>
+</div>
+<div class="q" data-from="Ch. 11.2"><div class="q-text"><p>Why is gradient projection natural for a box but not for a general polyhedron?</p></div>
+<div class="o ok">Projecting onto a box is clipping; projecting onto a general polyhedron is itself a QP<div class="e">The method is practical only when $P_C$ is cheap.</div></div>
+<div class="o">A general polyhedron is not convex<div class="e">Polyhedra are convex.</div></div>
+<div class="o">The projection onto a polyhedron is not unique<div class="e">Closed and convex: unique.</div></div>
+</div>
+</div>
+</article>
+
+<article class="part" data-id="p11" data-num="15" data-title="Exam kit: everything in one place" data-min="75" data-kind="exam">
+<p class="part-lede">The unconstrained half of the course (Lectures 1–14, Parts 1–10) on a few screens: every key statement with a link back to where it's taught, a method chooser, the three proof templates behind every convergence theorem, and a final mixed review. Use it the week before an exam, after you've worked through the parts. For constrained optimization (Parts 11–14), use the review quiz at the end of each of those parts.</p>
 <p class="youneed"><b>You need:</b> Parts 1–10. If a line below feels unfamiliar, click its link and redo that chapter's practice.</p>
 
 <!-- ============ Chapter 1 ============ -->
@@ -10126,7 +11531,7 @@ So $\sum\norm{\g_k}^2\lt\infty$, hence $\norm{\g_k}\to0$, and $\min_{k\le N}\nor
 </div>
 </section>
 
-<div class="quiz review" data-id="p11-review" data-title="Final review: the whole course">
+<div class="quiz review" data-id="p11-review" data-title="Final review: Parts 1–10">
 <div class="q" data-from="Ch. 2.4"><div class="q-text"><p>Which condition guarantees that a continuous $f:\R^n\to\R$ has a global minimizer?</p></div>
 <div class="o">$f$ is bounded below<div class="e">$e^{x}$ is bounded below by 0 and never reaches it.</div></div>
 <div class="o ok">$f$ is coercive<div class="e">Coercive ⇒ some sublevel set is nonempty, closed and bounded ⇒ Weierstrass.</div></div>
@@ -10191,9 +11596,9 @@ So $\sum\norm{\g_k}^2\lt\infty$, hence $\norm{\g_k}\to0$, and $\min_{k\le N}\nor
 </div>
 </article>
 
-<article class="part" data-id="p12" data-num="12" data-title="Exam practice" data-min="150" data-kind="exam">
+<article class="part" data-id="p12" data-num="16" data-title="Exam practice" data-min="150" data-kind="exam">
 <p class="part-lede">Exam-level problems in the style of this course's midterms: short, computational, with exact answers and traps on the hypotheses of theorems. If you're preparing for a midsem, work through the three sets and use the links to revise whatever trips you up.</p>
-<p class="youneed"><b>You need:</b> Parts 1–10 for full coverage. Each set says which lectures it draws on, so you can practise as soon as you've done those parts.</p>
+<p class="youneed"><b>You need:</b> Parts 1–10 for full coverage (constrained optimization, Parts 11–14, has its own practice and review quizzes). Each set says which lectures it draws on, so you can practise as soon as you've done those parts.</p>
 
 <!-- ============ Chapter 1 ============ -->
 <section class="ch" id="exam-style" data-level="n" data-min="30" data-title="How the exams are set">
@@ -10557,7 +11962,7 @@ So $\sum\norm{\g_k}^2\lt\infty$, hence $\norm{\g_k}\to0$, and $\min_{k\le N}\nor
   <div class="cert-body">
     <span class="eyebrow">Every question, answered right</span>
     <h2 id="certTitle">You made it all the way down.</h2>
-    <p class="lede">You worked through every quiz and every practice problem in Downhill. That took real effort, and the understanding is yours to keep. Add your name to make a certificate.</p>
+    <p class="lede">You worked through every quiz and every practice problem in Optimization Methods. That took real effort, and the understanding is yours to keep. Add your name to make a certificate.</p>
     <label class="cert-name"><span class="label">Your name, as it should appear</span><input id="certName" type="text" maxlength="60" autocomplete="name" placeholder="Your name"></label>
     <canvas id="certCanvas" width="1600" height="1131" role="img" aria-label="Certificate preview"></canvas>
     <div class="cert-actions">
@@ -11577,6 +12982,9 @@ So $\sum\norm{\g_k}^2\lt\infty$, hence $\norm{\g_k}\to0$, and $\min_{k\le N}\nor
   function renderCta() {
     if (!cta) return;
     var last = parseInt(store.get("downhill-last", "-1"), 10);
+    // the saved chapter id survives parts being inserted; prefer its part over the saved part index
+    var lcEl = document.getElementById(store.get("downhill-ch", "")), lcArt = lcEl && lcEl.closest("article.part");
+    if (last >= 0 && lcArt && parts.indexOf(lcArt) >= 0) last = parts.indexOf(lcArt);
     var first = parts[0];
     cta.innerHTML = "";
     if (last >= 0 && last < parts.length) {
@@ -11744,17 +13152,17 @@ So $\sum\norm{\g_k}^2\lt\infty$, hence $\norm{\g_k}\to0$, and $\min_{k\le N}\nor
     g.stroke();
     g.fillStyle = "#1F5F8B"; g.beginPath(); g.arc(120 + 0.95 * (W - 240), cy(0.95) - 14, 12, 0, 7); g.fill();
     g.textAlign = "center"; g.fillStyle = "#586474";
-    g.font = "600 26px 'JetBrains Mono', monospace"; g.fillText("DOWNHILL · SELF-PACED LEARNING CERTIFICATE", W / 2, 165);
-    g.fillStyle = "#17202A"; g.font = "800 64px 'Bricolage Grotesque', sans-serif"; g.fillText("Computational Methods of", W / 2, 270); g.fillText("Optimization: Foundations", W / 2, 345);
-    g.fillStyle = "#586474"; g.font = "28px 'Atkinson Hyperlegible', sans-serif"; g.fillText("This certifies that", W / 2, 440);
-    g.fillStyle = name ? "#1F5F8B" : "#B8C1CC"; g.font = "700 76px 'Bricolage Grotesque', sans-serif";
+    g.font = "600 26px 'JetBrains Mono', monospace"; g.fillText("OPTIMIZATION METHODS · SELF-PACED LEARNING CERTIFICATE", W / 2, 165);
+    g.fillStyle = "#17202A"; g.font = "700 64px 'Figtree', sans-serif"; g.fillText("Optimization Methods", W / 2, 270); g.fillText("IISc E0 230", W / 2, 345);
+    g.fillStyle = "#586474"; g.font = "28px 'Figtree', sans-serif"; g.fillText("This certifies that", W / 2, 440);
+    g.fillStyle = name ? "#1F5F8B" : "#B8C1CC"; g.font = "700 72px 'Figtree', sans-serif";
     var nm = name || "Your name"; while (g.measureText(nm).width > W - 300 && nm.length > 3) nm = nm.slice(0, -1);
     g.fillText(nm, W / 2, 540);
-    g.fillStyle = "#17202A"; g.font = "28px 'Atkinson Hyperlegible', sans-serif";
-    g.fillText("answered every quiz and practice question correctly across Downhill's course on", W / 2, 615);
-    g.fillText("optimality conditions, convexity, gradient methods and line search, convergence rates,", W / 2, 655);
-    g.fillText("conjugate gradients, and Newton and quasi-Newton methods.", W / 2, 695);
-    g.textAlign = "left"; g.fillStyle = "#586474"; g.font = "24px 'Atkinson Hyperlegible', sans-serif";
+    g.fillStyle = "#17202A"; g.font = "28px 'Figtree', sans-serif";
+    g.fillText("answered every quiz and practice question correctly in Optimization Methods:", W / 2, 615);
+    g.fillText("optimality conditions, convexity, gradient and line-search methods, conjugate gradients,", W / 2, 655);
+    g.fillText("Newton and quasi-Newton methods, KKT conditions, duality and constrained algorithms.", W / 2, 695);
+    g.textAlign = "left"; g.fillStyle = "#586474"; g.font = "24px 'Figtree', sans-serif";
     g.fillText("Date: " + dateStr, 120, H - 260);
     g.fillText("Certificate ID: " + certId(name, c.at || ""), 120, H - 226);
     g.textAlign = "right";
@@ -11763,14 +13171,14 @@ So $\sum\norm{\g_k}^2\lt\infty$, hence $\norm{\g_k}\to0$, and $\min_{k\le N}\nor
     $("#certPdf").disabled = !name; $("#certPng").disabled = !name;
   }
   $("#certPng").addEventListener("click", function () {
-    var a = document.createElement("a"); a.download = "Downhill-certificate.png"; a.href = $("#certCanvas").toDataURL("image/png"); a.click();
+    var a = document.createElement("a"); a.download = "Optimization-Methods-certificate.png"; a.href = $("#certCanvas").toDataURL("image/png"); a.click();
   });
   $("#certPdf").addEventListener("click", function () {
     if (!window.jspdf) { alert("The PDF tool didn't load. Try the image download instead."); return; }
     var doc = new window.jspdf.jsPDF({ orientation: "landscape", unit: "pt", format: "a4" });
     var w = doc.internal.pageSize.getWidth(), hh = doc.internal.pageSize.getHeight();
     doc.addImage($("#certCanvas").toDataURL("image/png"), "PNG", 0, 0, w, hh);
-    doc.save("Downhill-certificate.pdf");
+    doc.save("Optimization-Methods-certificate.pdf");
   });
   function confetti() {
     if (window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches) return;
@@ -11791,7 +13199,13 @@ So $\sum\norm{\g_k}^2\lt\infty$, hence $\norm{\g_k}\to0$, and $\min_{k\le N}\nor
     updateScores();
     var startHash = location.hash.slice(1);
     if (startHash && document.getElementById(startHash)) route();
-    else { var sp = parseInt(store.get("downhill-part", "-1"), 10); showPart(isNaN(sp) ? -1 : Math.min(parts.length - 1, Math.max(-1, sp)), false); }
+    else {
+      var sp = parseInt(store.get("downhill-part", "-1"), 10);
+      // reopen at the saved chapter (by id) when there is one: part indexes shift when parts are inserted
+      var sc = document.getElementById(store.get("downhill-ch", "")), sa = sc && sc.closest("article.part");
+      if (sp >= 0 && sa && parts.indexOf(sa) >= 0) showPart(parts.indexOf(sa), false, sc.id);
+      else showPart(isNaN(sp) ? -1 : Math.min(parts.length - 1, Math.max(-1, sp)), false);
+    }
   }
   DH.boot = boot;
   DH._internal = { allQ: allQ, allP: allP, prog: function () { return prog; } };
@@ -15483,6 +16897,235 @@ So $\sum\norm{\g_k}^2\lt\infty$, hence $\norm{\g_k}\to0$, and $\min_{k\le N}\nor
         "<br><span class='k'>ratio</span> " + DH.fmt(s / Math.max(cg, 1), 1) + "×  (≈ √κ for large κ)" +
         "<br><span class='k'>rules of thumb</span> SD ≈ (κ/2)·ln(1/ε) = " + Math.round(kap / 2 * Math.log(1 / eps)).toLocaleString("en") + ", CG ≈ (√κ/2)·ln(2/ε) = " + Math.round(Math.sqrt(kap) / 2 * Math.log(2 / eps)).toLocaleString("en") +
         "<br>Guarantees on ‖e_k‖_A ≤ ε‖e₀‖_A. In exact arithmetic CG also stops by step n.";
+    };
+    p.redraw();
+  };
+})();
+
+/* ---- w_pc.js ---- */
+/* Widgets for Parts 11–14 (constrained optimization): projection and separation, Farkas/KKT cone, dual function, gradient projection, LP corners. */
+(function () {
+  "use strict";
+  var DH = window.DH, W = DH.W, h = DH.h, col = DH.col;
+
+  function clamp(v, a, b) { return Math.max(a, Math.min(b, v)); }
+  function dot(a, b) { return a[0] * b[0] + a[1] * b[1]; }
+  function sub(a, b) { return [a[0] - b[0], a[1] - b[1]]; }
+  function add(a, b) { return [a[0] + b[0], a[1] + b[1]]; }
+  function sc(t, a) { return [t * a[0], t * a[1]]; }
+  function nrm(a) { return Math.hypot(a[0], a[1]); }
+  function f2(v) { return DH.fmt(v, 2); }
+  function v2(v) { return DH.vfmt(v, 2); }
+  // nearest point of the segment [p, q] to y
+  function segProj(y, p, q) { var d = sub(q, p), t = clamp(dot(sub(y, p), d) / dot(d, d), 0, 1); return add(p, sc(t, d)); }
+  // shade {x : inside(x)} on a grid
+  function shade(p, inside, color) {
+    var g = p.g, n = 110, dx = (p.xmax - p.xmin) / n, ny = Math.round(n * p.H / p.W), dy = (p.ymax - p.ymin) / ny;
+    g.fillStyle = color;
+    for (var i = 0; i < n; i++) for (var j = 0; j < ny; j++) {
+      var x = p.xmin + (i + 0.5) * dx, y = p.ymin + (j + 0.5) * dy;
+      if (inside([x, y])) { var X0 = Math.floor(p.X(x - dx / 2)), X1 = Math.ceil(p.X(x + dx / 2)), Y0 = Math.floor(p.Y(y + dy / 2)), Y1 = Math.ceil(p.Y(y - dy / 2)); g.fillRect(X0, Y0, X1 - X0, Y1 - Y0); }
+    }
+  }
+  // closed convex sets used by the projection widgets: membership and projection
+  function polySet(name, V) {
+    var m = V.length;
+    function inside(x) { for (var i = 0; i < m; i++) { var a = V[i], b = V[(i + 1) % m]; if ((b[0] - a[0]) * (x[1] - a[1]) - (b[1] - a[1]) * (x[0] - a[0]) < -1e-12) return false; } return true; }
+    return { n: name, inside: inside, proj: function (y) { if (inside(y)) return y.slice(); var best = null, bd = Infinity; for (var i = 0; i < m; i++) { var q = segProj(y, V[i], V[(i + 1) % m]), d = nrm(sub(q, y)); if (d < bd) { bd = d; best = q; } } return best; }, edge: V };
+  }
+  function discSet(name, c, r) { return { n: name, inside: function (x) { return nrm(sub(x, c)) <= r + 1e-12; }, proj: function (y) { var d = sub(y, c), L = nrm(d); return L <= r ? y.slice() : add(c, sc(r / L, d)); }, disc: [c, r] }; }
+  function halfSet(name, a, b) { return { n: name, inside: function (x) { return dot(a, x) <= b + 1e-12; }, proj: function (y) { var e = dot(a, y) - b; return e <= 0 ? y.slice() : sub(y, sc(e / dot(a, a), a)); }, half: [a, b] }; }
+  function drawSet(p, S) {
+    shade(p, S.inside, DH.alpha(col("accent"), 0.15));
+    if (S.edge) p.poly(S.edge, col("accent"), 2, { close: true });
+    if (S.disc) { var pts = []; for (var i = 0; i <= 100; i++) { var t = 2 * Math.PI * i / 100; pts.push([S.disc[0][0] + S.disc[1] * Math.cos(t), S.disc[0][1] + S.disc[1] * Math.sin(t)]); } p.poly(pts, col("accent"), 2); }
+    if (S.half) { var a = S.half[0], b = S.half[1], t0 = sc(b / dot(a, a), a), dir = [-a[1], a[0]]; p.line(t0[0] - 20 * dir[0], t0[1] - 20 * dir[1], t0[0] + 20 * dir[0], t0[1] + 20 * dir[1], col("accent"), 2); }
+  }
+
+  /* ---------- 11.2 projection onto a closed convex set, and the separating line ---------- */
+  W.pc_proj = function (el) {
+    var S = [
+      discSet("disc", [0, 0], 1.5),
+      polySet("box", [[-1.5, -1], [1, -1], [1, 1], [-1.5, 1]]),
+      halfSet("half-plane $x_1+2x_2\\le2$", [1, 2], 2),
+      polySet("triangle", [[-1.5, -1.2], [1.6, -1.2], [0, 1.6]])
+    ];
+    var k = 0, y = [2.4, 1.4];
+    var row = h("div", { class: "wrow" }); el.appendChild(row);
+    var p = new DH.Plot(row, { xmin: -3, xmax: 3, ymin: -3, ymax: 3, ratio: 0.9, equal: true, label: "A convex set, a draggable point y, its projection and the separating line" });
+    var c = DH.ctrlBox(row);
+    DH.chips(c, S.map(function (s) { return s.n; }), function (i) { k = i; p.redraw(); }, 0);
+    c.appendChild(h("p", { class: "whint" }, "Drag the point y (keyboard: focus the plot, then arrow keys)."));
+    var r = DH.readout(c);
+    c.appendChild(h("div", { class: "legend" }, "<span><i style='background:var(--warn)'></i>y − P(y)</span><span><i style='background:var(--mint)'></i>separating line</span>"));
+    DH.dragHandles(p, [{ get: function () { return y; }, set: function (q) { y = [clamp(q[0], -2.9, 2.9), clamp(q[1], -2.9, 2.9)]; } }], function () { p.redraw(); }, { always: true });
+    p.draw = function (p) {
+      var s = S[k], P = s.proj(y), n = sub(y, P), d = nrm(n);
+      drawSet(p, s); p.axes({ labels: false });
+      if (d > 1e-9) {
+        var dir = [-n[1] / d, n[0] / d];
+        p.line(P[0] - 9 * dir[0], P[1] - 9 * dir[1], P[0] + 9 * dir[0], P[1] + 9 * dir[1], col("mint"), 2.2, [7, 5]);
+        p.arrow(P[0], P[1], y[0], y[1], col("warn"), 2.4);
+      }
+      p.dot(P[0], P[1], 6, col("accent"), col("plot-bg"));
+      p.dot(y[0], y[1], 6.5, col("ink"), col("plot-bg"));
+      p.text("y", y[0], y[1], col("ink"), { dx: 9, dy: -9, bold: true, halo: true });
+      if (d > 1e-9) p.text("P(y)", P[0], P[1], col("accent"), { dx: -10, dy: 12, bold: true, halo: true, align: "right" });
+      // worst value of (y-P)^T (x-P) over a grid of points x in the set
+      var worst = -Infinity;
+      for (var i = 0; i <= 60; i++) for (var j = 0; j <= 60; j++) { var x = [-3 + 0.1 * i, -3 + 0.1 * j]; if (s.inside(x)) worst = Math.max(worst, dot(n, sub(x, P))); }
+      r.innerHTML = d < 1e-9 ? "y = " + v2(y) + " is in the set, so P(y) = y and there is nothing to separate." :
+        "y = " + v2(y) + "<br>P(y) = " + v2(P) + "<br>distance ‖y − P(y)‖ = " + f2(d) +
+        "<br>largest (y − P)ᵀ(x − P) over points x of the set: " + DH.fmt(worst, 3) + " (never positive: the obtuse-angle test)" +
+        "<br>gap of the separating line: (y − P)ᵀy − max over the set of (y − P)ᵀx = " + f2(d * d);
+    };
+    p.redraw();
+  };
+
+  /* ---------- 11.3 / 12.1 Farkas: is g in the cone of a1, a2? (KKT mode relabels g as the gradient) ---------- */
+  W.pc_farkas = function (el, cfg) {
+    cfg = cfg || {};
+    var kkt = cfg.mode === "kkt";
+    var a1 = [2, 1], a2 = [1, 3], g = kkt ? [1.2, 2.4] : [-1, 2];
+    var row = h("div", { class: "wrow" }); el.appendChild(row);
+    var p = new DH.Plot(row, { xmin: -3.5, xmax: 3.5, ymin: -3.5, ymax: 3.5, ratio: 0.9, equal: true, label: kkt ? "Gradient of f and the normals of two active constraints" : "Two vectors, the cone they span, and a vector g" });
+    var c = DH.ctrlBox(row);
+    c.appendChild(h("p", { class: "whint" }, kkt ? "Drag the tips of ∇f and of the constraint normals ∇c₁, ∇c₂ (keyboard: 1, 2, 3 pick ∇f, ∇c₁, ∇c₂; arrows move it)." : "Drag the tips of g, a₁ and a₂ (keyboard: 1, 2, 3 pick g, a₁, a₂; arrows move it)."));
+    var r = DH.readout(c);
+    c.appendChild(h("div", { class: "legend" }, "<span><i style='background:var(--accent)'></i>" + (kkt ? "cone of ∇c₁, ∇c₂" : "cone of a₁, a₂") + "</span><span><i style='background:var(--warn)'></i>s and the line sᵀx = 0</span>"));
+    function set(v) { return function (q) { var L = nrm(q); if (L < 0.25) q = L > 1e-9 ? sc(0.25 / L, q) : [0.25, 0]; v[0] = clamp(q[0], -3.4, 3.4); v[1] = clamp(q[1], -3.4, 3.4); }; }
+    DH.dragHandles(p, [{ get: function () { return g; }, set: set(g) }, { get: function () { return a1; }, set: set(a1) }, { get: function () { return a2; }, set: set(a2) }], function () { p.redraw(); });
+    function coneProj(v) {
+      var best = [0, 0], bd = nrm(v);
+      [a1, a2].forEach(function (a) { var t = Math.max(0, dot(v, a) / dot(a, a)), q = sc(t, a), d = nrm(sub(v, q)); if (d < bd) { bd = d; best = q; } });
+      return best;
+    }
+    p.draw = function (p) {
+      var u1 = sc(1 / nrm(a1), a1), u2 = sc(1 / nrm(a2), a2);
+      var t1 = Math.atan2(u1[1], u1[0]), t2 = Math.atan2(u2[1], u2[0]), dt = t2 - t1;
+      while (dt > Math.PI) dt -= 2 * Math.PI; while (dt < -Math.PI) dt += 2 * Math.PI;
+      var det = a1[0] * a2[1] - a1[1] * a2[0], wedge = [[0, 0]];
+      for (var i = 0; i <= 40; i++) { var t = t1 + dt * i / 40; wedge.push([9 * Math.cos(t), 9 * Math.sin(t)]); }
+      p.axes({ labels: false });
+      p.poly(wedge, DH.alpha(col("accent"), 0.0), 0.01, { close: true, fill: DH.alpha(col("accent"), 0.16) });
+      var l1 = 0, l2 = 0, inCone;
+      if (Math.abs(det) > 1e-6) { l1 = (g[0] * a2[1] - g[1] * a2[0]) / det; l2 = (a1[0] * g[1] - a1[1] * g[0]) / det; inCone = l1 >= -1e-9 && l2 >= -1e-9; }
+      else { inCone = nrm(sub(coneProj(g), g)) < 1e-6; }
+      var gh = coneProj(g), s = sub(gh, g);
+      if (!inCone) {
+        var ds = nrm(s), dir = [-s[1] / ds, s[0] / ds];
+        p.line(-9 * dir[0], -9 * dir[1], 9 * dir[0], 9 * dir[1], col("warn"), 1.8, [7, 5]);
+        p.arrow(0, 0, s[0], s[1], col("warn"), 2.4);
+        p.line(g[0], g[1], gh[0], gh[1], col("muted"), 1.4, [3, 4]);
+        p.text("s", s[0], s[1], col("warn"), { dx: 8, dy: 10, bold: true, halo: true });
+      }
+      p.arrow(0, 0, a1[0], a1[1], col("accent"), 2.6); p.arrow(0, 0, a2[0], a2[1], col("accent"), 2.6);
+      p.arrow(0, 0, g[0], g[1], inCone ? col("mint") : col("ink"), 3);
+      p.text(kkt ? "∇c₁" : "a₁", a1[0], a1[1], col("accent"), { dx: 8, dy: -8, bold: true, halo: true });
+      p.text(kkt ? "∇c₂" : "a₂", a2[0], a2[1], col("accent"), { dx: 8, dy: -8, bold: true, halo: true });
+      p.text(kkt ? "∇f" : "g", g[0], g[1], inCone ? col("mint") : col("ink"), { dx: 8, dy: -8, bold: true, halo: true });
+      var G = kkt ? "∇f" : "g", A = kkt ? ["∇c₁", "∇c₂"] : ["a₁", "a₂"];
+      var head = Math.abs(det) > 1e-6 ? G + " = λ₁" + A[0] + " + λ₂" + A[1] + " with λ = (" + f2(l1) + ", " + f2(l2) + ")<br>" : "";
+      r.innerHTML = head + (inCone ?
+        "<span class='good'>Both λᵢ ≥ 0: " + G + " is in the cone.</span> " + (kkt ? "The KKT condition holds: no direction is downhill and feasible to first order." : "So no s has sᵀaᵢ ≥ 0 for both i and sᵀg &lt; 0.") :
+        "<span class='bad'>" + G + " is not in the cone.</span> The nearest cone point is " + v2(gh) + "; s = " + v2(s) + " has sᵀ" + A[0] + " = " + f2(dot(s, a1)) + ", sᵀ" + A[1] + " = " + f2(dot(s, a2)) + ", sᵀ" + G + " = " + f2(dot(s, g)) + " = −‖s‖²." +
+        (kkt ? " s points into both constraints and downhill: the point is not a KKT point." : ""));
+    };
+    p.redraw();
+  };
+
+  /* ---------- 13.1 the dual function as the minimum of the Lagrangian ---------- */
+  W.pc_dual = function (el) {
+    var EX = [
+      { n: "convex: $\\min x^2$ s.t. $1-x\\le0$", f0: function (x) { return x * x; }, f1: function (x) { return 1 - x; }, lmax: 4, lam: 1, feas: function (x) { return x >= 1; }, ymin: -1.5, ymax: 5, xmin: -1.5, xmax: 3 },
+      { n: "nonconvex: $\\min (x^2-1)^2-0.3x$ s.t. $x\\le0$", f0: function (x) { return (x * x - 1) * (x * x - 1) - 0.3 * x; }, f1: function (x) { return x; }, lmax: 1.5, lam: 0.6, feas: function (x) { return x <= 0; }, ymin: -1.2, ymax: 2.5, xmin: -1.8, xmax: 1.8 }
+    ];
+    var k = 0, lam = EX[0].lam;
+    function minOver(fn, a, b, feas) { var bx = 0, bv = Infinity; for (var i = 0; i <= 3000; i++) { var x = a + (b - a) * i / 3000; if (feas && !feas(x)) continue; var v = fn(x); if (v < bv) { bv = v; bx = x; } } return [bx, bv]; }
+    var row = h("div", { class: "wrow" }); el.appendChild(row);
+    var p = new DH.Plot(row, { xmin: -1.5, xmax: 3, ymin: -1.5, ymax: 5, ratio: 0.75, label: "Objective, Lagrangian and the dual lower bound" });
+    var c = DH.ctrlBox(row);
+    var sl;
+    DH.chips(c, EX.map(function (e) { return e.n; }), function (i) { k = i; lam = EX[i].lam; sl.el.max = EX[i].lmax; sl.set(lam); p.setRange(EX[i].xmin, EX[i].xmax, EX[i].ymin, EX[i].ymax); p.redraw(); }, 0);
+    sl = DH.slider(c, { label: "price $\\lambda\\ge0$", min: 0, max: 4, step: 0.01, value: lam, digits: 2 }, function (v) { lam = v; p.redraw(); });
+    var r = DH.readout(c);
+    c.appendChild(h("div", { class: "legend" }, "<span><i style='background:var(--ink)'></i>f₀</span><span><i style='background:var(--accent)'></i>L(x, λ) = f₀ + λf₁</span><span><i style='background:var(--mint)'></i>p*</span><span><i style='background:var(--warn)'></i>q(λ)</span>"));
+    p.draw = function (p) {
+      var E = EX[k], L = function (x) { return E.f0(x) + lam * E.f1(x); };
+      shade(p, function (q) { return E.feas(q[0]); }, DH.alpha(col("mint"), 0.08));
+      p.axes({ xlabel: "x" });
+      var ps = minOver(E.f0, -3, 3, E.feas), qm = minOver(L, -3, 3, null);
+      p.line(p.xmin, ps[1], p.xmax, ps[1], col("mint"), 1.6, [6, 5]);
+      p.line(p.xmin, qm[1], p.xmax, qm[1], col("warn"), 1.6, [6, 5]);
+      p.curve(E.f0, col("ink"), 2); p.curve(L, col("accent"), 2.4);
+      p.dot(ps[0], ps[1], 5.5, col("mint"), col("plot-bg")); p.dot(qm[0], qm[1], 5.5, col("warn"), col("plot-bg"));
+      if (!E.best) { var best = -Infinity, bl = 0; for (var i = 0; i <= 300; i++) { var l = E.lmax * i / 300, v = minOver(function (x) { return E.f0(x) + l * E.f1(x); }, -3, 3, null)[1]; if (v > best) { best = v; bl = l; } } E.best = [best, bl]; }
+      var best = E.best[0], bl = E.best[1];
+      r.innerHTML = "q(λ) = min over all x of L(x, λ) = " + DH.fmt(qm[1], 3) + " (at x = " + f2(qm[0]) + ")" +
+        "<br>p* = " + DH.fmt(ps[1], 3) + " (feasible side shaded); q(λ) ≤ p* for every λ ≥ 0" +
+        "<br>best bound over λ: d* ≈ " + DH.fmt(best, 3) + " at λ ≈ " + f2(bl) + "; gap p* − d* ≈ " + DH.fmt(Math.max(0, ps[1] - best), 3);
+    };
+    p.redraw();
+  };
+
+  /* ---------- 14.1 gradient projection ---------- */
+  W.pc_gp = function (el) {
+    var S = [halfSet("half-plane $x_1+x_2\\le2$", [1, 1], 2), polySet("box $[0,1]^2$", [[0, 0], [1, 0], [1, 1], [0, 1]]), discSet("unit disc", [0, 0], 1)];
+    var k = 0, al = 0.25, x0 = [2, 0], ctr = [2, 2];
+    var f = function (x) { return (x[0] - ctr[0]) * (x[0] - ctr[0]) + (x[1] - ctr[1]) * (x[1] - ctr[1]); };
+    var row = h("div", { class: "wrow" }); el.appendChild(row);
+    var p = new DH.Plot(row, { xmin: -1.5, xmax: 3, ymin: -1.5, ymax: 3, ratio: 0.9, equal: true, label: "Gradient projection iterates on a convex set" });
+    var c = DH.ctrlBox(row);
+    DH.chips(c, S.map(function (s) { return s.n; }), function (i) { k = i; x0 = S[i].proj(x0); p.redraw(); }, 0);
+    DH.slider(c, { label: "step $\\alpha$ (here $L=2$, so $2/L=1$)", min: 0.05, max: 1.25, step: 0.05, value: al, digits: 2 }, function (v) { al = v; p.redraw(); });
+    c.appendChild(h("p", { class: "whint" }, "Drag the start point; it is projected onto the set."));
+    var r = DH.readout(c);
+    c.appendChild(h("div", { class: "legend" }, "<span><i style='background:var(--warn)'></i>gradient step</span><span><i style='background:var(--ink)'></i>projected iterate</span>"));
+    DH.dragHandles(p, [{ get: function () { return x0; }, set: function (q) { x0 = S[k].proj([clamp(q[0], -1.4, 2.9), clamp(q[1], -1.4, 2.9)]); } }], function () { p.redraw(); }, { always: true });
+    p.draw = function (p) {
+      var s = S[k];
+      p.contours(function (x, y) { return f([x, y]); }, [0.25, 0.75, 1.5, 2.5, 4, 6, 8.5, 11.5], { fill: false });
+      drawSet(p, s); p.axes({ labels: true });
+      var x = x0.slice(), fs = [f(x)], pts = [x];
+      for (var i = 0; i < 12; i++) {
+        var z = sub(x, sc(2 * al, sub(x, ctr))), xn = s.proj(z);
+        if (i < 6) { p.line(x[0], x[1], z[0], z[1], col("warn"), 1.6, [5, 4]); p.ring(z[0], z[1], 4, col("warn"), 1.6); p.line(z[0], z[1], xn[0], xn[1], col("muted"), 1.2, [2, 3]); }
+        x = xn; pts.push(x); fs.push(f(x));
+      }
+      p.poly(pts, col("ink"), 2, { dots: true, firstBig: true });
+      p.dot(ctr[0], ctr[1], 4, col("mint"));
+      var up = false; for (var j = 1; j < fs.length; j++) if (fs[j] > fs[j - 1] + 1e-12) up = true;
+      r.innerHTML = "f along the iterates: " + fs.slice(0, 7).map(function (v) { return DH.fmt(v, 3); }).join(", ") + ", …" +
+        "<br>after 12 steps x = " + v2(x) + ", f = " + DH.fmt(fs[12], 4) +
+        "<br>" + (up ? "<span class='bad'>f went up at some step</span>: with α &gt; 2/L = 1 the decrease guarantee is lost." : al < 1 ? "<span class='good'>f decreased at every step</span> (α &lt; 2/L)." : "f did not increase in these steps.");
+    };
+    p.redraw();
+  };
+
+  /* ---------- 14.3 LP: the optimum sits at a corner ---------- */
+  W.pc_lp = function (el) {
+    var V = [[0, 0], [4, 0], [1, 3], [0, 3]], d = [1, 2];
+    var row = h("div", { class: "wrow" }); el.appendChild(row);
+    var p = new DH.Plot(row, { xmin: -1, xmax: 5, ymin: -1, ymax: 5, ratio: 0.9, equal: true, label: "Feasible polygon of an LP with a draggable cost direction" });
+    var c = DH.ctrlBox(row);
+    c.appendChild(h("p", { class: "whint" }, "Drag the arrow tip: it is −c, the direction in which the cost cᵀx falls."));
+    var r = DH.readout(c);
+    c.appendChild(h("div", { class: "legend" }, "<span><i style='background:var(--accent)'></i>feasible set</span><span><i style='background:var(--mint)'></i>optimal corner(s)</span><span><i style='background:var(--warn)'></i>basic but infeasible</span>"));
+    DH.dragHandles(p, [{ get: function () { return add([2, 1.2], d); }, set: function (q) { d = sub([clamp(q[0], -0.9, 4.9), clamp(q[1], -0.9, 4.9)], [2, 1.2]); if (nrm(d) < 0.2) d = [0.2, 0]; } }], function () { p.redraw(); }, { always: true });
+    p.draw = function (p) {
+      var cst = [-d[0], -d[1]], vals = V.map(function (v) { return dot(cst, v); }), mn = Math.min.apply(null, vals);
+      p.axes({ labels: true, xlabel: "x₁", ylabel: "x₂" });
+      p.poly(V, col("accent"), 2, { close: true, fill: DH.alpha(col("accent"), 0.15) });
+      p.line(0, 4, 4, 0, DH.alpha(col("muted"), 0.6), 1, [4, 4]); p.line(-1, 3, 5, 3, DH.alpha(col("muted"), 0.6), 1, [4, 4]);
+      p.dot(0, 4, 5, col("warn"), col("plot-bg")); p.text("(0, 4)", 0, 4, col("warn"), { dx: 8, dy: -8, halo: true });
+      // level line through the optimum
+      var nd = nrm(cst), dir = [-cst[1] / nd, cst[0] / nd], opt = V[vals.indexOf(mn)];
+      p.line(opt[0] - 9 * dir[0], opt[1] - 9 * dir[1], opt[0] + 9 * dir[0], opt[1] + 9 * dir[1], col("mint"), 1.8, [7, 5]);
+      V.forEach(function (v, i) { var on = vals[i] - mn < 1e-6; p.dot(v[0], v[1], on ? 7 : 4.5, on ? col("mint") : col("ink"), col("plot-bg")); });
+      p.arrow(2, 1.2, 2 + d[0], 1.2 + d[1], col("ink"), 2.4); p.text("−c", 2 + d[0], 1.2 + d[1], col("ink"), { dx: 8, dy: -8, bold: true, halo: true });
+      var nOpt = vals.filter(function (v) { return v - mn < 1e-6; }).length;
+      r.innerHTML = "c = " + v2(cst) + "<br>" + V.map(function (v, i) { return "corner " + v2(v) + ": cᵀx = " + f2(vals[i]); }).join("<br>") +
+        "<br>" + (nOpt > 1 ? "Two corners tie: the whole edge between them is optimal, and the corners are still among the optima." : "Optimum at the corner " + v2(opt) + ", value " + f2(mn) + ".");
     };
     p.redraw();
   };
