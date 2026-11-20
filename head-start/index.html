@@ -719,6 +719,9 @@ section.ch .ch-head h2 { font-size:clamp(28px,3.6vw,38px); letter-spacing:-.025e
 @media (max-width:600px) { section.ch, .prose { font-size:17px; } .lead .lead-idea { font-size:20px; } }
 .takeaways { background:var(--panel); border:1px solid var(--line); border-radius:22px; padding:22px 24px; box-shadow:none; }
 .takeaways .label { color:var(--brand); }
+/* the Home row is highlighted like the current chapter when Home is open */
+.rail .toc .part.home > button.active { background:var(--brand-soft) !important; color:var(--brand) !important; box-shadow:none !important; }
+.rail .toc .part.home > button.active b, .rail .toc .part.home > button.active .pn, .rail .toc .part.home > button.active svg { color:var(--brand) !important; }
 </style>
 <script>/* one-time import of progress carried over from an old address (#import=...): never overwrites existing keys */try{var m=location.hash.match(/^#import=([^&]+)/);if(m){var o=JSON.parse(decodeURIComponent(escape(atob(decodeURIComponent(m[1])))));for(var k in o.d){if(localStorage.getItem(k)===null)localStorage.setItem(k,o.d[k]);}history.replaceState(null,"",location.pathname+location.search+(o.h?"#"+o.h:""));}}catch(e){}</script>
 <script>try { var t = localStorage.getItem("first-commit-progress-v2-theme"); if (t === "dark" || t === "light") document.documentElement.setAttribute("data-theme", t); } catch (e) {}</script>

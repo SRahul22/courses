@@ -784,6 +784,10 @@ section.pg-review { display:flex; flex-direction:column; gap:26px; }
 .takeaways ol > li::before { top:10px; }
 .takeaways ol > li:first-child::before { top:2px; }
 
+/* the Home row is highlighted like the current chapter when Home is open (so you always see where you are) */
+.toc .part > button[data-part="-1"].active, .rail .toc .part.home > button.active { background:var(--brand-soft) !important; color:var(--brand) !important; box-shadow:none !important; }
+.toc .part > button[data-part="-1"].active b, .toc .part > button[data-part="-1"].active .pn, .rail .toc .part.home > button.active b, .rail .toc .part.home > button.active .pn { color:var(--brand) !important; }
+
 /* site theme */
 
 </style>
@@ -2894,7 +2898,7 @@ window.SITE = {"name": "Restock", "key": "restock", "path": "inventory", "domain
       if (page.matches("section.ch")) store.set(SITE.key + "-ch", page.id);
       $$(".toc .chs a").forEach(function (a) { a.classList.toggle("on", a.dataset.ch === page.id); });
     }
-    if (changed) { buildPager(); updateScores(); document.body.classList.toggle("reading", i >= 0); if (i < 0) curCh = null; }
+    if (changed) { buildPager(); updateScores(); document.body.classList.toggle("reading", i >= 0); if (i < 0) { curCh = null; $$(".toc .chs a.on").forEach(function (a) { a.classList.toggle("on", false); a.removeAttribute("aria-current"); }); } }
     if (hero) hero.hidden = i !== -1;
     if (i === -1) renderCta();
     tbKey = ""; setTimeout(updateLocbar, 0);
