@@ -813,7 +813,9 @@ section.pg-review { display:flex; flex-direction:column; gap:26px; }
    a knob that slides under the active mode, and the active icon lit. role="switch" + aria-checked in core.js. */
 .theme-btn { position:relative !important; width:56px !important; min-width:56px !important; height:30px !important; padding:0 8px !important; border:0 !important; border-radius:99px !important; background:color-mix(in srgb, var(--tx) 10%, transparent) !important; display:inline-flex !important; align-items:center !important; justify-content:space-between !important; cursor:pointer; }
 .theme-btn svg, .theme-btn.is-dark svg { display:block !important; width:14px !important; height:14px !important; position:relative; z-index:1; color:var(--tx3); transition:color .25s ease; }
-.theme-btn::after { content:""; position:absolute; top:3px; left:3px; width:24px; height:24px; border-radius:50%; background:var(--panel); box-shadow:0 1px 3px rgba(0,0,0,.22); transform:translateX(26px); transition:transform .3s cubic-bezier(.3, .9, .3, 1); }
+.theme-btn::after { content:""; position:absolute; top:3px; left:3px; width:24px; height:24px; border-radius:50%; background:#FFFFFF; box-shadow:0 1px 3px rgba(0,0,0,.25); transform:translateX(26px); transition:transform .38s cubic-bezier(.45, 0, .2, 1), background-color .38s ease; }
+/* the knob keeps a colour of its own in dark mode (not the panel colour), so the slide stays visible both ways */
+.theme-btn.is-dark::after { background:#3A4757; box-shadow:0 1px 3px rgba(0,0,0,.5); }
 .theme-btn.is-dark::after { transform:translateX(0); }
 .theme-btn:not(.is-dark) .ic-sun { color:#C27A0E; }
 .theme-btn.is-dark .ic-moon { color:#9CC3E6; }
