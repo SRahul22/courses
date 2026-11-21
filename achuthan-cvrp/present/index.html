@@ -1,0 +1,1251 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Branch-and-Cut Talk</title>
+<meta name="description" content="Presentation mode: Achuthan, Caccetta and Hill (2003), An Improved Branch-and-Cut Algorithm for the CVRP, explained from scratch with a live 7-customer example beside every slide.">
+<meta name="robots" content="noindex">
+<link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<link rel="icon" href="../favicon-32.png" sizes="32x32" type="image/png">
+<link rel="preload" href="../vendor/fonts/figtree.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="../vendor/fonts/source-serif-4.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="../vendor/katex/katex.min.css">
+<script defer src="../vendor/katex/katex.min.js"></script>
+<script defer src="../vendor/katex/contrib/auto-render.min.js"></script>
+<script>try { var t = localStorage.getItem("courses-theme"); if (t === "dark" || t === "light") document.documentElement.setAttribute("data-theme", t); } catch (e) {}</script>
+<style>
+@font-face { font-family:Figtree; font-style:normal; font-weight:300 900; font-display:swap; src:url(../vendor/fonts/figtree.woff2) format("woff2"); }
+@font-face { font-family:"Source Serif 4"; font-style:normal; font-weight:200 900; font-display:swap; src:url(../vendor/fonts/source-serif-4.woff2) format("woff2"); }
+@font-face { font-family:"Source Serif 4"; font-style:italic; font-weight:200 900; font-display:swap; src:url(../vendor/fonts/source-serif-4-italic.woff2) format("woff2"); }
+@font-face { font-family:"JetBrains Mono"; font-style:normal; font-weight:100 800; font-display:swap; src:url(../vendor/fonts/jetbrains-mono.woff2) format("woff2"); }
+:root {
+  --bg:#F4F6F7; --bg2:#EAEEF0; --panel:#FFFFFF; --panel2:#F9FAFB;
+  --line:rgba(24,32,41,.10); --line2:rgba(24,32,41,.18);
+  --tx:#182029; --tx2:#46505C; --tx3:#6A7480;
+  --accent:#1F5F8B; --accent-soft:rgba(31,95,139,.10); --coral:#A9532F;
+  --ok:#2E7D4F; --bad:#C53B2F; --bad-soft:rgba(197,59,47,.12);
+  --tA:#1F5F8B; --tB:#B4532A; --tC:#2E7D4F; --tD:#6B4FB8;
+  --r1:#1F5F8B; --r2:#B4532A; --r3:#2E7D4F; --r4:#6B4FB8; --r5:#9A7B12; --r6:#0E7490; --r7:#8A3D62;
+  --ui:Figtree, system-ui, -apple-system, "Segoe UI", sans-serif; --read:"Source Serif 4", Georgia, serif;
+  --mono:"JetBrains Mono", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg:#11151A; --bg2:#171C22; --panel:#1A2027; --panel2:#1F262E;
+  --line:rgba(228,232,236,.09); --line2:rgba(228,232,236,.17);
+  --tx:#E4E8EC; --tx2:#B3BCC6; --tx3:#8A95A1;
+  --accent:#79AEDB; --accent-soft:rgba(121,174,219,.14); --coral:#EE9068;
+  --ok:#6BCB8B; --bad:#F2796B; --bad-soft:rgba(242,121,107,.14);
+  --tA:#79AEDB; --tB:#EE9068; --tC:#6BCB8B; --tD:#B4A5F5;
+  --r1:#79AEDB; --r2:#EE9068; --r3:#6BCB8B; --r4:#B4A5F5; --r5:#E3C15A; --r6:#5CC8DB; --r7:#E48DB4;
+} }
+:root[data-theme="dark"] {
+  --bg:#11151A; --bg2:#171C22; --panel:#1A2027; --panel2:#1F262E;
+  --line:rgba(228,232,236,.09); --line2:rgba(228,232,236,.17);
+  --tx:#E4E8EC; --tx2:#B3BCC6; --tx3:#8A95A1;
+  --accent:#79AEDB; --accent-soft:rgba(121,174,219,.14); --coral:#EE9068;
+  --ok:#6BCB8B; --bad:#F2796B; --bad-soft:rgba(242,121,107,.14);
+  --tA:#79AEDB; --tB:#EE9068; --tC:#6BCB8B; --tD:#B4A5F5;
+  --r1:#79AEDB; --r2:#EE9068; --r3:#6BCB8B; --r4:#B4A5F5; --r5:#E3C15A; --r6:#5CC8DB; --r7:#E48DB4;
+}
+* { box-sizing:border-box; }
+html, body { margin:0; height:100%; background:var(--bg); color:var(--tx); }
+body { font-family:var(--read); font-size:clamp(16px, 1.2vw, 21px); line-height:1.5; overflow:hidden; display:flex; flex-direction:column; }
+button { font:inherit; color:inherit; }
+a { color:var(--accent); }
+
+/* top and bottom bars */
+.top { flex:0 0 auto; display:flex; align-items:center; gap:14px; height:52px; padding:0 18px; border-bottom:1px solid var(--line); font-family:var(--ui); font-size:14px; background:var(--panel); }
+.top .back { display:flex; align-items:center; gap:8px; text-decoration:none; color:var(--tx); font-weight:700; white-space:nowrap; }
+.top .sec { color:var(--tx3); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; min-width:0; flex:1; }
+.top .tools { display:flex; gap:6px; margin-left:auto; }
+.ib { border:1px solid var(--line2); background:var(--panel); border-radius:999px; padding:5px 12px; cursor:pointer; font-family:var(--ui); font-size:13px; white-space:nowrap; }
+.ib:hover { background:var(--bg2); }
+.ib[aria-pressed="true"] { background:var(--accent); border-color:var(--accent); color:var(--panel); }
+.foot { flex:0 0 auto; display:flex; align-items:center; gap:12px; height:48px; padding:0 18px; border-top:1px solid var(--line); font-family:var(--ui); font-size:14px; background:var(--panel); position:relative; }
+.foot .prog { position:absolute; left:0; top:-1px; height:3px; background:var(--accent); transition:width .25s; }
+.foot .count { font-variant-numeric:tabular-nums; color:var(--tx2); }
+.foot .timer { font-variant-numeric:tabular-nums; color:var(--tx3); cursor:pointer; border:0; background:none; }
+.foot .nav { margin-left:auto; display:flex; gap:8px; }
+.foot .hint { color:var(--tx3); font-size:12.5px; }
+
+/* slides */
+.stage { flex:1 1 auto; position:relative; min-height:0; }
+.slide { position:absolute; inset:0; display:none; grid-template-columns:minmax(0, 1fr) minmax(0, 1.1fr); gap:clamp(16px, 2.4vw, 40px); padding:clamp(14px, 2vw, 34px) clamp(16px, 3vw, 48px); }
+.slide.on { display:grid; }
+.slide.nodemo { grid-template-columns:minmax(0, 1fr); max-width:1100px; margin:0 auto; }
+.txt { overflow:auto; min-height:0; padding-right:8px; }
+.kick { font-family:var(--ui); font-weight:700; font-size:.72em; letter-spacing:.06em; text-transform:uppercase; color:var(--coral); margin:0 0 .3em; }
+.slide h2 { font-family:var(--ui); font-weight:800; font-size:clamp(24px, 2.25vw, 40px); line-height:1.15; margin:0 0 .55em; letter-spacing:-.01em; }
+.slide h1 { font-family:var(--ui); font-weight:800; font-size:clamp(30px, 3.4vw, 58px); line-height:1.08; margin:.2em 0 .4em; letter-spacing:-.02em; }
+.txt p { margin:0 0 .7em; }
+.txt ul, .txt ol { margin:0 0 .8em; padding-left:1.25em; }
+.txt li { margin:.25em 0; }
+.lead { font-size:1.12em; color:var(--tx2); }
+.say { border-left:3px solid var(--accent); padding:.15em 0 .15em .8em; margin:0 0 .8em; color:var(--tx); font-size:1.04em; }
+.small { font-size:.86em; color:var(--tx2); }
+.mathbox { background:var(--panel); border:1px solid var(--line); border-radius:14px; padding:.5em 1em .6em; margin:.2em 0 .9em; }
+.mathbox .katex-display { margin:.4em 0; overflow-x:auto; overflow-y:hidden; padding:.1em 0; }
+.mathbox .tag { font-family:var(--ui); font-size:.7em; font-weight:700; color:var(--tx3); letter-spacing:.05em; text-transform:uppercase; }
+.legend { list-style:none; padding:0 !important; margin:.2em 0 0 !important; display:grid; gap:.25em; font-size:.88em; }
+.legend li { display:flex; gap:.6em; align-items:baseline; cursor:default; border-radius:6px; padding:1px 4px; margin:0 !important; }
+.legend li:hover { background:var(--bg2); }
+.sw { display:inline-block; width:.8em; height:.8em; border-radius:3px; flex:0 0 auto; transform:translateY(.08em); }
+.sw.tA { background:var(--tA); } .sw.tB { background:var(--tB); } .sw.tC { background:var(--tC); } .sw.tD { background:var(--tD); }
+.katex .tA { color:var(--tA); } .katex .tB { color:var(--tB); } .katex .tC { color:var(--tC); } .katex .tD { color:var(--tD); }
+.hl-tA .katex .tA, .hl-tB .katex .tB, .hl-tC .katex .tC, .hl-tD .katex .tD { background:var(--accent-soft); border-radius:4px; box-shadow:0 0 0 3px var(--accent-soft); }
+.hl-tA .e.tA, .hl-tB .e.tB, .hl-tC .e.tC { stroke-width:2.2 !important; }
+.f { opacity:0; transform:translateY(6px); transition:opacity .3s, transform .3s; }
+.f.shown { opacity:1; transform:none; }
+.steps-done .f { opacity:1; transform:none; }
+.title-meta { font-family:var(--ui); color:var(--tx2); font-size:.95em; }
+.pill { display:inline-block; font-family:var(--ui); font-size:.75em; font-weight:700; padding:2px 10px; border-radius:999px; background:var(--accent-soft); color:var(--accent); }
+table.t { border-collapse:collapse; font-family:var(--ui); font-size:.85em; margin:.2em 0 .9em; width:100%; }
+table.t th, table.t td { padding:.35em .6em; border-bottom:1px solid var(--line); text-align:left; }
+table.t th { color:var(--tx3); font-weight:700; }
+table.t td.n { text-align:right; font-variant-numeric:tabular-nums; }
+code { font-family:var(--mono); font-size:.82em; background:var(--bg2); padding:1px 5px; border-radius:5px; }
+
+/* demo panel */
+.demo { background:var(--panel); border:1px solid var(--line); border-radius:18px; padding:12px 16px 14px; display:flex; flex-direction:column; gap:8px; min-height:0; overflow:auto; font-family:var(--ui); font-size:.8em; }
+.dhead { display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
+.dlabel { font-weight:800; font-size:.8em; letter-spacing:.06em; text-transform:uppercase; color:var(--tx3); margin-right:auto; }
+.dlabel::before { content:""; display:inline-block; width:8px; height:8px; border-radius:50%; background:var(--ok); margin-right:7px; transform:translateY(-1px); }
+.chips { display:flex; gap:6px; flex-wrap:wrap; }
+.chip { border:1px solid var(--line2); background:var(--panel); border-radius:999px; padding:4px 11px; cursor:pointer; font-size:.95em; }
+.chip.on { background:var(--accent); color:var(--panel); border-color:var(--accent); }
+.btns { display:flex; gap:8px; flex-wrap:wrap; }
+.btn { border:1px solid var(--line2); background:var(--panel2); border-radius:999px; padding:6px 14px; cursor:pointer; font-weight:600; }
+.btn:hover { background:var(--bg2); }
+.btn.primary { background:var(--accent); border-color:var(--accent); color:var(--panel); }
+.btn:disabled { opacity:.45; cursor:default; }
+svg.g { width:100%; flex:1 1 auto; min-height:200px; max-height:52vh; display:block; touch-action:manipulation; }
+.ro { font-size:1.02em; line-height:1.5; color:var(--tx); min-height:2.6em; }
+.demo .ro, .demo .btns, .demo .chips, .demo input, .demo pre { flex-shrink:0; }
+.ro .row { display:flex; gap:8px; align-items:baseline; }
+.ro .big { font-size:1.25em; font-weight:800; }
+.ro .okc { color:var(--ok); font-weight:700; } .ro .badc { color:var(--bad); font-weight:700; }
+.ro .tA { color:var(--tA); font-weight:700; } .ro .tB { color:var(--tB); font-weight:700; } .ro .tC { color:var(--tC); font-weight:700; }
+.ro .mut { color:var(--tx3); }
+.loadbar { display:inline-block; width:70px; height:8px; background:var(--bg2); border-radius:4px; overflow:hidden; vertical-align:middle; }
+.loadbar i { display:block; height:100%; }
+.msg { background:var(--bg2); border-radius:10px; padding:8px 12px; }
+.cutlist { display:flex; flex-direction:column; gap:4px; margin-top:6px; }
+.cutlist button { text-align:left; border:1px solid var(--line2); background:var(--panel); border-radius:8px; padding:4px 10px; cursor:pointer; font-size:.95em; }
+.cutlist button.on { border-color:var(--tA); box-shadow:0 0 0 2px var(--accent-soft); }
+.split { display:grid; grid-template-columns:minmax(0, 1.5fr) minmax(0, 1fr); gap:10px; align-items:start; }
+pre.code { font-variant-ligatures:none; font-feature-settings:"calt" 0, "liga" 0; font-family:var(--mono); font-size:.86em; line-height:1.5; background:var(--bg2); border-radius:10px; padding:10px 12px; margin:0; overflow:auto; white-space:pre; flex:1 1 auto; min-height:0; }
+pre.code .cm { color:var(--tx3); } pre.code .kw { color:var(--tD); font-weight:700; } pre.code .st { color:var(--tC); } pre.code .hl { background:var(--accent-soft); display:inline-block; width:100%; }
+input[type=range] { width:100%; accent-color:var(--accent); }
+
+/* svg pieces */
+.nd { cursor:pointer; outline:none; }
+.nd .cu { fill:var(--panel); stroke:var(--tx2); stroke-width:.6; }
+.nd .cl { font:700 3.1px var(--ui); fill:var(--tx); text-anchor:middle; pointer-events:none; }
+.nd .ql, .gl { font:500 2.6px var(--ui); fill:var(--tx3); pointer-events:none; }
+.nd .dep { fill:var(--tx); }
+.nd .dl { font:800 3px var(--ui); fill:var(--bg); text-anchor:middle; pointer-events:none; }
+.nd:focus-visible .cu, .nd:focus-visible .dep { stroke:var(--accent); stroke-width:1.3; }
+.nd.sel .cu { stroke:var(--tA); stroke-width:1.3; }
+.nd.sel .dep { stroke:var(--tA); stroke-width:1.2; }
+.nd.inS .cu { fill:color-mix(in srgb, var(--tA) 22%, var(--panel)); stroke:var(--tA); stroke-width:1.1; }
+.nd.inT1 .cu { fill:color-mix(in srgb, var(--tC) 22%, var(--panel)); stroke:var(--tC); stroke-width:1.1; }
+.nd.inT2 .cu { fill:color-mix(in srgb, var(--tD) 22%, var(--panel)); stroke:var(--tD); stroke-width:1.1; }
+.nd.inT3 .cu { fill:color-mix(in srgb, var(--r5) 22%, var(--panel)); stroke:var(--r5); stroke-width:1.1; }
+.nd.warn .cu { fill:var(--bad-soft); stroke:var(--bad); stroke-width:1.1; }
+.nd.k1 .cu { fill:color-mix(in srgb, var(--r1) 20%, var(--panel)); stroke:var(--r1); }
+.nd.k2 .cu { fill:color-mix(in srgb, var(--r2) 20%, var(--panel)); stroke:var(--r2); }
+.nd.k3 .cu { fill:color-mix(in srgb, var(--r3) 20%, var(--panel)); stroke:var(--r3); }
+.nd.k4 .cu { fill:color-mix(in srgb, var(--r4) 20%, var(--panel)); stroke:var(--r4); }
+.nd.k5 .cu { fill:color-mix(in srgb, var(--r5) 20%, var(--panel)); stroke:var(--r5); }
+.nd.k6 .cu { fill:color-mix(in srgb, var(--r6) 20%, var(--panel)); stroke:var(--r6); }
+.nd.k7 .cu { fill:color-mix(in srgb, var(--r7) 20%, var(--panel)); stroke:var(--r7); }
+.e { stroke:var(--tx2); stroke-width:.85; stroke-linecap:round; fill:none; }
+.e.frac { stroke-dasharray:1.7 1.3; }
+.e.ret { stroke-dasharray:1 1.4; opacity:.7; }
+.e.r1 { stroke:var(--r1); stroke-width:1.15; } .e.r2 { stroke:var(--r2); stroke-width:1.15; } .e.r3 { stroke:var(--r3); stroke-width:1.15; }
+.e.r4 { stroke:var(--r4); stroke-width:1.15; } .e.r5 { stroke:var(--r5); stroke-width:1.15; } .e.r6 { stroke:var(--r6); stroke-width:1.15; } .e.r7 { stroke:var(--r7); stroke-width:1.15; }
+.e.tA { stroke:var(--tA); stroke-width:1.4; } .e.tB { stroke:var(--tB); stroke-width:1.4; } .e.tC { stroke:var(--tC); stroke-width:1.4; }
+.e.dim { opacity:.28; }
+.e.hit { stroke:transparent; stroke-width:4; cursor:pointer; }
+.elb rect { fill:var(--panel); opacity:.92; }
+.elb text { font:700 2.7px var(--ui); text-anchor:middle; fill:var(--tx2); }
+.elb.tA text { fill:var(--tA); } .elb.tB text { fill:var(--tB); } .elb.tC text { fill:var(--tC); }
+.truck { stroke:var(--panel); stroke-width:.5; }
+.bline { stroke:var(--line2); stroke-width:.6; }
+.tnode circle { stroke-width:.8; }
+.tnode text { font:700 3px var(--ui); text-anchor:middle; }
+
+/* overlays */
+.notes-pane { position:fixed; left:0; right:0; bottom:48px; max-height:34vh; overflow:auto; background:var(--panel); border-top:2px solid var(--accent); padding:12px 24px 16px; font-size:.92em; box-shadow:0 -10px 30px rgba(0,0,0,.12); display:none; z-index:20; }
+.notes-pane.on { display:block; }
+.notes-pane h4 { font-family:var(--ui); margin:0 0 .4em; font-size:.8em; text-transform:uppercase; letter-spacing:.06em; color:var(--tx3); }
+.notes { display:none; }
+.ov { position:fixed; inset:52px 0 48px 0; background:var(--bg); overflow:auto; padding:24px; display:none; z-index:30; font-family:var(--ui); }
+.ov.on { display:block; }
+.ov h3 { font-size:.8em; text-transform:uppercase; letter-spacing:.06em; color:var(--coral); margin:18px 0 8px; }
+.ov .grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(220px, 1fr)); gap:10px; }
+.ov button { text-align:left; border:1px solid var(--line); background:var(--panel); border-radius:12px; padding:10px 12px; cursor:pointer; font-size:14px; }
+.ov button.cur { border-color:var(--accent); box-shadow:0 0 0 3px var(--accent-soft); }
+.ov button b { display:block; color:var(--tx3); font-size:12px; }
+
+@media (max-width: 900px) {
+  body { overflow:auto; height:auto; display:block; }
+  .top { position:sticky; top:0; z-index:10; }
+  .top .sec, .top .bt, .foot .hint, .ib.wide { display:none; }
+  .top { gap:8px; padding:0 12px; }
+  .foot { gap:8px; padding:0 12px; }
+  .stage { min-height:0; }
+  .slide { position:static; grid-template-columns:minmax(0, 1fr); padding:16px; }
+  .slide:not(.on) { display:none; }
+  .txt { overflow:visible; padding:0; }
+  svg.g { max-height:none; }
+  .foot { position:sticky; bottom:0; z-index:10; }
+  .split { grid-template-columns:1fr; }
+  .f { opacity:1; transform:none; }
+}
+@media (prefers-reduced-motion: reduce) { .f, .foot .prog { transition:none; } }
+</style>
+</head>
+<body>
+<header class="top">
+  <a class="back" href="../" title="Back to the full explainer"><svg width="22" height="22" viewBox="0 0 26 26" aria-hidden="true"><rect width="26" height="26" rx="7" fill="#55489E"/><path d="M6.5 19.5V9.5L13.5 7.2l6.5 6-3.2 6.3z" fill="none" stroke="#fff" stroke-width="2.2" stroke-linejoin="round"/><path d="M8.5 5l13 12" stroke="#FFE2CF" stroke-width="2.4" stroke-linecap="round"/></svg><span class="bt">Branch-and-Cut for VRP</span></a>
+  <span class="sec" id="sec"></span>
+  <div class="tools">
+    <button class="ib" id="bNotes" type="button" aria-pressed="false" title="Speaker notes (N)">Notes</button>
+    <button class="ib" id="bOv" type="button" aria-pressed="false" title="All slides (O)">Slides</button>
+    <button class="ib wide" id="bFs" type="button" title="Full screen (F)">Full screen</button>
+    <button class="ib" id="bTheme" type="button" title="Light or dark">Theme</button>
+  </div>
+</header>
+
+<main class="stage" id="stage">
+
+<!-- ================= START ================= -->
+<section class="slide" data-section="Start" data-title="Title" data-demo='{"mode":"map","plans":["best"],"autoplay":true,"label":"Live example"}'>
+<div class="txt">
+  <p class="kick">SL 225 project · Logistics and Freight Modeling</p>
+  <h1>Solving truck routing exactly, with better cuts</h1>
+  <p class="lead">N. R. Achuthan, L. Caccetta and S. P. Hill, <i>An Improved Branch-and-Cut Algorithm for the Capacitated Vehicle Routing Problem</i>, Transportation Science 37(2):153–169, 2003.</p>
+  <p class="title-meta">Presented by Rahul Dev Sharma</p>
+  <p class="say">One small example (a depot and 7 customers) runs on the right of every slide. Everything we define, we try on it.</p>
+  <p class="small">→ / Space: next step · ← back · N notes · O all slides · F full screen</p>
+</div>
+<aside class="notes">Open on the picture: three trucks leave the depot, serve seven customers and come home. Promise: by the end the audience knows why this plan is the best one, and how a computer proves that no better plan exists. (~45 s)</aside>
+</section>
+
+<section class="slide" data-section="1 · The problem" data-title="The problem" data-demo='{"mode":"map","plans":["none"],"info":true,"label":"Tap a customer"}'>
+<div class="txt">
+  <p class="kick">1 · The problem</p>
+  <h2>One depot, seven customers, identical trucks</h2>
+  <ul>
+    <li class="f">The <b>depot</b> (the black square, node 1) holds the goods. Every truck starts and ends there.</li>
+    <li class="f">Customers 2–8 each want an amount $q_j$, written next to each circle.</li>
+    <li class="f">Every truck carries at most $Q = 10$.</li>
+  </ul>
+  <p class="f"><b>Find routes</b> so that every customer is visited exactly once, no truck carries more than $Q$, and every route starts and ends at the depot.</p>
+  <p class="f"><b>Goal:</b> the least total distance driven.</p>
+  <p class="f say">This is the <b>capacitated vehicle routing problem</b> (CVRP): deliveries, garbage collection, school buses.</p>
+</div>
+<aside class="notes">Tap customer 2 on the right: demand 9, so it almost fills a truck by itself. Tap 4: demand 1. Total demand is 28 and Q is 10, so at least 3 trucks are needed. (~1 min)</aside>
+</section>
+
+<section class="slide" data-section="1 · The problem" data-title="Try it" data-demo='{"mode":"build","label":"Build your own routes"}'>
+<div class="txt">
+  <p class="kick">1 · The problem</p>
+  <h2>Try it: plan the routes yourself</h2>
+  <p>Tap customers in the order a truck should visit them. When the truck is full, press <b>New route</b>.</p>
+  <ul>
+    <li class="f">The panel shows each truck's load against $Q = 10$ and the distance driven.</li>
+    <li class="f">A standard quick method (a savings heuristic) gets <b>322.4</b>.</li>
+    <li class="f">The best possible plan costs <b>318.2</b>. Can you find it?</li>
+  </ul>
+  <p class="f say">Finding a good plan is easy. Knowing that nothing better exists is the hard part.</p>
+</div>
+<aside class="notes">Build one route live: 1 → 3 → 4 → 8. Load 9. Then customer 2 alone (9). Then 6, 5, 7 (load 10). Total 318.2. Ask: how would you convince someone that no plan beats 318.2? (~1.5 min)</aside>
+</section>
+
+<section class="slide" data-section="1 · The problem" data-title="Good vs proven" data-demo='{"mode":"map","plans":["heur","best"],"label":"Two plans"}'>
+<div class="txt">
+  <p class="kick">1 · The problem</p>
+  <h2>A good plan is not a proof</h2>
+  <p>Switch between the two plans on the right.</p>
+  <ul>
+    <li class="f"><b>Heuristic plan</b>: 322.4. Quick, sensible, no guarantee.</li>
+    <li class="f"><b>Best plan</b>: 318.2, about 1.3% shorter.</li>
+    <li class="f">This toy has only 354 possible plans, so we could check them all. With 50 customers the number of plans is astronomically large: listing them is impossible.</li>
+  </ul>
+  <p class="f say">The paper's question: how do we <b>prove</b> a plan is the best without listing every plan? Answer: compute a <b>lower bound</b>, a number no plan can beat, and push it up until it meets the best plan we know.</p>
+</div>
+<aside class="notes">Upper bound = cost of a plan we have (322.4 or 318.2). Lower bound = something we can prove about every plan. When the two meet, we are done. That sentence is the whole talk. (~1.5 min)</aside>
+</section>
+
+<!-- ================= MODEL ================= -->
+<section class="slide" data-section="2 · Writing it for a computer" data-title="Variables x_ij" data-demo='{"mode":"map","plans":["best"],"labels":"all","edgeInfo":true,"drive":false,"label":"Tap a road"}'>
+<div class="txt">
+  <p class="kick">2 · Writing it for a computer</p>
+  <h2>Describe a plan by the roads it uses</h2>
+  <p class="say">For every pair of locations $i \lt j$, one number $x_{ij}$: <b>how many times a truck drives between $i$ and $j$</b>.</p>
+  <ul>
+    <li class="f">$x_{ij} = 1$ if the road is driven once, $0$ if not.</li>
+    <li class="f">$x_{1j} = 2$ only for a depot road, when a truck serves customer $j$ alone: out and back. Route 1 → 2 → 1 is $x_{12} = 2$.</li>
+    <li class="f">We do not record which truck or which direction, only which roads. Two indices, $i$ and $j$: the <b>two-index model</b>.</li>
+    <li class="f">Two customers that cannot share a truck ($q_i + q_j \gt Q$) get no variable at all. Customer 2 ($q = 9$) can only pair with customer 4 ($q = 1$).</li>
+  </ul>
+</div>
+<aside class="notes">Tap a road on the right: it shows its x value and length. Point out x12 = 2. The smaller index always comes first, so it is x56, never x65. The toy has 23 such variables plus m, the number of trucks. (~1.5 min)</aside>
+</section>
+
+<section class="slide" data-section="2 · Writing it for a computer" data-title="Objective (1.1)" data-demo='{"mode":"map","plans":["best"],"labels":"none","costs":true,"label":"Cost of the best plan"}'>
+<div class="txt">
+  <p class="kick">2 · Writing it for a computer</p>
+  <h2>What we minimise: total distance</h2>
+  <p class="say">In words: for every road, its <b>length</b> times <b>how many times it is driven</b>; add these up.</p>
+  <div class="mathbox f"><span class="tag">(1.1) objective</span>
+  $$\min \; \sum_{i \lt j} \htmlClass{tA}{c_{ij}} \; \htmlClass{tB}{x_{ij}}$$
+  <ul class="legend"><li data-t="tA"><span class="sw tA"></span>$c_{ij}$: length of the road between $i$ and $j$</li><li data-t="tB"><span class="sw tB"></span>$x_{ij}$: times it is driven (0, 1, or 2 for a depot road)</li></ul></div>
+  <p class="f">Best plan: $2(48.9)$ for the out-and-back trip to customer 2, plus the two loops: $97.8 + 127.0 + 93.4 = 318.2$.</p>
+</div>
+<aside class="notes">Point at the per-route costs on the right. The x12 = 2 term counts the road to customer 2 twice: once out, once back. (~45 s)</aside>
+</section>
+
+<section class="slide" data-section="2 · Writing it for a computer" data-title="Degrees (1.2), (1.3)" data-demo='{"mode":"degree","sources":["best"],"start":4,"label":"Tap any node"}'>
+<div class="txt">
+  <p class="kick">2 · Writing it for a computer</p>
+  <h2>Rule 1: one truck in, one truck out</h2>
+  <p class="say">Stand at a customer: one truck arrives and one leaves, so its roads add up to <b>2</b>. Stand at the depot: each of the $m$ trucks leaves once and returns once, so its roads add up to <b>$2m$</b>.</p>
+  <div class="mathbox f"><span class="tag">(1.2) depot · (1.3) each customer $k$</span>
+  $$\sum_{j \in \mathscr C} \htmlClass{tA}{x_{1j}} = 2\,\htmlClass{tB}{m} \qquad\qquad \htmlClass{tC}{\sum_{i \lt k} x_{ik} + \sum_{j \gt k} x_{kj}} = 2$$
+  <ul class="legend"><li data-t="tA"><span class="sw tA"></span>roads at the depot; $\mathscr C = \{2,\dots,8\}$ is the set of customers</li><li data-t="tB"><span class="sw tB"></span>$m$: number of trucks, chosen by the model</li><li data-t="tC"><span class="sw tC"></span>all roads touching customer $k$ (two sums only because the smaller index is written first)</li></ul></div>
+  <p class="f">These are the <b>degree constraints</b>. Tap nodes on the right to check them on the best plan.</p>
+</div>
+<aside class="notes">Tap customer 4: x34 + x48 = 2. Tap the depot: 2 + 1 + 1 + 1 + 1 = 6 = 2 × 3. Tap customer 2: x12 = 2 alone. (~1 min)</aside>
+</section>
+
+<section class="slide" data-section="2 · Writing it for a computer" data-title="Not enough" data-demo='{"mode":"degree","sources":["lp0"],"warn":[3,4,5,6],"start":5,"label":"Cheapest answer under rule 1 only"}'>
+<div class="txt">
+  <p class="kick">2 · Writing it for a computer</p>
+  <h2>Is rule 1 enough? No.</h2>
+  <p>Give the computer only (1.1)–(1.3) and ask for the cheapest $x$.</p>
+  <ul>
+    <li class="f">It answers <b>246.0</b>, cheaper than the best real plan (318.2). Something is wrong.</li>
+    <li class="f">Every customer has its 2 and the depot has $6 = 2 \cdot 3$: rule 1 holds everywhere.</li>
+    <li class="f">But customers 3, 4, 5, 6 form a <b>loop that never visits the depot</b>: a truck with no garage.</li>
+    <li class="f">And that loop carries $3 + 1 + 3 + 4 = 11 \gt 10$: too heavy for one truck anyway.</li>
+  </ul>
+  <p class="f say">We need a rule that forbids loops away from the depot and overloaded trucks.</p>
+</div>
+<aside class="notes">This is the classic subtour. The rest of the model exists to forbid pictures like this one. (~1 min)</aside>
+</section>
+
+<section class="slide" data-section="2 · Writing it for a computer" data-title="Capacity cut (1.4)" data-demo='{"mode":"set","fam":"1.4","sources":["lp0","best"],"S":[3,4,5,6],"label":"Tap customers to choose a group S"}'>
+<div class="txt">
+  <p class="kick">2 · Writing it for a computer</p>
+  <h2>Rule 2: a group of customers needs enough trucks</h2>
+  <p class="say">Pick any group $S$ of customers. Together they need at least $\ell(S) = \lceil q(S)/Q \rceil$ trucks (total demand divided by capacity, rounded up).</p>
+  <p class="f">Each truck that serves part of $S$ visits some of its customers in a row. A run of $r$ customers uses $r - 1$ roads inside $S$. With at least $\ell(S)$ runs, at most $|S| - \ell(S)$ roads can lie inside $S$.</p>
+  <div class="mathbox f"><span class="tag">(1.4) capacity / subtour rule, every group $S$</span>
+  $$\htmlClass{tA}{\sum_{i,j \in S} x_{ij}} \;\le\; \htmlClass{tB}{|S|} - \htmlClass{tC}{\ell(S)}$$
+  <ul class="legend"><li data-t="tA"><span class="sw tA"></span>$x(S)$: roads with both ends in $S$</li><li data-t="tB"><span class="sw tB"></span>number of customers in $S$</li><li data-t="tC"><span class="sw tC"></span>$\ell(S)$: fewest trucks $S$ needs</li></ul></div>
+  <p class="f">The loop $S = \{3,4,5,6\}$ has 4 roads inside, but only $4 - \lceil 11/10 \rceil = 2$ are allowed. <b>Broken, so that answer is forbidden.</b> Even a light loop is caught: $\ell \ge 1$ allows $|S| - 1$ roads, and a closed loop has $|S|$.</p>
+</div>
+<aside class="notes">Show on the right: S = {3,4,5,6} is broken on the starting answer. Switch to the best plan: satisfied. Tap 3 and 6 away and add 7 to try other groups. (~1.5 min)</aside>
+</section>
+
+<section class="slide" data-section="2 · Writing it for a computer" data-title="Too many rules" data-demo='{"mode":"count","label":"How many groups S?"}'>
+<div class="txt">
+  <p class="kick">2 · Writing it for a computer</p>
+  <h2>Too many rules to write down</h2>
+  <p class="say">Rule (1.4) is one inequality <b>per group of customers</b>.</p>
+  <ul>
+    <li class="f">7 customers: 99 groups of size 3 or more.</li>
+    <li class="f">100 customers: about $1.3 \times 10^{30}$ groups. Nobody can write them all.</li>
+    <li class="f">Instead: start without them. Solve. If the answer breaks one, add that one and solve again.</li>
+  </ul>
+  <p class="f say">An inequality added because the current answer breaks it is called a <b>cut</b>: it cuts the wrong answer off. That is the "cut" in branch-and-cut.</p>
+</div>
+<aside class="notes">Drag the slider. The point: the model is exact but exponentially large, so it can only be used lazily. (~45 s)</aside>
+</section>
+
+<!-- ================= BRANCH AND CUT ================= -->
+<section class="slide" data-section="3 · How the computer solves it" data-title="Lower bound" data-demo='{"mode":"solver","from":1,"to":1,"label":"Bounds"}'>
+<div class="txt">
+  <p class="kick">3 · How the computer solves it</p>
+  <h2>A lower bound: allow fractions</h2>
+  <p class="say">Solving with whole numbers is hard. If we let roads be used "half-way" ($x = 0.5$), the problem becomes a <b>linear program</b> (LP), which computers solve very fast.</p>
+  <ul>
+    <li class="f">The LP chooses from more options than real plans, so its cheapest answer can only be <b>lower or equal</b> to the best real plan.</li>
+    <li class="f">So: LP value ≤ best plan ≤ any plan we have. Here $246.0 \le \text{best} \le 322.4$.</li>
+    <li class="f">If the two ends meet, the plan we have is proven best.</li>
+  </ul>
+  <p class="f say">The whole game is to <b>push the lower bound up</b> as fast as possible. Cuts do that.</p>
+</div>
+<aside class="notes">The bar on the right: blue is what we can prove (lower bound), orange is the best plan we hold (upper bound). The gap is what is left to prove. (~1 min)</aside>
+</section>
+
+<section class="slide" data-section="3 · How the computer solves it" data-title="Cutting-plane loop" data-demo='{"mode":"solver","from":0,"to":15,"label":"The solver at the root, step by step"}'>
+<div class="txt">
+  <p class="kick">3 · How the computer solves it</p>
+  <h2>The cutting-plane loop</h2>
+  <ol>
+    <li class="f">Solve the LP.</li>
+    <li class="f">Look for rules the answer breaks.</li>
+    <li class="f">Add them as cuts.</li>
+    <li class="f">Solve again. Repeat until no broken rule is found.</li>
+  </ol>
+  <p class="f">Press <b>Step</b>. Each round removes the current wrong answer and the bound climbs: 246.0 → 293.1 → 310.8 → 315.7 → 317.3 → 317.35 → 317.75 → <b>318.0</b>.</p>
+  <p class="f say">Tap a cut in the list to see the group it is about. Some are rule (1.4); others are the paper's new rules, coming up in Part 4.</p>
+</div>
+<aside class="notes">Step through live. Round 0: the 3-4-5-6 loop, cut by (1.4). Watch how each new answer is a different "cheat" and gets cut. After 7 rounds the bound is 318.0: only 0.2 below the best plan. (~2 min)</aside>
+</section>
+
+<section class="slide" data-section="3 · How the computer solves it" data-title="Branching" data-demo='{"mode":"solver","from":15,"label":"Branching to finish the proof"}'>
+<div class="txt">
+  <p class="kick">3 · How the computer solves it</p>
+  <h2>When cuts run out: branch</h2>
+  <p class="say">At 318.0 no rule is broken, but road 3–4 is used half-way ($x_{34} = \tfrac12$).</p>
+  <ul>
+    <li class="f"><b>Split</b> into two smaller problems: road 3–4 is not used ($x_{34} = 0$), or it is ($x_{34} = 1$). Every real plan is in one of them.</li>
+    <li class="f">$x_{34} = 1$: the LP answer is a real plan, cost <b>318.2</b>. New best plan.</li>
+    <li class="f">$x_{34} = 0$: after more cuts its bound is 319.15. It splits again, but both halves have bound $319.15 \gt 318.2$: they cannot beat what we have, so they are <b>pruned</b>.</li>
+  </ul>
+  <p class="f say">Nothing left to explore: lower bound = upper bound = <b>318.2, proven optimal</b>. Cuts + branching = <b>branch-and-cut</b>.</p>
+</div>
+<aside class="notes">Step through the tree. The tree is small here because the cuts already brought the bound within 0.2 of the answer. Better cuts mean smaller trees: that is the paper's whole point. (~1.5 min)</aside>
+</section>
+
+<!-- ================= NEW CUTS ================= -->
+<section class="slide" data-section="4 · What the paper adds" data-title="Rule (1.7)" data-demo='{"mode":"set","fam":"1.7","sources":["lp0","best"],"S":[2,7,8],"label":"Tap customers to choose S"}'>
+<div class="txt">
+  <p class="kick">4 · What the paper adds · the starting point</p>
+  <h2>A known rule: leave enough trucks for everyone else</h2>
+  <p>Before this paper: (1.4) from Laporte et al. (1985), and (1.7) from the same authors' 1996 paper.</p>
+  <p class="say f">Suppose $r$ trucks serve <b>only</b> customers of $S$. Those trucks are useless to the other customers $\bar S$, who still need $\ell(\bar S)$ trucks. So $m - r \ge \ell(\bar S)$.</p>
+  <div class="mathbox f"><span class="tag">(1.7) any group $S$, with $\bar S$ = the other customers</span>
+  $$\htmlClass{tA}{x(S)} + \htmlClass{tB}{x(1{:}S)} - \htmlClass{tC}{m} \;\le\; |S| - \htmlClass{tD}{\ell(\bar S)}$$
+  <ul class="legend"><li data-t="tA"><span class="sw tA"></span>roads inside $S$</li><li data-t="tB"><span class="sw tB"></span>depot roads into $S$</li><li data-t="tC"><span class="sw tC"></span>trucks in total</li><li data-t="tD"><span class="sw tD"></span>trucks the other customers need</li></ul></div>
+  <p class="f small">Why it works: a truck serving only $r$ customers of $S$ uses $(r-1) + 2 = r + 1$ of the counted roads, so the left side is $|S| + (\text{trucks only in } S) - m$; mixed trucks count less.</p>
+  <p class="f">Starting LP, $S = \{2,7,8\}$: three out-and-back trips, left side $0 + 6 - 3 = 3$, right side $3 - \ell(\{3,4,5,6\}) = 1$. All three trucks are busy with 2, 7, 8; none is left for the other four customers. <b>Broken.</b></p>
+</div>
+<aside class="notes">This is the rule of Algorithm A in the results. The new rules in this paper go further. (~1.5 min)</aside>
+</section>
+
+<section class="slide" data-section="4 · What the paper adds" data-title="New: (2.3), (2.8)" data-demo='{"mode":"groups","S":[3],"T":[[4],[5,6]],"sources":["lp0","best"],"label":"S and the groups T"}'>
+<div class="txt">
+  <p class="kick">4 · What the paper adds · new cut 1</p>
+  <h2>Groups that cannot share a truck</h2>
+  <p class="say">Take a group $S$ and other groups $T_1, \dots, T_k$ such that $S$ together with <b>any two</b> of the $T$'s is too heavy for one truck. Then the truck through $S$ can pick up <b>at most one</b> of the $T$'s.</p>
+  <p class="f">Example: $S = \{3\}$ ($q = 3$), $T_1 = \{4\}$ ($q = 1$), $T_2 = \{5,6\}$ ($q = 7$). Together $3 + 1 + 7 = 11 \gt 10$. So customer 3's route cannot contain both customer 4 and the pair 5–6.</p>
+  <div class="mathbox f"><span class="tag">(2.3), Theorem 2.1</span>
+  $$3\,\htmlClass{tA}{x(S)} + \htmlClass{tB}{x(E[S,T])} + \htmlClass{tC}{\sum_{p} x(T_p)} \;\le\; 3|S| - 2 + |T| - k$$
+  <ul class="legend"><li data-t="tA"><span class="sw tA"></span>roads inside $S$ (counted 3 times)</li><li data-t="tB"><span class="sw tB"></span>roads between $S$ and the $T$'s</li><li data-t="tC"><span class="sw tC"></span>roads inside each $T_p$; $|T|$ = customers in all $T$'s, $k$ = number of groups</li></ul></div>
+  <p class="f">Starting LP: roads 3–4 and 3–6 both used, and 5–6 too: one chain links 3 to both groups. Left side 3, right side $3 - 2 + 3 - 2 = 2$. <b>Broken.</b> Rule (1.4) does not see this: no single group is overloaded. (2.8) is a sharper version for exactly three $T$'s.</p>
+</div>
+<aside class="notes">Switch to the best plan: 3 links only to 4, left side 2: satisfied. The idea is new: it reasons about three sets at once instead of one. (~1.5 min)</aside>
+</section>
+
+<section class="slide" data-section="4 · What the paper adds" data-title="New: (2.9)" data-demo='{"mode":"set","fam":"2.9","sources":["two78","one78","lp0"],"S":[7,8],"label":"Two trips or one?"}'>
+<div class="txt">
+  <p class="kick">4 · What the paper adds · new cut 2</p>
+  <h2>Don't split a group that fits in one truck</h2>
+  <p class="say">If the customers of $S$ fit in one truck ($q(S) \le Q$), an optimal plan never needs two separate trips that serve only $S$: joining them into one trip is never longer (straight-line distances obey the triangle inequality).</p>
+  <p class="f">Trips 1 → 7 → 1 and 1 → 8 → 1 cost $2(5.1) + 2(33.4) = 77.0$. One trip 1 → 7 → 8 → 1 costs $5.1 + 30.4 + 33.4 = 68.9$ and carries $3 + 5 = 8 \le 10$.</p>
+  <div class="mathbox f"><span class="tag">(2.9), Theorem 2.3, groups with $q(S) \le Q$</span>
+  $$\htmlClass{tA}{x(S)} + \htmlClass{tB}{x(1{:}S)} \;\le\; |S| + 1$$
+  <ul class="legend"><li data-t="tA"><span class="sw tA"></span>roads inside $S$</li><li data-t="tB"><span class="sw tB"></span>depot roads into $S$</li></ul></div>
+  <p class="f">One trip through all of $S$ uses $(|S| - 1) + 2 = |S| + 1$ roads. Two trips use one more.</p>
+  <p class="f say">A new <b>kind</b> of rule: it removes some real plans (wasteful ones), but always keeps at least one optimal plan. An <b>optimality cut</b>, not a validity cut.</p>
+</div>
+<aside class="notes">Switch between "two trips" (0 + 4 = 4 > 3, broken) and "one trip" (1 + 2 = 3 ≤ 3, satisfied). Caveat for Q&amp;A: it needs the number of trucks to be free (variable m), or fixed at the minimum fleet. (~1.5 min)</aside>
+</section>
+
+<section class="slide" data-section="4 · What the paper adds" data-title="New: (2.10), fleet cap" data-demo='{"mode":"map","plans":["best"],"labels":"none","fleet":true,"label":"Loads in the best plan"}'>
+<div class="txt">
+  <p class="kick">4 · What the paper adds · new cut 3</p>
+  <h2>A cap on the number of trucks</h2>
+  <p class="say">Same idea for bigger groups: in an optimal plan, <b>any two routes together are heavier than $Q$</b>. Otherwise we could merge them into one shorter route.</p>
+  <p class="f">So on average a route carries more than $Q/2$, which caps the fleet (Corollary 2.5, from inequality (2.10)):</p>
+  <div class="mathbox f">
+  $$m \;\le\; \left\lfloor \frac{2\,(\htmlClass{tA}{q(\mathscr C)} + \delta)}{\htmlClass{tB}{Q} + 1 + \delta} \right\rfloor$$
+  <ul class="legend"><li data-t="tA"><span class="sw tA"></span>total demand of all customers</li><li data-t="tB"><span class="sw tB"></span>truck capacity; $\delta = 1$ if $Q$ is even, $0$ if odd (makes the rounding exact)</li></ul></div>
+  <p class="f">Toy: $\lfloor 2(28 + 1)/(10 + 1 + 1) \rfloor = \lfloor 4.83 \rfloor = 4$. With at least $\lceil 28/10 \rceil = 3$ trucks needed, the fleet is 3 or 4.</p>
+  <p class="f small">(2.10) applies the same count to every group $S$ too heavy for one truck: $x(S) + x(1{:}S) \le |S| + \lfloor 2(q(S) + \delta)/(Q + 1 + \delta) \rfloor$.</p>
+</div>
+<aside class="notes">On the right: loads 9, 10, 9. Every pair adds to more than 10, as the theorem says. (~1 min)</aside>
+</section>
+
+<section class="slide" data-section="4 · What the paper adds" data-title="Searches 1–6" data-demo='{"mode":"map","plans":["lp0"],"components":true,"labels":"frac","drive":false,"label":"Pieces of the starting LP"}'>
+<div class="txt">
+  <p class="kick">4 · What the paper adds · finding cuts</p>
+  <h2>Finding broken rules fast: Searches 1–6</h2>
+  <p class="say">There are far too many groups to test them all, so the paper uses six quick greedy searches on the LP picture.</p>
+  <ul>
+    <li class="f"><b>Start</b> from the connected pieces of the LP answer (roads with $x \gt 0$). On the right: $\{2\}$, $\{3,4,5,6\}$, $\{7\}$, $\{8\}$. Each piece is a candidate $S$.</li>
+    <li class="f"><b>Searches 1–2</b>: shrink a piece while the rule stays broken: (1.4), (2.1), (2.9).</li>
+    <li class="f"><b>Search 3</b>: try unions of pieces for (1.7) and (2.9).</li>
+    <li class="f"><b>Searches 4–6</b> (new): grow groups by merging neighbours, and look for the "$S$ plus groups $T$" pattern of (2.3)/(2.8).</li>
+  </ul>
+  <p class="f small">Fixed order of checks, with Searches 4–6 only when 1–3 find nothing. Each search costs at most $O(n^3)$. The searches are heuristics: they can miss a broken rule, which branching then covers.</p>
+</div>
+<aside class="notes">Keep this short unless asked. The key message: separation is heuristic; the paper's contribution is both new inequalities and searches that find them. (~1 min)</aside>
+</section>
+
+<section class="slide" data-section="4 · What the paper adds" data-title="Effect on the toy" data-demo='{"mode":"trees","label":"Branch-and-cut trees"}'>
+<div class="txt">
+  <p class="kick">4 · What the paper adds</p>
+  <h2>Does it help on the toy?</h2>
+  <table class="t">
+    <tr><th></th><th>Old cuts (1.4), (1.7)</th><th>All cuts (new)</th></tr>
+    <tr><td>Root bound</td><td class="n">317.35</td><td class="n"><b>318.0</b></td></tr>
+    <tr><td>Nodes in the tree</td><td class="n">7</td><td class="n"><b>5</b></td></tr>
+    <tr><td>Optimum</td><td class="n">318.2</td><td class="n">318.2</td></tr>
+  </table>
+  <p class="f say">Same answer, higher bound at the root, smaller tree. On 7 customers the saving is two nodes; on 50 tightly packed customers it is thousands (next part).</p>
+  <p class="f small">Both runs are our own script on the toy instance (scipy LP solver, brute-force checked).</p>
+</div>
+<aside class="notes">Point at the two trees: the old run has to branch on x17 first. (~45 s)</aside>
+</section>
+
+<!-- ================= RESULTS ================= -->
+<section class="slide" data-section="5 · Results" data-title="Paper's results" data-demo='{"mode":"chart","sets":[0,1],"label":"Paper, Table 4.1"}'>
+<div class="txt">
+  <p class="kick">5 · Results · the paper</p>
+  <h2>What the paper reports</h2>
+  <ul>
+    <li class="f">1,650 random problems with 15–100 customers, and 24 problems from the literature. Each gets 1 hour of CPU (a 1990s Sun workstation, CPLEX 2.1 for the LPs).</li>
+    <li class="f">Three algorithms: <b>NEW</b> (all cuts, Searches 1–6), <b>A</b> = (1.4) + (1.7) (Achuthan et al. 1996), <b>B</b> = (1.4) only (Laporte et al. 1985).</li>
+    <li class="f">NEW solves <b>1,369 of 1,590</b> problems in Table 4.1, against 1,239 for A and 1,107 for B, and needs about half of B's total time.</li>
+    <li class="f">The gain is largest when trucks are tight (many short routes), and vanishes when one truck can carry everything (then it is a travelling salesman problem).</li>
+  </ul>
+</div>
+<aside class="notes">Most of the time saved comes from solving more problems within the hour (unsolved ones cost the full hour). (~1.5 min)</aside>
+</section>
+
+<section class="slide" data-section="5 · Results" data-title="Our reproduction" data-demo='{"mode":"chart","sets":[2,3,4],"label":"Our re-implementation"}'>
+<div class="txt">
+  <p class="kick">5 · Results · our reproduction</p>
+  <h2>We re-implemented it and got the same conclusion</h2>
+  <ul>
+    <li class="f">Python 3.12 + Gurobi 13 with our own cuts and searches; Gurobi's own cuts and heuristics switched off, so only the paper's cuts are compared.</li>
+    <li class="f">1,650 problems regenerated with the paper's recipe and fixed seeds. For the head-to-head: the same 280 problems for NEW, A and B.</li>
+    <li class="f">On the 267 problems all three solved: root bound <b>99.15%</b> of the optimum vs 98.59% and 98.56%; median tree <b>18 nodes</b> vs 40 and 39; total time <b>5,186 s</b> vs 9,277 s and 9,444 s.</li>
+  </ul>
+  <p class="f say">Higher bound, trees about half the size, time almost halved: the paper's claim holds. One difference: on our hardware A and B are close, while the paper has A clearly ahead of B.</p>
+</div>
+<aside class="notes">Switch metrics on the right. On 264 of the 267 problems NEW's root bound is at least as high as both A's and B's. (~1.5 min)</aside>
+</section>
+
+<section class="slide" data-section="5 · Results" data-title="Implementation" data-demo='{"mode":"code","label":"Our code"}'>
+<div class="txt">
+  <p class="kick">5 · Results · implementation walkthrough</p>
+  <h2>How our code is organised</h2>
+  <table class="t">
+    <tr><td><code>model.py</code></td><td>the two-index model (1.1)–(1.3); $m$ between $\lceil q/Q \rceil$ and the Corollary 2.5 cap</td></tr>
+    <tr><td><code>support.py</code></td><td>an LP answer: $x(S)$, $x(1{:}S)$, connected pieces</td></tr>
+    <tr><td><code>cuts/</code></td><td>one file per rule: (1.4), (1.7), (2.1), (2.3)/(2.8), (2.9), (2.10)</td></tr>
+    <tr><td><code>searches.py</code></td><td>Searches 1–6 in the paper's order</td></tr>
+    <tr><td><code>solver.py</code></td><td>root cut loop, then Gurobi's branch-and-bound with a callback that adds cuts</td></tr>
+    <tr><td><code>verify.py</code></td><td>rebuilds the routes from $x$ and checks every answer</td></tr>
+  </table>
+  <ul class="small">
+    <li class="f">Every one of the 2,286 solutions returned was rebuilt and checked: each customer once, loads ≤ $Q$, cost recomputed.</li>
+    <li class="f">Same optimum as CVRPLIB on all 18 benchmark problems solved within the limit.</li>
+    <li class="f">Brute force on 60 small random problems: no cut ever removed a real plan (and (2.9) never removed every optimal one).</li>
+    <li class="f">In code the depot is index 0; in the paper it is node 1.</li>
+  </ul>
+</div>
+<aside class="notes">Walk through the three tabs on the right: the model, the root loop, and cut (2.9). (~2 min)</aside>
+<template class="code" data-name="model.py · (1.2), (1.3)"># the two-index formulation (1.1)-(1.6), p. 154
+def edge_list(inst):
+    edges = [(0, j) for j in inst.customers]        # depot roads
+    q, Q = inst.q, inst.Q
+    for i in inst.customers:
+        for j in range(i + 1, inst.n):
+            if q[i] + q[j] &lt;= Q:                    # pairs over capacity get no variable
+                edges.append((i, j))
+    return edges
+
+# (1.2): depot roads add up to 2m
+mdl.addConstr(gp.quicksum(x[0, j] for j in inst.customers) == 2 * m)
+# (1.3): every customer has total road value 2
+for k in inst.customers:
+    mdl.addConstr(gp.quicksum(inc[k]) == 2)</template>
+<template class="code" data-name="solver.py · cut loop">def root_cutting_loop(inst, cfg, allow29, mdl, mvar, edge_set, ...):
+    """start from (1.1)-(1.3); solve, separate, add, repeat"""
+    lp = mdl.relax()
+    while time.time() &lt; deadline:
+        lp.optimize()                                # 1. solve the LP
+        P = LPPoint(inst, xv, m)
+        found = separate(P, cfg.sep, allow29, stats) # 2. Searches 1-6
+        if not found:
+            break                                    # no broken rule: go and branch
+        for fam, *sets in found:                     # 3. add every cut found
+            cut = make_cut(inst, fam, sets)
+            lp.addConstr(... &lt;= cut.rhs)
+    # afterwards Gurobi branches; a callback keeps adding cuts at every node</template>
+<template class="code" data-name="cuts/cut29.py · (2.9)">"""(2.9) Theorem 2.3: x(S) + sum_{j in S} x_1j &lt;= |S| + 1  if q(S) &lt;= Q
+Two routes that stay inside S can be joined into one at no extra cost
+(triangle inequality). Removes feasible solutions, keeps an optimal one."""
+
+def build(inst, S):
+    cut = Cut("2.9", rhs=len(S) + 1, sets=(tuple(sorted(S)),))
+    cut.add_inside(S)          # x(S)
+    cut.add_depot(S)           # x(1:S)
+    return cut
+
+def slack(P, S):
+    if len(S) &lt; 2 or P.demand(S) &gt; P.inst.Q:
+        return INF             # only for groups that fit in one truck
+    return len(S) + 1 - P.x_in(S) - P.x1(S)</template>
+</section>
+
+<section class="slide" data-section="5 · Results" data-title="Critique" data-demo='{"mode":"map","plans":["best"],"labels":"none","label":"Live example"}'>
+<div class="txt">
+  <p class="kick">5 · Results · critique</p>
+  <h2>Strengths and limits</h2>
+  <p><b>Strengths</b></p>
+  <ul>
+    <li class="f">Optimality cuts (2.9)/(2.10): a new idea, rules justified by what an <i>optimal</i> plan looks like rather than by feasibility.</li>
+    <li class="f">A large, systematic test (1,650 problems) with a clear comparison against the two earlier algorithms.</li>
+  </ul>
+  <p><b>Limits</b></p>
+  <ul>
+    <li class="f">The random problems were not published; we had to regenerate them.</li>
+    <li class="f">(2.9)/(2.10) need distances that obey the triangle inequality and a free (or minimal) fleet.</li>
+    <li class="f">Small slips in the text: $Q_j$ for $q_j$ in (3.4), Search 3's formula labelled $Z''_2$, "Theorem 1" in Search 5.</li>
+    <li class="f">Later exact methods (Lysgaard et al. 2004; Fukasawa et al. 2006; Baldacci et al. 2008; Pecin et al. 2017) add more cut families and column generation and solve much larger problems.</li>
+  </ul>
+</div>
+<aside class="notes">Be honest about the limits; they are likely Q&amp;A material. (~1.5 min)</aside>
+</section>
+
+<section class="slide" data-section="Summary" data-title="Summary" data-demo='{"mode":"map","plans":["best"],"autoplay":true,"label":"318.2, proven optimal"}'>
+<div class="txt">
+  <p class="kick">Summary</p>
+  <h2>Three things to remember</h2>
+  <ol>
+    <li class="f"><b>Model:</b> one number per road, $x_{ij}$. Rule 1: one truck in, one out. Rule 2 (1.4): a group needs enough trucks. Too many rules, so they are added as cuts.</li>
+    <li class="f"><b>Method:</b> branch-and-cut. The LP gives a lower bound; cuts push it up; branching finishes; stop when the bound meets the best plan.</li>
+    <li class="f"><b>Paper:</b> new cuts (2.3)/(2.8) and optimality cuts (2.9)/(2.10) raise the bound, so trees are smaller and more problems are solved. We reproduced this.</li>
+  </ol>
+  <p class="f" style="font-family:var(--ui);font-size:1.6em;font-weight:800;margin-top:.8em">Questions?</p>
+  <p class="f small">Full explainer with every proof and exercise: <a href="../">courses.rahuldevsharma.com/achuthan-cvrp</a></p>
+</div>
+<aside class="notes">Close on the animation. For questions, the full site has a "Questions you may be asked" part. (~45 s)</aside>
+</section>
+
+</main>
+
+<div class="notes-pane" id="notesPane" aria-live="polite"><h4>Speaker notes</h4><div id="notesBody"></div></div>
+<div class="ov" id="ov" aria-label="All slides"></div>
+
+<footer class="foot">
+  <i class="prog" id="prog"></i>
+  <span class="count" id="count"></span>
+  <button class="timer" id="timer" type="button" title="Talk timer (click to reset)">00:00</button>
+  <span class="hint">→ next step · ← back</span>
+  <div class="nav">
+    <button class="ib" id="bPrev" type="button" aria-label="Previous">← Back</button>
+    <button class="ib" id="bNext" type="button" aria-label="Next" style="background:var(--accent);border-color:var(--accent);color:var(--panel)">Next →</button>
+  </div>
+</footer>
+
+<script>
+/* generated by source/compute/examples.py: do not edit */
+window.DH = window.DH || {};
+DH.DATA = {"toy":{"pts":[[50,50],[92,25],[29,73],[17,78],[31,86],[50,81],[45,51],[24,29]],"q":[0,9,3,1,3,4,3,5],"Q":10,"c":{"1-2":48.9,"1-3":31.1,"1-4":43.3,"1-5":40.7,"1-6":31.0,"1-7":5.1,"1-8":33.4,"2-3":79.2,"2-4":91.8,"2-5":86.3,"2-6":70.0,"2-7":53.7,"2-8":68.1,"3-4":13.0,"3-5":13.2,"3-6":22.5,"3-7":27.2,"3-8":44.3,"4-5":16.1,"4-6":33.1,"4-7":38.9,"4-8":49.5,"5-6":19.6,"5-7":37.7,"5-8":57.4,"6-7":30.4,"6-8":58.1,"7-8":30.4},"E":["1-2","1-3","1-4","1-5","1-6","1-7","1-8","2-4","3-4","3-5","3-6","3-7","3-8","4-5","4-6","4-7","4-8","5-6","5-7","5-8","6-7","6-8","7-8"],"seed":495,"opt":318.2,"opt_routes":[[2],[6,5,7],[3,4,8]],"opt_m":3,"ellC":3,"savings":[322.4,[[2],[7,3,4,5],[6,8]]],"lp0":{"z":246.0,"m":3.0,"x":{"1-2":2.0,"1-7":2.0,"1-8":2.0,"3-4":1.0,"3-6":1.0,"4-5":1.0,"5-6":1.0},"comps":[[2],[3,4,5,6],[7],[8]]},"root_classic":317.35,"root_new":318.0,"rounds":[{"z":246.0,"m":3.0,"x":{"1-2":2.0,"1-7":2.0,"1-8":2.0,"3-4":1.0,"3-6":1.0,"4-5":1.0,"5-6":1.0},"nviol":{"1.4":6,"1.7":6,"2.1":18,"2.9":1,"2.8":39,"2.3":58},"added":[{"fam":"1.4","args":[[3,4,5,6]],"lhs":4.0,"rhs":2,"viol":2.0},{"fam":"1.7","args":[[2,7,8]],"lhs":3.0,"rhs":1,"viol":2.0},{"fam":"2.1","args":[[2,3,4,5,6],[2]],"lhs":6.0,"rhs":4,"viol":2.0},{"fam":"2.9","args":[[7,8]],"lhs":4.0,"rhs":3,"viol":1.0},{"fam":"2.8","args":[[3],[[2],[4],[5,6]]],"lhs":3.0,"rhs":2,"viol":1.0},{"fam":"2.3","args":[[3],[[4],[5,6]]],"lhs":3.0,"rhs":2,"viol":1.0}]},{"z":293.1,"m":3.0,"x":{"1-2":2.0,"1-6":2.0,"1-7":2.0,"3-5":1.0,"3-8":1.0,"4-5":1.0,"4-8":1.0},"nviol":{"1.4":7,"1.7":7,"2.1":33,"2.9":1,"2.8":39,"2.3":59},"added":[{"fam":"1.4","args":[[3,4,5,8]],"lhs":4.0,"rhs":2,"viol":2.0},{"fam":"1.7","args":[[6,7]],"lhs":1.0,"rhs":-1,"viol":2.0},{"fam":"2.1","args":[[2,3,4,5,8],[2]],"lhs":6.0,"rhs":4,"viol":2.0},{"fam":"2.9","args":[[6,7]],"lhs":4.0,"rhs":3,"viol":1.0},{"fam":"2.8","args":[[3],[[2],[5],[8]]],"lhs":2.0,"rhs":1,"viol":1.0},{"fam":"2.3","args":[[3],[[5],[8]]],"lhs":2.0,"rhs":1,"viol":1.0}]},{"z":310.8,"m":3.0,"x":{"1-2":2.0,"1-3":1.0,"1-6":1.0,"1-7":1.0,"1-8":1.0,"3-7":1.0,"4-5":1.0,"4-8":1.0,"5-6":1.0},"nviol":{"1.4":2,"1.7":2,"2.1":10,"2.9":0,"2.8":8,"2.3":11},"added":[{"fam":"1.4","args":[[4,5,6,8]],"lhs":3.0,"rhs":2,"viol":1.0},{"fam":"1.7","args":[[3,7]],"lhs":0.0,"rhs":-1,"viol":1.0},{"fam":"2.1","args":[[2,4,5,6,8],[2]],"lhs":5.0,"rhs":4,"viol":1.0},{"fam":"2.8","args":[[4],[[2],[8],[5,6]]],"lhs":3.0,"rhs":2,"viol":1.0},{"fam":"2.3","args":[[4],[[8],[5,6]]],"lhs":3.0,"rhs":2,"viol":1.0}]},{"z":315.7,"m":3.0,"x":{"1-2":2.0,"1-3":0.5,"1-5":0.5,"1-6":1.5,"1-7":0.5,"1-8":1.0,"3-4":0.5,"3-7":1.0,"4-5":1.0,"4-8":0.5,"5-6":0.5,"7-8":0.5},"nviol":{"1.4":5,"1.7":5,"2.1":29,"2.9":0,"2.8":4,"2.3":5},"added":[{"fam":"1.4","args":[[3,7,8]],"lhs":1.5,"rhs":1,"viol":0.5},{"fam":"1.7","args":[[6]],"lhs":-1.5,"rhs":-2,"viol":0.5},{"fam":"2.1","args":[[2,3,7,8],[2]],"lhs":3.5,"rhs":3,"viol":0.5},{"fam":"2.8","args":[[4],[[8],[3,7],[5,6]]],"lhs":3.5,"rhs":3,"viol":0.5},{"fam":"2.3","args":[[4],[[8],[3,7],[5,6]]],"lhs":3.5,"rhs":3,"viol":0.5}]},{"z":317.3,"m":3.0,"x":{"1-2":2.0,"1-3":1.0,"1-6":1.0,"1-7":1.0,"1-8":1.0,"3-8":1.0,"4-5":1.0,"4-7":1.0,"5-6":1.0},"nviol":{"1.4":1,"1.7":1,"2.1":7,"2.9":0,"2.8":8,"2.3":11},"added":[{"fam":"1.4","args":[[4,5,6,7]],"lhs":3.0,"rhs":2,"viol":1.0},{"fam":"1.7","args":[[2,3,8]],"lhs":2.0,"rhs":1,"viol":1.0},{"fam":"2.1","args":[[2,4,5,6,7],[2]],"lhs":5.0,"rhs":4,"viol":1.0},{"fam":"2.8","args":[[4],[[2],[7],[5,6]]],"lhs":3.0,"rhs":2,"viol":1.0},{"fam":"2.3","args":[[4],[[7],[5,6]]],"lhs":3.0,"rhs":2,"viol":1.0}]},{"z":317.35,"m":3.0,"x":{"1-2":2.0,"1-3":1.0,"1-5":0.5,"1-6":1.0,"1-7":0.5,"1-8":1.0,"3-4":0.5,"3-7":0.5,"4-5":1.0,"4-8":0.5,"5-6":0.5,"6-7":0.5,"7-8":0.5},"nviol":{"1.4":0,"1.7":0,"2.1":0,"2.9":0,"2.8":1,"2.3":1},"added":[{"fam":"2.8","args":[[4,5],[[3],[6],[8]]],"lhs":3.5,"rhs":3,"viol":0.5},{"fam":"2.3","args":[[4,5],[[3],[6],[8]]],"lhs":4.5,"rhs":4,"viol":0.5}]},{"z":317.75,"m":3.0,"x":{"1-2":2.0,"1-3":1.0,"1-5":0.5,"1-6":1.0,"1-7":1.0,"1-8":0.5,"3-4":0.5,"3-8":0.5,"4-5":0.5,"4-7":0.5,"4-8":0.5,"5-6":1.0,"7-8":0.5},"nviol":{"1.4":2,"1.7":2,"2.1":10,"2.9":0,"2.8":4,"2.3":2},"added":[{"fam":"1.4","args":[[3,4,7,8]],"lhs":2.5,"rhs":2,"viol":0.5},{"fam":"1.7","args":[[5,6]],"lhs":-0.5,"rhs":-1,"viol":0.5},{"fam":"2.1","args":[[2,3,4,7,8],[2]],"lhs":4.5,"rhs":4,"viol":0.5},{"fam":"2.8","args":[[4],[[3],[5,6],[7,8]]],"lhs":3.5,"rhs":3,"viol":0.5},{"fam":"2.3","args":[[4],[[3],[5,6],[7,8]]],"lhs":3.5,"rhs":3,"viol":0.5}]},{"z":318.0,"m":3.0,"x":{"1-2":2.0,"1-3":0.5,"1-4":0.5,"1-6":1.0,"1-7":1.0,"1-8":1.0,"3-4":0.5,"3-7":0.5,"3-8":0.5,"4-5":0.5,"4-8":0.5,"5-6":1.0,"5-7":0.5},"nviol":{"1.4":0,"1.7":0,"2.1":0,"2.9":0,"2.8":0,"2.3":0},"added":[]}]},"bnc_new":{"ub":318.2,"x":{"1-2":2.0,"1-3":1.0,"1-6":1.0,"1-7":1.0,"1-8":1.0,"3-4":1.0,"4-8":1.0,"5-6":1.0,"5-7":1.0},"tree":[{"id":0,"parent":null,"branch":null,"status":"branched","z":318.0},{"id":1,"parent":0,"branch":"x3,4 \u2264 0","status":"branched","z":319.15},{"id":2,"parent":0,"branch":"x3,4 \u2265 1","status":"integer","z":318.2},{"id":3,"parent":1,"branch":"x3,5 \u2264 0","status":"pruned (bound)","z":319.15},{"id":4,"parent":1,"branch":"x3,5 \u2265 1","status":"pruned (bound)","z":319.15}],"complete":true,"events":[{"t":"ub","z":322.4,"routes":[[2],[7,3,4,5],[6,8]],"why":"savings heuristic"},{"t":"lp","node":0,"z":246.0,"m":3.0,"x":{"1-2":2.0,"1-7":2.0,"1-8":2.0,"3-4":1.0,"3-6":1.0,"4-5":1.0,"5-6":1.0},"round":0},{"t":"cuts","node":0,"cuts":[{"fam":"1.4","args":[[3,4,5,6]],"lhs":4.0,"rhs":2,"viol":2.0},{"fam":"1.7","args":[[2,7,8]],"lhs":3.0,"rhs":1,"viol":2.0},{"fam":"2.1","args":[[2,3,4,5,6],[2]],"lhs":6.0,"rhs":4,"viol":2.0},{"fam":"2.9","args":[[7,8]],"lhs":4.0,"rhs":3,"viol":1.0},{"fam":"2.8","args":[[3],[[2],[4],[5,6]]],"lhs":3.0,"rhs":2,"viol":1.0},{"fam":"2.3","args":[[3],[[4],[5,6]]],"lhs":3.0,"rhs":2,"viol":1.0}]},{"t":"lp","node":0,"z":293.1,"m":3.0,"x":{"1-2":2.0,"1-6":2.0,"1-7":2.0,"3-5":1.0,"3-8":1.0,"4-5":1.0,"4-8":1.0},"round":1},{"t":"cuts","node":0,"cuts":[{"fam":"1.4","args":[[3,4,5,8]],"lhs":4.0,"rhs":2,"viol":2.0},{"fam":"1.7","args":[[6,7]],"lhs":1.0,"rhs":-1,"viol":2.0},{"fam":"2.1","args":[[2,3,4,5,8],[2]],"lhs":6.0,"rhs":4,"viol":2.0},{"fam":"2.9","args":[[6,7]],"lhs":4.0,"rhs":3,"viol":1.0},{"fam":"2.8","args":[[3],[[2],[5],[8]]],"lhs":2.0,"rhs":1,"viol":1.0},{"fam":"2.3","args":[[3],[[5],[8]]],"lhs":2.0,"rhs":1,"viol":1.0}]},{"t":"lp","node":0,"z":310.8,"m":3.0,"x":{"1-2":2.0,"1-3":1.0,"1-6":1.0,"1-7":1.0,"1-8":1.0,"3-7":1.0,"4-5":1.0,"4-8":1.0,"5-6":1.0},"round":2},{"t":"cuts","node":0,"cuts":[{"fam":"1.4","args":[[4,5,6,8]],"lhs":3.0,"rhs":2,"viol":1.0},{"fam":"1.7","args":[[3,7]],"lhs":0.0,"rhs":-1,"viol":1.0},{"fam":"2.1","args":[[2,4,5,6,8],[2]],"lhs":5.0,"rhs":4,"viol":1.0},{"fam":"2.8","args":[[4],[[2],[8],[5,6]]],"lhs":3.0,"rhs":2,"viol":1.0},{"fam":"2.3","args":[[4],[[8],[5,6]]],"lhs":3.0,"rhs":2,"viol":1.0}]},{"t":"lp","node":0,"z":315.7,"m":3.0,"x":{"1-2":2.0,"1-3":0.5,"1-5":0.5,"1-6":1.5,"1-7":0.5,"1-8":1.0,"3-4":0.5,"3-7":1.0,"4-5":1.0,"4-8":0.5,"5-6":0.5,"7-8":0.5},"round":3},{"t":"cuts","node":0,"cuts":[{"fam":"1.4","args":[[3,7,8]],"lhs":1.5,"rhs":1,"viol":0.5},{"fam":"1.7","args":[[6]],"lhs":-1.5,"rhs":-2,"viol":0.5},{"fam":"2.1","args":[[2,3,7,8],[2]],"lhs":3.5,"rhs":3,"viol":0.5},{"fam":"2.8","args":[[4],[[8],[3,7],[5,6]]],"lhs":3.5,"rhs":3,"viol":0.5},{"fam":"2.3","args":[[4],[[8],[3,7],[5,6]]],"lhs":3.5,"rhs":3,"viol":0.5}]},{"t":"lp","node":0,"z":317.3,"m":3.0,"x":{"1-2":2.0,"1-3":1.0,"1-6":1.0,"1-7":1.0,"1-8":1.0,"3-8":1.0,"4-5":1.0,"4-7":1.0,"5-6":1.0},"round":4},{"t":"cuts","node":0,"cuts":[{"fam":"1.4","args":[[4,5,6,7]],"lhs":3.0,"rhs":2,"viol":1.0},{"fam":"1.7","args":[[2,3,8]],"lhs":2.0,"rhs":1,"viol":1.0},{"fam":"2.1","args":[[2,4,5,6,7],[2]],"lhs":5.0,"rhs":4,"viol":1.0},{"fam":"2.8","args":[[4],[[2],[7],[5,6]]],"lhs":3.0,"rhs":2,"viol":1.0},{"fam":"2.3","args":[[4],[[7],[5,6]]],"lhs":3.0,"rhs":2,"viol":1.0}]},{"t":"lp","node":0,"z":317.35,"m":3.0,"x":{"1-2":2.0,"1-3":1.0,"1-5":0.5,"1-6":1.0,"1-7":0.5,"1-8":1.0,"3-4":0.5,"3-7":0.5,"4-5":1.0,"4-8":0.5,"5-6":0.5,"6-7":0.5,"7-8":0.5},"round":5},{"t":"cuts","node":0,"cuts":[{"fam":"2.8","args":[[4,5],[[3],[6],[8]]],"lhs":3.5,"rhs":3,"viol":0.5},{"fam":"2.3","args":[[4,5],[[3],[6],[8]]],"lhs":4.5,"rhs":4,"viol":0.5}]},{"t":"lp","node":0,"z":317.75,"m":3.0,"x":{"1-2":2.0,"1-3":1.0,"1-5":0.5,"1-6":1.0,"1-7":1.0,"1-8":0.5,"3-4":0.5,"3-8":0.5,"4-5":0.5,"4-7":0.5,"4-8":0.5,"5-6":1.0,"7-8":0.5},"round":6},{"t":"cuts","node":0,"cuts":[{"fam":"1.4","args":[[3,4,7,8]],"lhs":2.5,"rhs":2,"viol":0.5},{"fam":"1.7","args":[[5,6]],"lhs":-0.5,"rhs":-1,"viol":0.5},{"fam":"2.1","args":[[2,3,4,7,8],[2]],"lhs":4.5,"rhs":4,"viol":0.5},{"fam":"2.8","args":[[4],[[3],[5,6],[7,8]]],"lhs":3.5,"rhs":3,"viol":0.5},{"fam":"2.3","args":[[4],[[3],[5,6],[7,8]]],"lhs":3.5,"rhs":3,"viol":0.5}]},{"t":"lp","node":0,"z":318.0,"m":3.0,"x":{"1-2":2.0,"1-3":0.5,"1-4":0.5,"1-6":1.0,"1-7":1.0,"1-8":1.0,"3-4":0.5,"3-7":0.5,"3-8":0.5,"4-5":0.5,"4-8":0.5,"5-6":1.0,"5-7":0.5},"round":7},{"t":"branch","node":0,"var":"3-4","val":0.5,"kids":[1,2]},{"t":"lp","node":1,"z":318.7,"m":3.0,"x":{"1-2":2.0,"1-3":0.5,"1-4":0.5,"1-6":1.0,"1-7":1.0,"1-8":1.0,"3-5":0.5,"3-7":0.5,"3-8":0.5,"4-5":0.5,"4-7":0.5,"4-8":0.5,"5-6":1.0},"round":0},{"t":"cuts","node":1,"cuts":[{"fam":"2.8","args":[[3],[[7],[8],[5,6]]],"lhs":2.5,"rhs":2,"viol":0.5},{"fam":"2.3","args":[[3],[[7],[8],[5,6]]],"lhs":2.5,"rhs":2,"viol":0.5}]},{"t":"lp","node":1,"z":319.15,"m":3.0,"x":{"1-2":2.0,"1-3":1.0,"1-4":0.5,"1-6":1.0,"1-7":1.0,"1-8":0.5,"3-5":0.5,"3-8":0.5,"4-5":0.5,"4-7":0.5,"4-8":0.5,"5-6":1.0,"7-8":0.5},"round":1},{"t":"branch","node":1,"var":"3-5","val":0.5,"kids":[3,4]},{"t":"lp","node":2,"z":318.2,"m":3.0,"x":{"1-2":2.0,"1-3":1.0,"1-6":1.0,"1-7":1.0,"1-8":1.0,"3-4":1.0,"4-8":1.0,"5-6":1.0,"5-7":1.0},"round":0},{"t":"ub","z":318.2,"node":2,"why":"integer LP solution"},{"t":"prune","node":3,"why":"bound","z":319.15,"ub":318.2},{"t":"prune","node":4,"why":"bound","z":319.15,"ub":318.2}],"ncuts":36,"nlp":11,"root_lp0":246.0,"root_final":318.0,"cut_fams":["1.4","1.7","2.1","2.9","2.8","2.3","1.4","1.7","2.1","2.9","2.8","2.3","1.4","1.7","2.1","2.8","2.3","1.4","1.7","2.1","2.8","2.3","1.4","1.7","2.1","2.8","2.3","2.8","2.3","1.4","1.7","2.1","2.8","2.3","2.8","2.3"]},"bnc_classic":{"ub":318.2,"x":{"1-2":2.0,"1-3":1.0,"1-6":1.0,"1-7":1.0,"1-8":1.0,"3-4":1.0,"4-8":1.0,"5-6":1.0,"5-7":1.0},"tree":[{"id":0,"parent":null,"branch":null,"status":"branched","z":317.35},{"id":1,"parent":0,"branch":"x1,7 \u2264 0","status":"pruned (bound)","z":323.9},{"id":2,"parent":0,"branch":"x1,7 \u2265 1","status":"branched","z":318.0},{"id":3,"parent":2,"branch":"x3,4 \u2264 0","status":"branched","z":318.7},{"id":4,"parent":2,"branch":"x3,4 \u2265 1","status":"integer","z":318.2},{"id":5,"parent":3,"branch":"x3,5 \u2264 0","status":"pruned (bound)","z":318.7},{"id":6,"parent":3,"branch":"x3,5 \u2265 1","status":"pruned (bound)","z":318.7}],"complete":true,"ncuts":14,"nlp":12,"root_lp0":246.0,"root_final":317.35,"cut_fams":["1.4","1.7","1.4","1.7","1.4","1.7","1.4","1.7","1.4","1.7","1.4","1.7","1.4","1.7"]},"figs":{"fig21":{"lhs28":3.5,"rhs28":3,"lhs23":4.5,"rhs23":4},"fig22":{"xS":1.5,"x1S":3,"lhs29":4.5,"rhs29":4,"lhs14":1.5,"rhs14":2,"deg":{"2":2.0,"3":2.0,"4":2.0},"depot_degree":3}},"tables":{"new":{"solved":1369,"avg_min":3.54,"solved_hours":80.8,"unsolved":221,"total_if_unsolved_cost_1h":301.8,"paper_total":301.8},"A":{"solved":1239,"avg_min":4.87,"solved_hours":100.6,"unsolved":351,"total_if_unsolved_cost_1h":451.6,"paper_total":451.7},"B":{"solved":1107,"avg_min":5.63,"solved_hours":103.9,"unsolved":483,"total_if_unsolved_cost_1h":586.9,"paper_total":586.8}},"batch":{"n":20,"ncust":7,"root_pct_classic":99.25,"root_pct_new":99.68,"nodes_classic":2.1,"nodes_new":1.6,"lps_classic":6.05,"lps_new":5.3,"better_root":7,"fewer_nodes":6,"more_nodes":1}};
+
+</script>
+<script>
+(function () {
+"use strict";
+var D = window.DH.DATA, T = D.toy, Q = T.Q, N = T.pts.length, CUST = [];
+for (var i = 2; i <= N; i++) CUST.push(i);
+var NS = "http://www.w3.org/2000/svg";
+var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+/* ---------- helpers ---------- */
+function S(tag, a, p) { var e = document.createElementNS(NS, tag); for (var k in a) e.setAttribute(k, a[k]); if (p) p.appendChild(e); return e; }
+function H(tag, cls, html) { var e = document.createElement(tag); if (cls) e.className = cls; if (html != null) e.innerHTML = html; return e; }
+function q(k) { return T.q[k - 1]; }
+function key(a, b) { return a < b ? a + "-" + b : b + "-" + a; }
+function c(a, b) { return a === b ? 0 : T.c[key(a, b)]; }
+function fmt(v) { var s = (+v).toFixed(2); return s.slice(-1) === "0" ? (+v).toFixed(1) : s; }
+function xv(v) { if (Math.abs(v - Math.round(v)) < 1e-6) return String(Math.round(v)); if (Math.abs(v - 0.5) < 1e-6) return "½"; if (Math.abs(v - 1.5) < 1e-6) return "1½"; return fmt(v); }
+function sub(a, b) { return "x<sub>" + a + b + "</sub>"; }
+function setStr(Sx) { return "{" + Sx.slice().sort(function (a, b) { return a - b; }).join(",") + "}"; }
+function routesToX(routes) { var x = {}; routes.forEach(function (r) { if (!r.length) return; if (r.length === 1) { x[key(1, r[0])] = 2; return; } var p = [1].concat(r, [1]); for (var i = 0; i < p.length - 1; i++) { var k = key(p[i], p[i + 1]); x[k] = (x[k] || 0) + 1; } }); return x; }
+function rcost(r) { if (!r.length) return 0; var p = [1].concat(r, [1]), s = 0; for (var i = 0; i < p.length - 1; i++) s += c(p[i], p[i + 1]); return s; }
+function rload(r) { return r.reduce(function (s, k) { return s + q(k); }, 0); }
+function xcost(x) { var s = 0; for (var k in x) { var ab = k.split("-").map(Number); s += x[k] * c(ab[0], ab[1]); } return s; }
+function ell(v) { return Math.max(0, Math.ceil(v / Q - 1e-9)); }
+function qS(Sx) { return Sx.reduce(function (s, k) { return s + q(k); }, 0); }
+function asSet(Sx) { var o = {}; Sx.forEach(function (k) { o[k] = 1; }); return o; }
+function terms(x, pred) { var out = []; Object.keys(x).sort(function (a, b) { var A = a.split("-").map(Number), B = b.split("-").map(Number); return A[0] - B[0] || A[1] - B[1]; }).forEach(function (k) { var ab = k.split("-").map(Number); if (x[k] > 1e-6 && pred(ab[0], ab[1])) out.push({ a: ab[0], b: ab[1], v: x[k] }); }); return out; }
+function sum(ts) { return ts.reduce(function (s, t) { return s + t.v; }, 0); }
+function show(ts, cls) { if (!ts.length) return "0"; return ts.map(function (t) { return sub(t.a, t.b); }).join(" + ") + " = " + ts.map(function (t) { return xv(t.v); }).join(" + ") + " = <span class='" + (cls || "") + "'>" + xv(sum(ts)) + "</span>"; }
+function components(x) {
+  var par = {}; CUST.forEach(function (k) { par[k] = k; });
+  function f(k) { while (par[k] !== k) k = par[k] = par[par[k]]; return k; }
+  terms(x, function (a) { return a !== 1; }).forEach(function (t) { par[f(t.a)] = f(t.b); });
+  var g = {}; CUST.forEach(function (k) { var r = f(k); (g[r] = g[r] || []).push(k); });
+  return Object.keys(g).map(function (r) { return g[r]; }).sort(function (a, b) { return a[0] - b[0]; });
+}
+function isInt(x) { for (var k in x) if (Math.abs(x[k] - Math.round(x[k])) > 1e-6) return false; return true; }
+
+var SRC = {
+  none: { name: "Customers", routes: [], m: 0 },
+  best: { name: "Best plan · 318.2", routes: T.opt_routes, m: 3 },
+  heur: { name: "Heuristic plan · " + fmt(T.savings[0]), routes: T.savings[1], m: 3 },
+  lp0: { name: "Starting LP · " + fmt(T.lp0.z), x: T.lp0.x, m: T.lp0.m, lp: true },
+  two78: { name: "Two trips: 1→7→1, 1→8→1", routes: [[7], [8]], m: 2, partial: true },
+  one78: { name: "One trip: 1→7→8→1", routes: [[7, 8]], m: 1, partial: true }
+};
+Object.keys(SRC).forEach(function (k) { var s = SRC[k]; if (s.routes) s.x = routesToX(s.routes); });
+
+/* ---------- the map ---------- */
+function px(k) { return 6 + (T.pts[k - 1][0] - 15) * 1.1; }
+function py(k) { return 74 - (T.pts[k - 1][1] - 23) * 1.1; }
+function Graph(parent, label) {
+  var svg = S("svg", { viewBox: "0 0 100 80", class: "g", role: "img", "aria-label": label || "Map: depot 1 and customers 2 to 8" }, parent);
+  var gH = S("g", {}, svg), gE = S("g", {}, svg), gL = S("g", {}, svg), gN = S("g", {}, svg), gV = S("g", {}, svg);
+  var nodeH = [], edgeH = null, G = { svg: svg, nodes: {} }, anim = null;
+  for (var k = 1; k <= N; k++) (function (k) {
+    var g = S("g", { class: "nd", tabindex: "0", role: "button", "aria-label": k === 1 ? "Depot, node 1" : "Customer " + k + ", demand " + q(k) }, gN);
+    if (k === 1) {
+      S("rect", { x: px(1) - 3, y: py(1) - 3, width: 6, height: 6, rx: 1.2, class: "dep" }, g);
+      S("text", { x: px(1), y: py(1) + 1.1, class: "dl" }, g).textContent = "1";
+      S("text", { x: px(1) + 3.8, y: py(1) + 6.2, class: "ql" }, g).textContent = "depot";
+    } else {
+      S("circle", { cx: px(k), cy: py(k), r: 3.4, class: "cu" }, g);
+      S("text", { x: px(k), y: py(k) + 1.1, class: "cl" }, g).textContent = k;
+      var lf = k === 2 || k === 7, top = k === 4;
+      S("text", { x: top ? px(k) : px(k) + (lf ? -4.4 : 4.4), y: top ? py(k) - 4.6 : py(k) + (k === 7 ? -3.4 : 4.8), "text-anchor": top ? "middle" : lf ? "end" : "start", class: "ql" }, g).textContent = "q=" + q(k);
+    }
+    function fire(e) { if (e.type === "keydown") { if (e.key !== "Enter" && e.key !== " ") return; e.preventDefault(); } e.stopPropagation(); nodeH.forEach(function (h) { h(k); }); }
+    g.addEventListener("click", fire); g.addEventListener("keydown", fire);
+    G.nodes[k] = g;
+  })(k);
+  G.onNode = function (h) { nodeH.push(h); };
+  G.onEdge = function (h) { edgeH = h; };
+  G.style = function (fn) { for (var k = 1; k <= N; k++) G.nodes[k].setAttribute("class", "nd " + (fn(k) || "")); };
+  G.edges = function (E, labels) {
+    gE.innerHTML = ""; gL.innerHTML = "";
+    E.forEach(function (e) {
+      var a = e.a, b = e.b, v = e.v, cls = "e " + (e.cls || "");
+      var frac = Math.abs(v - Math.round(v)) > 1e-6;
+      if (Math.abs(v - 2) < 1e-6) {
+        var dx = px(b) - px(a), dy = py(b) - py(a), L = Math.hypot(dx, dy), ox = -dy / L * 0.85, oy = dx / L * 0.85;
+        S("line", { x1: px(a) + ox, y1: py(a) + oy, x2: px(b) + ox, y2: py(b) + oy, class: cls }, gE);
+        S("line", { x1: px(a) - ox, y1: py(a) - oy, x2: px(b) - ox, y2: py(b) - oy, class: cls }, gE);
+      } else {
+        S("line", { x1: px(a), y1: py(a), x2: px(b), y2: py(b), class: cls + (frac ? " frac" : "") }, gE);
+      }
+      if (edgeH) { var hl = S("line", { x1: px(a), y1: py(a), x2: px(b), y2: py(b), class: "e hit" }, gE); hl.addEventListener("click", function (ev) { ev.stopPropagation(); edgeH(e); }); }
+      var lab = e.label != null ? e.label : (labels === "all" || (labels !== "none" && Math.abs(v - 1) > 1e-6)) ? xv(v) : null;
+      if (lab != null) {
+        var mx = (px(a) + px(b)) / 2, my = (py(a) + py(b)) / 2, w = 1.9 + 1.6 * String(lab).length;
+        var g = S("g", { class: "elb " + (e.cls || "") }, gL);
+        S("rect", { x: mx - w / 2, y: my - 2, width: w, height: 3.8, rx: 1 }, g);
+        S("text", { x: mx, y: my + 1 }, g).textContent = lab;
+      }
+    });
+  };
+  G.halo = function (list) { gH.innerHTML = ""; (list || []).forEach(function (h) { h.nodes.forEach(function (k) { S("circle", { cx: px(k), cy: py(k), r: 6, style: "fill:" + h.color + ";opacity:.16" }, gH); }); }); };
+  G.stop = function () { if (anim) cancelAnimationFrame(anim); anim = null; gV.innerHTML = ""; };
+  G.drive = function (routes) {
+    G.stop(); if (!routes || !routes.length) return;
+    var trucks = routes.filter(function (r) { return r.length; }).map(function (r, i) {
+      var p = [1].concat(r, [1]), segs = [], L = 0;
+      for (var j = 0; j < p.length - 1; j++) { var l = Math.hypot(px(p[j + 1]) - px(p[j]), py(p[j + 1]) - py(p[j])); segs.push({ a: p[j], b: p[j + 1], l: l }); L += l; }
+      return { segs: segs, L: L, dot: S("circle", { r: 1.9, class: "truck", style: "fill:var(--r" + (i % 7 + 1) + ")" }, gV) };
+    });
+    var dur = 4200, t0 = null;
+    function place(tr, f) { var d = f * tr.L; for (var j = 0; j < tr.segs.length; j++) { var s = tr.segs[j]; if (d <= s.l || j === tr.segs.length - 1) { var u = s.l ? Math.min(1, d / s.l) : 1; tr.dot.setAttribute("cx", px(s.a) + (px(s.b) - px(s.a)) * u); tr.dot.setAttribute("cy", py(s.a) + (py(s.b) - py(s.a)) * u); return; } d -= s.l; } }
+    if (reduce) { trucks.forEach(function (tr) { place(tr, 0.5); }); return; }
+    function step(ts) { if (t0 == null) t0 = ts; var f = Math.min(1, (ts - t0) / dur); var e = f < .5 ? 2 * f * f : 1 - Math.pow(-2 * f + 2, 2) / 2; trucks.forEach(function (tr) { place(tr, e); }); if (f < 1) anim = requestAnimationFrame(step); else { anim = null; setTimeout(function () { if (!anim) gV.innerHTML = ""; }, 900); } }
+    anim = requestAnimationFrame(step);
+  };
+  return G;
+}
+function routeEdges(routes, open) {
+  var E = [];
+  routes.forEach(function (r, i) {
+    if (!r.length) return;
+    var cls = "r" + (i % 7 + 1);
+    if (r.length === 1 && !(open && i === open.idx)) { E.push({ a: 1, b: r[0], v: 2, cls: cls }); return; }
+    var p = [1].concat(r); for (var j = 0; j < p.length - 1; j++) E.push({ a: Math.min(p[j], p[j + 1]), b: Math.max(p[j], p[j + 1]), v: 1, cls: cls });
+    E.push({ a: 1, b: r[r.length - 1], v: 1, cls: cls + (open && i === open.idx ? " ret" : "") });
+  });
+  return E;
+}
+function xEdges(x, clsFn) { return terms(x, function () { return true; }).map(function (t) { return { a: t.a, b: t.b, v: t.v, cls: clsFn ? clsFn(t.a, t.b) : "" }; }); }
+
+/* ---------- small UI ---------- */
+function chips(parent, names, cb, sel) {
+  var w = H("div", "chips");
+  names.forEach(function (n, i) { var b = H("button", "chip" + (i === sel ? " on" : ""), n); b.type = "button"; b.onclick = function () { [].forEach.call(w.children, function (x) { x.classList.remove("on"); }); b.classList.add("on"); cb(i); }; w.appendChild(b); });
+  parent.appendChild(w); return w;
+}
+function btn(parent, label, cb, primary) { var b = H("button", "btn" + (primary ? " primary" : ""), label); b.type = "button"; b.onclick = cb; parent.appendChild(b); return b; }
+function loadBar(l) { var p = Math.min(100, l / Q * 100); return "<span class='loadbar'><i style='width:" + p + "%;background:" + (l > Q ? "var(--bad)" : "var(--ok)") + "'></i></span>"; }
+function routeLines(routes) {
+  var tot = 0, h = "";
+  routes.forEach(function (r, i) { if (!r.length) return; var cst = rcost(r), l = rload(r); tot += cst; h += "<div class='row'><span class='sw' style='background:var(--r" + (i % 7 + 1) + ")'></span><span>1 → " + r.join(" → ") + " → 1</span><span class='mut'>load " + l + "/" + Q + "</span>" + loadBar(l) + "<span style='margin-left:auto'>" + fmt(cst) + "</span></div>"; });
+  return { html: h, total: tot };
+}
+
+/* ---------- demo modes ---------- */
+var M = {};
+
+M.map = function (el, cfg) {
+  var srcs = (cfg.plans || ["best"]).map(function (n) { return SRC[n]; }), cur = 0, info = "";
+  if (srcs.length > 1) chips(el.head, srcs.map(function (s) { return s.name; }), function (i) { cur = i; info = ""; G.stop(); draw(); }, 0);
+  var G = Graph(el.body), ro = H("div", "ro"), bar = H("div", "btns");
+  el.body.appendChild(ro); el.body.appendChild(bar);
+  if (cfg.drive !== false && srcs.some(function (s) { return s.routes && s.routes.length; })) btn(bar, "▶ Drive the routes", function () { G.drive(srcs[cur].routes); }, true);
+  G.onNode(function (k) {
+    info = k === 1 ? "<b>Depot (node 1)</b>: every route starts and ends here; no demand." : "<b>Customer " + k + "</b>: demand q<sub>" + k + "</sub> = " + q(k) + " of Q = " + Q + "; road to the depot: " + fmt(c(1, k)) + ".";
+    G.style(function (j) { return j === k ? "sel" : ""; }); paintNodes(k); draw(true);
+  });
+  if (cfg.edgeInfo) G.onEdge(function (e) {
+    info = "<b>" + sub(e.a, e.b) + " = " + xv(e.v) + "</b>: road between " + (e.a === 1 ? "the depot" : "customer " + e.a) + " and customer " + e.b + ", length c<sub>" + e.a + e.b + "</sub> = " + fmt(c(e.a, e.b)) + (e.v === 2 ? ". Driven twice: out and back, because customer " + e.b + " is served alone." : ". Driven once.");
+    draw(true);
+  });
+  function paintNodes(sel) {
+    var s = srcs[cur];
+    if (cfg.components && s.x) { var comps = components(s.x), idx = {}; comps.forEach(function (cp, i) { cp.forEach(function (k) { idx[k] = i; }); }); G.style(function (k) { return k === 1 ? "" : "k" + (idx[k] % 7 + 1) + (k === sel ? " sel" : ""); }); }
+    else if (s.routes && s.routes.length && !cfg.plain) { var r = {}; s.routes.forEach(function (rt, i) { rt.forEach(function (k) { r[k] = i; }); }); G.style(function (k) { return (r[k] != null ? "k" + (r[k] % 7 + 1) : "") + (k === sel ? " sel" : ""); }); }
+    else G.style(function (k) { return k === sel ? "sel" : ""; });
+  }
+  function draw(keepNodes) {
+    var s = srcs[cur], h = "";
+    if (s.routes && s.routes.length) G.edges(routeEdges(s.routes), cfg.labels || "none");
+    else if (s.x && !s.routes) G.edges(xEdges(s.x), cfg.labels || "frac");
+    else G.edges([], "none");
+    if (!keepNodes) paintNodes(null);
+    if (s.routes && s.routes.length) {
+      var rl = routeLines(s.routes); h += rl.html;
+      h += "<div class='row'><b>Total distance</b><span class='big' style='margin-left:auto'>" + fmt(rl.total) + "</span></div>";
+      if (cfg.fleet) { var L = s.routes.map(rload), pairs = []; for (var i = 0; i < L.length; i++) for (var j = i + 1; j < L.length; j++) pairs.push(L[i] + "+" + L[j] + " = " + (L[i] + L[j])); h += "<div class='msg'>Any two routes together: " + pairs.join(", ") + ". Every pair is above Q = " + Q + ", so no two routes could be merged.</div>"; }
+    } else if (s.x && !s.routes) {
+      var comps = components(s.x);
+      h += "<div class='row'><b>LP value</b><span class='big' style='margin-left:auto'>" + fmt(xcost(s.x)) + "</span></div>";
+      if (cfg.components) h += "<div class='msg'>Connected pieces (roads with x &gt; 0, depot left out): " + comps.map(setStr).join(", ") + ". Each piece is a first candidate group S.</div>";
+    } else h += "<span class='mut'>Tap a customer to see its demand.</span>";
+    if (info) h += "<div class='msg'>" + info + "</div>";
+    ro.innerHTML = h;
+  }
+  draw();
+  return { show: function () { if (cfg.autoplay) setTimeout(function () { G.drive(srcs[cur].routes); }, 500); }, hide: G.stop };
+};
+
+M.build = function (el) {
+  var routes = [[]], msg = "Tap a customer to start the first route.";
+  var G = Graph(el.body, "Map: tap customers in order to build routes"), ro = H("div", "ro"), bar = H("div", "btns");
+  el.body.appendChild(ro); el.body.appendChild(bar);
+  function curR() { return routes[routes.length - 1]; }
+  function served(k) { return routes.some(function (r) { return r.indexOf(k) >= 0; }); }
+  G.onNode(function (k) {
+    if (k === 1) { msg = "Routes always start and end at the depot; tap customers."; return draw(); }
+    if (served(k)) { msg = "Customer " + k + " is already on a route."; return draw(); }
+    var l = rload(curR()) + q(k);
+    if (l > Q) { msg = "<span class='badc'>Too heavy:</span> the load would be " + l + " &gt; " + Q + ". Press New route."; return draw(); }
+    curR().push(k); msg = ""; draw();
+  });
+  btn(bar, "New route", function () { if (curR().length) routes.push([]); msg = "New truck: tap its first customer."; draw(); });
+  btn(bar, "Undo", function () { if (!curR().length && routes.length > 1) routes.pop(); curR().pop(); msg = ""; draw(); });
+  btn(bar, "Clear", function () { routes = [[]]; msg = "Tap a customer to start the first route."; G.stop(); draw(); });
+  btn(bar, "Show best plan", function () { routes = T.opt_routes.map(function (r) { return r.slice(); }); msg = "The best plan. Every alternative is longer."; draw(); });
+  btn(bar, "▶ Drive", function () { G.drive(routes); }, true);
+  function draw() {
+    var full = routes.filter(function (r) { return r.length; });
+    G.edges(routeEdges(routes, { idx: routes.length - 1 }), "none");
+    var idx = {}; routes.forEach(function (r, i) { r.forEach(function (k) { idx[k] = i; }); });
+    G.style(function (k) { return idx[k] != null ? "k" + (idx[k] % 7 + 1) : ""; });
+    var rl = routeLines(routes), n = Object.keys(idx).length, h = rl.html;
+    h += "<div class='row'><b>Total distance</b><span class='mut'>" + n + " of 7 customers served</span><span class='big' style='margin-left:auto'>" + fmt(rl.total) + "</span></div>";
+    if (n === 7) { var d = rl.total - T.opt; h += "<div class='msg'>" + (d < 0.05 ? "<span class='okc'>That is the best possible plan, 318.2.</span>" : "All served. " + fmt(d / T.opt * 100) + "% above the best plan (318.2)" + (rl.total < T.savings[0] - 0.05 ? ", and better than the heuristic (322.4)." : ".")) + "</div>"; }
+    if (msg) h += "<div class='msg'>" + msg + "</div>";
+    ro.innerHTML = h;
+  }
+  draw();
+  return { hide: G.stop };
+};
+
+M.degree = function (el, cfg) {
+  var srcs = (cfg.sources || ["best"]).map(function (n) { return SRC[n]; }), cur = 0, sel = cfg.start || null;
+  if (srcs.length > 1) chips(el.head, srcs.map(function (s) { return s.name; }), function (i) { cur = i; draw(); }, 0);
+  var G = Graph(el.body), ro = H("div", "ro"); el.body.appendChild(ro);
+  G.onNode(function (k) { sel = k; draw(); });
+  function draw() {
+    var s = srcs[cur], warn = asSet(cfg.warn || []);
+    G.edges(xEdges(s.x, function (a, b) { return sel == null ? "" : (a === sel || b === sel) ? "tA" : "dim"; }).map(function (e) { if (sel != null && (e.a === sel || e.b === sel)) e.label = xv(e.v); return e; }), "frac");
+    G.style(function (k) { return (k === sel ? "sel " : "") + (warn[k] ? "warn" : ""); });
+    var h = "";
+    if (sel == null) h = "<span class='mut'>Tap any node to add up its roads.</span>";
+    else {
+      var ts = terms(s.x, function (a, b) { return a === sel || b === sel; }), tot = sum(ts);
+      if (sel === 1) h = "<b>Depot</b>: " + show(ts, "tA") + (Math.abs(tot - 2 * s.m) < 1e-6 ? " = 2m with m = " + xv(s.m) + " <span class='okc'>✓</span>" : " <span class='badc'>≠ 2m</span>");
+      else h = "<b>Customer " + sel + "</b>: " + show(ts, "tA") + (Math.abs(tot - 2) < 1e-6 ? " <span class='okc'>✓ one truck in, one out</span>" : " <span class='badc'>≠ 2</span>");
+    }
+    h += "<div class='row'><span class='mut'>Cost of this answer</span><b style='margin-left:auto'>" + fmt(xcost(s.x)) + "</b></div>";
+    if (cfg.warn) {
+      var W = cfg.warn, inner = sum(terms(s.x, function (a, b) { var o = asSet(W); return o[a] && o[b]; })), dep = sum(terms(s.x, function (a, b) { return a === 1 && asSet(W)[b]; }));
+      h += "<div class='msg'><span class='badc'>Customers " + W.join(", ") + "</span>: " + xv(inner) + " roads among themselves, " + xv(dep) + " roads to the depot, load " + qS(W) + " &gt; " + Q + ". A loop with no garage, and overloaded.</div>";
+    }
+    ro.innerHTML = h;
+  }
+  draw();
+};
+
+function famReadout(fam, s, Sx) {
+  var o = asSet(Sx), n = Sx.length, qs = qS(Sx), Sbar = CUST.filter(function (k) { return !o[k]; });
+  var inT = terms(s.x, function (a, b) { return a !== 1 && o[a] && o[b]; }), dep = terms(s.x, function (a, b) { return a === 1 && o[b]; });
+  var xS = sum(inT), x1S = sum(dep), h = "";
+  if (!n) return { html: "<span class='mut'>Tap customers to put them in S.</span>" };
+  h += "<div>S = " + setStr(Sx) + " · |S| = " + n + " · q(S) = " + Sx.map(q).join("+") + " = " + qs + "</div>";
+  var lhs, rhs, note = "";
+  if (fam === "1.4") {
+    var l = ell(qs); lhs = xS; rhs = n - l;
+    h += "<div>ℓ(S) = ⌈" + qs + "/" + Q + "⌉ = " + l + " truck" + (l === 1 ? "" : "s") + "</div>";
+    h += "<div>roads inside S: " + show(inT, "tA") + "</div>";
+    h += "<div>allowed: |S| − ℓ(S) = " + n + " − " + l + " = <b>" + rhs + "</b></div>";
+    if (n < 3) note = "The paper only uses groups of 3 or more; smaller ones are implied by the bounds on x.";
+  } else if (fam === "1.7") {
+    if (!Sbar.length) return { html: h + "<div class='mut'>(1.7) needs at least one customer outside S.</div>" };
+    var lb = ell(qS(Sbar)); lhs = xS + x1S - s.m; rhs = n - lb;
+    h += "<div>roads inside S: " + show(inT, "tA") + "</div><div>depot roads into S: " + show(dep, "tB") + "</div>";
+    h += "<div>left side: " + xv(xS) + " + " + xv(x1S) + " − m(" + xv(s.m) + ") = <b>" + xv(lhs) + "</b></div>";
+    h += "<div>others S̄ = " + setStr(Sbar) + " need ℓ(S̄) = ⌈" + qS(Sbar) + "/" + Q + "⌉ = " + lb + "; right side " + n + " − " + lb + " = <b>" + rhs + "</b></div>";
+  } else if (fam === "2.9") {
+    if (n < 2) return { html: h + "<div class='mut'>(2.9) is for groups of 2 or more.</div>" };
+    if (qs > Q) return { html: h + "<div class='mut'>q(S) = " + qs + " &gt; Q: (2.9) is only for groups that fit in one truck.</div>" };
+    lhs = xS + x1S; rhs = n + 1;
+    h += "<div>roads inside S: " + show(inT, "tA") + "</div><div>depot roads into S: " + show(dep, "tB") + "</div>";
+    h += "<div>left side " + xv(xS) + " + " + xv(x1S) + " = <b>" + xv(lhs) + "</b> · allowed |S| + 1 = <b>" + rhs + "</b></div>";
+    if (s.routes && s.partial) note = "Cost of these trips: " + fmt(xcost(s.x)) + ".";
+  }
+  var broken = lhs > rhs + 1e-6;
+  h += "<div class='msg'>" + (broken ? "<span class='badc'>Broken: " + xv(lhs) + " &gt; " + rhs + ".</span> This answer is cut off." : "<span class='okc'>Satisfied: " + xv(lhs) + " ≤ " + rhs + ".</span>") + (note ? " " + note : "") + "</div>";
+  return { html: h };
+}
+
+M.set = function (el, cfg) {
+  var srcs = (cfg.sources || ["lp0"]).map(function (n) { return SRC[n]; }), cur = 0, Sx = (cfg.S || []).slice();
+  if (srcs.length > 1) chips(el.head, srcs.map(function (s) { return s.name; }), function (i) { cur = i; draw(); }, 0);
+  var G = Graph(el.body, "Map: tap customers to add or remove them from the group S"), ro = H("div", "ro"), bar = H("div", "btns");
+  el.body.appendChild(ro); el.body.appendChild(bar);
+  G.onNode(function (k) { if (k === 1) return; var i = Sx.indexOf(k); if (i >= 0) Sx.splice(i, 1); else Sx.push(k); draw(); });
+  btn(bar, "Reset group", function () { Sx = (cfg.S || []).slice(); draw(); });
+  btn(bar, "Empty group", function () { Sx = []; draw(); });
+  function draw() {
+    var s = srcs[cur], o = asSet(Sx), useDep = cfg.fam !== "1.4";
+    G.edges(xEdges(s.x, function (a, b) { if (a !== 1 && o[a] && o[b]) return "tA"; if (useDep && a === 1 && o[b]) return "tB"; return "dim"; }), "frac");
+    G.style(function (k) { return o[k] ? "inS" : ""; });
+    ro.innerHTML = famReadout(cfg.fam, s, Sx).html;
+  }
+  draw();
+};
+
+M.groups = function (el, cfg) {
+  var srcs = (cfg.sources || ["lp0"]).map(function (n) { return SRC[n]; }), cur = 0, Sx = cfg.S, Ts = cfg.T;
+  if (srcs.length > 1) chips(el.head, srcs.map(function (s) { return s.name; }), function (i) { cur = i; draw(); }, 0);
+  var G = Graph(el.body), ro = H("div", "ro"); el.body.appendChild(ro);
+  var oS = asSet(Sx), tIdx = {}; Ts.forEach(function (t, i) { t.forEach(function (k) { tIdx[k] = i; }); });
+  var allT = [].concat.apply([], Ts);
+  function draw() {
+    var s = srcs[cur];
+    var cls = function (a, b) { if (a === 1) return "dim"; if (oS[a] && oS[b]) return "tA"; if ((oS[a] && tIdx[b] != null) || (oS[b] && tIdx[a] != null)) return "tB"; if (tIdx[a] != null && tIdx[a] === tIdx[b]) return "tC"; return "dim"; };
+    G.edges(xEdges(s.x, cls), "frac");
+    G.style(function (k) { return oS[k] ? "inS" : tIdx[k] != null ? "inT" + (tIdx[k] % 3 + 1) : ""; });
+    var xS = sum(terms(s.x, function (a, b) { return cls(a, b) === "tA"; })), between = terms(s.x, function (a, b) { return cls(a, b) === "tB"; }), inside = terms(s.x, function (a, b) { return cls(a, b) === "tC"; });
+    var k = Ts.length, rhs = 3 * Sx.length - 2 + allT.length - k, lhs = 3 * xS + sum(between) + sum(inside);
+    var pairs = []; for (var i = 0; i < k; i++) for (var j = i + 1; j < k; j++) pairs.push("q(S ∪ T" + (i + 1) + " ∪ T" + (j + 1) + ") = " + (qS(Sx) + qS(Ts[i]) + qS(Ts[j])) + " &gt; " + Q);
+    var h = "<div><span class='tA'>S = " + setStr(Sx) + "</span>, " + Ts.map(function (t, i) { return "<span style='color:var(--" + ["tC", "tD", "r5"][i % 3] + ");font-weight:700'>T" + (i + 1) + " = " + setStr(t) + "</span>"; }).join(", ") + "</div>";
+    h += "<div class='mut'>Condition: " + pairs.join("; ") + " ✓</div>";
+    h += "<div>3 × roads inside S: 3 × " + xv(xS) + " · roads S–T: " + show(between, "tB") + " · inside the T's: " + show(inside, "tC") + "</div>";
+    h += "<div>left side <b>" + xv(lhs) + "</b> · right side 3·" + Sx.length + " − 2 + " + allT.length + " − " + k + " = <b>" + rhs + "</b></div>";
+    h += "<div class='msg'>" + (lhs > rhs + 1e-6 ? "<span class='badc'>Broken: " + xv(lhs) + " &gt; " + rhs + ".</span> Customer 3 is linked to both groups." : "<span class='okc'>Satisfied: " + xv(lhs) + " ≤ " + rhs + ".</span>") + "</div>";
+    ro.innerHTML = h;
+  }
+  draw();
+};
+
+/* solver: replays the recorded branch-and-cut run (source/compute/examples.py) */
+var EV = D.bnc_new.events, TREE_NEW = D.bnc_new.tree, TREE_OLD = D.bnc_classic.tree;
+var FAM = { "1.4": "group needs enough trucks", "1.7": "leave trucks for the rest", "2.1": "strengthened capacity rule", "2.3": "groups that cannot share a truck", "2.8": "three groups that cannot share", "2.9": "don't split a group that fits" };
+function cutText(ct) {
+  var a = ct.args, f = ct.fam, sets;
+  if (f === "2.1") sets = "S = " + setStr(a[0]) + ", P = " + setStr(a[1]);
+  else if (f === "2.3" || f === "2.8") sets = "S = " + setStr(a[0]) + ", T = " + a[1].map(setStr).join(" ");
+  else sets = "S = " + setStr(a[0]);
+  return "<b>(" + f + ")</b> " + sets + ": " + xv(ct.lhs) + " &gt; " + ct.rhs + " <span class='mut'>· " + FAM[f] + "</span>";
+}
+function cutHalo(ct) {
+  var a = ct.args, f = ct.fam, nodes = {};
+  a[0].forEach(function (k) { nodes[k] = "inS"; });
+  if (f === "2.1") a[1].forEach(function (k) { nodes[k] = "inT1"; });
+  if (f === "2.3" || f === "2.8") a[1].forEach(function (t, i) { t.forEach(function (k) { nodes[k] = "inT" + (i % 3 + 1); }); });
+  return nodes;
+}
+function branchLabel(s) { return s.replace(/x(\d+),(\d+) ≤ 0/, function (m, a, b) { return a === "1" ? "x" + a + b + " = 0" : "x" + a + b + " = 0"; }).replace(/x(\d+),(\d+) ≥ 1/, function (m, a, b) { return a === "1" ? "x" + a + b + " ≥ 1" : "x" + a + b + " = 1"; }); }
+function treeLayout(tree) {
+  var kids = {}; tree.forEach(function (n) { kids[n.id] = []; }); tree.forEach(function (n) { if (n.parent != null) kids[n.parent].push(n.id); });
+  var pos = {}, leaf = 0, depth = 0;
+  (function rec(id, d) { depth = Math.max(depth, d); if (!kids[id].length) pos[id] = { x: leaf++, d: d }; else { kids[id].forEach(function (k) { rec(k, d + 1); }); var xs = kids[id].map(function (k) { return pos[k].x; }); pos[id] = { x: (Math.min.apply(null, xs) + Math.max.apply(null, xs)) / 2, d: d }; } })(0, 0);
+  return { pos: pos, leaves: leaf, depth: depth };
+}
+function drawTree(parent, tree, known, title) {
+  var L = treeLayout(tree), W = Math.max(3, L.leaves) * 22, Hh = (L.depth + 1) * 17 + 8;
+  var svg = S("svg", { viewBox: "0 0 " + W + " " + Hh, class: "g", style: "max-height:24vh;min-height:100px;flex:0 0 auto", role: "img", "aria-label": title || "Branch-and-cut tree" }, parent);
+  function X(id) { return 11 + L.pos[id].x * 22; } function Y(id) { return 7 + L.pos[id].d * 17; }
+  tree.forEach(function (n) {
+    if (n.parent == null || !known(n.id)) return;
+    S("line", { x1: X(n.parent), y1: Y(n.parent), x2: X(n.id), y2: Y(n.id), class: "bline" }, svg);
+    var t = S("text", { x: (X(n.parent) + X(n.id)) / 2 + (X(n.id) < X(n.parent) ? -1.5 : 1.5), y: (Y(n.parent) + Y(n.id)) / 2, "text-anchor": X(n.id) < X(n.parent) ? "end" : "start", class: "gl" }, svg); t.textContent = branchLabel(n.branch);
+  });
+  tree.forEach(function (n) {
+    if (!known(n.id)) return;
+    var st = known(n.id) === true ? n.status : known(n.id), col = /integer/.test(st) ? "var(--ok)" : /pruned/.test(st) ? "var(--tx3)" : /branched/.test(st) ? "var(--accent)" : "var(--tx2)";
+    var g = S("g", { class: "tnode" }, svg);
+    S("circle", { cx: X(n.id), cy: Y(n.id), r: 3.4, style: "fill:var(--panel);stroke:" + col }, g);
+    S("text", { x: X(n.id), y: Y(n.id) + 1.1, style: "fill:" + col }, g).textContent = /pruned/.test(st) ? "✕" : /integer/.test(st) ? "★" : n.id;
+    S("text", { x: X(n.id), y: Y(n.id) + 6.6, class: "gl", "text-anchor": "middle" }, g).textContent = fmt(n.z);
+  });
+  return svg;
+}
+
+M.solver = function (el, cfg) {
+  var from = cfg.from || 0, to = cfg.to == null ? EV.length - 1 : cfg.to, idx = from, timer = null, hl = 0;
+  var G = Graph(el.body), bound = H("div"), treeBox = H("div"), ro = H("div", "ro"), bar = H("div", "btns");
+  G.svg.style.maxHeight = "38vh";
+  el.body.appendChild(bound); el.body.appendChild(treeBox); el.body.appendChild(ro); el.body.appendChild(bar);
+  var bBack = btn(bar, "◀ Back", function () { stop(); if (idx > from) { idx--; hl = 0; draw(); } });
+  var bStep = btn(bar, "Step ▶", function () { stop(); next(); }, true);
+  var bPlay = btn(bar, "Play", function () { if (timer) return stop(); bPlay.textContent = "Pause"; timer = setInterval(function () { if (!next()) stop(); }, 1500); });
+  btn(bar, "Reset", function () { stop(); idx = from; hl = 0; draw(); });
+  function stop() { if (timer) clearInterval(timer); timer = null; bPlay.textContent = "Play"; }
+  function next() { if (idx >= to) return false; idx++; hl = 0; draw(); return true; }
+  function state() {
+    var st = { ub: null, x: null, z: null, node: 0, plan: null, ev: null, tree: {}, lastLp: null };
+    for (var i = 0; i <= idx; i++) {
+      var e = EV[i]; st.ev = e;
+      if (e.t === "ub") { st.ub = e.z; if (e.routes) { st.plan = e.routes; } if (e.node != null) st.tree[e.node] = "integer"; }
+      if (e.t === "lp") { st.x = e.x; st.z = e.z; st.node = e.node; st.plan = null; st.lastLp = e; if (!st.tree[e.node]) st.tree[e.node] = "open"; }
+      if (e.t === "branch") { st.tree[e.node] = "branched"; e.kids.forEach(function (k) { if (!st.tree[k]) st.tree[k] = "open"; }); }
+      if (e.t === "prune") st.tree[e.node] = "pruned (bound)";
+    }
+    return st;
+  }
+  function draw() {
+    var st = state(), e = st.ev, h = "", halo = {};
+    if (e.t === "cuts") halo = cutHalo(e.cuts[hl]);
+    if (st.plan && e.t === "ub") G.edges(routeEdges(st.plan), "none");
+    else if (st.x) G.edges(xEdges(st.x, function (a, b) { if (e.t === "branch" && key(a, b) === e.var) return "tB"; return halo[a] === "inS" && halo[b] === "inS" ? "tA" : ""; }), "frac");
+    else G.edges([], "none");
+    var comps = st.x ? components(st.x) : [], loops = st.x ? comps.filter(function (cp) { return sum(terms(st.x, function (a, b) { return a === 1 && cp.indexOf(b) >= 0; })) < 1e-6 && cp.length > 1; }) : [];
+    G.style(function (k) { if (halo[k]) return halo[k]; if (e.t === "lp" && loops.some(function (cp) { return cp.indexOf(k) >= 0; })) return "warn"; if (st.plan && e.t === "ub") { var r = -1; st.plan.forEach(function (rt, i) { if (rt.indexOf(k) >= 0) r = i; }); return r >= 0 ? "k" + (r % 7 + 1) : ""; } return ""; });
+    // bound bar
+    bound.innerHTML = ""; var lo = 240, hi = 326, bw = 100;
+    var svg = S("svg", { viewBox: "0 0 100 17", style: "width:100%;display:block", role: "img", "aria-label": "Lower bound and best plan" }, bound);
+    function X(v) { return 3 + (v - lo) / (hi - lo) * (bw - 6); }
+    function lab(x, y, txt, col) { var right = x > 70; S("text", { x: right ? x + 1.2 : x - 1.2, y: y, "text-anchor": right ? "end" : "start", style: "font:700 2.4px var(--ui);fill:" + col }, svg).textContent = txt; }
+    S("line", { x1: 3, y1: 7.5, x2: 97, y2: 7.5, class: "bline" }, svg);
+    [240, 260, 280, 300, 320].forEach(function (v) { S("text", { x: X(v), y: 16.3, class: "gl", "text-anchor": "middle", style: "font-size:2px" }, svg).textContent = v; S("line", { x1: X(v), y1: 6.8, x2: X(v), y2: 8.2, class: "bline" }, svg); });
+    if (st.z != null && st.ub != null) S("rect", { x: X(st.z), y: 6.4, width: Math.max(0.3, X(st.ub) - X(st.z)), height: 2.2, style: "fill:var(--bad-soft)" }, svg);
+    if (st.ub != null) { S("circle", { cx: X(st.ub), cy: 7.5, r: 1.1, style: "fill:var(--tB)" }, svg); lab(X(st.ub), 3.4, "best plan so far (upper bound) " + fmt(st.ub), "var(--tB)"); }
+    if (st.z != null) { S("circle", { cx: X(st.z), cy: 7.5, r: 1.1, style: "fill:var(--tA)" }, svg); lab(X(st.z), 12.3, "lower bound (LP) " + fmt(st.z), "var(--tA)"); }
+    // tree
+    treeBox.innerHTML = "";
+    if (Object.keys(st.tree).length > 1 || EV.slice(0, idx + 1).some(function (v) { return v.t === "branch"; })) drawTree(treeBox, TREE_NEW, function (id) { return st.tree[id] || false; }, "Branch-and-cut tree so far");
+    else treeBox.innerHTML = "<div class='mut' style='padding:6px 2px'>Root node (no branching yet). Gap: " + (st.z != null && st.ub != null ? fmt(st.ub - st.z) : "–") + "</div>";
+    // message
+    if (e.t === "ub" && e.why === "savings heuristic") h = "<b>Before any LP</b>: a quick heuristic plan costs " + fmt(e.z) + ". That is our best plan so far: the <span class='tB'>upper bound</span>.";
+    else if (e.t === "ub") h = "<b>Node " + e.node + "</b>: the LP answer uses only whole numbers and no rule is broken: a real plan costing " + fmt(e.z) + ". <span class='okc'>New best plan.</span>";
+    else if (e.t === "lp") {
+      h = "<b>Node " + e.node + ", round " + e.round + "</b>: the LP's cheapest answer costs <span class='tA'>" + fmt(e.z) + "</span>" + (e.node === 0 && e.round === 0 ? " using only rule 1 (degrees)." : ".");
+      if (loops.length) h += " Every value is whole, but " + loops.map(setStr).join(", ") + " form" + (loops.length > 1 ? "" : "s") + " a loop without the depot (red).";
+      else if (!isInt(e.x)) h += " Some roads are used half-way (dashed).";
+    } else if (e.t === "cuts") {
+      h = "<b>Search</b>: " + e.cuts.length + " broken rule" + (e.cuts.length > 1 ? "s" : "") + " found; all are added. Tap one to see its group on the map.";
+    } else if (e.t === "branch") {
+      var ab = e.var.split("-"); h = "<b>No broken rule found</b>, but " + sub(ab[0], ab[1]) + " = ½ (orange). <b>Branch</b>: node " + e.kids[0] + " gets " + sub(ab[0], ab[1]) + " = 0, node " + e.kids[1] + " gets " + sub(ab[0], ab[1]) + " = 1.";
+    } else if (e.t === "prune") h = "<b>Node " + e.node + "</b>: its bound " + fmt(e.z) + " is above the best plan " + fmt(e.ub) + ", so it cannot hold anything better. <b>Pruned.</b>";
+    if (idx === EV.length - 1) h += "<div class='msg'><span class='okc'>Nothing left to explore: 318.2 is proven optimal.</span></div>";
+    ro.innerHTML = h;
+    if (e.t === "cuts") {
+      var list = H("div", "cutlist");
+      e.cuts.forEach(function (ct, i) { var b = H("button", i === hl ? "on" : "", cutText(ct)); b.type = "button"; b.onclick = function () { hl = i; draw(); }; list.appendChild(b); });
+      ro.appendChild(list);
+    }
+    bBack.disabled = idx <= from; bStep.disabled = idx >= to; bPlay.disabled = idx >= to && !timer;
+    if (from === to) bar.style.display = "none";
+  }
+  draw();
+  return { hide: stop };
+};
+
+M.trees = function (el) {
+  var a = H("div"), b = H("div"); el.body.appendChild(a); el.body.appendChild(b);
+  a.innerHTML = "<b>Old cuts (1.4), (1.7)</b> <span class='mut'>· root bound " + fmt(D.bnc_classic.root_final) + " · " + TREE_OLD.length + " nodes</span>";
+  drawTree(a, TREE_OLD, function () { return true; }, "Tree with old cuts");
+  b.innerHTML = "<b>All cuts, including the new ones</b> <span class='mut'>· root bound " + fmt(D.bnc_new.root_final) + " · " + TREE_NEW.length + " nodes</span>";
+  drawTree(b, TREE_NEW, function () { return true; }, "Tree with all cuts");
+  var ro = H("div", "ro", "<span class='mut'>Each circle is a subproblem with its LP bound underneath. ★ = real plan found (318.2), ✕ = pruned because its bound is above 318.2.</span>");
+  el.body.appendChild(ro);
+};
+
+M.count = function (el) {
+  var ro = H("div", "ro"), inp = document.createElement("input");
+  inp.type = "range"; inp.min = 5; inp.max = 100; inp.value = 7; inp.setAttribute("aria-label", "Number of customers");
+  el.body.appendChild(ro); el.body.appendChild(inp);
+  function big(n) { var v = (1n << BigInt(n)) - 1n - BigInt(n) - BigInt(n * (n - 1) / 2); var s = v.toString(); if (s.length <= 15) return Number(v).toLocaleString("en-US"); return s[0] + "." + s.slice(1, 3) + " × 10<sup>" + (s.length - 1) + "</sup>"; }
+  function draw() {
+    var n = +inp.value, secs = Math.pow(2, n) / 1e9, yrs = secs / 3.156e7;
+    var t = secs < 1 ? "well under a second" : secs < 3600 ? fmt(secs) + " seconds" : yrs < 1 ? fmt(secs / 86400) + " days" : yrs < 1e6 ? Math.round(yrs).toLocaleString("en-US") + " years" : "about 10<sup>" + Math.floor(Math.log10(yrs)) + "</sup> years";
+    ro.innerHTML = "<div class='mut'>Customers</div><div class='big' style='font-size:2em'>" + n + "</div><div class='mut' style='margin-top:8px'>Groups S with 3 or more customers, each with its own rule (1.4)</div><div class='big' style='font-size:2em;color:var(--tB)'>" + big(n) + "</div><div class='msg' style='margin-top:10px'>Checking a billion groups per second: " + t + ".</div>";
+  }
+  inp.oninput = draw; draw();
+};
+
+var CH = [
+  { name: "Paper: solved (of 1,590)", v: [1369, 1239, 1107], better: "more is better", min: 0 },
+  { name: "Paper: total CPU hours", v: [301.8, 451.7, 586.8], better: "less is better", min: 0 },
+  { name: "Ours: root bound, % of optimum", v: [99.15, 98.59, 98.56], better: "more is better; axis starts at 98%", min: 98, max: 99.5 },
+  { name: "Ours: median tree size (nodes)", v: [18, 40, 39], better: "less is better", min: 0 },
+  { name: "Ours: total time (s)", v: [5186, 9277, 9444], better: "less is better", min: 0 }
+];
+M.chart = function (el, cfg) {
+  var sets = cfg.sets || [0], cur = 0, box = H("div"), ro = H("div", "ro");
+  chips(el.head, sets.map(function (i) { return CH[i].name.replace(/^(Paper|Ours): /, ""); }), function (i) { cur = i; draw(); }, 0);
+  el.body.appendChild(box); el.body.appendChild(ro);
+  function draw() {
+    var d = CH[sets[cur]], mx = d.max || Math.max.apply(null, d.v) * 1.12, mn = d.min, names = ["NEW", "A", "B"], cols = ["var(--tA)", "var(--tx3)", "var(--tx3)"];
+    box.innerHTML = "";
+    var svg = S("svg", { viewBox: "0 0 100 46", class: "g", role: "img", "aria-label": d.name }, box);
+    names.forEach(function (nm, i) {
+      var y = 4 + i * 14, w = Math.max(0.5, (d.v[i] - mn) / (mx - mn) * 72);
+      S("text", { x: 10, y: y + 6.5, class: "gl", "text-anchor": "end", style: "font-size:4px;font-weight:700;fill:var(--tx)" }, svg).textContent = nm;
+      S("rect", { x: 12, y: y, width: w, height: 9, rx: 1.5, style: "fill:" + cols[i] }, svg);
+      S("text", { x: 13.5 + w, y: y + 6.5, class: "gl", style: "font-size:3.6px;font-weight:700;fill:var(--tx)" }, svg).textContent = d.v[i].toLocaleString("en-US");
+    });
+    ro.innerHTML = "<b>" + d.name + "</b> <span class='mut'>· " + d.better + "</span><div class='mut'>NEW = all cuts, Searches 1–6 · A = (1.4) + (1.7) · B = (1.4) only</div>";
+  }
+  draw();
+};
+
+M.code = function (el, cfg, slide) {
+  var tpls = [].slice.call(slide.querySelectorAll("template.code")), pre = H("pre", "code");
+  chips(el.head, tpls.map(function (t) { return t.getAttribute("data-name"); }), function (i) { paint(i); }, 0);
+  el.body.appendChild(pre);
+  function esc(s) { return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"); }
+  function paint(i) {
+    var raw = tpls[i].innerHTML.replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&amp;/g, "&");
+    pre.innerHTML = raw.split("\n").map(function (line) {
+      var m = line.match(/^(.*?)(#.*)?$/), code = esc(m[1]), cm = m[2] ? "<span class='cm'>" + esc(m[2]) + "</span>" : "";
+      code = code.replace(/("""[^"]*"""|"[^"]*")/g, "<span class='st'>$1</span>").replace(/\b(def|for|in|if|return|while|not|break|and|or|else|elif)\b/g, "<span class='kw'>$1</span>");
+      return code + cm;
+    }).join("\n");
+  }
+  paint(0);
+};
+
+/* ---------- deck ---------- */
+var slides = [].slice.call(document.querySelectorAll(".slide")), cur = 0, mounted = {}, frag = {};
+slides.forEach(function (s, i) {
+  var cfg = s.getAttribute("data-demo");
+  if (!cfg) { s.classList.add("nodemo"); return; }
+  var demo = H("div", "demo"), head = H("div", "dhead"), body = H("div");
+  body.style.cssText = "display:flex;flex-direction:column;gap:8px;min-height:0;flex:1 1 auto";
+  head.appendChild(H("span", "dlabel", JSON.parse(cfg).label || "Live example"));
+  demo.appendChild(head); demo.appendChild(body); s.appendChild(demo);
+  s._demo = { head: head, body: body, cfg: JSON.parse(cfg) };
+  s.querySelectorAll(".legend li[data-t]").forEach(function (li) {
+    li.addEventListener("mouseenter", function () { s.classList.add("hl-" + li.getAttribute("data-t")); });
+    li.addEventListener("mouseleave", function () { s.classList.remove("hl-" + li.getAttribute("data-t")); });
+  });
+});
+function mount(i) {
+  var s = slides[i]; if (mounted[i] || !s._demo) return mounted[i];
+  var fn = M[s._demo.cfg.mode];
+  try { mounted[i] = (fn && fn({ head: s._demo.head, body: s._demo.body }, s._demo.cfg, s)) || {}; }
+  catch (err) { s._demo.body.innerHTML = "<div class='msg'>Demo failed to load: " + err.message + "</div>"; mounted[i] = {}; if (window.console) console.error(err); }
+  return mounted[i];
+}
+function frags(i) { return slides[i].querySelectorAll(".f"); }
+function setFrag(i, n) { var fs = frags(i); frag[i] = n; [].forEach.call(fs, function (f, j) { f.classList.toggle("shown", j < n); }); }
+function go(i, fragEnd) {
+  i = Math.max(0, Math.min(slides.length - 1, i));
+  if (mounted[cur] && mounted[cur].hide) mounted[cur].hide();
+  slides[cur].classList.remove("on"); cur = i; slides[cur].classList.add("on");
+  setFrag(cur, fragEnd ? frags(cur).length : 0);
+  var m = mount(cur); if (m && m.show) m.show();
+  var s = slides[cur];
+  document.getElementById("sec").textContent = s.getAttribute("data-section") + " · " + s.getAttribute("data-title");
+  document.getElementById("count").textContent = (cur + 1) + " / " + slides.length;
+  document.getElementById("prog").style.width = ((cur + 1) / slides.length * 100) + "%";
+  var n = s.querySelector(".notes"); document.getElementById("notesBody").innerHTML = n ? n.innerHTML : "";
+  try { history.replaceState(null, "", "#" + (cur + 1)); } catch (e) {}
+  if (!started && cur > 0) startTimer();
+  buildOv();
+}
+var phone = window.matchMedia("(max-width: 900px)");
+function next() { var n = phone.matches ? 0 : frags(cur).length; if ((frag[cur] || 0) < n) setFrag(cur, (frag[cur] || 0) + 1); else if (cur < slides.length - 1) go(cur + 1); }
+function prev() { if (!phone.matches && (frag[cur] || 0) > 0) setFrag(cur, frag[cur] - 1); else if (cur > 0) go(cur - 1, true); }
+
+/* timer */
+var started = null, tEl = document.getElementById("timer");
+function startTimer() { started = Date.now(); }
+setInterval(function () { if (!started) return; var s = Math.floor((Date.now() - started) / 1000); tEl.textContent = String(Math.floor(s / 60)).padStart(2, "0") + ":" + String(s % 60).padStart(2, "0") + " / 30:00"; tEl.style.color = s > 1800 ? "var(--bad)" : ""; }, 1000);
+tEl.onclick = function () { started = Date.now(); tEl.textContent = "00:00 / 30:00"; };
+
+/* overview, notes, fullscreen, theme */
+var ov = document.getElementById("ov"), bOv = document.getElementById("bOv"), np = document.getElementById("notesPane"), bN = document.getElementById("bNotes");
+function buildOv() {
+  if (!ov.classList.contains("on")) return;
+  ov.innerHTML = ""; var lastSec = null, grid = null;
+  slides.forEach(function (s, i) {
+    var sec = s.getAttribute("data-section");
+    if (sec !== lastSec) { ov.appendChild(H("h3", "", sec)); grid = H("div", "grid"); ov.appendChild(grid); lastSec = sec; }
+    var b = H("button", i === cur ? "cur" : "", "<b>" + (i + 1) + "</b>" + (s.querySelector("h2, h1") || {}).textContent);
+    b.type = "button"; b.onclick = function () { toggleOv(false); go(i); }; grid.appendChild(b);
+  });
+}
+function toggleOv(on) { on = on == null ? !ov.classList.contains("on") : on; ov.classList.toggle("on", on); bOv.setAttribute("aria-pressed", on); buildOv(); }
+function toggleNotes() { var on = !np.classList.contains("on"); np.classList.toggle("on", on); bN.setAttribute("aria-pressed", on); }
+function fs() { if (!document.fullscreenElement) { (document.documentElement.requestFullscreen || function () {}).call(document.documentElement); } else document.exitFullscreen(); }
+function theme() { var r = document.documentElement, dark = r.getAttribute("data-theme") ? r.getAttribute("data-theme") === "dark" : matchMedia("(prefers-color-scheme: dark)").matches; var t = dark ? "light" : "dark"; r.setAttribute("data-theme", t); try { localStorage.setItem("courses-theme", t); } catch (e) {} }
+bOv.onclick = function () { toggleOv(); }; bN.onclick = toggleNotes;
+document.getElementById("bFs").onclick = fs; document.getElementById("bTheme").onclick = theme;
+document.getElementById("bNext").onclick = next; document.getElementById("bPrev").onclick = prev;
+document.addEventListener("keydown", function (e) {
+  if (e.metaKey || e.ctrlKey || e.altKey) return;
+  var tg = e.target, inCtl = tg && tg.closest && tg.closest("button, input, select, textarea, [role=button], a");
+  var k = e.key;
+  if (k === "ArrowRight" || k === "PageDown" || (k === " " && !inCtl) || (k === "Enter" && !inCtl)) { if (tg && tg.type === "range" && k === "ArrowRight") return; e.preventDefault(); next(); }
+  else if (k === "ArrowLeft" || k === "PageUp") { if (tg && tg.type === "range" && k === "ArrowLeft") return; e.preventDefault(); prev(); }
+  else if (k === "Home") go(0); else if (k === "End") go(slides.length - 1);
+  else if (k === "n" || k === "N") toggleNotes(); else if (k === "o" || k === "O" || k === "Escape") { if (k === "Escape" && !ov.classList.contains("on")) return; toggleOv(); }
+  else if (k === "f" || k === "F") fs();
+});
+var tx0 = null;
+document.getElementById("stage").addEventListener("touchstart", function (e) { if (e.target.closest(".demo")) { tx0 = null; return; } tx0 = [e.touches[0].clientX, e.touches[0].clientY]; }, { passive: true });
+document.getElementById("stage").addEventListener("touchend", function (e) { if (!tx0) return; var dx = e.changedTouches[0].clientX - tx0[0], dy = e.changedTouches[0].clientY - tx0[1]; if (Math.abs(dx) > 60 && Math.abs(dx) > 2 * Math.abs(dy)) { dx < 0 ? next() : prev(); } tx0 = null; });
+
+function renderMath() {
+  if (!window.renderMathInElement) return;
+  renderMathInElement(document.getElementById("stage"), { delimiters: [{ left: "$$", right: "$$", display: true }, { left: "$", right: "$", display: false }], ignoredTags: ["script", "noscript", "style", "textarea", "pre", "code", "template"], ignoredClasses: ["demo"], trust: function (ctx) { return ctx.command === "\\htmlClass"; }, strict: false, throwOnError: false });
+}
+function boot() {
+  renderMath();
+  var h = parseInt((location.hash || "").replace("#", ""), 10);
+  slides[0].classList.add("on");
+  go(isNaN(h) ? 0 : h - 1, !isNaN(h) && h > 1);
+}
+window.addEventListener("hashchange", function () { var h = parseInt((location.hash || "").replace("#", ""), 10); if (!isNaN(h) && h - 1 !== cur) go(h - 1); });
+if (document.readyState === "complete") boot(); else window.addEventListener("load", boot);
+})();
+</script>
+</body>
+</html>

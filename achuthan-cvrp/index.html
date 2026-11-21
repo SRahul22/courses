@@ -821,6 +821,13 @@ section.pg-review { display:flex; flex-direction:column; gap:26px; }
 .theme-btn:focus-visible { outline:2px solid var(--brand); outline-offset:2px; }
 @media (prefers-reduced-motion: reduce) { .theme-btn::after, .theme-btn svg { transition:none; } }
 
+/* presentation-mode link on the home page (present/ is built from source/present/present.html) */
+.present-cta { display:flex; flex-wrap:wrap; align-items:center; gap:10px 16px; margin:18px 0 6px; padding:14px 16px; border:1px solid var(--line2); border-radius:var(--r, 16px); background:var(--panel); }
+.present-cta a { display:inline-block; padding:9px 18px; border-radius:999px; background:var(--accent); color:#fff; font:700 15px var(--font-ui, sans-serif); text-decoration:none; white-space:nowrap; }
+:root[data-theme="dark"] .present-cta a { color:#11151A; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .present-cta a { color:#11151A; } }
+.present-cta span { flex:1 1 260px; color:var(--tx2); font-size:15px; }
+
 /* site theme */
 
 </style>
@@ -867,6 +874,7 @@ section.pg-review { display:flex; flex-direction:column; gap:26px; }
       <h1>How new cutting planes help solve truck-routing problems exactly</h1>
       <p class="lede">Achuthan, Caccetta and Hill (2003) solve the capacitated vehicle routing problem to proven optimality with branch-and-cut. They add several new cutting planes; two of them, (2.9) and (2.10), are justified by what an optimal solution must look like. The whole paper, built up on one 7-customer example.</p>
       <p class="stack">N. R. Achuthan, L. Caccetta, S. P. Hill, <i>An Improved Branch-and-Cut Algorithm for the Capacitated Vehicle Routing Problem</i>, Transportation Science 37(2):153–169, 2003.</p>
+      <p class="present-cta"><a href="present/">Present this paper →</a><span>A 30-minute talk that starts from scratch, with the 7-customer example running live beside every slide: build routes, watch the solver add cuts and branch.</span></p>
       <p class="prereq">Assumes linear and integer programming, branch-and-bound, and TSP subtour cuts at course level (SL 225 Lectures 7–9 and 12). Every new term has a tooltip; the pill button at the bottom right opens the glossary and per-chapter self-check cards.</p>
       <div class="plan-head"><h3>The route</h3></div>
       <ol class="plan" id="plan"></ol>
