@@ -8,8 +8,8 @@
 <meta name="robots" content="noindex">
 <link rel="icon" href="../favicon.svg" type="image/svg+xml">
 <link rel="icon" href="../favicon-32.png" sizes="32x32" type="image/png">
-<link rel="preload" href="../vendor/fonts/figtree.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="preload" href="../vendor/fonts/source-serif-4.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="../vendor/fonts/fira-sans-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="../vendor/fonts/fira-sans-latin-600-normal.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="../vendor/katex/katex.min.css">
 <script defer src="../vendor/katex/katex.min.js"></script>
 <script defer src="../vendor/katex/contrib/auto-render.min.js"></script>
@@ -19,6 +19,13 @@
 @font-face { font-family:"Source Serif 4"; font-style:normal; font-weight:200 900; font-display:swap; src:url(../vendor/fonts/source-serif-4.woff2) format("woff2"); }
 @font-face { font-family:"Source Serif 4"; font-style:italic; font-weight:200 900; font-display:swap; src:url(../vendor/fonts/source-serif-4-italic.woff2) format("woff2"); }
 @font-face { font-family:"JetBrains Mono"; font-style:normal; font-weight:100 800; font-display:swap; src:url(../vendor/fonts/jetbrains-mono.woff2) format("woff2"); }
+@font-face { font-family:"Fira Sans"; font-style:normal; font-weight:400; font-display:swap; src:url(../vendor/fonts/fira-sans-latin-400-normal.woff2) format("woff2"); }
+@font-face { font-family:"Fira Sans"; font-style:italic; font-weight:400; font-display:swap; src:url(../vendor/fonts/fira-sans-latin-400-italic.woff2) format("woff2"); }
+@font-face { font-family:"Fira Sans"; font-style:normal; font-weight:500; font-display:swap; src:url(../vendor/fonts/fira-sans-latin-500-normal.woff2) format("woff2"); }
+@font-face { font-family:"Fira Sans"; font-style:normal; font-weight:600; font-display:swap; src:url(../vendor/fonts/fira-sans-latin-600-normal.woff2) format("woff2"); }
+@font-face { font-family:"Fira Sans"; font-style:normal; font-weight:700; font-display:swap; src:url(../vendor/fonts/fira-sans-latin-700-normal.woff2) format("woff2"); }
+@font-face { font-family:"Fira Mono"; font-style:normal; font-weight:400; font-display:swap; src:url(../vendor/fonts/fira-mono-latin-400-normal.woff2) format("woff2"); }
+@font-face { font-family:"Fira Mono"; font-style:normal; font-weight:500; font-display:swap; src:url(../vendor/fonts/fira-mono-latin-500-normal.woff2) format("woff2"); }
 :root {
   --bg:#F4F6F7; --bg2:#EAEEF0; --panel:#FFFFFF; --panel2:#F9FAFB;
   --line:rgba(24,32,41,.10); --line2:rgba(24,32,41,.18);
@@ -27,8 +34,8 @@
   --ok:#2E7D4F; --bad:#C53B2F; --bad-soft:rgba(197,59,47,.12);
   --tA:#1F5F8B; --tB:#B4532A; --tC:#2E7D4F; --tD:#6B4FB8;
   --r1:#0E7C86; --r2:#B07D10; --r3:#9B3D74; --r4:#5A6573; --r5:#8B5E3C; --r6:#6E7F1E; --r7:#3E5C8A;
-  --ui:Figtree, system-ui, -apple-system, "Segoe UI", sans-serif; --read:"Source Serif 4", Georgia, serif;
-  --mono:"JetBrains Mono", ui-monospace, Menlo, monospace;
+  --ui:"Fira Sans", Figtree, system-ui, -apple-system, "Segoe UI", sans-serif; --read:"Fira Sans", system-ui, sans-serif;
+  --mono:"Fira Mono", "JetBrains Mono", ui-monospace, Menlo, monospace;
 }
 @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
   --bg:#11151A; --bg2:#171C22; --panel:#1A2027; --panel2:#1F262E;
@@ -50,7 +57,7 @@
 }
 * { box-sizing:border-box; }
 html, body { margin:0; height:100%; background:var(--bg); color:var(--tx); }
-body { font-family:var(--read); font-size:clamp(19px, 1.5vw, 27px); line-height:1.55; font-optical-sizing:auto; -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility; overflow:hidden; display:flex; flex-direction:column; }
+body { font-family:var(--read); font-size:clamp(18px, 1.42vw, 26px); line-height:1.5; font-weight:400; font-optical-sizing:auto; -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility; overflow:hidden; display:flex; flex-direction:column; }
 button { font:inherit; color:inherit; }
 a { color:var(--accent); }
 
@@ -103,8 +110,8 @@ a { color:var(--accent); }
 .noex .slide .demo { display:none; }
 .txt { overflow:auto; min-height:0; padding-right:8px; }
 .kick { font-family:var(--ui); font-weight:500; font-size:.6em; letter-spacing:.01em; color:var(--tx3); margin:0 0 .55em; font-variant-numeric:tabular-nums; }
-.slide h2 { font-family:var(--read); font-weight:600; font-size:clamp(30px, 2.9vw, 54px); line-height:1.12; margin:0 0 .6em; letter-spacing:-.012em; text-wrap:balance; }
-.slide h1 { font-family:var(--read); font-weight:600; font-size:clamp(38px, 4.2vw, 76px); line-height:1.05; margin:.15em 0 .45em; letter-spacing:-.018em; text-wrap:balance; }
+.slide h2 { font-family:var(--ui); font-weight:600; font-size:clamp(28px, 2.6vw, 48px); line-height:1.15; margin:0 0 .65em; letter-spacing:-.005em; text-wrap:balance; color:var(--tx); }
+.slide h1 { font-family:var(--ui); font-weight:700; font-size:clamp(36px, 3.9vw, 70px); line-height:1.08; margin:.15em 0 .45em; letter-spacing:-.01em; text-wrap:balance; }
 .txt p { margin:0 0 .75em; text-wrap:pretty; }
 .txt ul, .txt ol { margin:0 0 .8em; padding-left:1.25em; }
 .txt li { margin:.4em 0; text-wrap:pretty; }
@@ -121,6 +128,7 @@ a { color:var(--accent); }
 .legend li:hover { background:var(--bg2); }
 .sw { display:inline-block; width:.8em; height:.8em; border-radius:3px; flex:0 0 auto; transform:translateY(.08em); }
 .sw.tA { background:var(--tA); } .sw.tB { background:var(--tB); } .sw.tC { background:var(--tC); } .sw.tD { background:var(--tD); }
+.katex .text, .katex .text * { font-family:var(--ui) !important; font-size:.92em; }
 .katex .tA { color:var(--tA); } .katex .tB { color:var(--tB); } .katex .tC { color:var(--tC); } .katex .tD { color:var(--tD); }
 .hl-tA .katex .tA, .hl-tB .katex .tB, .hl-tC .katex .tC, .hl-tD .katex .tD { background:var(--accent-soft); border-radius:4px; box-shadow:0 0 0 3px var(--accent-soft); }
 .hl-tA .e.tA, .hl-tB .e.tB, .hl-tC .e.tC { stroke-width:2.2 !important; }
@@ -164,10 +172,20 @@ svg.g { width:100%; flex:1 1 auto; min-height:200px; max-height:52vh; display:bl
 .loadbar { display:inline-block; width:70px; height:8px; background:var(--bg2); border-radius:4px; overflow:hidden; vertical-align:middle; }
 .loadbar i { display:block; height:100%; }
 .msg { background:var(--bg2); border-radius:10px; padding:8px 12px; }
-.cutlist { display:flex; flex-direction:column; gap:4px; margin-top:6px; }
+.cutlist { display:flex; flex-wrap:wrap; gap:5px; margin-top:6px; }
+.cutsel { margin-top:5px; color:var(--tx2); }
 .cutlist button { text-align:left; border:0; background:color-mix(in srgb, var(--tx) 4%, transparent); border-radius:10px; padding:6px 12px; cursor:pointer; font-size:.95em; transition:background-color .18s; }
 .cutlist button:hover { background:color-mix(in srgb, var(--tx) 8%, transparent); }
 .cutlist button.on { background:var(--accent-soft); box-shadow:inset 3px 0 0 var(--accent); }
+.pair { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+.pair .cap { text-align:center; font-size:1.02em; color:var(--tx2); }
+.sandwich { display:flex; align-items:center; justify-content:center; gap:10px; flex-wrap:wrap; margin:4px 0; flex-shrink:0; }
+.sandwich .sb { display:flex; flex-direction:column; align-items:center; padding:7px 14px; border-radius:12px; font-weight:600; line-height:1.25; }
+.sandwich .sb small { font-weight:500; font-size:.82em; color:var(--tx2); }
+.sandwich .lo { background:color-mix(in srgb, var(--tA) 12%, transparent); color:var(--tA); }
+.sandwich .mid { background:color-mix(in srgb, var(--ok) 12%, transparent); color:var(--ok); }
+.sandwich .hi { background:color-mix(in srgb, var(--tB) 12%, transparent); color:var(--tB); }
+.sandwich .le { font-size:1.3em; color:var(--tx3); }
 .split { display:grid; grid-template-columns:minmax(0, 1.5fr) minmax(0, 1fr); gap:10px; align-items:start; }
 pre.code { font-variant-ligatures:none; font-feature-settings:"calt" 0, "liga" 0; font-family:var(--mono); font-size:.86em; line-height:1.5; background:var(--bg2); border-radius:10px; padding:10px 12px; margin:0; overflow:auto; white-space:pre; flex:1 1 auto; min-height:0; }
 pre.code .cm { color:var(--tx3); } pre.code .kw { color:var(--tD); font-weight:700; } pre.code .st { color:var(--tC); } pre.code .hl { background:var(--accent-soft); display:inline-block; width:100%; }
@@ -258,18 +276,17 @@ input[type=range] { width:100%; accent-color:var(--accent); }
 <main class="stage" id="stage">
 
 <!-- ================= START ================= -->
-<section class="slide" data-section="Start" data-title="Title" data-time="30" data-demo='{"mode":"map","plans":["best"],"autoplay":true,"label":"Live example"}'>
+<section class="slide" data-section="Start" data-title="Title" data-time="25" data-demo='{"mode":"map","plans":["best"],"autoplay":true,"label":"Live example"}'>
 <div class="txt">
   <p class="kick">SL 225 project · Logistics and Freight Modeling</p>
   <h1>Solving truck routing exactly, with better cuts</h1>
   <p class="lead">N. R. Achuthan, L. Caccetta and S. P. Hill, <i>An Improved Branch-and-Cut Algorithm for the Capacitated Vehicle Routing Problem</i>, Transportation Science 37(2):153–169, 2003.</p>
   <p class="title-meta">Presented by Rahul Dev Sharma</p>
-  <p class="say">We will follow one small example, a depot and 7 customers, all the way through. Everything we define, we try on it.</p>
 </div>
-<aside class="notes">Keys: → / Space next step, ← back, E show or hide the example, N notes, O all slides, F full screen. Open on the picture: three trucks leave the depot, serve seven customers and come home. Promise: by the end the audience knows why this plan is the best one, and how a computer proves that no better plan exists.</aside>
+<aside class="notes">Key point: one small example, followed all the way through. Keys: → / Space next step, ← back, E show or hide the example, N notes, O all slides, F full screen. Open on the picture: three trucks leave the depot, serve seven customers and come home. By the end everyone knows why this plan is the best one, and how a computer proves it.</aside>
 </section>
 
-<section class="slide" data-section="Start" data-title="Roadmap" data-time="30">
+<section class="slide" data-section="Start" data-title="Roadmap" data-time="25">
 <div class="txt">
   <p class="kick">Roadmap</p>
   <h2>Where we are going</h2>
@@ -289,181 +306,166 @@ input[type=range] { width:100%; accent-color:var(--accent); }
 <section class="slide" data-section="1 · The problem" data-title="The problem" data-time="50" data-demo='{"mode":"map","plans":["none"],"info":true,"label":"Our example"}'>
 <div class="txt">
   <p class="kick">1 · The problem</p>
-  <h2>One depot, seven customers, identical trucks</h2>
+  <h2>One depot, seven customers, trucks that carry 10</h2>
   <ul>
-    <li class="f">The <b>depot</b> (the black square, node 1) holds the goods. Every truck starts and ends there.</li>
-    <li class="f">Customers 2–8 each want an amount $q_j$, written next to each circle.</li>
-    <li class="f">Every truck carries at most $Q = 10$.</li>
+    <li class="f"><b>Depot</b> = node 1 (black square). Every truck starts and ends there.</li>
+    <li class="f">Customer $j$ wants $q_j$ (next to each circle). A truck carries $Q = 10$.</li>
+    <li class="f">Visit each customer once, never overload a truck, drive the least distance.</li>
   </ul>
-  <p class="f"><b>Find routes</b> so that every customer is visited exactly once, no truck carries more than $Q$, and every route starts and ends at the depot.</p>
-  <p class="f"><b>Goal:</b> the least total distance driven.</p>
-  <p class="f say">This is the <b>capacitated vehicle routing problem</b> (CVRP): deliveries, garbage collection, school buses.</p>
+  <p class="f say">Total demand 28, so at least $\lceil 28/10 \rceil = 3$ trucks. This is the <b>capacitated vehicle routing problem</b>.</p>
 </div>
-<aside class="notes">Tap customer 2 on the right: demand 9, so it almost fills a truck by itself. Tap 4: demand 1. Total demand is 28 and Q is 10, so at least 3 trucks are needed.</aside>
+<aside class="notes">Key point: the rules of the game. Click customer 2: demand 9, nearly a full truck by itself. Click 4: demand 1. Real uses: deliveries, garbage collection, school buses.</aside>
 </section>
 
-<section class="slide" data-section="1 · The problem" data-title="Plan by hand" data-time="75" data-demo='{"mode":"build","label":"Planning routes by hand"}'>
+<section class="slide" data-section="1 · The problem" data-title="Plan by hand" data-time="60" data-demo='{"mode":"build","label":"Planning routes by hand"}'>
 <div class="txt">
   <p class="kick">1 · The problem</p>
   <h2>Let's plan the routes by hand</h2>
-  <p>We pick customers in the order a truck visits them. When a truck is full, the next one starts.</p>
+  <p>Let's join customers whose shared trip saves the most distance, until a truck is full.</p>
   <ul>
-    <li class="f">For each truck we keep an eye on its load against $Q = 10$ and the distance it drives.</li>
-    <li class="f">A standard quick method (a savings heuristic) gets <b>322.4</b>.</li>
-    <li class="f">The best possible plan costs <b>318.2</b>. Let's see how close we get.</li>
+    <li class="f" data-do="1">Customer 2 nearly fills a truck alone: 1 → 2 → 1, load 9.</li>
+    <li class="f" data-do="2">Next truck: 1 → 7 → 3 → 4 → 5 → 1, load 10.</li>
+    <li class="f" data-do="3">Last truck: 1 → 6 → 8 → 1, load 9. Total <b>322.4</b>.</li>
   </ul>
-  <p class="f say">Finding a good plan is easy. Knowing that nothing better exists is the hard part.</p>
+  <p class="f say">A good plan. Is it the best one?</p>
 </div>
-<aside class="notes">Build one route live: 1 → 3 → 4 → 8. Load 9. Then customer 2 alone (9). Then 6, 5, 7 (load 10). Total 318.2. Ask: how would you convince someone that no plan beats 318.2?</aside>
+<aside class="notes">Key point: a quick method gives a good plan, but no guarantee. Each → adds the next route on the map. This is the savings heuristic, the paper's own starting plan (Paessens' version). Afterwards you can click customers to build a plan live if someone asks.</aside>
 </section>
 
-<section class="slide" data-section="1 · The problem" data-title="Good vs proven" data-time="60" data-demo='{"mode":"map","plans":["heur","best"],"label":"Two plans"}'>
+<section class="slide" data-section="1 · The problem" data-title="Good vs proven" data-time="60" data-demo='{"mode":"twoplans","label":"Two plans for the same customers"}'>
 <div class="txt">
   <p class="kick">1 · The problem</p>
   <h2>A good plan is not a proof</h2>
-  <p>Let's take a look at two plans for the same customers.</p>
   <ul>
-    <li class="f"><b>Heuristic plan</b>: 322.4. Quick, sensible, no guarantee.</li>
-    <li class="f"><b>Best plan</b>: 318.2, about 1.3% shorter.</li>
-    <li class="f">This toy has only 354 possible plans, so we could check them all. With 50 customers the number of plans is astronomically large: listing them is impossible.</li>
+    <li class="f">The best plan costs <b>318.2</b>, 1.3% shorter.</li>
+    <li class="f">Only 354 plans here: we checked them all. With 50 customers: hopeless.</li>
   </ul>
-  <p class="f say">The paper's question: how do we <b>prove</b> a plan is the best without listing every plan? Answer: compute a <b>lower bound</b>, a number no plan can beat, and push it up until it meets the best plan we know.</p>
+  <p class="f say">An exact method <b>proves</b> optimality: push the lower bound up until it meets the plan.</p>
 </div>
-<aside class="notes">Upper bound = cost of a plan we have (322.4 or 318.2). Lower bound = something we can prove about every plan. When the two meet, we are done. That sentence is the whole talk.</aside>
+<aside class="notes">Key point: upper bound = a plan we have; lower bound = nothing is cheaper; when they meet, we are done. That sentence is the whole talk. Point at the three boxes under the maps.</aside>
 </section>
 
 <!-- ================= MODEL ================= -->
-<section class="slide" data-section="2 · Writing it for a computer" data-title="Variables x_ij" data-time="75" data-demo='{"mode":"map","plans":["best"],"labels":"all","edgeInfo":true,"drive":false,"label":"Roads in the best plan"}'>
+<section class="slide" data-section="2 · Writing it for a computer" data-title="Variables x_ij" data-time="65" data-demo='{"mode":"map","plans":["best"],"labels":"all","edgeInfo":true,"drive":false,"label":"Roads in the best plan"}'>
 <div class="txt">
   <p class="kick">2 · Writing it for a computer</p>
-  <h2>Describe a plan by the roads it uses</h2>
-  <p class="say">For every pair of locations $i \lt j$, one number $x_{ij}$: <b>how many times a truck drives between $i$ and $j$</b>.</p>
+  <h2>Let's describe a plan by the roads it uses</h2>
+  <p class="say">For each pair $i \lt j$, one number $x_{ij}$: <b>how many times a truck drives between $i$ and $j$</b>.</p>
   <ul>
-    <li class="f">$x_{ij} = 1$ if the road is driven once, $0$ if not.</li>
-    <li class="f">$x_{1j} = 2$ only for a depot road, when a truck serves customer $j$ alone: out and back. Route 1 → 2 → 1 is $x_{12} = 2$.</li>
-    <li class="f">We do not record which truck or which direction, only which roads. Two indices, $i$ and $j$: the <b>two-index model</b>.</li>
-    <li class="f">Two customers that cannot share a truck ($q_i + q_j \gt Q$) get no variable at all. Customer 2 ($q = 9$) can only pair with customer 4 ($q = 1$).</li>
+    <li class="f">1 if driven once, 0 if not; 2 for an out-and-back trip: 1 → 2 → 1 is $x_{12} = 2$.</li>
+    <li class="f">No truck, no direction, only roads: the <b>two-index model</b>.</li>
+    <li class="f">Pairs that cannot share a truck ($q_i + q_j \gt Q$) get no variable.</li>
   </ul>
 </div>
-<aside class="notes">Tap a road on the right: it shows its x value and length. Point out x12 = 2. The smaller index always comes first, so it is x56, never x65. The toy has 23 such variables plus m, the number of trucks.</aside>
+<aside class="notes">Key point: one number per road. Click a road on the right to show its value and length. The smaller index comes first: x56, never x65. The toy has 23 variables plus m, the number of trucks. Customer 2 (q = 9) can only pair with customer 4 (q = 1).</aside>
 </section>
 
-<section class="slide" data-section="2 · Writing it for a computer" data-title="Objective (1.1)" data-time="40" data-demo='{"mode":"map","plans":["best"],"labels":"none","costs":true,"label":"Cost of the best plan"}'>
+<section class="slide" data-section="2 · Writing it for a computer" data-title="Objective (1.1)" data-time="35" data-demo='{"mode":"map","plans":["best"],"labels":"none","costs":true,"label":"Cost of the best plan"}'>
 <div class="txt">
   <p class="kick">2 · Writing it for a computer</p>
   <h2>What we minimise: total distance</h2>
-  <p class="say">In words: for every road, its <b>length</b> times <b>how many times it is driven</b>; add these up.</p>
-  <div class="mathbox f"><span class="tag">(1.1) objective</span>
-  $$\min \; \sum_{i \lt j} \htmlClass{tA}{c_{ij}} \; \htmlClass{tB}{x_{ij}}$$
-  <ul class="legend"><li data-t="tA"><span class="sw tA"></span>$c_{ij}$: length of the road between $i$ and $j$</li><li data-t="tB"><span class="sw tB"></span>$x_{ij}$: times it is driven (0, 1, or 2 for a depot road)</li></ul></div>
-  <p class="f">Best plan: $2(48.9)$ for the out-and-back trip to customer 2, plus the two loops: $97.8 + 127.0 + 93.4 = 318.2$.</p>
+  <p class="say">For every road: its length times how many times it is driven. Add up.</p>
+  <div class="mathbox f"><span class="tag">(1.1)</span>
+  $$\min \; \sum_{i \lt j} \htmlClass{tA}{\underbrace{c_{ij}}_{\text{length}}} \; \htmlClass{tB}{\underbrace{x_{ij}}_{\text{times driven}}}$$</div>
+  <p class="f">Best plan: $97.8 + 93.4 + 127.0 = 318.2$.</p>
 </div>
-<aside class="notes">Point at the per-route costs on the right. The x12 = 2 term counts the road to customer 2 twice: once out, once back.</aside>
+<aside class="notes">Key point: the objective is just total distance. The trip to customer 2 counts its road twice (2 × 48.9 = 97.8).</aside>
 </section>
 
-<section class="slide" data-section="2 · Writing it for a computer" data-title="Degrees (1.2), (1.3)" data-time="50" data-demo='{"mode":"degree","sources":["best"],"start":4,"label":"Roads at each node"}'>
+<section class="slide" data-section="2 · Writing it for a computer" data-title="Degrees (1.2), (1.3)" data-time="45" data-demo='{"mode":"degree","sources":["best"],"start":4,"label":"Roads at each node"}'>
 <div class="txt">
   <p class="kick">2 · Writing it for a computer</p>
   <h2>Rule 1: one truck in, one truck out</h2>
-  <p class="say">Stand at a customer: one truck arrives and one leaves, so its roads add up to <b>2</b>. Stand at the depot: each of the $m$ trucks leaves once and returns once, so its roads add up to <b>$2m$</b>.</p>
-  <div class="mathbox f"><span class="tag">(1.2) depot · (1.3) each customer $k$</span>
-  $$\sum_{j \in \mathscr C} \htmlClass{tA}{x_{1j}} = 2\,\htmlClass{tB}{m} \qquad\qquad \htmlClass{tC}{\sum_{i \lt k} x_{ik} + \sum_{j \gt k} x_{kj}} = 2$$
-  <ul class="legend"><li data-t="tA"><span class="sw tA"></span>roads at the depot; $\mathscr C = \{2,\dots,8\}$ is the set of customers</li><li data-t="tB"><span class="sw tB"></span>$m$: number of trucks, chosen by the model</li><li data-t="tC"><span class="sw tC"></span>all roads touching customer $k$ (two sums only because the smaller index is written first)</li></ul></div>
-  <p class="f">These are the <b>degree constraints</b>. Let's check them node by node on the best plan.</p>
+  <p class="say">At a customer, one truck arrives and one leaves: its roads add up to 2. At the depot, every truck leaves and returns: $2m$.</p>
+  <div class="mathbox f"><span class="tag">(1.2) and (1.3)</span>
+  $$\htmlClass{tA}{\underbrace{\sum_{j \in \mathscr C} x_{1j}}_{\text{roads at the depot}}} = 2\,\htmlClass{tB}{\underbrace{m}_{\text{trucks}}} \qquad \htmlClass{tC}{\underbrace{\sum_{i \lt k} x_{ik} + \sum_{j \gt k} x_{kj}}_{\text{roads at customer } k}} = 2$$</div>
+  <p class="f">These are the <b>degree constraints</b>. Let's check them on the best plan.</p>
 </div>
-<aside class="notes">Tap customer 4: x34 + x48 = 2. Tap the depot: 2 + 1 + 1 + 1 + 1 = 6 = 2 × 3. Tap customer 2: x12 = 2 alone.</aside>
+<aside class="notes">Key point: degrees count trucks in and out. Click customer 4: x34 + x48 = 2. Click the depot: 2 + 1 + 1 + 1 + 1 = 6 = 2 × 3. Customer 2 gets its 2 from x12 alone. 𝒞 = {2,…,8} is the set of customers.</aside>
 </section>
 
-<section class="slide" data-section="2 · Writing it for a computer" data-title="Not enough" data-time="50" data-demo='{"mode":"degree","sources":["lp0"],"warn":[3,4,5,6],"start":5,"label":"Cheapest answer under rule 1 only"}'>
+<section class="slide" data-section="2 · Writing it for a computer" data-title="Not enough" data-time="45" data-demo='{"mode":"degree","sources":["lp0"],"warn":[3,4,5,6],"start":5,"label":"Cheapest answer under rule 1 only"}'>
 <div class="txt">
   <p class="kick">2 · Writing it for a computer</p>
   <h2>Is rule 1 enough? No.</h2>
-  <p>Give the computer only (1.1)–(1.3) and ask for the cheapest $x$.</p>
+  <p>With only (1.1)–(1.3), the cheapest answer costs <b>246.0</b>: below the best plan.</p>
   <ul>
-    <li class="f">It answers <b>246.0</b>, cheaper than the best real plan (318.2). Something is wrong.</li>
-    <li class="f">Every customer has its 2 and the depot has $6 = 2 \cdot 3$: rule 1 holds everywhere.</li>
-    <li class="f">But customers 3, 4, 5, 6 form a <b>loop that never visits the depot</b>: a truck with no garage.</li>
-    <li class="f">And that loop carries $3 + 1 + 3 + 4 = 11 \gt 10$: too heavy for one truck anyway.</li>
+    <li class="f">Rule 1 holds at every node.</li>
+    <li class="f">But 3–4–5–6 is a <b>loop that never visits the depot</b>, and it carries 11 &gt; 10.</li>
   </ul>
-  <p class="f say">We need a rule that forbids loops away from the depot and overloaded trucks.</p>
+  <p class="f say">We need a rule that forbids such loops.</p>
 </div>
-<aside class="notes">This is the classic subtour. The rest of the model exists to forbid pictures like this one.</aside>
+<aside class="notes">Key point: degrees alone allow subtours. A truck with no garage, and overloaded. The rest of the model exists to forbid pictures like this.</aside>
 </section>
 
 <section class="slide" data-section="2 · Writing it for a computer" data-title="Capacity cut (1.4)" data-time="75" data-demo='{"mode":"set","fam":"1.4","sources":["lp0","best"],"S":[3,4,5,6],"label":"A group S on the map"}'>
 <div class="txt">
   <p class="kick">2 · Writing it for a computer</p>
   <h2>Rule 2: a group of customers needs enough trucks</h2>
-  <p class="say">Pick any group $S$ of customers. Together they need at least $\ell(S) = \lceil q(S)/Q \rceil$ trucks (total demand divided by capacity, rounded up).</p>
-  <p class="f">Each truck visits a run of $S$'s customers; a run of $r$ uses $r - 1$ roads inside $S$. So at most $|S| - \ell(S)$ roads lie inside.</p>
-  <div class="mathbox f"><span class="tag">(1.4) capacity / subtour rule, every group $S$</span>
-  $$\htmlClass{tA}{\sum_{i,j \in S} x_{ij}} \;\le\; \htmlClass{tB}{|S|} - \htmlClass{tC}{\ell(S)}$$
-  <ul class="legend"><li data-t="tA"><span class="sw tA"></span>$x(S)$: roads with both ends in $S$</li><li data-t="tB"><span class="sw tB"></span>number of customers in $S$</li><li data-t="tC"><span class="sw tC"></span>$\ell(S)$: fewest trucks $S$ needs</li></ul></div>
-  <p class="f">The loop $S = \{3,4,5,6\}$ has 4 roads inside, but only $4 - \lceil 11/10 \rceil = 2$ are allowed. <b>Broken: that answer is forbidden.</b></p>
+  <p class="say">A group $S$ needs at least $\ell(S) = \lceil q(S)/Q \rceil$ trucks. Each truck covers a run of $S$'s customers, and a run of $r$ has $r - 1$ roads inside.</p>
+  <div class="mathbox f"><span class="tag">(1.4)</span>
+  $$\htmlClass{tA}{\underbrace{\sum_{i,j \in S} x_{ij}}_{\text{roads inside } S}} \;\le\; \htmlClass{tB}{\underbrace{|S|}_{\text{customers}}} - \htmlClass{tC}{\underbrace{\ell(S)}_{\text{trucks } S \text{ needs}}}$$</div>
+  <p class="f">Loop $\{3,4,5,6\}$: 4 roads inside, only $4 - \lceil 11/10 \rceil = 2$ allowed. <b>Broken: that answer is gone.</b></p>
 </div>
-<aside class="notes">Show on the right: S = {3,4,5,6} is broken on the starting answer. Switch to the best plan: satisfied. Tap 3 and 6 away and add 7 to try other groups. Also say: even a light loop is caught, since ℓ ≥ 1 allows |S| − 1 roads and a closed loop has |S|.</aside>
+<aside class="notes">Key point: one rule handles both subtours and capacity. Switch to the best plan: satisfied. Click 3 and 6 away and add 7 to try other groups. Even a light loop is caught: ℓ ≥ 1 allows |S| − 1 roads, and a closed loop has |S|.</aside>
 </section>
 
-<section class="slide" data-section="2 · Writing it for a computer" data-title="Too many rules" data-time="40" data-demo='{"mode":"count","label":"How many groups S?"}'>
+<section class="slide" data-section="2 · Writing it for a computer" data-title="Too many rules" data-time="35" data-demo='{"mode":"count","label":"How many groups S?"}'>
 <div class="txt">
   <p class="kick">2 · Writing it for a computer</p>
   <h2>Too many rules to write down</h2>
-  <p class="say">Rule (1.4) is one inequality <b>per group of customers</b>.</p>
   <ul>
-    <li class="f">7 customers: 99 groups of size 3 or more.</li>
-    <li class="f">100 customers: about $1.3 \times 10^{30}$ groups. Nobody can write them all.</li>
-    <li class="f">Instead: start without them. Solve. If the answer breaks one, add that one and solve again.</li>
+    <li class="f">One rule (1.4) per group: 99 groups for 7 customers, about $10^{30}$ for 100.</li>
+    <li class="f">So: start without them, solve, and add only the rules the answer breaks.</li>
   </ul>
-  <p class="f say">An inequality added because the current answer breaks it is called a <b>cut</b>: it cuts the wrong answer off. That is the "cut" in branch-and-cut.</p>
+  <p class="f say">A rule added because the answer breaks it is a <b>cut</b>: the "cut" in branch-and-cut.</p>
 </div>
-<aside class="notes">Drag the slider. The point: the model is exact but exponentially large, so it can only be used lazily.</aside>
+<aside class="notes">Key point: the model is exact but exponentially large, so it is used lazily. Drag the slider to 100 customers.</aside>
 </section>
 
 <!-- ================= BRANCH AND CUT ================= -->
-<section class="slide" data-section="3 · How the computer solves it" data-title="Lower bound" data-time="50" data-demo='{"mode":"solver","from":1,"to":1,"label":"Bounds"}'>
+<section class="slide" data-section="3 · How the computer solves it" data-title="Lower bound" data-time="40" data-demo='{"mode":"solver","from":1,"to":1,"label":"Bounds"}'>
 <div class="txt">
   <p class="kick">3 · How the computer solves it</p>
   <h2>A lower bound: allow fractions</h2>
-  <p class="say">Solving with whole numbers is hard. If we let roads be used "half-way" ($x = 0.5$), the problem becomes a <b>linear program</b> (LP), which computers solve very fast.</p>
+  <p class="say">Let roads be used "half-way" ($x = \tfrac12$): a <b>linear program</b> (LP), which computers solve fast.</p>
   <ul>
-    <li class="f">The LP chooses from more options than real plans, so its cheapest answer can only be <b>lower or equal</b> to the best real plan.</li>
-    <li class="f">So: LP value ≤ best plan ≤ any plan we have. Here $246.0 \le \text{best} \le 322.4$.</li>
-    <li class="f">If the two ends meet, the plan we have is proven best.</li>
+    <li class="f">More options than real plans, so its value is a <b>lower bound</b>: $246.0 \le$ best $\le 322.4$.</li>
   </ul>
-  <p class="f say">The whole game is to <b>push the lower bound up</b> as fast as possible. Cuts do that.</p>
+  <p class="f say">The game: push the lower bound up. Cuts do that.</p>
 </div>
-<aside class="notes">The bar on the right: blue is what we can prove (lower bound), orange is the best plan we hold (upper bound). The gap is what is left to prove.</aside>
+<aside class="notes">Key point: the LP value is a lower bound. On the right: the blue point is what we can prove, the orange dashed line is the best plan we hold. The gap is what is left to prove.</aside>
 </section>
 
-<section class="slide" data-section="3 · How the computer solves it" data-title="Cutting-plane loop" data-time="100" data-demo='{"mode":"solver","from":0,"to":15,"label":"The solver at the root, step by step"}'>
+<section class="slide" data-section="3 · How the computer solves it" data-title="Cutting-plane loop" data-time="120" data-demo='{"mode":"solver","from":0,"to":15,"stops":[2,4,6,8,10,12,14,15],"label":"The solver at the root"}'>
 <div class="txt">
   <p class="kick">3 · How the computer solves it</p>
-  <h2>The cutting-plane loop</h2>
+  <h2>Let's watch the cutting-plane loop</h2>
   <ol>
-    <li class="f">Solve the LP.</li>
-    <li class="f">Look for rules the answer breaks.</li>
-    <li class="f">Add them as cuts.</li>
-    <li class="f">Solve again. Repeat until no broken rule is found.</li>
+    <li>Solve the LP.</li>
+    <li>Find rules the answer breaks.</li>
+    <li>Add them as cuts. Repeat.</li>
   </ol>
-  <p class="f">Let's watch it run. Each round removes the current wrong answer and the bound climbs: 246.0 → 293.1 → 310.8 → 315.7 → 317.3 → 317.35 → 317.75 → <b>318.0</b>.</p>
-  <p class="f say">Every cut is about a group of customers, which lights up on the map. Some are rule (1.4); others are the paper's new rules, which we meet in Part 4.</p>
+  <p class="say">Each round removes the current wrong answer, and the bound climbs.</p>
+  <p class="small">Each cut's group lights up on the map; click a cut in the list to see another.</p>
 </div>
-<aside class="notes">Step through live. Round 0: the 3-4-5-6 loop, cut by (1.4). Watch how each new answer is a different "cheat" and gets cut. After 7 rounds the bound is 318.0: only 0.2 below the best plan.</aside>
+<aside class="notes">Key point: every round removes a "cheat" and raises the bound. Each → is one round: 246.0 → 293.1 → 310.8 → 315.7 → 317.3 → 317.35 → 317.75 → 318.0. Round 0: the 3-4-5-6 loop, cut by (1.4). Some cuts are the paper's new ones, which we meet in Part 4. After 7 rounds the bound is 318.0, only 0.2 below the best plan.</aside>
 </section>
 
-<section class="slide" data-section="3 · How the computer solves it" data-title="Branching" data-time="75" data-demo='{"mode":"solver","from":15,"label":"Branching to finish the proof"}'>
+<section class="slide" data-section="3 · How the computer solves it" data-title="Branching" data-time="75" data-demo='{"mode":"solver","from":15,"stops":[16,20,22,24],"chart":false,"label":"Branching to finish the proof"}'>
 <div class="txt">
   <p class="kick">3 · How the computer solves it</p>
   <h2>When cuts run out: branch</h2>
-  <p class="say">At 318.0 no rule is broken, but road 3–4 is used half-way ($x_{34} = \tfrac12$).</p>
+  <p class="say">At 318.0 no rule is broken, but road 3–4 is used half-way.</p>
   <ul>
-    <li class="f"><b>Split</b> into two smaller problems: road 3–4 is not used ($x_{34} = 0$), or it is ($x_{34} = 1$). Every real plan is in one of them.</li>
-    <li class="f">$x_{34} = 1$: the LP answer is a real plan, cost <b>318.2</b>. New best plan.</li>
-    <li class="f">$x_{34} = 0$: after more cuts its bound is 319.15. It splits again, but both halves have bound $319.15 \gt 318.2$: they cannot beat what we have, so they are <b>pruned</b>.</li>
+    <li class="f" data-do="1"><b>Split</b>: road 3–4 unused ($x_{34} = 0$) or used ($x_{34} = 1$).</li>
+    <li class="f" data-do="2">Unused: more cuts, bound 319.15, still fractional: split again.</li>
+    <li class="f" data-do="3">Used: a real plan, <b>318.2</b>. New best plan.</li>
+    <li class="f" data-do="4">Both halves of the first branch have bound 319.15 &gt; 318.2: <b>pruned</b>.</li>
   </ul>
-  <p class="f say">Nothing left to explore: lower bound = upper bound = <b>318.2, proven optimal</b>. Cuts + branching = <b>branch-and-cut</b>.</p>
+  <p class="f say">Lower bound = upper bound = <b>318.2, proven optimal</b>.</p>
 </div>
-<aside class="notes">Step through the tree. The tree is small here because the cuts already brought the bound within 0.2 of the answer. Better cuts mean smaller trees: that is the paper's whole point.</aside>
+<aside class="notes">Key point: branching finishes the proof; good cuts keep the tree small. Every real plan is in one of the two halves, so nothing is lost by splitting. Cuts + branching = branch-and-cut.</aside>
 </section>
 
 <!-- ================= NEW CUTS ================= -->
@@ -471,74 +473,78 @@ input[type=range] { width:100%; accent-color:var(--accent); }
 <div class="txt">
   <p class="kick">4 · What the paper adds · the starting point</p>
   <h2>A known rule: leave enough trucks for everyone else</h2>
-    <p class="say f">Suppose $r$ trucks serve <b>only</b> customers of $S$. Those trucks are useless to the other customers $\bar S$, who still need $\ell(\bar S)$ trucks. So $m - r \ge \ell(\bar S)$.</p>
-  <div class="mathbox f"><span class="tag">(1.7) any group $S$, with $\bar S$ = the other customers</span>
-  $$\htmlClass{tA}{x(S)} + \htmlClass{tB}{x(1{:}S)} - \htmlClass{tC}{m} \;\le\; |S| - \htmlClass{tD}{\ell(\bar S)}$$
-  <ul class="legend"><li data-t="tA"><span class="sw tA"></span>roads inside $S$</li><li data-t="tB"><span class="sw tB"></span>depot roads into $S$</li><li data-t="tC"><span class="sw tC"></span>trucks in total</li><li data-t="tD"><span class="sw tD"></span>trucks the other customers need</li></ul></div>
-  <p class="f">Starting LP, $S = \{2,7,8\}$: all three trucks are busy with 2, 7 and 8, none left for the other four. Left side 3, right side 1. <b>Broken.</b></p>
+  <p class="say">Trucks that serve only customers of $S$ are useless to the others, who still need $\ell(\bar S)$ trucks.</p>
+  <div class="mathbox f"><span class="tag">(1.7)</span>
+  $$\htmlClass{tA}{\underbrace{x(S)}_{\text{roads inside}}} + \htmlClass{tB}{\underbrace{x(1{:}S)}_{\text{depot roads into } S}} - \htmlClass{tC}{\underbrace{m}_{\text{trucks}}} \;\le\; |S| - \htmlClass{tD}{\underbrace{\ell(\bar S)}_{\text{trucks the others need}}}$$</div>
+  <p class="f">Starting LP, $S = \{2,7,8\}$: all three trucks are busy there, none left for the other four. 3 &gt; 1: <b>broken</b>.</p>
 </div>
-<aside class="notes">Before this paper: (1.4) from Laporte et al. (1985) and (1.7) from the same authors' 1996 paper; (1.7) is Algorithm A in the results. Why it works: a truck serving only r customers of S uses (r−1) + 2 = r + 1 of the counted roads, so the left side is |S| + (trucks only in S) − m; mixed trucks count less. Numbers: 0 + 6 − 3 = 3 against 3 − ℓ({3,4,5,6}) = 1.</aside>
+<aside class="notes">Key point: the old rules, before this paper. (1.4) is Laporte et al. 1985 (Algorithm B in the results); (1.7) is the same authors' 1996 paper (Algorithm A). Why (1.7) holds: a truck serving only r customers of S uses (r − 1) + 2 = r + 1 counted roads, so the left side is |S| + (trucks only in S) − m; mixed trucks count less. Numbers: 0 + 6 − 3 = 3 against 3 − ℓ({3,4,5,6}) = 1.</aside>
 </section>
 
-<section class="slide" data-section="4 · What the paper adds" data-title="New: (2.3), (2.8)" data-time="75" data-demo='{"mode":"groups","S":[3],"T":[[4],[5,6]],"sources":["lp0","best"],"label":"S and the groups T"}'>
+<section class="slide" data-section="4 · What the paper adds" data-title="New: (2.3), (2.8)" data-time="70" data-demo='{"mode":"groups","S":[3],"T":[[4],[5,6]],"sources":["lp0","best"],"label":"S and the groups T"}'>
 <div class="txt">
   <p class="kick">4 · What the paper adds · new cut 1</p>
   <h2>Groups that cannot share a truck</h2>
-  <p class="say">Take a group $S$ and other groups $T_1, \dots, T_k$ such that $S$ together with <b>any two</b> of the $T$'s is too heavy for one truck. Then the truck through $S$ can pick up <b>at most one</b> of the $T$'s.</p>
-  <p class="f">Example: $S = \{3\}$, $T_1 = \{4\}$, $T_2 = \{5,6\}$. Together $3 + 1 + 7 = 11 \gt 10$, so customer 3's route cannot reach both.</p>
-  <div class="mathbox f"><span class="tag">(2.3), Theorem 2.1</span>
-  $$3\,\htmlClass{tA}{x(S)} + \htmlClass{tB}{x(E[S,T])} + \htmlClass{tC}{\sum_{p} x(T_p)} \;\le\; 3|S| - 2 + |T| - k$$
-  <ul class="legend"><li data-t="tA"><span class="sw tA"></span>roads inside $S$ (counted 3 times)</li><li data-t="tB"><span class="sw tB"></span>roads between $S$ and the $T$'s</li><li data-t="tC"><span class="sw tC"></span>roads inside each $T_p$; $|T|$ = customers in all $T$'s, $k$ = number of groups</li></ul></div>
-  <p class="f">Starting LP: one chain links 3 to both groups. Left side 3, right side 2. <b>Broken</b>, though no single group is overloaded, so (1.4) misses it.</p>
+  <p class="say">If $S$ with any two of the groups $T_1, \dots, T_k$ overloads a truck, the truck through $S$ can reach at most one of them.</p>
+  <div class="mathbox f"><span class="tag">(2.3)</span>
+  $$3\,\htmlClass{tA}{\underbrace{x(S)}_{\text{inside } S}} + \htmlClass{tB}{\underbrace{x(E[S,T])}_{S \text{ to the } T\text{'s}}} + \htmlClass{tC}{\underbrace{\textstyle\sum_p x(T_p)}_{\text{inside each } T_p}} \;\le\; 3|S| - 2 + |T| - k$$</div>
+  <p class="f">$S = \{3\}$, $T = \{4\}, \{5,6\}$: $3 + 1 + 7 = 11 \gt 10$. The starting LP links 3 to both: 3 &gt; 2, <b>broken</b>, though no single group is overloaded.</p>
 </div>
-<aside class="notes">Roads 3–4, 3–6 and 5–6 are all used: left side 0 + 2 + 1 = 3, right side 3·1 − 2 + 3 − 2 = 2. Switch to the best plan: 3 links only to 4, left side 2, satisfied. The idea is new: it reasons about several sets at once. (2.8) is a sharper version for exactly three T's.</aside>
+<aside class="notes">Key point: a rule about several groups at once, which (1.4) cannot see. |T| = customers in all T's, k = number of groups. Roads 3–4, 3–6 and 5–6: left side 0 + 2 + 1 = 3, right side 3 − 2 + 3 − 2 = 2. Best plan: 3 links only to 4, left side 2, satisfied. (2.8) is the sharper version for exactly three groups.</aside>
+</section>
+
+<section class="slide" data-section="4 · What the paper adds" data-title="Old rules run dry" data-time="50" data-demo='{"mode":"groups","fam":"2.8","S":[4,5],"T":[[3],[6],[8]],"sources":["round5"],"label":"Round 5 of the loop"}'>
+<div class="txt">
+  <p class="kick">4 · What the paper adds · why it matters</p>
+  <h2>Where the old rules run dry</h2>
+  <p class="say">Round 5 of our loop, bound 317.35: no (1.4), (1.7), (2.1) or (2.9) is broken. The old method would have to branch here.</p>
+  <ul>
+    <li class="f">The new (2.8) still finds a cut: $S = \{4,5\}$ with $\{3\}, \{6\}, \{8\}$, loads 11, 12, 13, all over 10.</li>
+    <li class="f">$2x(S) + x(E[S,T]) + \sum_p x(T_p) \le 2|S| + |T| - 4$: here $3.5 \gt 3$.</li>
+  </ul>
+  <p class="f say">That is how the new cuts lift the root bound to 318.0 instead of 317.35.</p>
+</div>
+<aside class="notes">Key point: this is the paper's contribution in one picture. The old cuts stall; the new cut keeps the bound climbing. Left side: 2 × 1 + 1.5 + 0 = 3.5; right side 2·2 + 3 − 4 = 3.</aside>
 </section>
 
 <section class="slide" data-section="4 · What the paper adds" data-title="New: (2.9)" data-time="75" data-demo='{"mode":"set","fam":"2.9","sources":["two78","one78","lp0"],"S":[7,8],"label":"Two trips or one?"}'>
 <div class="txt">
   <p class="kick">4 · What the paper adds · new cut 2</p>
   <h2>Don't split a group that fits in one truck</h2>
-  <p class="say">If the customers of $S$ fit in one truck, an optimal plan never needs two separate trips that serve only $S$: joining them is never longer.</p>
-  <p class="f">Two trips to 7 and 8 cost 77.0; one trip 1 → 7 → 8 → 1 costs 68.9 and carries $8 \le 10$.</p>
-  <div class="mathbox f"><span class="tag">(2.9), Theorem 2.3, groups with $q(S) \le Q$</span>
-  $$\htmlClass{tA}{x(S)} + \htmlClass{tB}{x(1{:}S)} \;\le\; |S| + 1$$
-  <ul class="legend"><li data-t="tA"><span class="sw tA"></span>roads inside $S$</li><li data-t="tB"><span class="sw tB"></span>depot roads into $S$</li></ul></div>
+  <p class="say">If $S$ fits in one truck, joining two trips that serve only $S$ is never longer.</p>
+  <div class="mathbox f"><span class="tag">(2.9), for $q(S) \le Q$</span>
+  $$\htmlClass{tA}{\underbrace{x(S)}_{\text{roads inside } S}} + \htmlClass{tB}{\underbrace{x(1{:}S)}_{\text{depot roads into } S}} \;\le\; |S| + 1$$</div>
+  <p class="f">Two trips to 7 and 8: 77.0. One trip 1 → 7 → 8 → 1: 68.9, load $8 \le 10$.</p>
   <p class="f say">A new <b>kind</b> of rule: it removes some real (wasteful) plans but always keeps an optimal one. An <b>optimality cut</b>.</p>
 </div>
-<aside class="notes">Costs: 2(5.1) + 2(33.4) = 77.0 versus 5.1 + 30.4 + 33.4 = 68.9 (triangle inequality). One trip through all of S uses (|S| − 1) + 2 = |S| + 1 roads; two trips use one more. Switch between "two trips" (0 + 4 = 4 > 3, broken) and "one trip" (1 + 2 = 3 ≤ 3, satisfied). Caveat for Q&amp;A: it needs the number of trucks to be free (variable m), or fixed at the minimum fleet.</aside>
+<aside class="notes">Key point: rules justified by what an optimal plan looks like. Costs: 2(5.1) + 2(33.4) = 77.0 vs 5.1 + 30.4 + 33.4 = 68.9 (triangle inequality). One trip through S uses |S| + 1 roads; two trips use one more. Switch "two trips" (4 &gt; 3, broken) and "one trip" (3 ≤ 3). Caveat: needs a free fleet or the minimum fleet.</aside>
 </section>
 
 <section class="slide" data-section="4 · What the paper adds" data-title="New: (2.10), fleet cap" data-time="45" data-demo='{"mode":"map","plans":["best"],"labels":"none","fleet":true,"label":"Loads in the best plan"}'>
 <div class="txt">
   <p class="kick">4 · What the paper adds · new cut 3</p>
   <h2>A cap on the number of trucks</h2>
-  <p class="say">Same idea for bigger groups: in an optimal plan, <b>any two routes together are heavier than $Q$</b>. Otherwise we could merge them into one shorter route.</p>
-  <p class="f">So on average a route carries more than $Q/2$, which caps the fleet (Corollary 2.5, from inequality (2.10)):</p>
-  <div class="mathbox f">
-  $$m \;\le\; \left\lfloor \frac{2\,(\htmlClass{tA}{q(\mathscr C)} + \delta)}{\htmlClass{tB}{Q} + 1 + \delta} \right\rfloor$$
-  <ul class="legend"><li data-t="tA"><span class="sw tA"></span>total demand of all customers</li><li data-t="tB"><span class="sw tB"></span>truck capacity; $\delta = 1$ if $Q$ is even, $0$ if odd (makes the rounding exact)</li></ul></div>
-  <p class="f">Toy: $\lfloor 2(28 + 1)/(10 + 1 + 1) \rfloor = \lfloor 4.83 \rfloor = 4$. With at least $\lceil 28/10 \rceil = 3$ trucks needed, the fleet is 3 or 4.</p>
-  <p class="f small">(2.10) applies the same count to every group $S$ too heavy for one truck: $x(S) + x(1{:}S) \le |S| + \lfloor 2(q(S) + \delta)/(Q + 1 + \delta) \rfloor$.</p>
+  <p class="say">In an optimal plan, any two routes together are heavier than $Q$, or we would merge them. So each route carries more than $Q/2$ on average.</p>
+  <div class="mathbox f"><span class="tag">Corollary 2.5, from (2.10)</span>
+  $$m \;\le\; \Bigg\lfloor \frac{2\,(\htmlClass{tA}{\underbrace{q(\mathscr C)}_{\text{total demand}}} + \delta)}{\htmlClass{tB}{\underbrace{Q}_{\text{capacity}}} + 1 + \delta} \Bigg\rfloor$$</div>
+  <p class="f">Toy: $\lfloor 2 \cdot 29 / 12 \rfloor = 4$, and at least 3 are needed: the fleet is 3 or 4.</p>
 </div>
-<aside class="notes">On the right: loads 9, 10, 9. Every pair adds to more than 10, as the theorem says.</aside>
+<aside class="notes">Key point: the same merging idea caps the fleet. δ = 1 if Q is even, 0 if odd (it makes the rounding exact). Loads 9, 10, 9: every pair is above 10. (2.10) applies the same count to any group too heavy for one truck: x(S) + x(1:S) ≤ |S| + ⌊2(q(S) + δ)/(Q + 1 + δ)⌋.</aside>
 </section>
 
-
-
-<section class="slide" data-section="4 · What the paper adds" data-title="Effect on the toy" data-time="40" data-demo='{"mode":"trees","label":"Branch-and-cut trees"}'>
+<section class="slide" data-section="4 · What the paper adds" data-title="Effect on the toy" data-time="35" data-demo='{"mode":"trees","label":"Branch-and-cut trees"}'>
 <div class="txt">
   <p class="kick">4 · What the paper adds</p>
   <h2>Does it help on the toy?</h2>
   <table class="t">
-    <tr><th></th><th>Old cuts (1.4), (1.7)</th><th>All cuts (new)</th></tr>
-    <tr><td>Root bound</td><td class="n">317.35</td><td class="n"><b>318.0</b></td></tr>
-    <tr><td>Nodes in the tree</td><td class="n">7</td><td class="n"><b>5</b></td></tr>
-    <tr><td>Optimum</td><td class="n">318.2</td><td class="n">318.2</td></tr>
+    <tr><th></th><th>old cuts</th><th>all cuts</th></tr>
+    <tr><td>root bound</td><td class="n">317.35</td><td class="n"><b>318.0</b></td></tr>
+    <tr><td>tree nodes</td><td class="n">7</td><td class="n"><b>5</b></td></tr>
+    <tr><td>optimum</td><td class="n">318.2</td><td class="n">318.2</td></tr>
   </table>
-  <p class="f say">Same answer, higher bound at the root, smaller tree. On 7 customers the saving is two nodes; on 50 tightly packed customers it is thousands (next part).</p>
-  <p class="f small">Both runs are our own script on the toy instance (scipy LP solver, brute-force checked).</p>
+  <p class="f say">Same answer, higher root bound, smaller tree.</p>
 </div>
-<aside class="notes">Point at the two trees: the old run has to branch on x17 first.</aside>
+<aside class="notes">Key point: better bound, smaller tree. Old cuts are (1.4) and (1.7); the old run has to branch on x17 first. On 7 customers the saving is two nodes; on 50 tightly packed customers it is thousands. Both runs are our own script (scipy LP solver, brute-force checked).</aside>
 </section>
 
 <!-- ================= RESULTS ================= -->
@@ -656,7 +662,7 @@ $LIT --table 4.6 --time-limit 300          # the 14 hard problems
 $SIM --config NEW --per-cell 30            # the paper's 30 per cell</template>
 </section>
 
-<section class="slide" data-section="6 · Our implementation" data-title="What we found" data-time="75" data-demo='{"mode":"chart","sets":[2,3,4],"label":"Our results: NEW vs A vs B"}'>
+<section class="slide" data-section="6 · Our implementation" data-title="What we found" data-time="75" data-demo='{"mode":"chart","sets":[5,2,3,4],"label":"Our results: NEW vs A vs B"}'>
 <div class="txt">
   <p class="kick">6 · Our implementation</p>
   <h2>What we found: the claim holds</h2>
@@ -673,7 +679,7 @@ $SIM --config NEW --per-cell 30            # the paper's 30 per cell</template>
 <aside class="notes">Key point: we reproduce the paper's main claim. On 264 of the 267 problems NEW's root bound is at least as high as both A's and B's. Example cell: α = 0.33, 45 customers, root 98.3% for NEW vs 96.6% for A and B (paper 98.3 / 97.4 / 97.7). In total we solve 1,574 of 1,650. A ≈ B: with a fixed root loop, (1.7) adds little that (1.4) and Search 1 don't already find.</aside>
 </section>
 
-<section class="slide" data-section="7 · Wrap-up" data-title="Critique" data-time="60">
+<section class="slide" data-section="7 · Wrap-up" data-title="Critique" data-time="50">
 <div class="txt">
   <p class="kick">7 · Wrap-up</p>
   <h2>Strengths and limits</h2>
@@ -701,7 +707,7 @@ $SIM --config NEW --per-cell 30            # the paper's 30 per cell</template>
     <li class="f"><b>Method:</b> the LP gives a lower bound, cuts push it up, branching finishes; stop when it meets the best plan.</li>
     <li class="f"><b>Paper:</b> new cuts raise the bound, so trees shrink and more problems are solved. We reproduced this.</li>
   </ol>
-  <p class="f" style="font-family:var(--read);font-size:1.5em;font-weight:600;margin-top:.8em">Thank you. Questions?</p>
+  <p class="f" style="font-family:var(--ui);font-size:1.5em;font-weight:600;margin-top:.8em">Thank you. Questions?</p>
 </div>
 <aside class="notes">Close on the animation. Backup slides follow (press → past this one, or O for the overview): (2.9) validity and its proof, triangle inequality and fixed fleet, ℓ(S), model choice, separation and branching, Searches 1–6, reproduction differences.</aside>
 </section>
@@ -775,6 +781,54 @@ $SIM --config NEW --per-cell 30            # the paper's 30 per cell</template>
   <p class="small">Fixed order of checks, with Searches 4–6 only when 1–3 find nothing. Each search costs at most $O(n^3)$. The searches are heuristics: they can miss a broken rule, which branching then covers.</p>
 </div>
 <aside class="notes">Keep this short unless asked. The key message: separation is heuristic; the paper's contribution is both new inequalities and searches that find them.</aside>
+</section>
+
+<section class="slide" data-section="Backup" data-title="(1.7) and (1.4)">
+<div class="txt">
+  <p class="kick">Backup · likely question</p>
+  <h2>"Why is (1.7) the same as (1.4) for the other customers?"</h2>
+  <p>Using only the degree rules, with $\bar S$ = the other customers:</p>
+  <ol>
+    <li>Every road has two ends: customers give $2|\mathscr C|$, the depot $2m$, so the total road value is $|\mathscr C| + m$.</li>
+    <li>Summing (1.3) over $\bar S$ and subtracting gives $x(S) + x(1{:}S) - m = |S| - |\bar S| + x(\bar S)$.</li>
+    <li>So (1.7) for $S$ reads $x(\bar S) \le |\bar S| - \ell(\bar S)$: exactly (1.4) for $\bar S$.</li>
+  </ol>
+  <p class="say">Same LP, different view: a small set near the depot exposes a broken rule on its large complement. Toy: $\{2,7,8\}$ and $\{3,4,5,6\}$ are both broken by 2.</p>
+</div>
+<aside class="notes">The gain is in finding cuts, not in the model: heuristic searches build small sets, and (1.7) lets a small set reveal the violation of its large complement.</aside>
+</section>
+
+<section class="slide" data-section="Backup" data-title="Why (2.3) holds">
+<div class="txt">
+  <p class="kick">Backup · likely question</p>
+  <h2>"Why does the three-set cut (2.3) hold?"</h2>
+  <p>Take a real plan. Inside $S$ the routes form $r$ separate paths, so $x(S) \le |S| - r$, and $\sum_p x(T_p) \le |T| - k$.</p>
+  <ul>
+    <li><b>$r = 1$:</b> only the two ends leave $S$, so $x(E[S,T]) \le 2$. If every bound were tight, one truck would carry $S$ and two $T$'s, which the condition forbids, so one bound has slack 1: $3(|S| - 1) + 2 + |T| - k - 1$.</li>
+    <li><b>$r \ge 2$:</b> each path meets $T$ in at most 2 roads: $3(|S| - r) + 2r + |T| - k \le 3|S| - 2 + |T| - k$.</li>
+  </ul>
+  <p class="small">(2.8) plus $x(S) \le |S| - 1$ gives (2.3) with $k = 3$, so (2.8) is the stronger one. Useful when $\ell(S) = 1$ and $k \ge 3$ (Remark 2.1).</p>
+</div>
+<aside class="notes">The factor 3 on x(S) handles S being split into several paths.</aside>
+</section>
+
+<section class="slide" data-section="Backup" data-title="Hard benchmarks">
+<div class="txt">
+  <p class="kick">Backup · likely question</p>
+  <h2>"How did the hard benchmark problems go?"</h2>
+  <table class="t">
+    <tr><th>problem</th><th>paper root</th><th>our root</th><th>paper</th><th>ours</th></tr>
+    <tr><td>CMT1 (50)</td><td class="n">514.58</td><td class="n">516.37</td><td>optimal, 487 s</td><td>optimal, 1 s</td></tr>
+    <tr><td>CMT12 (100)</td><td class="n">785.29</td><td class="n">818.14</td><td>open*</td><td>optimal, 21 s</td></tr>
+    <tr><td>F-n45-k4</td><td class="n">721.88</td><td class="n">723.36</td><td>optimal, 35 s</td><td>optimal, 1 s</td></tr>
+    <tr><td>F-n72-k4</td><td class="n">238.51</td><td class="n">238.48</td><td>optimal, 172 s</td><td>optimal, 5 s</td></tr>
+    <tr><td>F-n135-k7</td><td class="n">1120.16</td><td class="n">1155.18</td><td>open</td><td>optimal, 370 s</td></tr>
+    <tr><td>CMT4 (150)</td><td class="n">950.65</td><td class="n">973.51</td><td>open</td><td>open</td></tr>
+    <tr><td>CMT5 (199)</td><td class="n">1114.17</td><td class="n">1196.06</td><td>open</td><td>open</td></tr>
+  </table>
+  <p class="small">Single-customer routes allowed; best-known value as the first upper bound; our limit 3,600 s. *The paper solves CMT12 only when single-customer routes are not allowed (458 s). Our root bounds are higher on 13 of the 14 problems.</p>
+</div>
+<aside class="notes">From Table 4.6 and our results/table46_hard_literature.csv.</aside>
 </section>
 
 <section class="slide" data-section="Backup" data-title="Reproduction differences">
@@ -856,6 +910,7 @@ var SRC = {
   best: { name: "Best plan · 318.2", routes: T.opt_routes, m: 3 },
   heur: { name: "Heuristic plan · " + fmt(T.savings[0]), routes: T.savings[1], m: 3 },
   lp0: { name: "Starting LP · " + fmt(T.lp0.z), x: T.lp0.x, m: T.lp0.m, lp: true },
+  round5: { name: "Round 5 · " + fmt(T.rounds[5].z), x: T.rounds[5].x, m: T.rounds[5].m, lp: true },
   two78: { name: "Two trips: 1→7→1, 1→8→1", routes: [[7], [8]], m: 2, partial: true },
   one78: { name: "One trip: 1→7→8→1", routes: [[7, 8]], m: 1, partial: true }
 };
@@ -1019,8 +1074,8 @@ M.build = function (el) {
   btn(bar, "Clear", function () { routes = [[]]; msg = "Click a customer to start the first route."; G.stop(); draw(); });
   btn(bar, "Show best plan", function () { routes = T.opt_routes.map(function (r) { return r.slice(); }); msg = "The best plan. Every alternative is longer."; draw(); });
   btn(bar, "▶ Drive", function () { G.drive(routes); }, true);
+  function go(k) { routes = T.savings[1].slice(0, k).map(function (r) { return r.slice(); }); routes.push([]); msg = k === 0 ? "Click a customer to start the first route." : k < T.savings[1].length ? "Next: the pair with the biggest saving that still fits." : "Savings heuristic done: " + fmt(T.savings[0]) + ". A good plan. Is it the best one?"; G.stop(); draw(); }
   function draw() {
-    var full = routes.filter(function (r) { return r.length; });
     G.edges(routeEdges(routes, { idx: routes.length - 1 }), "none");
     var idx = {}; routes.forEach(function (r, i) { r.forEach(function (k) { idx[k] = i; }); });
     G.style(function (k) { return idx[k] != null ? "k" + (idx[k] % 7 + 1) : ""; });
@@ -1031,7 +1086,21 @@ M.build = function (el) {
     ro.innerHTML = h;
   }
   draw();
-  return { hide: G.stop };
+  return { hide: G.stop, go: go, steps: T.savings[1].length };
+};
+
+M.twoplans = function (el) {
+  var row = H("div", "pair"); el.body.appendChild(row);
+  [["heur", "Heuristic plan"], ["best", "Best plan"]].forEach(function (pp) {
+    var s = SRC[pp[0]], c = H("div"); row.appendChild(c);
+    var G = Graph(c, pp[1]); G.svg.style.minHeight = "150px";
+    G.edges(routeEdges(s.routes), "none");
+    var r = {}; s.routes.forEach(function (rt, i) { rt.forEach(function (k) { r[k] = i; }); });
+    G.style(function (k) { return r[k] != null ? "k" + (r[k] % 7 + 1) : ""; });
+    c.appendChild(H("div", "cap", pp[1] + ": <b>" + fmt(xcost(s.x)) + "</b>"));
+  });
+  el.body.appendChild(H("div", "sandwich", "<span class='sb lo'>lower bound<small>nothing is cheaper</small></span><span class='le'>≤</span><span class='sb mid'>optimum</span><span class='le'>≤</span><span class='sb hi'>upper bound<small>a plan we have</small></span>"));
+  el.body.appendChild(H("div", "ro", "<span class='mut'>An exact method pushes the lower bound up until it meets the best plan.</span>"));
 };
 
 M.degree = function (el, cfg) {
@@ -1121,13 +1190,13 @@ M.groups = function (el, cfg) {
     G.edges(xEdges(s.x, cls), "frac");
     G.style(function (k) { return oS[k] ? "inS" : tIdx[k] != null ? "inT" + (tIdx[k] % 3 + 1) : ""; });
     var xS = sum(terms(s.x, function (a, b) { return cls(a, b) === "tA"; })), between = terms(s.x, function (a, b) { return cls(a, b) === "tB"; }), inside = terms(s.x, function (a, b) { return cls(a, b) === "tC"; });
-    var k = Ts.length, rhs = 3 * Sx.length - 2 + allT.length - k, lhs = 3 * xS + sum(between) + sum(inside);
+    var k = Ts.length, a = cfg.fam === "2.8" ? 2 : 3, rhs = cfg.fam === "2.8" ? 2 * Sx.length + allT.length - 4 : 3 * Sx.length - 2 + allT.length - k, lhs = a * xS + sum(between) + sum(inside);
     var pairs = []; for (var i = 0; i < k; i++) for (var j = i + 1; j < k; j++) pairs.push("q(S ∪ T" + (i + 1) + " ∪ T" + (j + 1) + ") = " + (qS(Sx) + qS(Ts[i]) + qS(Ts[j])) + " &gt; " + Q);
     var h = "<div><span class='tA'>S = " + setStr(Sx) + "</span>, " + Ts.map(function (t, i) { return "<span style='color:var(--" + ["tC", "tD", "r5"][i % 3] + ");font-weight:700'>T" + (i + 1) + " = " + setStr(t) + "</span>"; }).join(", ") + "</div>";
-    h += "<div class='mut'>Condition: " + pairs.join("; ") + " ✓</div>";
-    h += "<div>3 × roads inside S: 3 × " + xv(xS) + " · roads S–T: " + show(between, "tB") + " · inside the T's: " + show(inside, "tC") + "</div>";
-    h += "<div>left side <b>" + xv(lhs) + "</b> · right side 3·" + Sx.length + " − 2 + " + allT.length + " − " + k + " = <b>" + rhs + "</b></div>";
-    h += "<div class='msg'>" + (lhs > rhs + 1e-6 ? "<span class='badc'>Broken: " + xv(lhs) + " &gt; " + rhs + ".</span> Customer 3 is linked to both groups." : "<span class='okc'>Satisfied: " + xv(lhs) + " ≤ " + rhs + ".</span>") + "</div>";
+    h += "<div class='mut'>Any two groups with S: " + pairs.map(function (s) { return s.replace(/^.*= (\d+) &gt;.*$/, "$1"); }).join(", ") + ", all over " + Q + " ✓</div>";
+    h += "<div>" + a + " × roads inside S: " + a + " × " + xv(xS) + " · roads S–T: " + show(between, "tB") + " · inside the T's: " + show(inside, "tC") + "</div>";
+    h += "<div>left side <b>" + xv(lhs) + "</b> · right side " + (cfg.fam === "2.8" ? "2·" + Sx.length + " + " + allT.length + " − 4" : "3·" + Sx.length + " − 2 + " + allT.length + " − " + k) + " = <b>" + rhs + "</b></div>";
+    h += "<div class='msg'>" + (lhs > rhs + 1e-6 ? "<span class='badc'>Broken: " + xv(lhs) + " &gt; " + rhs + ".</span> The route through S reaches more than one group." : "<span class='okc'>Satisfied: " + xv(lhs) + " ≤ " + rhs + ".</span>") + "</div>";
     ro.innerHTML = h;
   }
   draw();
@@ -1158,29 +1227,33 @@ function treeLayout(tree) {
   return { pos: pos, leaves: leaf, depth: depth };
 }
 function drawTree(parent, tree, known, title) {
-  var L = treeLayout(tree), W = Math.max(3, L.leaves) * 22, Hh = (L.depth + 1) * 17 + 8;
-  var svg = S("svg", { viewBox: "0 0 " + W + " " + Hh, class: "g", style: "max-height:24vh;min-height:100px;flex:0 0 auto", role: "img", "aria-label": title || "Branch-and-cut tree" }, parent);
-  function X(id) { return 11 + L.pos[id].x * 22; } function Y(id) { return 7 + L.pos[id].d * 17; }
+  var L = treeLayout(tree), CW = 32, RH = 24, W = Math.max(3, L.leaves) * CW, Hh = (L.depth + 1) * RH + 2;
+  var svg = S("svg", { viewBox: "0 0 " + W + " " + Hh, class: "g", style: "max-height:30vh;min-height:110px;flex:0 0 auto", role: "img", "aria-label": title || "Branch-and-cut tree" }, parent);
+  function X(id) { return CW / 2 + L.pos[id].x * CW; } function Y(id) { return 1 + L.pos[id].d * RH; }
+  var BW = 26, BH = 13.5;
   tree.forEach(function (n) {
     if (n.parent == null || !known(n.id)) return;
-    S("line", { x1: X(n.parent), y1: Y(n.parent), x2: X(n.id), y2: Y(n.id), class: "bline" }, svg);
-    var t = S("text", { x: (X(n.parent) + X(n.id)) / 2 + (X(n.id) < X(n.parent) ? -1.5 : 1.5), y: (Y(n.parent) + Y(n.id)) / 2, "text-anchor": X(n.id) < X(n.parent) ? "end" : "start", class: "gl" }, svg); t.textContent = branchLabel(n.branch);
+    S("line", { x1: X(n.parent), y1: Y(n.parent) + BH, x2: X(n.id), y2: Y(n.id), class: "bline" }, svg);
+    var left = X(n.id) < X(n.parent);
+    S("text", { x: (X(n.parent) + X(n.id)) / 2 + (left ? -1.2 : 1.2), y: Y(n.parent) + BH + (RH - BH) / 2 + 1, "text-anchor": left ? "end" : "start", class: "gl", style: "font-size:2.6px" }, svg).textContent = branchLabel(n.branch);
   });
   tree.forEach(function (n) {
-    if (!known(n.id)) return;
-    var st = known(n.id) === true ? n.status : known(n.id), col = /integer/.test(st) ? "var(--ok)" : /pruned/.test(st) ? "var(--tx3)" : /branched/.test(st) ? "var(--accent)" : "var(--tx2)";
+    var kn = known(n.id); if (!kn) return;
+    var st = kn === true ? n.status : kn, col = /integer/.test(st) ? "var(--ok)" : /pruned/.test(st) ? "var(--tx3)" : /branched/.test(st) ? "var(--accent)" : "var(--tx2)";
+    var word = /integer/.test(st) ? "integer!" : /pruned/.test(st) ? "pruned" : /branched/.test(st) ? "branch" : "open";
     var g = S("g", { class: "tnode" }, svg);
-    S("circle", { cx: X(n.id), cy: Y(n.id), r: 3.4, style: "fill:var(--panel);stroke:" + col }, g);
-    S("text", { x: X(n.id), y: Y(n.id) + 1.1, style: "fill:" + col }, g).textContent = /pruned/.test(st) ? "✕" : /integer/.test(st) ? "★" : n.id;
-    S("text", { x: X(n.id), y: Y(n.id) + 6.6, class: "gl", "text-anchor": "middle" }, g).textContent = fmt(n.z);
+    S("rect", { x: X(n.id) - BW / 2, y: Y(n.id), width: BW, height: BH, rx: 2, style: "fill:" + (/integer/.test(st) ? "color-mix(in srgb, var(--ok) 12%, var(--panel))" : "var(--panel)") + ";stroke:" + col + ";stroke-width:.6" }, g);
+    S("text", { x: X(n.id), y: Y(n.id) + 3.8, style: "fill:var(--tx);font:700 2.9px var(--ui)" }, g).textContent = "node " + n.id;
+    S("text", { x: X(n.id), y: Y(n.id) + 7.6, style: "fill:var(--tx2);font:500 2.7px var(--ui)" }, g).textContent = word === "open" ? "not solved yet" : "bound " + fmt(n.z);
+    S("text", { x: X(n.id), y: Y(n.id) + 11.4, style: "fill:" + col + ";font:600 2.7px var(--ui)" }, g).textContent = word;
   });
   return svg;
 }
 
 M.solver = function (el, cfg) {
-  var from = cfg.from || 0, to = cfg.to == null ? EV.length - 1 : cfg.to, idx = from, timer = null, hl = 0;
+  var from = cfg.from || 0, to = cfg.to == null ? EV.length - 1 : cfg.to, idx = from, timer = null, hl = 0, stops = cfg.stops || [];
   var G = Graph(el.body), bound = H("div"), treeBox = H("div"), ro = H("div", "ro"), bar = H("div", "btns");
-  G.svg.style.maxHeight = "38vh";
+  G.svg.style.maxHeight = cfg.chart === false ? "34vh" : "30vh";
   el.body.appendChild(bound); el.body.appendChild(treeBox); el.body.appendChild(ro); el.body.appendChild(bar);
   var bBack = btn(bar, "◀ Back", function () { stop(); if (idx > from) { idx--; hl = 0; draw(); } });
   var bStep = btn(bar, "Step ▶", function () { stop(); next(); }, true);
@@ -1207,20 +1280,26 @@ M.solver = function (el, cfg) {
     else G.edges([], "none");
     var comps = st.x ? components(st.x) : [], loops = st.x ? comps.filter(function (cp) { return sum(terms(st.x, function (a, b) { return a === 1 && cp.indexOf(b) >= 0; })) < 1e-6 && cp.length > 1; }) : [];
     G.style(function (k) { if (halo[k]) return halo[k]; if (e.t === "lp" && loops.some(function (cp) { return cp.indexOf(k) >= 0; })) return "warn"; if (st.plan && e.t === "ub") { var r = -1; st.plan.forEach(function (rt, i) { if (rt.indexOf(k) >= 0) r = i; }); return r >= 0 ? "k" + (r % 7 + 1) : ""; } return ""; });
-    // bound bar
-    bound.innerHTML = ""; var lo = 240, hi = 326, bw = 100;
-    var svg = S("svg", { viewBox: "0 0 100 17", style: "width:100%;display:block", role: "img", "aria-label": "Lower bound and best plan" }, bound);
-    function X(v) { return 3 + (v - lo) / (hi - lo) * (bw - 6); }
-    function lab(x, y, txt, col) { var right = x > 70; S("text", { x: right ? x + 1.2 : x - 1.2, y: y, "text-anchor": right ? "end" : "start", style: "font:700 2.4px var(--ui);fill:" + col }, svg).textContent = txt; }
-    S("line", { x1: 3, y1: 7.5, x2: 97, y2: 7.5, class: "bline" }, svg);
-    [240, 260, 280, 300, 320].forEach(function (v) { S("text", { x: X(v), y: 16.3, class: "gl", "text-anchor": "middle", style: "font-size:2px" }, svg).textContent = v; S("line", { x1: X(v), y1: 6.8, x2: X(v), y2: 8.2, class: "bline" }, svg); });
-    if (st.z != null && st.ub != null) S("rect", { x: X(st.z), y: 6.4, width: Math.max(0.3, X(st.ub) - X(st.z)), height: 2.2, style: "fill:var(--bad-soft)" }, svg);
-    if (st.ub != null) { S("circle", { cx: X(st.ub), cy: 7.5, r: 1.1, style: "fill:var(--tB)" }, svg); lab(X(st.ub), 3.4, "best plan so far (upper bound) " + fmt(st.ub), "var(--tB)"); }
-    if (st.z != null) { S("circle", { cx: X(st.z), cy: 7.5, r: 1.1, style: "fill:var(--tA)" }, svg); lab(X(st.z), 12.3, "lower bound (LP) " + fmt(st.z), "var(--tA)"); }
+    // lower bound at the root, round by round, against the best plan so far
+    bound.innerHTML = ""; bound.style.display = cfg.chart === false ? "none" : ""; var lo = 240, hi = 326, nR = 8, x0 = 10, x1 = 96, y0 = 5, y1 = 27;
+    var svg = S("svg", { viewBox: "0 0 100 33", style: "width:100%;display:block;max-height:19vh", role: "img", "aria-label": "Lower bound at the root, round by round" }, bound);
+    function X(r) { return x0 + (x1 - x0) * r / (nR - 1); } function Y(v) { return y1 - (v - lo) / (hi - lo) * (y1 - y0); }
+    [240, 260, 280, 300, 320].forEach(function (v) { S("line", { x1: x0, y1: Y(v), x2: x1, y2: Y(v), style: "stroke:var(--line);stroke-width:.25" }, svg); S("text", { x: x0 - 1.4, y: Y(v) + .8, "text-anchor": "end", class: "gl", style: "font-size:2.2px" }, svg).textContent = v; });
+    for (var r = 0; r < nR; r++) S("text", { x: X(r), y: 30.6, "text-anchor": "middle", class: "gl", style: "font-size:2.2px" }, svg).textContent = r;
+    S("text", { x: x1, y: 33, "text-anchor": "end", class: "gl", style: "font-size:2.1px" }, svg).textContent = "round at the root";
+    S("text", { x: 1, y: 3, class: "gl", style: "font-size:2.2px" }, svg).textContent = "lower bound";
+    if (st.ub != null) { S("line", { x1: x0, y1: Y(st.ub), x2: x1, y2: Y(st.ub), style: "stroke:var(--tB);stroke-width:.45;stroke-dasharray:1.2 .9" }, svg); S("text", { x: x1, y: Y(st.ub) - 1, "text-anchor": "end", style: "font:700 2.4px var(--ui);fill:var(--tB)" }, svg).textContent = "best plan so far " + fmt(st.ub); }
+    var pts = []; for (var i2 = 0; i2 <= idx; i2++) { var ev2 = EV[i2]; if (ev2.t === "lp" && ev2.node === 0) pts.push(ev2.z); }
+    if (pts.length) {
+      S("polyline", { points: pts.map(function (v, r) { return X(r) + "," + Y(v); }).join(" "), style: "fill:none;stroke:var(--tA);stroke-width:.7" }, svg);
+      pts.forEach(function (v, r) { S("circle", { cx: X(r), cy: Y(v), r: r === pts.length - 1 ? 1.1 : .7, style: "fill:var(--tA)" }, svg); });
+      var lv = pts[pts.length - 1], lr = pts.length - 1;
+      S("text", { x: X(lr) + (lr > 5 ? -1.6 : 1.6), y: Y(lv) + (lr > 5 ? 3.6 : 3.4), "text-anchor": lr > 5 ? "end" : "start", style: "font:700 2.5px var(--ui);fill:var(--tA)" }, svg).textContent = fmt(lv);
+    }
     // tree
     treeBox.innerHTML = "";
     if (Object.keys(st.tree).length > 1 || EV.slice(0, idx + 1).some(function (v) { return v.t === "branch"; })) drawTree(treeBox, TREE_NEW, function (id) { return st.tree[id] || false; }, "Branch-and-cut tree so far");
-    else treeBox.innerHTML = "<div class='mut' style='padding:6px 2px'>Root node (no branching yet). Gap: " + (st.z != null && st.ub != null ? fmt(st.ub - st.z) : "–") + "</div>";
+    else treeBox.innerHTML = "<div class='mut' style='padding:2px'>Root node, no branching yet · gap to the best plan: " + (st.z != null && st.ub != null ? fmt(st.ub - st.z) : "–") + "</div>";
     // message
     if (e.t === "ub" && e.why === "savings heuristic") h = "<b>Before any LP</b>: a quick heuristic plan costs " + fmt(e.z) + ". That is our best plan so far: the <span class='tB'>upper bound</span>.";
     else if (e.t === "ub") h = "<b>Node " + e.node + "</b>: the LP answer uses only whole numbers and no rule is broken: a real plan costing " + fmt(e.z) + ". <span class='okc'>New best plan.</span>";
@@ -1237,14 +1316,16 @@ M.solver = function (el, cfg) {
     ro.innerHTML = h;
     if (e.t === "cuts") {
       var list = H("div", "cutlist");
-      e.cuts.forEach(function (ct, i) { var b = H("button", i === hl ? "on" : "", cutText(ct)); b.type = "button"; b.onclick = function () { hl = i; draw(); }; list.appendChild(b); });
+      e.cuts.forEach(function (ct, i) { var b = H("button", i === hl ? "on" : "", "(" + ct.fam + ") " + setStr(ct.args[0])); b.type = "button"; b.onclick = function () { hl = i; draw(); }; list.appendChild(b); });
       ro.appendChild(list);
+      ro.appendChild(H("div", "cutsel", cutText(e.cuts[hl])));
     }
     bBack.disabled = idx <= from; bStep.disabled = idx >= to; bPlay.disabled = idx >= to && !timer;
     if (from === to) bar.style.display = "none";
   }
+  function go(k) { stop(); idx = k === 0 ? from : stops[Math.min(k, stops.length) - 1]; hl = 0; draw(); }
   draw();
-  return { hide: stop };
+  return { hide: stop, go: go, steps: stops.length };
 };
 
 M.trees = function (el) {
@@ -1253,7 +1334,7 @@ M.trees = function (el) {
   drawTree(a, TREE_OLD, function () { return true; }, "Tree with old cuts");
   b.innerHTML = "<b>All cuts, including the new ones</b> <span class='mut'>· root bound " + fmt(D.bnc_new.root_final) + " · " + TREE_NEW.length + " nodes</span>";
   drawTree(b, TREE_NEW, function () { return true; }, "Tree with all cuts");
-  var ro = H("div", "ro", "<span class='mut'>Each circle is a subproblem with its LP bound underneath. ★ = real plan found (318.2), ✕ = pruned because its bound is above 318.2.</span>");
+  var ro = H("div", "ro", "<span class='mut'>Each box is a subproblem with its LP bound. Green = a real plan (318.2); pruned = its bound is above 318.2, so it cannot hold anything better.</span>");
   el.body.appendChild(ro);
 };
 
@@ -1271,17 +1352,34 @@ M.count = function (el) {
 };
 
 var CH = [
-  { name: "Paper: solved (of 1,590)", v: [1369, 1239, 1107], better: "more is better", min: 0 },
-  { name: "Paper: total CPU hours", v: [301.8, 451.7, 586.8], better: "less is better", min: 0 },
-  { name: "Ours: root bound, % of optimum", v: [99.15, 98.59, 98.56], better: "more is better; axis starts at 98%", min: 98, max: 99.5 },
-  { name: "Ours: median tree size (nodes)", v: [18, 40, 39], better: "less is better", min: 0 },
-  { name: "Ours: total time (s)", v: [5186, 9277, 9444], better: "less is better", min: 0 }
+  { short: "solved", name: "Paper: solved (of 1,590)", v: [1369, 1239, 1107], better: "more is better", min: 0 },
+  { short: "CPU hours", name: "Paper: total CPU hours", v: [301.8, 451.7, 586.8], better: "less is better", min: 0 },
+  { short: "root bound", name: "Ours: root bound, % of optimum", v: [99.15, 98.59, 98.56], better: "more is better; axis starts at 98%", min: 98, max: 99.5 },
+  { short: "tree size", name: "Ours: median tree size (nodes)", v: [18, 40, 39], better: "less is better", min: 0 },
+  { short: "time", name: "Ours: total time (s)", v: [5186, 9277, 9444], better: "less is better", min: 0 },
+  { short: "by size", name: "Ours: root bound by problem size (α = 0.33)", type: "line", xs: [15, 25, 35, 45, 55, 65, 75], ys: [[99.14, 99.11, 98.89, 98.30, 98.61, 98.27, 98.77], [98.25, 97.58, 96.84, 96.61, 97.11, 97.05, 98.21], [98.31, 97.20, 97.08, 96.63, 96.84, 97.22, 97.85]], min: 96, max: 100, better: "% of the optimum, averages over solved problems; more is better" }
 ];
 M.chart = function (el, cfg) {
   var sets = cfg.sets || [0], cur = 0, box = H("div"), ro = H("div", "ro");
-  chips(el.head, sets.map(function (i) { return CH[i].name.replace(/^(Paper|Ours): /, ""); }), function (i) { cur = i; draw(); }, 0);
+  chips(el.head, sets.map(function (i) { return CH[i].short || CH[i].name.replace(/^(Paper|Ours): /, ""); }), function (i) { cur = i; draw(); }, 0);
   el.body.appendChild(box); el.body.appendChild(ro);
+  function drawLine(d) {
+    box.innerHTML = "";
+    var svg = S("svg", { viewBox: "0 0 100 56", class: "g", role: "img", "aria-label": d.name }, box);
+    var x0 = 10, x1 = 96, y0 = 6, y1 = 46, cols = ["var(--tA)", "var(--tB)", "var(--tC)"], names = ["NEW", "A", "B"];
+    function X(v) { return x0 + (v - d.xs[0]) / (d.xs[d.xs.length - 1] - d.xs[0]) * (x1 - x0); } function Y(v) { return y1 - (v - d.min) / (d.max - d.min) * (y1 - y0); }
+    for (var v = d.min; v <= d.max; v++) { S("line", { x1: x0, y1: Y(v), x2: x1, y2: Y(v), style: "stroke:var(--line);stroke-width:.25" }, svg); S("text", { x: x0 - 1.5, y: Y(v) + 1, "text-anchor": "end", class: "gl", style: "font-size:2.8px" }, svg).textContent = v + "%"; }
+    d.xs.forEach(function (x) { S("text", { x: X(x), y: y1 + 4.5, "text-anchor": "middle", class: "gl", style: "font-size:2.8px" }, svg).textContent = x; });
+    S("text", { x: x1, y: y1 + 9, "text-anchor": "end", class: "gl", style: "font-size:2.8px" }, svg).textContent = "customers";
+    d.ys.forEach(function (ys, si) {
+      S("polyline", { points: ys.map(function (v, i) { return X(d.xs[i]) + "," + Y(v); }).join(" "), style: "fill:none;stroke:" + cols[si] + ";stroke-width:" + (si ? .5 : .8) }, svg);
+      ys.forEach(function (v, i) { S("circle", { cx: X(d.xs[i]), cy: Y(v), r: si ? .7 : 1, style: "fill:" + cols[si] }, svg); });
+      S("text", { x: x0 + 2 + si * 12, y: 3.4, style: "font:700 3px var(--ui);fill:" + cols[si] }, svg).textContent = "● " + names[si];
+    });
+    ro.innerHTML = "<b>" + d.name + "</b> <span class='mut'>· " + d.better + "</span><div class='mut'>NEW = all cuts, Searches 1–6 · A = (1.4) + (1.7) · B = (1.4) only</div>";
+  }
   function draw() {
+    if (CH[sets[cur]].type === "line") return drawLine(CH[sets[cur]]);
     var d = CH[sets[cur]], mx = d.max || Math.max.apply(null, d.v) * 1.12, mn = d.min, names = ["NEW", "A", "B"], cols = ["var(--tA)", "var(--tx3)", "var(--tx3)"];
     box.innerHTML = "";
     var svg = S("svg", { viewBox: "0 0 100 46", class: "g", role: "img", "aria-label": d.name }, box);
@@ -1334,8 +1432,22 @@ function mount(i) {
   catch (err) { s._demo.body.innerHTML = "<div class='msg'>Demo failed to load: " + err.message + "</div>"; mounted[i] = {}; if (window.console) console.error(err); }
   return mounted[i];
 }
-function frags(i) { return slides[i].querySelectorAll(".f"); }
-function setFrag(i, n) { var fs = frags(i); frag[i] = n; [].forEach.call(fs, function (f, j) { f.classList.toggle("shown", j < n); }); }
+/* each slide is a sequence of steps: its text fragments (.f), some of which also move the demo (data-do="k"),
+   then any remaining demo steps; → walks the sequence, so one key drives text and demo together */
+function seq(i) {
+  var s = slides[i]; if (s._seq) return s._seq;
+  var q = [].slice.call(s.querySelectorAll(".f")).map(function (f) { return { el: f, d: f.hasAttribute("data-do") ? +f.getAttribute("data-do") : null }; });
+  var m = mount(i) || {}, n = m.steps || 0, maxd = 0;
+  q.forEach(function (x) { if (x.d != null) maxd = Math.max(maxd, x.d); });
+  for (var k = maxd + 1; k <= n; k++) q.push({ el: null, d: k });
+  s._seq = q; return q;
+}
+function frags(i) { return seq(i); }
+function setFrag(i, n) {
+  var q = seq(i), d = 0; frag[i] = n;
+  q.forEach(function (x, j) { if (x.el) x.el.classList.toggle("shown", j < n); if (j < n && x.d != null) d = Math.max(d, x.d); });
+  var m = mounted[i]; if (m && m.go) m.go(d);
+}
 function go(i, fragEnd) {
   i = Math.max(0, Math.min(slides.length - 1, i));
   if (mounted[cur] && mounted[cur].hide) mounted[cur].hide();
@@ -1423,7 +1535,7 @@ function boot() {
   renderMath();
   var h = parseInt((location.hash || "").replace("#", ""), 10);
   slides[0].classList.add("on");
-  go(isNaN(h) ? 0 : h - 1, !isNaN(h) && h > 1);
+  go(isNaN(h) ? 0 : h - 1, false);
 }
 window.addEventListener("hashchange", function () { var h = parseInt((location.hash || "").replace("#", ""), 10); if (!isNaN(h) && h - 1 !== cur) go(h - 1); });
 if (document.readyState === "complete") boot(); else window.addEventListener("load", boot);
