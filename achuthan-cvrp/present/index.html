@@ -104,14 +104,20 @@ a { color:var(--accent); }
 
 /* slides */
 .stage { flex:1 1 auto; position:relative; min-height:0; }
-.slide { position:absolute; inset:0; display:none; grid-template-columns:minmax(0, 1.12fr) minmax(0, 1fr); gap:clamp(20px, 3.2vw, 64px); padding:clamp(18px, 3vw, 52px) clamp(18px, 4vw, 72px) clamp(14px, 2vw, 30px); }
+.slide { position:absolute; inset:0; display:none; grid-template-columns:minmax(0, 1fr) minmax(0, 1fr); gap:clamp(20px, 3.2vw, 64px); padding:clamp(18px, 3vw, 52px) clamp(18px, 4vw, 72px) clamp(14px, 2vw, 30px); }
 .slide.on { display:grid; }
 .slide.nodemo, .noex .slide { grid-template-columns:minmax(0, 1fr); max-width:1180px; margin:0 auto; }
 .noex .slide .demo { display:none; }
-.txt { overflow:auto; min-height:0; padding-right:8px; }
+.txt { overflow:auto; min-height:0; padding-right:8px; display:flex; flex-direction:column; }
+.tin { display:flex; flex-direction:column; flex:1 0 auto; }
+.tbody { margin:auto 0; padding:.2em 0; }
+.tbody > :last-child { margin-bottom:0; }
+.tkey { margin-top:auto; padding-top:.9em; }
+.tkey > p { margin:0; font-weight:500; font-size:1.06em; line-height:1.45; color:var(--tx); }
+.tkey::before { content:""; display:block; width:2.4em; height:3px; border-radius:2px; background:var(--accent); margin-bottom:.55em; opacity:.85; }
 .kick { font-family:var(--ui); font-weight:500; font-size:.6em; letter-spacing:.01em; color:var(--tx3); margin:0 0 .55em; font-variant-numeric:tabular-nums; }
-.slide h2 { font-family:var(--ui); font-weight:600; font-size:clamp(28px, 2.6vw, 48px); line-height:1.15; margin:0 0 .65em; letter-spacing:-.005em; text-wrap:balance; color:var(--tx); }
-.slide h1 { font-family:var(--ui); font-weight:700; font-size:clamp(36px, 3.9vw, 70px); line-height:1.08; margin:.15em 0 .45em; letter-spacing:-.01em; text-wrap:balance; }
+.slide h2 { font-family:var(--ui); font-weight:600; font-size:1.8em; line-height:1.15; margin:0 0 .65em; letter-spacing:-.005em; text-wrap:balance; color:var(--tx); }
+.slide h1 { font-family:var(--ui); font-weight:700; font-size:2.7em; line-height:1.08; margin:.15em 0 .45em; letter-spacing:-.01em; text-wrap:balance; }
 .txt p { margin:0 0 .75em; text-wrap:pretty; }
 .txt ul, .txt ol { margin:0 0 .8em; padding-left:1.25em; }
 .txt li { margin:.4em 0; text-wrap:pretty; }
@@ -1412,6 +1418,39 @@ M.code = function (el, cfg, slide) {
 
 /* ---------- deck ---------- */
 var slides = [].slice.call(document.querySelectorAll(".slide")), cur = 0, mounted = {}, frag = {};
+/* text column: title (kick + heading) at the top, body centred in the space left, the closing key sentence at the bottom */
+slides.forEach(function (s) {
+  var txt = s.querySelector(".txt"); if (!txt) return;
+  var kids = [].slice.call(txt.children), tin = H("div", "tin"), head = H("div", "thead"), body = H("div", "tbody"), key = null;
+  var last = kids[kids.length - 1];
+  if (last && last.classList.contains("say") && kids.indexOf(last) > 2) key = last;
+  kids.forEach(function (k) { if (k === key) return; if (k.classList.contains("kick") || /^H[12]$/.test(k.tagName)) head.appendChild(k); else body.appendChild(k); });
+  tin.appendChild(head); tin.appendChild(body);
+  if (key) { var kw = H("div", "tkey"); key.classList.remove("say"); kw.appendChild(key); tin.appendChild(kw); }
+  txt.appendChild(tin);
+});
+/* size each slide's text to its column: grow short slides (up to 1.35x), shrink crowded ones (down to 0.85x) */
+var fitKey = {};
+function fitText(i) {
+  var s = slides[i], txt = s.querySelector(".txt"), tin = txt && txt.querySelector(".tin");
+  if (!tin || window.innerWidth <= 900) { if (txt) txt.style.fontSize = ""; return; }
+  var k = window.innerWidth + "x" + window.innerHeight; if (fitKey[i] === k) return; fitKey[i] = k;
+  var avail = txt.clientHeight, wavail = txt.clientWidth, best = null, fallback = null;
+  tin.style.flex = "0 0 auto";
+  var maths = [].slice.call(txt.querySelectorAll(".katex-display"));
+  maths.forEach(function (k) { k.style.fontSize = ""; });
+  for (var sc = 1.5; sc >= 0.749; sc -= 0.05) {
+    txt.style.fontSize = sc.toFixed(2) + "em";
+    var h = tin.offsetHeight, wide = tin.scrollWidth > wavail + 2;
+    if (!wide && h <= avail * 0.8) { best = sc; break; }
+    if (!wide && h <= avail && fallback == null) fallback = sc;
+  }
+  txt.style.fontSize = (best || fallback || 0.75).toFixed(2) + "em";
+  /* a formula wider than the column shrinks on its own, so the rest of the slide keeps its size */
+  maths.forEach(function (k) { var f = 1; while (k.scrollWidth > k.clientWidth + 1 && f > 0.62) { f -= 0.04; k.style.fontSize = f.toFixed(2) + "em"; } });
+  tin.style.flex = "";
+}
+window.addEventListener("resize", function () { fitText(cur); });
 slides.forEach(function (s, i) {
   var cfg = s.getAttribute("data-demo");
   if (!cfg) { s.classList.add("nodemo"); return; }
@@ -1453,6 +1492,7 @@ function go(i, fragEnd) {
   if (mounted[cur] && mounted[cur].hide) mounted[cur].hide();
   slides[cur].classList.remove("on"); cur = i; slides[cur].classList.add("on");
   setFrag(cur, fragEnd ? frags(cur).length : 0);
+  fitText(cur);
   var m = mount(cur); if (m && m.show) m.show();
   var s = slides[cur];
   document.getElementById("sec").textContent = s.getAttribute("data-section") + " · " + s.getAttribute("data-title");
@@ -1538,6 +1578,7 @@ function boot() {
   go(isNaN(h) ? 0 : h - 1, false);
 }
 window.addEventListener("hashchange", function () { var h = parseInt((location.hash || "").replace("#", ""), 10); if (!isNaN(h) && h - 1 !== cur) go(h - 1); });
+if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { fitKey = {}; if (slides[cur]) fitText(cur); });
 if (document.readyState === "complete") boot(); else window.addEventListener("load", boot);
 })();
 </script>
