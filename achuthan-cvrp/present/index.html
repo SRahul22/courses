@@ -50,17 +50,17 @@
 }
 * { box-sizing:border-box; }
 html, body { margin:0; height:100%; background:var(--bg); color:var(--tx); }
-body { font-family:var(--read); font-size:clamp(16px, 1.2vw, 21px); line-height:1.5; overflow:hidden; display:flex; flex-direction:column; }
+body { font-family:var(--read); font-size:clamp(19px, 1.5vw, 27px); line-height:1.55; font-optical-sizing:auto; -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility; overflow:hidden; display:flex; flex-direction:column; }
 button { font:inherit; color:inherit; }
 a { color:var(--accent); }
 
 /* top and bottom bars */
 .top { flex:0 0 auto; display:flex; align-items:center; gap:14px; height:52px; padding:0 18px; border-bottom:1px solid var(--line); font-family:var(--ui); font-size:14px; background:var(--panel); }
-.top .back { display:flex; align-items:center; gap:8px; text-decoration:none; color:var(--tx); font-weight:700; white-space:nowrap; }
+.top .back { display:flex; align-items:center; gap:9px; text-decoration:none; color:var(--tx); font-weight:600; white-space:nowrap; }
 .top .sec { color:var(--tx3); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; min-width:0; flex:1; }
 .top .tools { display:flex; gap:6px; margin-left:auto; }
-.ib { border:1px solid var(--line2); background:var(--panel); border-radius:999px; padding:5px 12px; cursor:pointer; font-family:var(--ui); font-size:13px; white-space:nowrap; }
-.ib:hover { background:var(--bg2); }
+.ib { border:1px solid var(--line); background:transparent; border-radius:8px; padding:5px 11px; color:var(--tx2); cursor:pointer; font-family:var(--ui); font-size:13px; white-space:nowrap; }
+.ib:hover { background:var(--bg2); color:var(--tx); }
 .ib[aria-pressed="true"] { background:var(--accent); border-color:var(--accent); color:var(--panel); }
 .foot { flex:0 0 auto; display:flex; align-items:center; gap:12px; height:48px; padding:0 18px; border-top:1px solid var(--line); font-family:var(--ui); font-size:14px; background:var(--panel); position:relative; }
 .foot .prog { position:absolute; left:0; top:-1px; height:3px; background:var(--accent); transition:width .25s; }
@@ -68,27 +68,31 @@ a { color:var(--accent); }
 .foot .timer { font-variant-numeric:tabular-nums; color:var(--tx3); cursor:pointer; border:0; background:none; }
 .foot .nav { margin-left:auto; display:flex; gap:8px; }
 .foot .hint { color:var(--tx3); font-size:12.5px; }
+.foot .count, .foot .timer { font-size:13px; }
 
 /* slides */
 .stage { flex:1 1 auto; position:relative; min-height:0; }
-.slide { position:absolute; inset:0; display:none; grid-template-columns:minmax(0, 1fr) minmax(0, 1.1fr); gap:clamp(16px, 2.4vw, 40px); padding:clamp(14px, 2vw, 34px) clamp(16px, 3vw, 48px); }
+.slide { position:absolute; inset:0; display:none; grid-template-columns:minmax(0, 1.12fr) minmax(0, 1fr); gap:clamp(20px, 3.2vw, 64px); padding:clamp(18px, 3vw, 52px) clamp(18px, 4vw, 72px) clamp(14px, 2vw, 30px); }
 .slide.on { display:grid; }
-.slide.nodemo { grid-template-columns:minmax(0, 1fr); max-width:1100px; margin:0 auto; }
+.slide.nodemo, .noex .slide { grid-template-columns:minmax(0, 1fr); max-width:1180px; margin:0 auto; }
+.noex .slide .demo { display:none; }
 .txt { overflow:auto; min-height:0; padding-right:8px; }
-.kick { font-family:var(--ui); font-weight:700; font-size:.72em; letter-spacing:.06em; text-transform:uppercase; color:var(--coral); margin:0 0 .3em; }
-.slide h2 { font-family:var(--ui); font-weight:800; font-size:clamp(24px, 2.25vw, 40px); line-height:1.15; margin:0 0 .55em; letter-spacing:-.01em; }
-.slide h1 { font-family:var(--ui); font-weight:800; font-size:clamp(30px, 3.4vw, 58px); line-height:1.08; margin:.2em 0 .4em; letter-spacing:-.02em; }
-.txt p { margin:0 0 .7em; }
+.kick { font-family:var(--ui); font-weight:500; font-size:.6em; letter-spacing:.01em; color:var(--tx3); margin:0 0 .55em; font-variant-numeric:tabular-nums; }
+.slide h2 { font-family:var(--read); font-weight:600; font-size:clamp(30px, 2.9vw, 54px); line-height:1.12; margin:0 0 .6em; letter-spacing:-.012em; text-wrap:balance; }
+.slide h1 { font-family:var(--read); font-weight:600; font-size:clamp(38px, 4.2vw, 76px); line-height:1.05; margin:.15em 0 .45em; letter-spacing:-.018em; text-wrap:balance; }
+.txt p { margin:0 0 .75em; text-wrap:pretty; }
 .txt ul, .txt ol { margin:0 0 .8em; padding-left:1.25em; }
-.txt li { margin:.25em 0; }
-.lead { font-size:1.12em; color:var(--tx2); }
-.say { border-left:3px solid var(--accent); padding:.15em 0 .15em .8em; margin:0 0 .8em; color:var(--tx); font-size:1.04em; }
-.small { font-size:.86em; color:var(--tx2); }
-.mathbox { background:var(--panel); border:1px solid var(--line); border-radius:14px; padding:.5em 1em .6em; margin:.2em 0 .9em; }
+.txt li { margin:.4em 0; text-wrap:pretty; }
+.txt li::marker { color:var(--tx3); }
+.lead { font-size:1.02em; color:var(--tx2); }
+.say { margin:0 0 .9em; color:var(--tx); font-size:1.06em; line-height:1.5; }
+.small { font-size:.8em; color:var(--tx2); }
+.mathbox { background:var(--panel); border-radius:12px; padding:.55em 1.1em .7em; margin:.3em 0 1em; box-shadow:0 1px 2px rgba(0,0,0,.04), 0 0 0 1px var(--line); }
 .mathbox .katex-display { margin:.4em 0; overflow-x:auto; overflow-y:hidden; padding:.1em 0; }
-.mathbox .tag { font-family:var(--ui); font-size:.7em; font-weight:700; color:var(--tx3); letter-spacing:.05em; text-transform:uppercase; }
-.legend { list-style:none; padding:0 !important; margin:.2em 0 0 !important; display:grid; gap:.25em; font-size:.88em; }
-.legend li { display:flex; gap:.6em; align-items:baseline; cursor:default; border-radius:6px; padding:1px 4px; margin:0 !important; }
+.mathbox .tag { font-family:var(--ui); font-size:.6em; font-weight:500; color:var(--tx3); }
+.legend { list-style:none; padding:0 !important; margin:.2em 0 0 !important; display:grid; gap:.15em; font-size:.8em; color:var(--tx2); }
+.legend li { display:block; padding:1px 4px 1px 1.7em; text-indent:-1.35em; cursor:default; border-radius:6px; margin:0 !important; }
+.legend li .sw { margin-right:.55em; }
 .legend li:hover { background:var(--bg2); }
 .sw { display:inline-block; width:.8em; height:.8em; border-radius:3px; flex:0 0 auto; transform:translateY(.08em); }
 .sw.tA { background:var(--tA); } .sw.tB { background:var(--tB); } .sw.tC { background:var(--tC); } .sw.tD { background:var(--tD); }
@@ -98,8 +102,8 @@ a { color:var(--accent); }
 .f { opacity:0; transform:translateY(6px); transition:opacity .3s, transform .3s; }
 .f.shown { opacity:1; transform:none; }
 .steps-done .f { opacity:1; transform:none; }
-.title-meta { font-family:var(--ui); color:var(--tx2); font-size:.95em; }
-.pill { display:inline-block; font-family:var(--ui); font-size:.75em; font-weight:700; padding:2px 10px; border-radius:999px; background:var(--accent-soft); color:var(--accent); }
+.title-meta { font-family:var(--ui); color:var(--tx2); font-size:.8em; }
+.pill { display:none; font-family:var(--ui); font-size:.75em; font-weight:700; padding:2px 10px; border-radius:999px; background:var(--accent-soft); color:var(--accent); }
 table.t { border-collapse:collapse; font-family:var(--ui); font-size:.85em; margin:.2em 0 .9em; width:100%; }
 table.t th, table.t td { padding:.35em .6em; border-bottom:1px solid var(--line); text-align:left; }
 table.t th { color:var(--tx3); font-weight:700; }
@@ -107,17 +111,17 @@ table.t td.n { text-align:right; font-variant-numeric:tabular-nums; }
 code { font-family:var(--mono); font-size:.82em; background:var(--bg2); padding:1px 5px; border-radius:5px; }
 
 /* demo panel */
-.demo { background:var(--panel); border:1px solid var(--line); border-radius:18px; padding:12px 16px 14px; display:flex; flex-direction:column; gap:8px; min-height:0; overflow:auto; font-family:var(--ui); font-size:.8em; }
+.demo { background:var(--panel); border-radius:14px; box-shadow:0 1px 3px rgba(0,0,0,.05), 0 0 0 1px var(--line); padding:12px 16px 14px; display:flex; flex-direction:column; gap:8px; min-height:0; overflow:auto; font-family:var(--ui); font-size:.66em; }
 .dhead { display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
-.dlabel { font-weight:800; font-size:.8em; letter-spacing:.06em; text-transform:uppercase; color:var(--tx3); margin-right:auto; }
-.dlabel::before { content:""; display:inline-block; width:8px; height:8px; border-radius:50%; background:var(--ok); margin-right:7px; transform:translateY(-1px); }
+.dlabel { font-weight:600; font-size:.95em; color:var(--tx2); margin-right:auto; }
+.dlabel::before { content:""; display:inline-block; width:7px; height:7px; border-radius:50%; background:var(--ok); margin-right:8px; transform:translateY(-1px); }
 .chips { display:flex; gap:6px; flex-wrap:wrap; }
-.chip { border:1px solid var(--line2); background:var(--panel); border-radius:999px; padding:4px 11px; cursor:pointer; font-size:.95em; }
+.chip { border:1px solid var(--line2); background:var(--panel); border-radius:8px; padding:4px 10px; cursor:pointer; font-size:.95em; }
 .chip.on { background:var(--accent); color:var(--panel); border-color:var(--accent); }
 .btns { display:flex; gap:8px; flex-wrap:wrap; }
-.btn { border:1px solid var(--line2); background:var(--panel2); border-radius:999px; padding:6px 14px; cursor:pointer; font-weight:600; }
+.btn { border:1px solid var(--line2); background:var(--panel2); border-radius:8px; padding:6px 13px; cursor:pointer; font-weight:500; }
 .btn:hover { background:var(--bg2); }
-.btn.primary { background:var(--accent); border-color:var(--accent); color:var(--panel); }
+.btn.primary { background:var(--accent); border-color:var(--accent); color:var(--panel); font-weight:600; }
 .btn:disabled { opacity:.45; cursor:default; }
 svg.g { width:100%; flex:1 1 auto; min-height:200px; max-height:52vh; display:block; touch-action:manipulation; }
 .ro { font-size:1.02em; line-height:1.5; color:var(--tx); min-height:2.6em; }
@@ -212,6 +216,7 @@ input[type=range] { width:100%; accent-color:var(--accent); }
   <a class="back" href="../" title="Back to the full explainer"><svg width="22" height="22" viewBox="0 0 26 26" aria-hidden="true"><rect width="26" height="26" rx="7" fill="#55489E"/><path d="M6.5 19.5V9.5L13.5 7.2l6.5 6-3.2 6.3z" fill="none" stroke="#fff" stroke-width="2.2" stroke-linejoin="round"/><path d="M8.5 5l13 12" stroke="#FFE2CF" stroke-width="2.4" stroke-linecap="round"/></svg><span class="bt">Branch-and-Cut for VRP</span></a>
   <span class="sec" id="sec"></span>
   <div class="tools">
+    <button class="ib" id="bEx" type="button" aria-pressed="true" title="Show or hide the live example (E)">Example</button>
     <button class="ib" id="bNotes" type="button" aria-pressed="false" title="Speaker notes (N)">Notes</button>
     <button class="ib" id="bOv" type="button" aria-pressed="false" title="All slides (O)">Slides</button>
     <button class="ib wide" id="bFs" type="button" title="Full screen (F)">Full screen</button>
@@ -229,7 +234,7 @@ input[type=range] { width:100%; accent-color:var(--accent); }
   <p class="lead">N. R. Achuthan, L. Caccetta and S. P. Hill, <i>An Improved Branch-and-Cut Algorithm for the Capacitated Vehicle Routing Problem</i>, Transportation Science 37(2):153–169, 2003.</p>
   <p class="title-meta">Presented by Rahul Dev Sharma</p>
   <p class="say">One small example (a depot and 7 customers) runs on the right of every slide. Everything we define, we try on it.</p>
-  <p class="small">→ / Space: next step · ← back · N notes · O all slides · F full screen</p>
+  <p class="small">→ / Space: next step · ← back · E show or hide the example · N notes · O all slides · F full screen</p>
 </div>
 <aside class="notes">Open on the picture: three trucks leave the depot, serve seven customers and come home. Promise: by the end the audience knows why this plan is the best one, and how a computer proves that no better plan exists. (~45 s)</aside>
 </section>
@@ -343,13 +348,13 @@ input[type=range] { width:100%; accent-color:var(--accent); }
   <p class="kick">2 · Writing it for a computer</p>
   <h2>Rule 2: a group of customers needs enough trucks</h2>
   <p class="say">Pick any group $S$ of customers. Together they need at least $\ell(S) = \lceil q(S)/Q \rceil$ trucks (total demand divided by capacity, rounded up).</p>
-  <p class="f">Each truck that serves part of $S$ visits some of its customers in a row. A run of $r$ customers uses $r - 1$ roads inside $S$. With at least $\ell(S)$ runs, at most $|S| - \ell(S)$ roads can lie inside $S$.</p>
+  <p class="f">Each truck visits a run of $S$'s customers; a run of $r$ uses $r - 1$ roads inside $S$. So at most $|S| - \ell(S)$ roads lie inside.</p>
   <div class="mathbox f"><span class="tag">(1.4) capacity / subtour rule, every group $S$</span>
   $$\htmlClass{tA}{\sum_{i,j \in S} x_{ij}} \;\le\; \htmlClass{tB}{|S|} - \htmlClass{tC}{\ell(S)}$$
   <ul class="legend"><li data-t="tA"><span class="sw tA"></span>$x(S)$: roads with both ends in $S$</li><li data-t="tB"><span class="sw tB"></span>number of customers in $S$</li><li data-t="tC"><span class="sw tC"></span>$\ell(S)$: fewest trucks $S$ needs</li></ul></div>
-  <p class="f">The loop $S = \{3,4,5,6\}$ has 4 roads inside, but only $4 - \lceil 11/10 \rceil = 2$ are allowed. <b>Broken, so that answer is forbidden.</b> Even a light loop is caught: $\ell \ge 1$ allows $|S| - 1$ roads, and a closed loop has $|S|$.</p>
+  <p class="f">The loop $S = \{3,4,5,6\}$ has 4 roads inside, but only $4 - \lceil 11/10 \rceil = 2$ are allowed. <b>Broken: that answer is forbidden.</b></p>
 </div>
-<aside class="notes">Show on the right: S = {3,4,5,6} is broken on the starting answer. Switch to the best plan: satisfied. Tap 3 and 6 away and add 7 to try other groups. (~1.5 min)</aside>
+<aside class="notes">Show on the right: S = {3,4,5,6} is broken on the starting answer. Switch to the best plan: satisfied. Tap 3 and 6 away and add 7 to try other groups. Also say: even a light loop is caught, since ℓ ≥ 1 allows |S| − 1 roads and a closed loop has |S|. (~1.5 min)</aside>
 </section>
 
 <section class="slide" data-section="2 · Writing it for a computer" data-title="Too many rules" data-demo='{"mode":"count","label":"How many groups S?"}'>
@@ -419,15 +424,13 @@ input[type=range] { width:100%; accent-color:var(--accent); }
 <div class="txt">
   <p class="kick">4 · What the paper adds · the starting point</p>
   <h2>A known rule: leave enough trucks for everyone else</h2>
-  <p>Before this paper: (1.4) from Laporte et al. (1985), and (1.7) from the same authors' 1996 paper.</p>
-  <p class="say f">Suppose $r$ trucks serve <b>only</b> customers of $S$. Those trucks are useless to the other customers $\bar S$, who still need $\ell(\bar S)$ trucks. So $m - r \ge \ell(\bar S)$.</p>
+    <p class="say f">Suppose $r$ trucks serve <b>only</b> customers of $S$. Those trucks are useless to the other customers $\bar S$, who still need $\ell(\bar S)$ trucks. So $m - r \ge \ell(\bar S)$.</p>
   <div class="mathbox f"><span class="tag">(1.7) any group $S$, with $\bar S$ = the other customers</span>
   $$\htmlClass{tA}{x(S)} + \htmlClass{tB}{x(1{:}S)} - \htmlClass{tC}{m} \;\le\; |S| - \htmlClass{tD}{\ell(\bar S)}$$
   <ul class="legend"><li data-t="tA"><span class="sw tA"></span>roads inside $S$</li><li data-t="tB"><span class="sw tB"></span>depot roads into $S$</li><li data-t="tC"><span class="sw tC"></span>trucks in total</li><li data-t="tD"><span class="sw tD"></span>trucks the other customers need</li></ul></div>
-  <p class="f small">Why it works: a truck serving only $r$ customers of $S$ uses $(r-1) + 2 = r + 1$ of the counted roads, so the left side is $|S| + (\text{trucks only in } S) - m$; mixed trucks count less.</p>
-  <p class="f">Starting LP, $S = \{2,7,8\}$: three out-and-back trips, left side $0 + 6 - 3 = 3$, right side $3 - \ell(\{3,4,5,6\}) = 1$. All three trucks are busy with 2, 7, 8; none is left for the other four customers. <b>Broken.</b></p>
+  <p class="f">Starting LP, $S = \{2,7,8\}$: all three trucks are busy with 2, 7 and 8, none left for the other four. Left side 3, right side 1. <b>Broken.</b></p>
 </div>
-<aside class="notes">This is the rule of Algorithm A in the results. The new rules in this paper go further. (~1.5 min)</aside>
+<aside class="notes">Before this paper: (1.4) from Laporte et al. (1985) and (1.7) from the same authors' 1996 paper; (1.7) is Algorithm A in the results. Why it works: a truck serving only r customers of S uses (r−1) + 2 = r + 1 of the counted roads, so the left side is |S| + (trucks only in S) − m; mixed trucks count less. Numbers: 0 + 6 − 3 = 3 against 3 − ℓ({3,4,5,6}) = 1. (~1.5 min)</aside>
 </section>
 
 <section class="slide" data-section="4 · What the paper adds" data-title="New: (2.3), (2.8)" data-demo='{"mode":"groups","S":[3],"T":[[4],[5,6]],"sources":["lp0","best"],"label":"S and the groups T"}'>
@@ -435,28 +438,27 @@ input[type=range] { width:100%; accent-color:var(--accent); }
   <p class="kick">4 · What the paper adds · new cut 1</p>
   <h2>Groups that cannot share a truck</h2>
   <p class="say">Take a group $S$ and other groups $T_1, \dots, T_k$ such that $S$ together with <b>any two</b> of the $T$'s is too heavy for one truck. Then the truck through $S$ can pick up <b>at most one</b> of the $T$'s.</p>
-  <p class="f">Example: $S = \{3\}$ ($q = 3$), $T_1 = \{4\}$ ($q = 1$), $T_2 = \{5,6\}$ ($q = 7$). Together $3 + 1 + 7 = 11 \gt 10$. So customer 3's route cannot contain both customer 4 and the pair 5–6.</p>
+  <p class="f">Example: $S = \{3\}$, $T_1 = \{4\}$, $T_2 = \{5,6\}$. Together $3 + 1 + 7 = 11 \gt 10$, so customer 3's route cannot reach both.</p>
   <div class="mathbox f"><span class="tag">(2.3), Theorem 2.1</span>
   $$3\,\htmlClass{tA}{x(S)} + \htmlClass{tB}{x(E[S,T])} + \htmlClass{tC}{\sum_{p} x(T_p)} \;\le\; 3|S| - 2 + |T| - k$$
   <ul class="legend"><li data-t="tA"><span class="sw tA"></span>roads inside $S$ (counted 3 times)</li><li data-t="tB"><span class="sw tB"></span>roads between $S$ and the $T$'s</li><li data-t="tC"><span class="sw tC"></span>roads inside each $T_p$; $|T|$ = customers in all $T$'s, $k$ = number of groups</li></ul></div>
-  <p class="f">Starting LP: roads 3–4 and 3–6 both used, and 5–6 too: one chain links 3 to both groups. Left side 3, right side $3 - 2 + 3 - 2 = 2$. <b>Broken.</b> Rule (1.4) does not see this: no single group is overloaded. (2.8) is a sharper version for exactly three $T$'s.</p>
+  <p class="f">Starting LP: one chain links 3 to both groups. Left side 3, right side 2. <b>Broken</b>, though no single group is overloaded, so (1.4) misses it.</p>
 </div>
-<aside class="notes">Switch to the best plan: 3 links only to 4, left side 2: satisfied. The idea is new: it reasons about three sets at once instead of one. (~1.5 min)</aside>
+<aside class="notes">Roads 3–4, 3–6 and 5–6 are all used: left side 0 + 2 + 1 = 3, right side 3·1 − 2 + 3 − 2 = 2. Switch to the best plan: 3 links only to 4, left side 2, satisfied. The idea is new: it reasons about several sets at once. (2.8) is a sharper version for exactly three T's. (~1.5 min)</aside>
 </section>
 
 <section class="slide" data-section="4 · What the paper adds" data-title="New: (2.9)" data-demo='{"mode":"set","fam":"2.9","sources":["two78","one78","lp0"],"S":[7,8],"label":"Two trips or one?"}'>
 <div class="txt">
   <p class="kick">4 · What the paper adds · new cut 2</p>
   <h2>Don't split a group that fits in one truck</h2>
-  <p class="say">If the customers of $S$ fit in one truck ($q(S) \le Q$), an optimal plan never needs two separate trips that serve only $S$: joining them into one trip is never longer (straight-line distances obey the triangle inequality).</p>
-  <p class="f">Trips 1 → 7 → 1 and 1 → 8 → 1 cost $2(5.1) + 2(33.4) = 77.0$. One trip 1 → 7 → 8 → 1 costs $5.1 + 30.4 + 33.4 = 68.9$ and carries $3 + 5 = 8 \le 10$.</p>
+  <p class="say">If the customers of $S$ fit in one truck, an optimal plan never needs two separate trips that serve only $S$: joining them is never longer.</p>
+  <p class="f">Two trips to 7 and 8 cost 77.0; one trip 1 → 7 → 8 → 1 costs 68.9 and carries $8 \le 10$.</p>
   <div class="mathbox f"><span class="tag">(2.9), Theorem 2.3, groups with $q(S) \le Q$</span>
   $$\htmlClass{tA}{x(S)} + \htmlClass{tB}{x(1{:}S)} \;\le\; |S| + 1$$
   <ul class="legend"><li data-t="tA"><span class="sw tA"></span>roads inside $S$</li><li data-t="tB"><span class="sw tB"></span>depot roads into $S$</li></ul></div>
-  <p class="f">One trip through all of $S$ uses $(|S| - 1) + 2 = |S| + 1$ roads. Two trips use one more.</p>
-  <p class="f say">A new <b>kind</b> of rule: it removes some real plans (wasteful ones), but always keeps at least one optimal plan. An <b>optimality cut</b>, not a validity cut.</p>
+  <p class="f say">A new <b>kind</b> of rule: it removes some real (wasteful) plans but always keeps an optimal one. An <b>optimality cut</b>.</p>
 </div>
-<aside class="notes">Switch between "two trips" (0 + 4 = 4 > 3, broken) and "one trip" (1 + 2 = 3 ≤ 3, satisfied). Caveat for Q&amp;A: it needs the number of trucks to be free (variable m), or fixed at the minimum fleet. (~1.5 min)</aside>
+<aside class="notes">Costs: 2(5.1) + 2(33.4) = 77.0 versus 5.1 + 30.4 + 33.4 = 68.9 (triangle inequality). One trip through all of S uses (|S| − 1) + 2 = |S| + 1 roads; two trips use one more. Switch between "two trips" (0 + 4 = 4 > 3, broken) and "one trip" (1 + 2 = 3 ≤ 3, satisfied). Caveat for Q&amp;A: it needs the number of trucks to be free (variable m), or fixed at the minimum fleet. (~1.5 min)</aside>
 </section>
 
 <section class="slide" data-section="4 · What the paper adds" data-title="New: (2.10), fleet cap" data-demo='{"mode":"map","plans":["best"],"labels":"none","fleet":true,"label":"Loads in the best plan"}'>
@@ -599,7 +601,7 @@ def slack(P, S):
     return len(S) + 1 - P.x_in(S) - P.x1(S)</template>
 </section>
 
-<section class="slide" data-section="5 · Results" data-title="Critique" data-demo='{"mode":"map","plans":["best"],"labels":"none","label":"Live example"}'>
+<section class="slide" data-section="5 · Results" data-title="Critique">
 <div class="txt">
   <p class="kick">5 · Results · critique</p>
   <h2>Strengths and limits</h2>
@@ -704,12 +706,15 @@ var SRC = {
 Object.keys(SRC).forEach(function (k) { var s = SRC[k]; if (s.routes) s.x = routesToX(s.routes); });
 
 /* ---------- the map ---------- */
-function px(k) { return 6 + (T.pts[k - 1][0] - 15) * 1.1; }
-function py(k) { return 74 - (T.pts[k - 1][1] - 23) * 1.1; }
+/* drawing position only: customer 7 (5.1 from the depot) is drawn at (34,52), not (45,51), so road 1-7 shows; costs use true distances */
+function P(k) { return k === 7 ? [34, 52] : T.pts[k - 1]; }
+function px(k) { return 6 + (P(k)[0] - 15) * 1.1; }
+function py(k) { return 74 - (P(k)[1] - 23) * 1.1; }
 function Graph(parent, label) {
   var svg = S("svg", { viewBox: "0 0 100 80", class: "g", role: "img", "aria-label": label || "Map: depot 1 and customers 2 to 8" }, parent);
   var gH = S("g", {}, svg), gE = S("g", {}, svg), gL = S("g", {}, svg), gN = S("g", {}, svg), gV = S("g", {}, svg);
   var nodeH = [], edgeH = null, G = { svg: svg, nodes: {} }, anim = null;
+  S("text", { x: 1, y: 79.2, class: "gl", style: "font-size:2.1px" }, svg).textContent = "Sketch: 7 is drawn further from the depot; costs use true distances";
   for (var k = 1; k <= N; k++) (function (k) {
     var g = S("g", { class: "nd", tabindex: "0", role: "button", "aria-label": k === 1 ? "Depot, node 1" : "Customer " + k + ", demand " + q(k) }, gN);
     if (k === 1) {
@@ -1217,6 +1222,10 @@ function toggleNotes() { var on = !np.classList.contains("on"); np.classList.tog
 function fs() { if (!document.fullscreenElement) { (document.documentElement.requestFullscreen || function () {}).call(document.documentElement); } else document.exitFullscreen(); }
 function theme() { var r = document.documentElement, dark = r.getAttribute("data-theme") ? r.getAttribute("data-theme") === "dark" : matchMedia("(prefers-color-scheme: dark)").matches; var t = dark ? "light" : "dark"; r.setAttribute("data-theme", t); try { localStorage.setItem("courses-theme", t); } catch (e) {} }
 bOv.onclick = function () { toggleOv(); }; bN.onclick = toggleNotes;
+var bEx = document.getElementById("bEx");
+function setEx(on) { document.body.classList.toggle("noex", !on); bEx.setAttribute("aria-pressed", on); try { localStorage.setItem("achcvrp-present-ex", on ? "1" : "0"); } catch (e) {} }
+try { if (localStorage.getItem("achcvrp-present-ex") === "0") setEx(false); } catch (e) {}
+bEx.onclick = function () { setEx(document.body.classList.contains("noex")); };
 document.getElementById("bFs").onclick = fs; document.getElementById("bTheme").onclick = theme;
 document.getElementById("bNext").onclick = next; document.getElementById("bPrev").onclick = prev;
 document.addEventListener("keydown", function (e) {
@@ -1228,6 +1237,7 @@ document.addEventListener("keydown", function (e) {
   else if (k === "Home") go(0); else if (k === "End") go(slides.length - 1);
   else if (k === "n" || k === "N") toggleNotes(); else if (k === "o" || k === "O" || k === "Escape") { if (k === "Escape" && !ov.classList.contains("on")) return; toggleOv(); }
   else if (k === "f" || k === "F") fs();
+  else if (k === "e" || k === "E") setEx(document.body.classList.contains("noex"));
 });
 var tx0 = null;
 document.getElementById("stage").addEventListener("touchstart", function (e) { if (e.target.closest(".demo")) { tx0 = null; return; } tx0 = [e.touches[0].clientX, e.touches[0].clientY]; }, { passive: true });

@@ -949,6 +949,7 @@ section.pg-review { display:flex; flex-direction:column; gap:26px; }
 <p class="hook">Customer 2 needs <b>9</b> of a truck's 10 units. Where does it go?</p>
 
 <div class="panel try"><span class="label">Try it</span><p class="task">Tap customers in order to build route 1 from the depot (square). Tap the depot or "Back to depot" to close the route and start the next. Watch each route's load against Q = 10. Then compare with the savings heuristic and the optimum.</p><div class="widget" data-w="routes"></div></div>
+<p class="small" style="color:var(--tx3);margin-top:-6px">The map is a sketch: customer 7 is drawn a little further from the depot than its true position so that the road 1–7 (length 5.1) stays visible. All costs use the true distances.</p>
 
 <details class="why"><summary>does customer 2 end up alone?</summary><p>Its demand is 9. The only customer small enough to share its truck is customer 4 (demand 1), and customer 4 is on the other side of the depot. In the optimum, customer 2 gets a <b>single-customer route</b> 1 → 2 → 1. In the paper's model that is the one case where an edge variable equals 2: $x_{12} = 2$ (p. 154).</p></details>
 
@@ -3145,8 +3146,10 @@ DH.DATA = {"toy":{"pts":[[50,50],[92,25],[29,73],[17,78],[31,86],[50,81],[45,51]
   var cost = function (a, b) { if (a === b) return 0; var k = a < b ? a + "-" + b : b + "-" + a; return T.c[k]; };
   /* map the toy's coordinates (x 17..92, y 25..86) onto a 100 x 80 view box, same scale on both axes */
   var VH = 80;
-  function px(k) { return 6 + (T.pts[k - 1][0] - 15) * 1.1; }
-  function py(k) { return VH - 6 - (T.pts[k - 1][1] - 23) * 1.1; }
+  /* drawing position only: customer 7 is 5.1 from the depot, so it is drawn at (34,52) instead of (45,51) to keep road 1-7 visible; all costs use the true coordinates */
+  function P(k) { return k === 7 ? [34, 52] : T.pts[k - 1]; }
+  function px(k) { return 6 + (P(k)[0] - 15) * 1.1; }
+  function py(k) { return VH - 6 - (P(k)[1] - 23) * 1.1; }
 
   /* draw the toy graph: returns svg; edges = {"a-b": value} */
   function graph(parent, opts) {
