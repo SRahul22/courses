@@ -8632,6 +8632,21 @@ DH.PYTRACES = {"alias": {"code": ["A = [1, 2, 3]", "B = A", "B.append(4)", "C = 
       hint: "The matrix is triangular: everything above the diagonal is zero.",
       sol: "<p>For a triangular matrix the determinant is the product of the diagonal: $" + d.map(function (x) { return x < 0 ? "(" + x + ")" : x; }).join("\\times") + " = " + ans + "$.</p>" };
   };
+
+  V["la-eigen-p8"] = function (r) {
+    var a = pick(r, [-3, -2, -1, 1, 2, 3, 4]), b = pick(r, [-2, 1, 2, 3, 5, 6]);
+    return { p: { a: a, b: b }, ans: (a + b) + ";" + (a * b), labels: "trace;determinant",
+      stem: "Warm-up. A $2\\times2$ matrix has eigenvalues " + a + " and " + b + ". What are its trace and its determinant?",
+      hint: "The trace is the sum of the eigenvalues; the determinant is their product.",
+      sol: "<p>Trace $= " + a + " + " + (b < 0 ? "(" + b + ")" : b) + " = " + (a + b) + "$, determinant $= " + a + "\\times" + (b < 0 ? "(" + b + ")" : b) + " = " + (a * b) + "$.</p>" };
+  };
+  V["la-special-p5"] = function (r) {
+    var u = [pick(r, [-2, -1, 1, 2, 3]), pick(r, [-3, -1, 1, 2, 3, 4])];
+    return { p: { u: u }, ans: (u[0] * u[1]) + ";" + (u[0] * u[0] + u[1] * u[1]), labels: "(1, 2) entry;trace",
+      stem: "Warm-up. For $\\u = (" + u[0] + ", " + u[1] + ")$, find the (1, 2) entry and the trace of $\\u\\u\\T$.",
+      hint: "The (i, j) entry of $\\u\\u\\T$ is $u_i u_j$; the trace adds the diagonal entries $u_i^2$.",
+      sol: "<p>(1, 2) entry $= u_1u_2 = " + (u[0] * u[1]) + "$; trace $= u_1^2 + u_2^2 = " + (u[0] * u[0] + u[1] * u[1]) + "$ (which equals $\\u\\T\\u$).</p>" };
+  };
 })();
 
 (function(){function go(){DH.boot();}if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",go);else go();})();
