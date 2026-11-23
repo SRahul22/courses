@@ -104,8 +104,9 @@ NODE_PATH=~/Dev/tools/node_modules node source/test/check.js all /tmp/shots --so
 NODE_PATH=~/Dev/tools/node_modules node source/test/cert.js /tmp/cert
 <span class="c"># GATE DA also: python3 source/test/audit_keys.py and</span>
 <span class="c">#   ~/Dev/tools/venv/bin/python source/test/vary_check.py</span>
-<span class="c"># 3. publish the live site: add only the folder you changed</span>
-cd ~/Dev/courses &amp;&amp; git pull --rebase &amp;&amp; git add &lt;path&gt; &amp;&amp; git commit -m "…" &amp;&amp; git push
+<span class="c"># 3. publish the live site: add only the folder you changed (and refresh the sitemap for search engines)</span>
+cd ~/Dev/courses &amp;&amp; git pull --rebase &amp;&amp; python3 ~/Dev/tools/sitemap.py
+git add &lt;path&gt; sitemap.xml robots.txt &amp;&amp; git commit -m "…" &amp;&amp; git push
 <span class="c"># 4. back up the source</span>
 cd ~/Dev/course-sources/&lt;course&gt; &amp;&amp; git add -A &amp;&amp; git commit -m "…" &amp;&amp; git push</pre>
 <p class="note"><b>Publish progressively and safely.</b> Push each piece as soon as it is tested. Safe means the course's checks pass, saved progress can't be lost, and unrelated files are left alone. Never <code>git add -A</code> in <code>~/Dev/courses</code>. Untested work stays on a branch. To undo a bad publish: <code>git revert &lt;commit&gt;</code> in <code>~/Dev/courses</code>, then push.</p>
