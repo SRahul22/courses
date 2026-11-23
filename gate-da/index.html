@@ -8566,6 +8566,79 @@ DH.PYTRACES = {"alias": {"code": ["A = [1, 2, 3]", "B = A", "B.append(4)", "C = 
       hint: "$\\u\\u\\T$ has rank 1 and $(\\u\\u\\T)\\u = \\u(\\u\\T\\u)$.",
       sol: "<p>$\\u\\u\\T$ is symmetric positive semidefinite with one nonzero eigenvalue $\\u\\T\\u = " + u.map(function (x) { return x < 0 ? "(" + x + ")^2" : x + "^2"; }).join(" + ") + " = " + ans + "$, so $\\sigma_1 = " + ans + "$.</p>" };
   };
+
+  /* ---- more core methods (2026-11-23) ---- */
+  V["pr-counting-p4"] = function (r) {
+    var n = int(r, 4, 9), k = pick(r, [3, 4, 5]), a = comb(n + k - 1, k - 1);
+    return { p: { n: n, k: k }, ans: String(a), labels: "number of ways",
+      stem: "In how many ways can " + n + " identical man-of-the-match trophies be shared among " + k + " teams (a team may get none)?",
+      hint: "Stars and bars: arrange " + n + " trophies and " + (k - 1) + " dividers in a row.",
+      sol: "<p>Choose where the " + (k - 1) + " dividers go among " + (n + k - 1) + " slots: $\\binom{" + (n + k - 1) + "}{" + (k - 1) + "} = " + a + "$.</p>" };
+  };
+  V["pr-events-p1"] = function (r) {
+    var s = int(r, 3, 11), c = 6 - Math.abs(s - 7);
+    return { p: { s: s }, ans: c + "/36", labels: "probability",
+      stem: "Two fair dice are thrown. What is the probability that the sum is " + s + "?",
+      hint: "There are 36 equally likely ordered outcomes. Count the pairs (a, b) with a + b = " + s + ".",
+      sol: "<p>The pairs with sum " + s + " are " + c + " of the 36, so the probability is $" + c + "/36" + (c % 6 === 0 ? " = 1/" + (36 / c) : "") + "$.</p>" };
+  };
+  V["pr-conditional-p3"] = function (r) {
+    var pb = pick(r, [0.2, 0.25, 0.3, 0.4, 0.5, 0.6]), q = pick(r, [0.2, 0.25, 0.4, 0.5, 0.6, 0.75]), pab = Math.round(pb * q * 1000) / 1000;
+    return { p: { pab: pab, pb: pb }, ans: f(pab / pb, 4), labels: "P(A | B)",
+      stem: "$P(A\\cap B) = " + f(pab, 3) + "$ and $P(B) = " + f(pb) + "$. Find $P(A\\mid B)$.",
+      hint: "Conditioning on B shrinks the world to B: divide by P(B).",
+      sol: "<p>$P(A\\mid B) = P(A\\cap B)/P(B) = " + f(pab, 3) + "/" + f(pb) + " = " + f(pab / pb, 4) + "$.</p>" };
+  };
+  V["pr-rv-p2"] = function (r) {
+    var a = pick(r, [1, 2, 3, 4, 5, 6]), k = 3 / (a * a * a);
+    return { p: { a: a }, ans: "3/" + (a * a * a), labels: "k", tol: "0.002",
+      stem: "$f(x) = kx^2$ for $0 \\le x \\le " + a + "$ (and 0 elsewhere) is a PDF. Find $k$.",
+      hint: "A PDF integrates to 1 over its range.",
+      sol: "<p>$\\int_0^{" + a + "} kx^2\\,dx = k\\cdot " + a + "^3/3 = 1$, so $k = 3/" + (a * a * a) + " \\approx " + f(k, 4) + "$.</p>" };
+  };
+  V["pr-rv-p4"] = function (r) {
+    var lam = pick(r, [0.25, 0.5, 1, 2, 4]), m = Math.log(2) / lam;
+    return { p: { lam: lam }, ans: f(m, 5), labels: "median", tol: "0.002",
+      stem: "An exponential random variable with rate $\\lambda = " + f(lam) + "$ has CDF $F(x) = 1 - e^{-" + f(lam) + "x}$ for $x \\ge 0$. Find its median.",
+      hint: "The median m solves F(m) = 1/2.",
+      sol: "<p>$1 - e^{-" + f(lam) + "m} = 1/2 \\Rightarrow m = \\ln 2/" + f(lam) + " \\approx " + f(m, 3) + "$.</p>" };
+  };
+  V["st-estimators-p3"] = function (r) {
+    var b = pick(r, [-3, -2, -1, 0.5, 1, 2, 3]), v = int(r, 1, 9), ans = b * b + v;
+    return { p: { b: b, v: v }, ans: f(ans), labels: "MSE",
+      stem: "An estimator has bias " + f(b) + " and variance " + v + ". What is its mean squared error?",
+      hint: "MSE = bias² + variance.",
+      sol: "<p>$\\text{MSE} = (" + f(b) + ")^2 + " + v + " = " + f(ans) + "$.</p>" };
+  };
+  V["st-clt-p3"] = function (r) {
+    var n = pick(r, [4, 9, 16, 25, 36, 49, 100]), sd = Math.sqrt(35 / 12) / Math.sqrt(n);
+    return { p: { n: n }, ans: f(sd, 5), labels: "SD of the mean", tol: "0.003",
+      stem: "A fair die has variance $35/12$. What is the standard deviation of the average of " + n + " throws? (Three decimals.)",
+      hint: "The variance of a mean of n independent values is σ²/n.",
+      sol: "<p>$\\sqrt{(35/12)/" + n + "} = \\sqrt{35/12}/" + Math.sqrt(n) + " \\approx " + f(sd, 3) + "$.</p>" };
+  };
+  V["st-tchi-p1"] = function (r) {
+    var k = int(r, 2, 20);
+    return { p: { k: k }, ans: k + ";" + 2 * k, labels: "mean;variance",
+      stem: "Find the mean and variance of $\\chi^2_{" + k + "}$.",
+      hint: "A χ² with k degrees of freedom is a sum of k squared standard normals; each has mean 1 and variance 2.",
+      sol: "<p>Mean $= k = " + k + "$, variance $= 2k = " + 2 * k + "$.</p>" };
+  };
+  V["st-ttest-chi-p4"] = function (r) {
+    var a = int(r, 2, 6), b = int(r, 2, 6);
+    return { p: { a: a, b: b }, ans: String((a - 1) * (b - 1)), labels: "degrees of freedom",
+      stem: "How many degrees of freedom does a χ² test of independence have for a " + a + " × " + b + " table?",
+      hint: "Once the row and column totals are fixed, how many cells can you still choose freely?",
+      sol: "<p>$(r-1)(c-1) = " + (a - 1) + "\\times" + (b - 1) + " = " + (a - 1) * (b - 1) + "$.</p>" };
+  };
+  V["la-det-p1"] = function (r) {
+    var d = [int(r, 1, 5), int(r, 1, 5), int(r, 2, 6)].map(function (x) { return r() < 0.25 ? -x : x; });
+    var o = [int(r, -4, 5), int(r, -4, 5), int(r, -4, 5)], ans = d[0] * d[1] * d[2];
+    return { p: { d: d }, ans: String(ans), labels: "det",
+      stem: "Find $\\det\\begin{bmatrix}" + d[0] + "&0&0\\\\" + o[0] + "&" + d[1] + "&0\\\\" + o[1] + "&" + o[2] + "&" + d[2] + "\\end{bmatrix}$.",
+      hint: "The matrix is triangular: everything above the diagonal is zero.",
+      sol: "<p>For a triangular matrix the determinant is the product of the diagonal: $" + d.map(function (x) { return x < 0 ? "(" + x + ")" : x; }).join("\\times") + " = " + ans + "$.</p>" };
+  };
 })();
 
 (function(){function go(){DH.boot();}if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",go);else go();})();
