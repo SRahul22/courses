@@ -9,200 +9,348 @@
   window.MathJax = { tex: { inlineMath: [['$','$'],['\\(','\\)']], displayMath: [['$$','$$'],['\\[','\\]']] } };
 </script>
 <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml.js"></script>
+<style>
+  .fig{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:10px 14px;margin:14px 0}
+  .fig svg{display:block;max-width:100%;height:auto;margin:0 auto}
+  .fig .cap{font-size:14px;color:var(--muted);margin-top:6px}
+  .check{background:var(--accent-soft);border-radius:8px;padding:10px 14px;margin:14px 0}
+  .check > b:first-child{color:var(--accent)}
+  .roadmap li{margin:3px 0}
+  .kw{font-weight:700;color:var(--accent)}
+</style>
 </head>
 <body>
 <div class="layout">
 <nav class="toc">
   <a class="home" href="./">← START HERE</a>
-  <a href="#must">1. Must remember</a>
-  <a href="#concepts">2. Concepts</a>
-  <a href="#c1">&nbsp;&nbsp;2.1 The problem ADMM solves</a>
-  <a href="#c2">&nbsp;&nbsp;2.2 Augmented Lagrangian</a>
-  <a href="#c3">&nbsp;&nbsp;2.3 The 3-step iteration</a>
-  <a href="#c4">&nbsp;&nbsp;2.4 Completing the square</a>
-  <a href="#c5">&nbsp;&nbsp;2.5 Soft thresholding</a>
-  <a href="#c6">&nbsp;&nbsp;2.6 Example 1: LASSO</a>
-  <a href="#c7">&nbsp;&nbsp;2.7 Example 2: constraints</a>
-  <a href="#c8">&nbsp;&nbsp;2.8 Theory around ADMM</a>
-  <a href="#c9">&nbsp;&nbsp;2.9 Exam recipe</a>
-  <a href="#prof">3. What he said</a>
-  <a href="#practice">4. Practice</a>
-  <a href="#selftest">5. Self-test</a>
+  <a href="#why">0. Why ADMM exists</a>
+  <a href="#blocks">A. Two easy building blocks</a>
+  <a href="#a1">&nbsp;&nbsp;A1. Shrink: soft thresholding</a>
+  <a href="#a2">&nbsp;&nbsp;A2. Completing the square</a>
+  <a href="#idea">B. The ADMM idea</a>
+  <a href="#b1">&nbsp;&nbsp;B1. Give each piece a copy</a>
+  <a href="#b2">&nbsp;&nbsp;B2. Penalty alone fails</a>
+  <a href="#b3">&nbsp;&nbsp;B3. Add a price λ</a>
+  <a href="#b4">&nbsp;&nbsp;B4. The three steps</a>
+  <a href="#walk">C. One example by hand</a>
+  <a href="#lasso">D. LASSO (vectors)</a>
+  <a href="#constraint">E. Adding a constraint</a>
+  <a href="#recipe">F. Exam recipe + theory</a>
+  <a href="#prof">What he said</a>
+  <a href="#practice">Practice</a>
+  <a href="#selftest">Self-test</a>
+  <a href="#must">Summary card</a>
 </nav>
 <main>
-<h1>M1 · ADMM (Alternating Direction Method of Multipliers)</h1>
-<p class="sub">Chapter 10 (notes §10.6–10.7) · about 60–75 min · Goal: given any $f_1$, $f_2$ and a coupling constraint, write the augmented Lagrangian and <b>derive the exact formula for all three ADMM steps</b>. He promised a "hard problem" on exactly this.</p>
+<h1>M1 · ADMM, from zero</h1>
+<p class="sub">Chapter 10 (notes §10.6–10.7) · about 75–90 min · Goal: given any problem "$f_1 + f_2$", you can write the ADMM iteration and <b>derive the exact formula for each step</b>. He said he wants a "hard problem" on exactly this.</p>
 
-<!-- ============ 1. MUST REMEMBER ============ -->
-<section id="must">
-<h2>1. Must remember</h2>
-<div class="box must"><span class="tag">Memorise cold</span>
+<div class="box must"><span class="tag">How this page works</span>
+<p>It's a story: each section uses only what came before. Formulas appear <i>after</i> the idea they express. Small <span class="kw">Check</span> boxes let you test yourself as you go (answers hidden). The one-page summary is at the very end; use it for revision, not for learning.</p>
+<p><b>Notation used:</b> $\|v\|^2=v_1^2+\dots+v_n^2$ (squared length) · $\|v\|_1=|v_1|+\dots+|v_n|$ (sum of absolute values) · $\arg\min_z g(z)$ = "the $z$ that makes $g$ smallest" · "const" = a term that doesn't involve the variable we're minimising over, so it can't change <i>where</i> the minimum is.</p>
+</div>
+
+<!-- ================= 0. WHY ================= -->
+<section id="why">
+<h2>0. Why ADMM exists (the problem it solves)</h2>
+<p>Suppose you fit a model: find $x$ so that $Mx\approx b$. The classic way is least squares, minimise $\frac12\|Mx-b\|^2$. That's smooth, and the answer comes from a linear system (set the gradient to zero).</p>
+<p>Now you also want $x$ to be <b>sparse</b> (many entries exactly 0: a simpler model). The standard trick is to add $\gamma\|x\|_1=\gamma\sum_i|x_i|$, which pushes entries to zero. That gives the <b>LASSO</b>:</p>
+$$\min_x\ \underbrace{\tfrac12\|Mx-b\|^2}_{\text{smooth, easy alone}}\;+\;\underbrace{\gamma\|x\|_1}_{\text{has corners, easy alone}}$$
+<p>Each piece on its own is easy:</p>
 <ul>
-<li><b>Problem:</b> $\min_{x_1,x_2}\ f_1(x_1)+f_2(x_2)$ s.t. $A(x_1,x_2)=A_1x_1+A_2x_2-b=0$.</li>
-<li><b>Augmented Lagrangian</b> ($\beta&gt;0$ fixed):
-$$L_A(x_1,x_2,\lambda)=f_1(x_1)+f_2(x_2)+\lambda^T A(x_1,x_2)+\frac{\beta}{2}\|A(x_1,x_2)\|_2^2$$</li>
-<li><b>One ADMM iteration</b> (order matters):
-$$\begin{aligned}
-x_1^{(k+1)}&\in\arg\min_{x_1} L_A(x_1,\,x_2^{(k)},\,\lambda^{(k)})\\
-x_2^{(k+1)}&\in\arg\min_{x_2} L_A(x_1^{(k+1)},\,x_2,\,\lambda^{(k)})\\
-\lambda^{(k+1)}&=\lambda^{(k)}+\beta\,A(x_1^{(k+1)},x_2^{(k+1)})
-\end{aligned}$$
-The $x_2$-step uses the <b>new</b> $x_1$ and the <b>old</b> $\lambda$.</li>
-<li><b>Completing the square</b> (the one identity you use every time):
-$$\lambda^T(z-c)+\frac{\beta}{2}\|z-c\|^2=\frac{\beta}{2}\Big\|z-\big(c-\tfrac{\lambda}{\beta}\big)\Big\|^2-\frac{\|\lambda\|^2}{2\beta}$$
-If the sign inside is flipped ($\lambda^T(c-z)$), the centre is $c+\lambda/\beta$.</li>
-<li><b>Soft thresholding:</b> $\arg\min_z\ \gamma|z|+\frac{\beta}{2}(z-y)^2=S_{\gamma/\beta}(y)$, with
-$S_\tau(t)=\operatorname{sign}(t)\max(|t|-\tau,0)$, i.e. $t-\tau$ if $t&gt;\tau$; $0$ if $|t|\le\tau$; $t+\tau$ if $t&lt;-\tau$.</li>
-<li><b>Indicator → projection:</b> $\arg\min_v\ P_C(v)+\frac{\beta}{2}\|v-y\|^2=\Pi_C(y)$. Box $[0,B]^n$: clip each component, $\min(\max(y_i,0),B)$. Orthant: $\max(y_i,0)$.</li>
-<li><b>LASSO answer</b> ($\min \frac12\|Mx-b\|^2+\gamma\|x\|_1$, split $x_1-x_2=0$):
-$$\begin{aligned}
-(M^TM+\beta I)\,x_1^{(k+1)}&=M^Tb+\beta x_2^{(k)}-\lambda^{(k)}\\
-x_2^{(k+1)}&=S_{\gamma/\beta}\big(x_1^{(k+1)}+\lambda^{(k)}/\beta\big)\\
-\lambda^{(k+1)}&=\lambda^{(k)}+\beta\,(x_1^{(k+1)}-x_2^{(k+1)})
-\end{aligned}$$</li>
+<li>The least-squares piece alone: set the gradient to zero and solve a linear system.</li>
+<li>The $|\cdot|$ piece alone (plus a simple square, as we'll see): it has a one-line formula, <i>soft thresholding</i>.</li>
 </ul>
+<p>Together they're awkward. $|x_i|$ has a corner at 0, so "set the gradient to zero" doesn't work. And $M$ mixes all the entries together, so you can't solve one entry at a time.</p>
+<p><b>ADMM</b> stands for <b>Alternating Direction Method of Multipliers</b>. "Alternating direction" means you minimise over one block of variables, then the other. "Method of multipliers" means a Lagrange multiplier (a price) gets updated every round.</p>
+<div class="box example"><span class="tag">The whole idea of ADMM in one sentence</span>
+<p>Split the problem so each piece gets its <b>own copy</b> of the variable, solve the two easy pieces <b>one after the other</b>, and use a <b>price</b> ($\lambda$) that grows whenever the two copies disagree, until they agree.</p>
+</div>
+<p class="small">Roadmap: A builds the two tools every ADMM step uses. B builds the method. C runs it by hand on a 1-variable problem. D and E do the two examples from his notes. F gives the exam recipe.</p>
+</section>
+
+<!-- ================= A. BUILDING BLOCKS ================= -->
+<section id="blocks">
+<h2>A. Two easy building blocks</h2>
+<p>Every ADMM step you'll ever write turns into one of two problems: <b>"$f$ + a squared distance to some point"</b>. So first learn those two tools.</p>
+
+<h3 id="a1">A1. "Absolute value + square" has a one-line answer: soft thresholding</h3>
+<p><b>The problem.</b> Given a number $y$ and a weight $\tau&gt;0$, find</p>
+$$z^*=\arg\min_z\ \Big[\ \tau|z|+\tfrac12(z-y)^2\ \Big].$$
+<p><b>Read it as a tug of war.</b> The square $\frac12(z-y)^2$ wants $z$ to sit at $y$. The term $\tau|z|$ wants $z$ at 0. Who wins?</p>
+<ul>
+<li>If $y$ is far from 0, the square wins, but $\tau|z|$ still drags $z$ towards 0 by exactly $\tau$. For $y&gt;0$: $z^*=y-\tau$.</li>
+<li>If $y$ is close to 0 ($|y|\le\tau$), the pull to 0 wins completely: $z^*=0$ <b>exactly</b>. This is where the sparsity comes from.</li>
+</ul>
+
+<div class="box example"><span class="tag">Why (the argument from class: no subgradients, just a graph)</span>
+<ol class="steps">
+<li><b>Take $y&gt;0$.</b> If $z&lt;0$, both terms get bigger as $z$ moves further left (both $|z|$ and $(z-y)^2$ grow). If $z&gt;y$, both get bigger as $z$ moves right. So the minimum is somewhere in $[0,y]$; in particular $z^*\ge0$.</li>
+<li>On $z\ge0$ we have $|z|=z$, so the problem becomes "minimise the smooth function $\tau z+\frac12(z-y)^2$ over $z\ge0$". No corner any more.</li>
+<li>Ignore the constraint and set the derivative to 0: $\tau+(z-y)=0$, so $\hat z=y-\tau$.</li>
+<li>If $\hat z\ge0$ (i.e. $y\ge\tau$), it satisfies the constraint, so $z^*=y-\tau$.</li>
+<li>If $\hat z&lt;0$ (i.e. $0&lt;y&lt;\tau$), the parabola's bottom is to the left of 0, so on $[0,\infty)$ the function only goes up. Its smallest value there is at $z=0$: $z^*=0$.</li>
+<li><b>$y&lt;0$</b> is the mirror image: $z^*=y+\tau$ if $y\le-\tau$, else 0.</li>
+</ol>
+<p>Putting the cases together gives the <b>soft-thresholding</b> function:</p>
+$$S_\tau(y)=\operatorname{sign}(y)\,\max(|y|-\tau,\,0)=\begin{cases}y-\tau,&amp;y&gt;\tau\\0,&amp;|y|\le\tau\\y+\tau,&amp;y&lt;-\tau\end{cases}$$
+</div>
+
+<div class="fig">
+<svg viewBox="0 0 420 230" width="420" role="img" aria-label="Graph of soft thresholding">
+  <line x1="20" y1="115" x2="400" y2="115" stroke="currentColor" stroke-opacity=".35"/>
+  <line x1="210" y1="15" x2="210" y2="215" stroke="currentColor" stroke-opacity=".35"/>
+  <line x1="40" y1="200" x2="380" y2="30" stroke="currentColor" stroke-opacity=".25" stroke-dasharray="5 5"/>
+  <path d="M30 175 L160 115 L260 115 L390 55" fill="none" stroke="#2457a6" stroke-width="3.5"/>
+  <circle cx="160" cy="115" r="4" fill="#c8372d"/><circle cx="260" cy="115" r="4" fill="#c8372d"/>
+  <text x="252" y="135" font-size="14" fill="#c8372d">τ</text><text x="146" y="135" font-size="14" fill="#c8372d">−τ</text>
+  <text x="388" y="132" font-size="14" fill="currentColor">y</text>
+  <text x="216" y="26" font-size="14" fill="currentColor">z* = S<tspan font-size="10" dy="3">τ</tspan><tspan dy="-3">(y)</tspan></text>
+  <text x="300" y="44" font-size="12" fill="currentColor" fill-opacity=".6">dashed: z* = y (no shrink)</text>
+  <text x="168" y="104" font-size="12" fill="#2457a6">dead zone: output 0</text>
+</svg>
+<div class="cap">Blue: $S_\tau(y)$. Inside $[-\tau,\tau]$ the output is exactly 0; outside, the output is $y$ moved $\tau$ closer to 0 (parallel to the dashed line $z^*=y$).</div>
+</div>
+
+<p><b>The version you'll actually meet</b> has a general weight on the square: $\gamma|z|+\frac{\beta}{2}(z-y)^2$. Divide everything by $\beta$ (dividing by a positive number doesn't move the minimum) to get $\frac{\gamma}{\beta}|z|+\frac12(z-y)^2$. So:</p>
+$$\arg\min_z\ \gamma|z|+\tfrac{\beta}{2}(z-y)^2=S_{\gamma/\beta}(y).\qquad\text{Threshold }=\frac{\text{weight on }|z|}{\text{weight on the square}}.$$
+<p><b>For vectors</b>, $\gamma\|z\|_1+\frac{\beta}{2}\|z-y\|^2=\sum_i\big[\gamma|z_i|+\frac{\beta}{2}(z_i-y_i)^2\big]$ is a sum of separate 1-variable problems, so you apply $S_{\gamma/\beta}$ to each entry.</p>
+
+<div class="check"><b>Check A1.</b> With $\tau=1$: $S_1(3)$, $S_1(0.4)$, $S_1(-2.5)$, $S_1(1)$?
+<details class="ans"><summary>Show answer</summary><div><p>$2$, $0$, $-1.5$, $0$ (exactly on the threshold counts as the dead zone).</p></div></details></div>
+
+<p><b>Cousin: a hard constraint instead of $|z|$ (projection).</b> What if, instead of a soft pull to 0, $z$ must lie in a set $C$ (for example $0\le z\le B$)? Write this as a function too: the <b>indicator</b> $P(z)=0$ if $z\in C$, $+\infty$ if not (an infinite cost forbids leaving $C$; more in E1). Then "$\min \frac{\beta}{2}\|z-y\|^2$ over $z\in C$" just asks for the <b>point of $C$ nearest to $y$</b>, called the projection $\Pi_C(y)$. For a box $[0,B]$ it's <b>clipping</b>: below 0 → 0, above $B$ → $B$, otherwise unchanged. (We'll use this in section E.)</p>
+
+<h3 id="a2">A2. Completing the square: turning "linear + square" into "square around a new centre"</h3>
+<p>In ADMM you keep seeing expressions like $\lambda(z-c)+\frac{\beta}{2}(z-c)^2$: a square centred at $c$, plus a tilt $\lambda(z-c)$. A tilted parabola is still a parabola, just with its bottom shifted. Completing the square tells you where the bottom is.</p>
+<div class="box example"><span class="tag">With numbers first</span>
+<p>$4(z-1)+(z-1)^2$. Let $w=z-1$: $4w+w^2=(w+2)^2-4$. So it's $(z+1)^2-4$: a square centred at $z=-1$, plus a constant.</p>
+<p>Here $\lambda=4$, $\beta=2$ (since $\frac{\beta}{2}=1$), $c=1$, and the new centre is $-1=1-\frac{4}{2}=c-\frac{\lambda}{\beta}$.</p>
+</div>
+<p><b>In general</b> (expand the right side to check):</p>
+$$\lambda(z-c)+\frac{\beta}{2}(z-c)^2=\frac{\beta}{2}\Big(z-\big(c-\tfrac{\lambda}{\beta}\big)\Big)^2-\frac{\lambda^2}{2\beta}.$$
+<p>The last term doesn't contain $z$, so it's "const". Same for vectors: $\lambda^T(z-c)+\frac{\beta}{2}\|z-c\|^2=\frac{\beta}{2}\|z-(c-\lambda/\beta)\|^2+\text{const}$.</p>
+<div class="box trap"><span class="tag">Sign rule (the most common slip): a mechanical version</span>
+<p>Write the tilt as $g^T(z-c)$, where $g$ is whatever multiplies $z$. Then <b>centre $=c-g/\beta$</b>.</p>
+<ul>
+<li>Tilt $\lambda^T(z-c)$: $g=\lambda$, so centre $c-\lambda/\beta$.</li>
+<li>Tilt $\lambda^T(c-z)=(-\lambda)^T(z-c)$: $g=-\lambda$, so centre $c+\lambda/\beta$.</li>
+</ul>
+<p>Sanity check: the derivative of $g(z-c)+\frac{\beta}{2}(z-c)^2$ is $g+\beta(z-c)$, which is zero at $z=c-g/\beta$.</p></div>
+
+<div class="check"><b>Check A2.</b> Write $-6(z-2)+\frac{3}{2}(z-2)^2$ as $\frac32(z-a)^2+$ const. What is $a$?
+<details class="ans"><summary>Show answer</summary><div><p>Here the coefficient of $(z-c)$ is $\lambda=-6$, with $\beta=3$, $c=2$: $a=c-\lambda/\beta=2-(-6)/3=4$. Check: the derivative $-6+3(z-2)=0$ gives $z=4$ ✓.</p></div></details></div>
+
+<p><b>Why this matters:</b> after completing the square, every ADMM sub-step is "$f_i$ + $\frac{\beta}{2}\|z-\text{centre}\|^2$". If $f_i$ is $\gamma\|z\|_1$ the answer is soft thresholding (A1). If $f_i$ is an indicator of a set (0 inside, $+\infty$ outside), the answer is projection (A1 cousin). If $f_i$ is smooth, set the gradient to zero.</p>
+</section>
+
+<!-- ================= B. THE IDEA ================= -->
+<section id="idea">
+<h2>B. The ADMM idea, built step by step</h2>
+
+<h3 id="b1">B1. Give each piece its own copy of the variable</h3>
+<p>Rewrite $\min_x f_1(x)+f_2(x)$ as</p>
+$$\min_{x_1,\,x_2}\ f_1(x_1)+f_2(x_2)\quad\text{subject to}\quad x_1-x_2=0.$$
+<p>It's the same problem: the constraint forces the copies to be equal. But now <b>the cost separates</b>: $f_1$ only sees $x_1$, $f_2$ only sees $x_2$. <b>Only the constraint links them.</b></p>
+<p>His notes write the general form with any linear link: $\min f_1(x_1)+f_2(x_2)$ s.t. $A_1x_1+A_2x_2-b=0$, abbreviated $A(x_1,x_2)=0$. "Copies agree" is the special case $A_1=I$, $A_2=-I$, $b=0$.</p>
+<p class="small">(His notes also say the $f_i$ are "proper, closed, convex" and may take the value $+\infty$. In plain words: convex, never $-\infty$, no weird jumps, and $+\infty$ is allowed as a way to forbid points. That's how constraints get written into $f_i$, in section E.)</p>
+
+<h3 id="b2">B2. First attempt: just penalise disagreement (it fails, and seeing why is the key)</h3>
+<p>Drop the constraint and add a cost for disagreeing: minimise $f_1(x_1)+f_2(x_2)+\frac{\beta}{2}\|x_1-x_2\|^2$, alternating between $x_1$ and $x_2$.</p>
+<div class="box example"><span class="tag">Try it on a 1-variable problem</span>
+<p>$\min_x\ \frac12(x-3)^2+|x|$. True answer: for $x&gt;0$ the derivative is $(x-3)+1=0$, so $x^*=2$ (equivalently $S_1(3)=2$).</p>
+<p>Split: $f_1(x_1)=\frac12(x_1-3)^2$, $f_2(x_2)=|x_2|$. Minimise $\frac12(x_1-3)^2+|x_2|+\frac{\beta}{2}(x_1-x_2)^2$ alternately:</p>
+<ul>
+<li>over $x_1$ (smooth, derivative $=0$): $(x_1-3)+\beta(x_1-x_2)=0$, so $x_1=\dfrac{3+\beta x_2}{1+\beta}$;</li>
+<li>over $x_2$ ($|x_2|+\frac{\beta}{2}(x_2-x_1)^2$, i.e. A1 with weight 1 on $|\cdot|$ and $\beta$ on the square): $x_2=S_{1/\beta}(x_1)$.</li>
+</ul>
+<p>Where does it settle? Assume $x_2&gt;0$, so $x_2=x_1-1/\beta$. Substitute into the first update: $x_1=\frac{3+\beta x_1-1}{1+\beta}$, which gives $x_1=2$ and $x_2=2-1/\beta$:</p>
+<table><tr><th>$\beta$</th><th>$x_1$</th><th>$x_2$</th><th>gap $x_1-x_2$</th></tr>
+<tr><td>1</td><td>2</td><td>1</td><td>1</td></tr><tr><td>4</td><td>2</td><td>1.75</td><td>0.25</td></tr><tr><td>10</td><td>2</td><td>1.9</td><td>0.1</td></tr></table>
+<p><b>The copies never agree.</b> $x_1=2$ happens to be right, but $x_2$, the copy that carries $|x|$, is wrong by $1/\beta$, and the constraint $x_1=x_2$ is violated. A bigger $\beta$ shrinks the gap but never to zero. A huge $\beta$ also makes every step numerically touchy, because the penalty term swamps $f_1$ and $f_2$.</p>
+</div>
+<p><b>Why it fails:</b> $x_2$ is pulled by $|x_2|$ towards 0 with a constant force (slope 1). The penalty can only balance that force by keeping a gap: the penalty's pull is $\beta\times$gap, so the gap settles at $1/\beta$. To have zero gap <i>and</i> balance the force, we need a pull that doesn't depend on the gap. That's a <b>price</b>.</p>
+
+<h3 id="b3">B3. Add a price $\lambda$ that learns the missing force</h3>
+<p>Add a linear term $\lambda^T(x_1-x_2)$. Think of $\lambda$ as a <b>price per unit of disagreement</b>: it pushes $x_1$ and $x_2$ towards each other with a fixed force $\lambda$, even when the gap is zero. Together with the penalty this gives the <b>augmented Lagrangian</b>:</p>
+$$L_A(x_1,x_2,\lambda)=f_1(x_1)+f_2(x_2)+\underbrace{\lambda^T(x_1-x_2)}_{\text{price (Lagrangian part)}}+\underbrace{\tfrac{\beta}{2}\|x_1-x_2\|^2}_{\text{penalty ("augmented")}}$$
+<p>General form (his notation): $L_A=f_1(x_1)+f_2(x_2)+\lambda^TA(x_1,x_2)+\frac{\beta}{2}\|A(x_1,x_2)\|^2$, with fixed $\beta&gt;0$.</p>
+<p><b>How do we find the right price?</b> We don't know it in advance, so we <b>learn</b> it, like a thermostat: after each round, look at the disagreement $r=x_1-x_2$ and raise the price in that direction:</p>
+$$\lambda\leftarrow\lambda+\beta\,r.$$
+<p>If the copies still disagree, $\lambda$ changes. When they agree, $r=0$ and $\lambda$ stops changing. So at the end, the copies agree <b>and</b> the price is exactly the force needed.</p>
+<div class="box example"><span class="tag">Why the step size is exactly β, and why the sign is +</span>
+<p><b>Step size β.</b> Look at step 2's optimality condition. $x_2$ minimises $f_2(x_2)+\lambda^{(k)T}(x_1-x_2)+\frac{\beta}{2}\|x_1-x_2\|^2$, so at the new $x_2$ the "slope of $f_2$" must equal $\lambda^{(k)}+\beta(x_1^{(k+1)}-x_2^{(k+1)})$. That is exactly $\lambda^{(k+1)}$. So with step $\beta$, the new price always equals the force $f_2$ exerts at its new point. (In C below: after round 1, $\lambda=1$ = slope of $|x|$ at $x_2=0.5&gt;0$.)</p>
+<p><b>The sign.</b> The rule is: $\lambda\leftarrow\lambda+\beta\times$(whatever $\lambda$ multiplies in $L_A$). With $+\lambda^T(x_1-x_2)$ the update is $\lambda+\beta(x_1-x_2)$. If you write $\lambda^T(x_2-x_1)$ instead, the update is $\lambda+\beta(x_2-x_1)$ and every centre flips sign. Both are fine, but stay consistent. His notes use $\lambda^TA(x_1,x_2)$ with $A=A_1x_1+A_2x_2-b$.</p>
+<p><b>Link to KKT (what you already know).</b> When ADMM stops changing: step 1's optimality gives $\nabla f_1(x_1)+\lambda=0$, step 2 gives "slope of $f_2$ at $x_2$" $=\lambda$, and $r=0$ gives $x_1=x_2$. These are exactly the KKT conditions of $\min f_1(x_1)+f_2(x_2)$ s.t. $x_1-x_2=0$, with multiplier $\lambda$. So ADMM is a way of solving the KKT system piece by piece.</p>
+</div>
+<p class="small">Link to Ch 7: $\lambda$ is literally the Lagrange multiplier of the constraint $x_1-x_2=0$, and the update $\lambda+\beta r$ is a step uphill on the dual function. Plain "dual ascent" (no penalty) can be slow and its $x$-steps may be ill-defined. The penalty makes each step well-behaved: that's why it's "augmented".</p>
+
+<h3 id="b4">B4. The three steps of one ADMM round</h3>
+<p>Minimising $L_A$ over $x_1$ and $x_2$ <i>together</i> would bring back the hard joint problem. So do them <b>one at a time</b> (that's the "alternating direction"), then update the price (the "method of multipliers"):</p>
+<div class="box must"><span class="tag">ADMM, one round (k → k+1)</span>
+$$\begin{aligned}
+&amp;\textbf{1. } x_1^{(k+1)}=\arg\min_{x_1}\ L_A\big(x_1,\ x_2^{(k)},\ \lambda^{(k)}\big) &amp;&amp;\text{freeze }x_2,\lambda\\
+&amp;\textbf{2. } x_2^{(k+1)}=\arg\min_{x_2}\ L_A\big(x_1^{(k+1)},\ x_2,\ \lambda^{(k)}\big) &amp;&amp;\text{use the NEW }x_1,\text{ still the old }\lambda\\
+&amp;\textbf{3. } \lambda^{(k+1)}=\lambda^{(k)}+\beta\,A\big(x_1^{(k+1)},x_2^{(k+1)}\big) &amp;&amp;\text{price update with the residual}
+\end{aligned}$$
+</div>
+<p><b>How to actually do steps 1 and 2:</b> write out $L_A$, <b>throw away every term that doesn't contain the variable you're minimising over</b>, complete the square (A2), and you get "$f_i$ + squared distance to a centre": one of the easy problems from A. His notes name these functions $f_{1,k}(z)=L_A(z,x_2^{(k)},\lambda^{(k)})$ and $f_{2,k}(z)=L_A(x_1^{(k+1)},z,\lambda^{(k)})$.</p>
+<div class="box trap"><span class="tag">Order traps</span>
+<ul>
+<li>Step 2 uses $x_1^{(k+1)}$ (new), not $x_1^{(k)}$.</li>
+<li>Steps 1 and 2 both use $\lambda^{(k)}$ (old); $\lambda$ changes only in step 3.</li>
+<li>The price step size is $\beta$, the same $\beta$ as in the penalty.</li>
+</ul></div>
+<p>Start: any $\lambda^{(0)}$ (usually 0), and $x_2^{(0)}$ where $f_2$ is finite (usually 0). You don't need $x_1^{(0)}$, because step 1 computes it.</p>
+</section>
+
+<!-- ================= C. WALK ================= -->
+<section id="walk">
+<h2>C. One example, completely by hand</h2>
+<p>Same toy problem: $\min_x \frac12(x-3)^2+|x|$, answer $x^*=2$. Split $f_1(x_1)=\frac12(x_1-3)^2$, $f_2(x_2)=|x_2|$, constraint $x_1-x_2=0$, $\beta=1$.</p>
+$$L_A=\tfrac12(x_1-3)^2+|x_2|+\lambda(x_1-x_2)+\tfrac12(x_1-x_2)^2.$$
+<div class="box example"><span class="tag">Deriving the two steps</span>
+<ol class="steps">
+<li><b>Step 1 (over $x_1$):</b> keep the terms with $x_1$: $\frac12(x_1-3)^2+\lambda(x_1-x_2)+\frac12(x_1-x_2)^2$. Everything is smooth, so set the derivative to 0: $(x_1-3)+\lambda+(x_1-x_2)=0$, giving
+$$x_1=\frac{3+x_2-\lambda}{2}.$$</li>
+<li><b>Step 2 (over $x_2$):</b> keep the terms with $x_2$: $|x_2|+\lambda(x_1-x_2)+\frac12(x_1-x_2)^2$. Here $x_2$ appears with a minus sign in the tilt, so by A2 the centre is $x_1+\lambda$: this is $|x_2|+\frac12(x_2-(x_1+\lambda))^2+$ const. By A1:
+$$x_2=S_1(x_1+\lambda).$$</li>
+<li><b>Step 3:</b> $\lambda\leftarrow\lambda+(x_1-x_2)$.</li>
+</ol></div>
+<p>Start with $x_2=0$, $\lambda=0$:</p>
+<table>
+<tr><th>round</th><th>step 1: $x_1=\frac{3+x_2-\lambda}{2}$</th><th>step 2: $x_2=S_1(x_1+\lambda)$</th><th>step 3: $\lambda$</th><th>$x_1$'s distance to 2</th></tr>
+<tr><td>1</td><td>$(3+0-0)/2=1.5$</td><td>$S_1(1.5)=0.5$</td><td>$0+(1.5-0.5)=1$</td><td>0.5</td></tr>
+<tr><td>2</td><td>$(3+0.5-1)/2=1.25$</td><td>$S_1(2.25)=1.25$</td><td>$1+0=1$</td><td>0.75</td></tr>
+<tr><td>3</td><td>$(3+1.25-1)/2=1.625$</td><td>$S_1(2.625)=1.625$</td><td>1</td><td>0.375</td></tr>
+<tr><td>4</td><td>$1.8125$</td><td>$1.8125$</td><td>1</td><td>0.1875</td></tr>
+<tr><td>5</td><td>$1.90625$</td><td>$1.90625$</td><td>1</td><td>0.094</td></tr>
+</table>
+<p><b>What you're seeing:</b></p>
+<ul>
+<li>After one round the price jumps to $\lambda=1$, and from then on the copies agree every round. The price has learned the missing force.</li>
+<li>Compare B2: the penalty-only method got stuck at $x_2=1$ with a gap. Here there's no gap, and the iterates head to the true answer 2. Round 2 briefly moves away (1.25) while $\lambda$ settles in; from round 2 on, the error halves every round.</li>
+<li>Why $\lambda$ ends at exactly 1: at the answer $x=2$, step 1 says $(2-3)+\lambda+0=0$, so $\lambda=1$. That's the slope of $|x|$ at $x=2$: <b>the final price equals the force the $|x|$ piece exerts.</b></li>
+</ul>
+<div class="check"><b>Check C.</b> Do round 1 with $\beta=4$ instead (start $x_2=0,\lambda=0$). Hint: step 1 becomes $(x_1-3)+\lambda+4(x_1-x_2)=0$; step 2's threshold is $1/4$ and its centre $x_1+\lambda/4$.
+<details class="ans"><summary>Show answer</summary><div><p>$x_1=(3+4\cdot0-0)/5=0.6$; $x_2=S_{1/4}(0.6)=0.35$; $\lambda=0+4(0.6-0.35)=1$. (Round 2: $x_1=(3+1.4-1)/5=0.68$, $x_2=S_{1/4}(0.68+0.25)=0.68$.)</p></div></details></div>
+</section>
+
+<!-- ================= D. LASSO ================= -->
+<section id="lasso">
+<h2>D. Example 1 from his notes: LASSO (same steps, now with vectors)</h2>
+<p>$\min_x \frac12\|Mx-b\|^2+\gamma\|x\|_1$, with $M\in\mathbb{R}^{d\times n}$, $\gamma&gt;0$. Exactly section C with vectors; read the two side by side.</p>
+<div class="box example"><span class="tag">Full derivation: this is the answer template</span>
+<ol class="steps">
+<li><b>Split.</b> $f_1(x_1)=\frac12\|Mx_1-b\|^2$, $f_2(x_2)=\gamma\|x_2\|_1$, constraint $x_1-x_2=0$ (so $A_1=I$, $A_2=-I$, $b=0$). Equivalent to LASSO because the constraint forces $x_1=x_2$.</li>
+<li><b>Augmented Lagrangian.</b> $L_A=\frac12\|Mx_1-b\|^2+\gamma\|x_2\|_1+\lambda^T(x_1-x_2)+\frac{\beta}{2}\|x_1-x_2\|^2$.</li>
+<li><b>Step 1 ($x_1$).</b> Keep the $x_1$-terms: $f_{1,k}(z)=\frac12\|Mz-b\|^2+\lambda^{(k)T}(z-x_2^{(k)})+\frac{\beta}{2}\|z-x_2^{(k)}\|^2$. Complete the square (tilt $+$, so centre $c-\lambda/\beta$):
+$$f_{1,k}(z)=\tfrac12\|Mz-b\|^2+\tfrac{\beta}{2}\|z-a_k\|^2+\text{const},\qquad a_k=x_2^{(k)}-\lambda^{(k)}/\beta.$$
+Smooth, so set the gradient to zero. (The gradient of $\frac12\|Mz-b\|^2$ is $M^T(Mz-b)$; the gradient of $\frac{\beta}{2}\|z-a\|^2$ is $\beta(z-a)$.)
+$$M^T(Mz-b)+\beta(z-a_k)=0\ \Longrightarrow\ (M^TM+\beta I)z=M^Tb+\beta a_k.$$
+Since $\beta a_k=\beta x_2^{(k)}-\lambda^{(k)}$:
+$$\boxed{(M^TM+\beta I)\,x_1^{(k+1)}=M^Tb+\beta x_2^{(k)}-\lambda^{(k)}}$$
+$M^TM+\beta I$ is positive definite (since $\beta&gt;0$), so this has exactly one solution. <i>(Compare C: there $M=1$, $b=3$, $\beta=1$, giving $2x_1=3+x_2-\lambda$.)</i></li>
+<li><b>Step 2 ($x_2$).</b> Keep the $x_2$-terms: $f_{2,k}(z)=\gamma\|z\|_1+\lambda^{(k)T}(x_1^{(k+1)}-z)+\frac{\beta}{2}\|z-x_1^{(k+1)}\|^2$. Now $z$ enters the tilt with a minus sign, so the centre is $x_1+\lambda/\beta$:
+$$f_{2,k}(z)=\gamma\|z\|_1+\tfrac{\beta}{2}\|z-y\|^2+\text{const},\qquad y=x_1^{(k+1)}+\lambda^{(k)}/\beta.$$
+It splits by entries, so by A1: $\boxed{x_{2,i}^{(k+1)}=S_{\gamma/\beta}(y_i)}$.</li>
+<li><b>Step 3.</b> $\boxed{\lambda^{(k+1)}=\lambda^{(k)}+\beta\,(x_1^{(k+1)}-x_2^{(k+1)})}$.</li>
+</ol>
+<p>So one round = one linear solve + one soft thresholding + one price update. Each is cheap, which is the whole point.</p>
 </div>
 </section>
 
-<!-- ============ 2. CONCEPTS ============ -->
-<section id="concepts">
-<h2>2. Concepts</h2>
-
-<h3 id="c1">2.1 The problem ADMM solves</h3>
-<p><b>In plain words:</b> you have a cost made of two pieces that are each easy on their own but hard together (e.g. a smooth least-squares piece plus a non-smooth $|\cdot|$ piece, or a piece plus a constraint). ADMM gives each piece its <i>own copy</i> of the variable, forces the copies to agree with an equality constraint, and then handles one piece at a time.</p>
-<p><b>Precisely (notes §10.6.1):</b> $\min f_1(x_1)+f_2(x_2)$ s.t. $A_1x_1+A_2x_2-b=0$, with $x_i\in\mathbb{R}^{n_i}$, $A_i\in\mathbb{R}^{r\times n_i}$, $b\in\mathbb{R}^r$. Each $f_i:\mathbb{R}^{n_i}\to\mathbb{R}\cup\{+\infty\}$ is proper, closed, convex, possibly non-smooth. The value $+\infty$ is how a constraint is written into $f_i$ (indicator function). <b>The objective separates; only the affine constraint couples the blocks.</b></p>
-<div class="box example"><span class="tag">Splitting = choosing $A_1, A_2, b$</span>
-<ul>
-<li>LASSO, copies agree: $x_1-x_2=0$ → $A_1=I,\ A_2=-I,\ b=0$.</li>
-<li>Penalty on $Dx$ (e.g. differences): $Dx_1-x_2=0$ → $A_1=D,\ A_2=-I,\ b=0$.</li>
-<li>Two copies for two extra pieces: $\begin{bmatrix}x_1\\x_1\end{bmatrix}-x_2=0$ → $A_1=\begin{bmatrix}I\\I\end{bmatrix},\ A_2=-I_{2n},\ b=0$ (still <b>two</b> blocks: $x_2=(u,v)$ is one block).</li>
-</ul>
+<!-- ================= E. CONSTRAINT ================= -->
+<section id="constraint">
+<h2>E. Example 2 from his notes: adding a constraint</h2>
+<h3>E1. How to put a constraint inside a function: the indicator</h3>
+<p>To force $x\in C$ (say a box), define a function that is free inside $C$ and infinitely expensive outside:</p>
+$$P(x)=\begin{cases}0,&amp;x\in C\\+\infty,&amp;x\notin C\end{cases}$$
+<p>Adding $P(x)$ to the cost means no minimiser will ever pick $x\notin C$. So "$\min f(x)$ s.t. $x\in C$" = "$\min f(x)+P(x)$". This is why ADMM allows $f_i$ to take the value $+\infty$.</p>
+<p>And the step it creates is easy: $\arg\min_v\ P(v)+\frac{\beta}{2}\|v-y\|^2$ = the point of $C$ nearest $y$ = $\Pi_C(y)$ (A1 cousin). It's unique when $C$ is nonempty, closed and convex.</p>
+<div class="fig">
+<svg viewBox="0 0 420 200" width="420" role="img" aria-label="Projection onto a box is clipping">
+  <rect x="110" y="40" width="180" height="120" fill="#2457a6" fill-opacity=".10" stroke="#2457a6" stroke-width="2"/>
+  <text x="260" y="58" font-size="13" fill="#2457a6">C = [0,B]²</text>
+  <circle cx="60" cy="100" r="5" fill="#c8372d"/><line x1="60" y1="100" x2="110" y2="100" stroke="#c8372d" stroke-dasharray="4 3"/><circle cx="110" cy="100" r="5" fill="#1f8a44"/>
+  <circle cx="350" cy="10" r="5" fill="#c8372d"/><line x1="350" y1="10" x2="290" y2="40" stroke="#c8372d" stroke-dasharray="4 3"/><circle cx="290" cy="40" r="5" fill="#1f8a44"/>
+  <circle cx="200" cy="120" r="5" fill="#1f8a44"/><text x="208" y="125" font-size="12" fill="currentColor">inside: unchanged</text>
+  <text x="18" y="88" font-size="12" fill="#c8372d">y</text><text x="356" y="24" font-size="12" fill="#c8372d">y</text>
+  <text x="20" y="190" font-size="12.5" fill="currentColor">red y → green Π_C(y): clip each coordinate to [0, B]</text>
+</svg>
+<div class="cap">Projection onto a box handles each coordinate separately: below 0 → 0, above $B$ → $B$, otherwise unchanged. He said he won't give an arbitrary $C$; expect a box or the orthant $x\ge0$ (then $\Pi(y)_i=\max(y_i,0)$).</div>
 </div>
+<p class="small">Why clipping is right (he said you can prove it with the Ch 6 first-order condition): per coordinate, minimise $(v-y)^2$ on $[0,B]$. If $y$ is inside, $v=y$ (derivative zero). If $y&gt;B$, the function decreases all the way to $B$, so $v=B$ (the active bound). Same at 0.</p>
 
-<h3 id="c2">2.2 Lagrangian, dual, and why "augmented"</h3>
-<p><b>In plain words:</b> the plain Lagrangian $L=f_1+f_2+\lambda^TA(x_1,x_2)$ gives a dual problem, but "dual ascent" on it can converge slowly and its $x$-minimiser may not even be feasible. Adding the penalty $\frac{\beta}{2}\|A(x_1,x_2)\|^2$ punishes constraint violation, and the multiplier term carries dual information from one iteration to the next.</p>
-<p><b>Precisely:</b> $q(\lambda)=\inf_{x_1,x_2}L(x_1,x_2,\lambda)$, dual problem $\max_\lambda q(\lambda)$. $L_A=L+\frac{\beta}{2}\|A(x_1,x_2)\|_2^2$ with fixed $\beta&gt;0$.</p>
-
-<h3 id="c3">2.3 The 3-step iteration</h3>
-<p><b>In plain words:</b> minimise $L_A$ over $x_1$ (freeze the rest), then over $x_2$ using the fresh $x_1$, then nudge $\lambda$ in the direction of the constraint residual, with step $\beta$.</p>
-<p>Notation used in the notes: $f_{1,k}(z)=L_A(z,x_2^{(k)},\lambda^{(k)})$ and $f_{2,k}(z)=L_A(x_1^{(k+1)},z,\lambda^{(k)})$. <b>Drop every term that doesn't involve the variable you are minimising over</b> (write "+ const").</p>
-<p>Residual $r^{(k+1)}=A(x_1^{(k+1)},x_2^{(k+1)})$; update $\lambda^{(k+1)}=\lambda^{(k)}+\beta r^{(k+1)}$. Initialise each block where its $f_i$ is finite; any $\lambda^{(0)}$. If a subproblem has several minimisers, pick any.</p>
-<div class="box trap"><span class="tag">Trap</span> In the $x_2$-step, using $x_1^{(k)}$ (old) or $\lambda^{(k+1)}$ (new) is wrong. It's new $x_1$, old $\lambda$. The multiplier step size is $\beta$ itself, the same $\beta$ as in the penalty.</div>
-
-<h3 id="c4">2.4 Completing the square (the core skill)</h3>
-<p><b>In plain words:</b> a linear term plus a squared distance is just a squared distance to a <i>shifted</i> centre. Once you see that, every ADMM subproblem becomes "$f_i$ + squared distance to a point", which is easy.</p>
-<div class="box example"><span class="tag">Derivation (verify by expanding — he said "these are the exercises you should do")</span>
-<p>$$\frac{\beta}{2}\Big\|z-c+\frac{\lambda}{\beta}\Big\|^2=\frac{\beta}{2}\|z-c\|^2+\lambda^T(z-c)+\frac{\|\lambda\|^2}{2\beta}.$$
-So $\lambda^T(z-c)+\frac{\beta}{2}\|z-c\|^2=\frac{\beta}{2}\|z-a\|^2-\frac{\|\lambda\|^2}{2\beta}$ with centre $a=c-\lambda/\beta$. The last term doesn't depend on $z$ → it's a constant.</p>
-<ul>
-<li>$x_1$-step of LASSO: $\lambda^T(z-x_2^{(k)})+\frac{\beta}{2}\|z-x_2^{(k)}\|^2$ → centre $a_k=x_2^{(k)}-\lambda^{(k)}/\beta$.</li>
-<li>$x_2$-step of LASSO: $\lambda^T(x_1^{(k+1)}-z)+\frac{\beta}{2}\|z-x_1^{(k+1)}\|^2$ (note the minus sign on $z$) → centre $y=x_1^{(k+1)}+\lambda^{(k)}/\beta$.</li>
-<li>General $A$: $\lambda^T(Dz-w)+\frac{\beta}{2}\|Dz-w\|^2=\frac{\beta}{2}\|Dz-w+\lambda/\beta\|^2+$ const.</li>
-</ul>
-</div>
-
-<h3 id="c5">2.5 Soft thresholding (and his graphical proof)</h3>
-<p><b>In plain words:</b> minimising $\gamma|z|+\frac{\beta}{2}(z-y)^2$ pulls $y$ towards 0 by the amount $\tau=\gamma/\beta$, and if $y$ is within $\tau$ of zero it snaps exactly to 0. That's why LASSO gives sparse answers.</p>
-<div class="box example"><span class="tag">Proof as done in class (no subgradients, graph + Ch 6/1-D calculus)</span>
-<ol class="steps">
-<li>Separate: $\gamma\|z\|_1+\frac{\beta}{2}\|z-y\|^2=\sum_i\big[\gamma|z_i|+\frac{\beta}{2}(z_i-y_i)^2\big]$, so solve one scalar problem $p(z)=\gamma|z|+\frac{\beta}{2}(z-y)^2$. Divide by $\beta$: same minimiser as $\tau|z|+\frac12(z-y)^2$, $\tau=\gamma/\beta$.</li>
-<li><b>Case $y&gt;0$.</b> For $z&lt;0$ both terms increase as $z$ decreases (the function is monotonically increasing to the left of 0); for $z&gt;y$ both increase as $z$ increases. So the minimiser $z^*\in[0,y]$, in particular $z^*\ge0$.</li>
-<li>So $z^*=\bar z:=\arg\min_{z\ge0}\ \tau z+\frac12(z-y)^2$ (on $z\ge0$, $|z|=z$, so it's now <b>differentiable</b> with a constraint).</li>
-<li>Drop the constraint: $\hat z$ solves $\tau+(z-y)=0$, so $\hat z=y-\tau$. If $\hat z\ge0$ (i.e. $y\ge\tau$), it's feasible, so $\bar z=\hat z=y-\tau$.</li>
-<li>If $\hat z&lt;0$ (i.e. $0&lt;y&lt;\tau$): the convex function $\tau z+\frac12(z-y)^2$ is increasing on $[0,\infty)$ (its minimum is to the left of 0), so $\bar z=0$.</li>
-<li><b>Case $y&lt;0$:</b> mirror image; $z^*=y+\tau$ if $y\le-\tau$, else 0. ($y=0$ gives $z^*=0$.)</li>
-<li>Combine: $z^*=\operatorname{sign}(y)\max(|y|-\tau,0)=S_\tau(y)$.</li>
-</ol>
-<p>Graph of $S_\tau$: flat at 0 on $[-\tau,\tau]$, then slope-1 lines $y-\tau$ (right) and $y+\tau$ (left).</p>
-</div>
-<div class="box trap"><span class="tag">Trap</span> The threshold is $\gamma/\beta$, not $\gamma$ and not $\beta/\gamma$. If the quadratic has a different coefficient, e.g. $\gamma|z|+\frac{c}{2}(z-y)^2$, the threshold is $\gamma/c$.</div>
-
-<h3 id="c6">2.6 Example 1: LASSO (notes §10.7.1), derived fully</h3>
-<p>$\min_x \frac12\|Mx-b\|_2^2+\gamma\|x\|_1$, $M\in\mathbb{R}^{d\times n}$, $\gamma&gt;0$.</p>
-<div class="box example"><span class="tag">Full derivation — this is the answer template</span>
-<ol class="steps">
-<li><b>Split:</b> $f_1(x_1)=\frac12\|Mx_1-b\|^2$, $f_2(x_2)=\gamma\|x_2\|_1$, constraint $x_1-x_2=0$ (so $A_1=I$, $A_2=-I$, $b=0$). Equivalent to LASSO because $x_1=x_2$.</li>
-<li><b>Augmented Lagrangian:</b> $L_A=\frac12\|Mx_1-b\|^2+\gamma\|x_2\|_1+\lambda^T(x_1-x_2)+\frac{\beta}{2}\|x_1-x_2\|^2$.</li>
-<li><b>$x_1$-step:</b> $f_{1,k}(z)=\frac12\|Mz-b\|^2+\lambda^{(k)T}(z-x_2^{(k)})+\frac{\beta}{2}\|z-x_2^{(k)}\|^2=\frac12\|Mz-b\|^2+\frac{\beta}{2}\|z-a_k\|^2+$ const, with $a_k=x_2^{(k)}-\lambda^{(k)}/\beta$.<br>
-Smooth and strongly convex → set the gradient to zero: $M^T(Mz-b)+\beta(z-a_k)=0$ ⇒ $(M^TM+\beta I)z=M^Tb+\beta a_k=M^Tb+\beta x_2^{(k)}-\lambda^{(k)}$. The matrix $M^TM+\beta I$ is PD since $\beta&gt;0$, so the solution is unique: $x_1^{(k+1)}=z^\star$.</li>
-<li><b>$x_2$-step:</b> $f_{2,k}(z)=\gamma\|z\|_1+\lambda^{(k)T}(x_1^{(k+1)}-z)+\frac{\beta}{2}\|z-x_1^{(k+1)}\|^2=\gamma\|z\|_1+\frac{\beta}{2}\|z-y\|^2+$ const, with $y=x_1^{(k+1)}+\lambda^{(k)}/\beta$.<br>
-Separates by component → $x_{2,i}^{(k+1)}=S_{\gamma/\beta}(y_i)$.</li>
-<li><b>Multiplier:</b> $\lambda^{(k+1)}=\lambda^{(k)}+\beta(x_1^{(k+1)}-x_2^{(k+1)})$.</li>
-</ol>
-<p>So one primal step is a linear solve, the other is soft thresholding.</p>
-</div>
-
-<h3 id="c7">2.7 Example 2: adding a constraint via an indicator (notes §10.7.2)</h3>
-<p>$\min_x \|Mx-b\|_2^2+\gamma\|x\|_1+P(x)$, where $P(x)=0$ if $x\in C$, $+\infty$ otherwise ($C$ nonempty, closed, convex; e.g. box or orthant). <b>Note: no ½ on the data term here.</b></p>
+<h3>E2. The problem: LASSO + constraint, with two copies</h3>
+<p>$\min_x \|Mx-b\|^2+\gamma\|x\|_1+P(x)$. <b>Careful: no ½ on the data term here.</b> There are now three pieces. Use two copies of $x$ inside the second block: $x_2=\begin{bmatrix}u\\v\end{bmatrix}$, with $u$ carrying the $\|\cdot\|_1$ term and $v$ carrying the constraint.</p>
 <div class="box example"><span class="tag">Full derivation</span>
 <ol class="steps">
-<li><b>Split with two copies:</b> $x_1\in\mathbb{R}^n$, $x_2=\begin{bmatrix}u\\v\end{bmatrix}\in\mathbb{R}^{2n}$. $f_1(x_1)=\|Mx_1-b\|^2$, $f_2(x_2)=\gamma\|u\|_1+P(v)$, constraint $\begin{bmatrix}x_1\\x_1\end{bmatrix}-x_2=0$ (i.e. $x_1=u$, $x_1=v$). Still a <b>two-block</b> ADMM: $f_2$ is a single function of the single block $x_2$, and the two pieces separate inside it.</li>
-<li><b>Multiplier blocks:</b> $\lambda=\begin{bmatrix}\lambda_u\\\lambda_v\end{bmatrix}\in\mathbb{R}^{2n}$. Residual $r=\begin{bmatrix}x_1-u\\x_1-v\end{bmatrix}$. $L_A=\|Mx_1-b\|^2+\gamma\|u\|_1+P(v)+\lambda^Tr+\frac{\beta}{2}\|r\|^2$.</li>
-<li><b>$x_1$-step:</b> complete the square in each residual block: centres $a_k=u^{(k)}-\lambda_u^{(k)}/\beta$, $b_k=v^{(k)}-\lambda_v^{(k)}/\beta$:
-$f_{1,k}(z)=\|Mz-b\|^2+\frac{\beta}{2}\|z-a_k\|^2+\frac{\beta}{2}\|z-b_k\|^2+$ const.<br>
-Gradient: $2M^T(Mz-b)+\beta(z-a_k)+\beta(z-b_k)=0$ (the <b>2</b> comes from the data term having no ½) ⇒
-$$(M^TM+\beta I)z^\star=M^Tb+\frac{\beta}{2}(a_k+b_k).$$</li>
-<li><b>$x_2$-step:</b> centres $y_u=x_1^{(k+1)}+\lambda_u^{(k)}/\beta$, $y_v=x_1^{(k+1)}+\lambda_v^{(k)}/\beta$. Objective separates: $\big[\gamma\|u\|_1+\frac{\beta}{2}\|u-y_u\|^2\big]+\big[P(v)+\frac{\beta}{2}\|v-y_v\|^2\big]$. Two independent problems:
-<ul><li>$u^{(k+1)}=S_{\gamma/\beta}(y_u)$ componentwise.</li>
-<li>$v^{(k+1)}=\arg\min_{v\in C}\|v-y_v\|^2=\Pi_C(y_v)$ (unique since $C$ is closed convex). Orthant: $\max(y_{v,i},0)$. Box $[0,B]^n$: clip to $[0,B]$.</li></ul></li>
-<li><b>Multipliers:</b> $\lambda_u^{(k+1)}=\lambda_u^{(k)}+\beta(x_1^{(k+1)}-u^{(k+1)})$, $\lambda_v^{(k+1)}=\lambda_v^{(k)}+\beta(x_1^{(k+1)}-v^{(k+1)})$.</li>
-</ol>
-</div>
+<li><b>Split.</b> $f_1(x_1)=\|Mx_1-b\|^2$, $f_2(u,v)=\gamma\|u\|_1+P(v)$, constraints $x_1-u=0$ and $x_1-v=0$, i.e. $\begin{bmatrix}x_1\\x_1\end{bmatrix}-x_2=0$. In the general form: $A_1=\begin{bmatrix}I\\I\end{bmatrix}$, $A_2=-I_{2n}$, linking constant $=0$. (The letter $b$ here is only the data vector in $\|Mx-b\|^2$.) Prices $\lambda=\begin{bmatrix}\lambda_u\\\lambda_v\end{bmatrix}$, one per constraint.<br>
+<b>Why it's still two-block ADMM:</b> there are only two blocks, $x_1$ and $x_2=(u,v)$. $f_2$ happens to split into a $u$-part and a $v$-part, so step 2 breaks into two small independent problems, but it's still one step.</li>
+<li><b>$L_A$</b> $=\|Mx_1-b\|^2+\gamma\|u\|_1+P(v)+\lambda_u^T(x_1-u)+\lambda_v^T(x_1-v)+\frac{\beta}{2}\|x_1-u\|^2+\frac{\beta}{2}\|x_1-v\|^2$.</li>
+<li><b>Step 1 ($x_1$).</b> Complete the square in each pair: centres $a_k=u^{(k)}-\lambda_u^{(k)}/\beta$ and $c_k=v^{(k)}-\lambda_v^{(k)}/\beta$:
+$f_{1,k}(z)=\|Mz-b\|^2+\frac{\beta}{2}\|z-a_k\|^2+\frac{\beta}{2}\|z-c_k\|^2+$ const. Gradient (note the <b>2</b>: no ½ on the data term):
+$$2M^T(Mz-b)+\beta(z-a_k)+\beta(z-c_k)=0\ \Longrightarrow\ \boxed{(M^TM+\beta I)\,z=M^Tb+\tfrac{\beta}{2}(a_k+c_k)}$$</li>
+<li><b>Step 2 ($u$ and $v$, independently).</b> Centres $y_u=x_1^{(k+1)}+\lambda_u^{(k)}/\beta$, $y_v=x_1^{(k+1)}+\lambda_v^{(k)}/\beta$.
+<ul><li>$u$: $\gamma\|u\|_1+\frac{\beta}{2}\|u-y_u\|^2$ → $\boxed{u^{(k+1)}=S_{\gamma/\beta}(y_u)}$ entrywise.</li>
+<li>$v$: $P(v)+\frac{\beta}{2}\|v-y_v\|^2$ → $\boxed{v^{(k+1)}=\Pi_C(y_v)}$ (clip for a box).</li></ul></li>
+<li><b>Step 3.</b> $\lambda_u^{(k+1)}=\lambda_u^{(k)}+\beta\big(x_1^{(k+1)}-u^{(k+1)}\big)$, $\ \lambda_v^{(k+1)}=\lambda_v^{(k)}+\beta\big(x_1^{(k+1)}-v^{(k+1)}\big)$.</li>
+</ol></div>
 <div class="box trap"><span class="tag">Traps in Example 2</span>
-<ul>
-<li>Writing $(M^TM+\beta I)z=M^Tb+\beta(a_k+b_k)$ (forgot to divide the $\beta$ by 2), or $(M^TM+2\beta I)$ with a $\frac12$ data term. Redo the gradient each time; don't copy LASSO's formula.</li>
-<li>Box projection = clipping. Why (he said "you can prove it using the first order optimization of chapter six"): for $\min (v_i-y_i)^2$ s.t. $0\le v_i\le B$, the KKT/tangent-cone condition gives $v_i=y_i$ if inside, else the nearer bound.</li>
-<li>He said he will NOT give an arbitrary $C$: expect a box, an orthant, or something equally simple.</li>
-</ul>
-</div>
-
-<h3 id="c8">2.8 Theory around ADMM (likely MCQ / short answer)</h3>
-<ul>
-<li><b>Primal recovery under strong duality</b> (links to Ch 7): if primal and dual optima are attained and $p^*=d^*$, every primal optimum minimises $L(\cdot,\lambda^*)$. But a minimiser of $L(\cdot,\lambda^*)$ need not be feasible. A <b>feasible</b> minimiser is primal optimal. If the minimiser is <b>unique</b>, it equals the primal optimum (so it's feasible). Strict convexity of $f_1+f_2$ suffices for uniqueness (the $\lambda$-term is affine).</li>
-<li>Why augment: plain dual ascent can be slow; the penalty $\frac{\beta}{2}\|A\|^2$ penalises violation and makes the subproblems strongly convex in the coupled part.</li>
-<li>Why alternate (not joint): each block minimisation is often easy (linear solve, closed-form prox) while the joint one is not.</li>
-<li>Convergence (assumptions: proper closed convex $f_i$, the ordinary Lagrangian has a saddle point, subproblems attain their minimum, fixed $\beta$, exact solves; conclusions: residual → 0, objective → $p^*$, multipliers → a dual optimum). <b>He said he will not ask this</b>; know it exists, nothing more.</li>
-</ul>
-
-<h3 id="c9">2.9 The exam recipe (use this on ANY new $f_1$, $f_2$)</h3>
-<div class="box must"><span class="tag">Recipe</span>
-<ol class="steps">
-<li>Write the split: name $f_1$, $f_2$, the constraint $A_1x_1+A_2x_2=b$. Say why it's equivalent to the original.</li>
-<li>Write $L_A$ in full.</li>
-<li>$x_1$-step: write $f_{1,k}(z)$, drop constants, complete the square (state the centre), then either set the gradient to 0 (smooth $f_1$ → linear system; say why the matrix is PD) or recognise a prox (soft-threshold / projection).</li>
-<li>$x_2$-step: same, with new $x_1$, old $\lambda$. If it separates by component or by sub-block, say so explicitly.</li>
-<li>$\lambda$-step: $\lambda+\beta\times$residual. Write the residual for <i>your</i> $A_1, A_2, b$.</li>
-<li>Box the final three formulas.</li>
-</ol>
-</div>
+<ul><li>Writing $+\beta(a_k+c_k)$ instead of $+\frac{\beta}{2}(a_k+c_k)$. Redo the gradient every time; never copy the LASSO formula over.</li>
+<li>With a ½ on the data term the system would be $(M^TM+2\beta I)z=M^Tb+\beta(a_k+c_k)$. The ½ changes the answer.</li></ul></div>
 </section>
 
-<!-- ============ 3. WHAT HE SAID ============ -->
+<!-- ================= F. RECIPE ================= -->
+<section id="recipe">
+<h2>F. The exam recipe, plus the bits of theory he mentioned</h2>
+<div class="box must"><span class="tag">Recipe for "derive the ADMM steps for this $f_1$, $f_2$"</span>
+<ol class="steps">
+<li><b>Split:</b> name $f_1$, $f_2$ and the linking constraint ($A_1$, $A_2$, $b$). Put constraints into $f_2$ as an indicator. Say why the split is equivalent.</li>
+<li><b>Write $L_A$</b> in full.</li>
+<li><b>Step 1:</b> keep only the $x_1$-terms → complete the square (state the centre) → smooth: gradient = 0 → linear system (say why its matrix is PD).</li>
+<li><b>Step 2:</b> keep only the $x_2$-terms (new $x_1$, old $\lambda$) → complete the square → recognise the easy problem: $\|\cdot\|_1$ → soft threshold $S_{\gamma/\beta}$; indicator → projection; separable → say "componentwise".</li>
+<li><b>Step 3:</b> $\lambda\leftarrow\lambda+\beta\times$(your residual $A_1x_1+A_2x_2-b$).</li>
+<li>Box the three final formulas.</li>
+</ol></div>
+<p><b>When the linking matrix is not $I$</b> (e.g. $Dx_1-x_2=0$ to handle $\|Dx\|_1$): in step 1 don't complete the square, just differentiate. The gradient of $\lambda^T(Dz-w)+\frac{\beta}{2}\|Dz-w\|^2$ is $D^T\lambda+\beta D^T(Dz-w)$. Practice Q9 does this.</p>
+<p><b>When $f_1$ is not smooth</b> (e.g. it's the $\|\cdot\|_1$ or indicator piece): step 1 is then solved the same way as step 2. Complete the square and use soft thresholding or projection instead of "gradient = 0". The recipe is symmetric: whichever block holds the corner or the constraint gets the A1 tool.</p>
+
+<h3>Theory he touched on (likely MCQ / short answer)</h3>
+<ul>
+<li><b>Primal recovery (links to Ch 7):</b> if strong duality holds with both optima attained and $\lambda^*$ is a dual optimum, then every primal optimum minimises the ordinary Lagrangian $L(\cdot,\lambda^*)$. But not every minimiser of $L(\cdot,\lambda^*)$ is feasible. A <b>feasible</b> minimiser is primal optimal, and if the minimiser is <b>unique</b> it is the primal optimum. A sufficient condition for uniqueness: the objective is strictly convex in all the variables being minimised. In the split form that means $f_1$ strictly convex in $x_1$ and $f_2$ strictly convex in $x_2$ (the $\lambda$-term is linear, so it can't help or hurt). His notes phrase it as "strict convexity of the full objective".</li>
+<li><b>Why augment:</b> plain dual ascent can converge slowly, and its $x$-steps may be unbounded or not unique. The penalty fixes both. (Section B2 showed why the penalty alone isn't enough: you need the price too.)</li>
+<li><b>Why alternate:</b> each block step is easy (a linear solve, a soft threshold, a projection), while the joint step is not.</li>
+<li><b>Convergence:</b> under standard assumptions (convex $f_i$, the Lagrangian has a saddle point, sub-steps solved exactly, fixed $\beta$), the residual → 0, the cost → optimal, and $\lambda$ → a dual optimum. <b>He said he won't ask this.</b></li>
+</ul>
+</section>
+
+<!-- ================= WHAT HE SAID ================= -->
 <section id="prof">
-<h2>3. What the professor said about this</h2>
+<h2>What the professor said about this</h2>
 <div class="box prof"><span class="tag">In class</span>
 <ul>
 <li><q>In ADMM we can ask interesting problem… I want hard problem from ADMM for the final exam</q> <span class="ts">Ch 9 lec 1 [57:30]</span> → expect a full ADMM derivation as a big question.</li>
-<li><q>In the exam, the f1, f2, I can give different examples that can be minimized one step… I will ask you to derive these steps… exact formula for these steps</q> <span class="ts">Ch 10 lec 1 [24:00]</span> → the question is "here are $f_1, f_2$ — derive the 3 updates in closed form". Practise new pairs (Section 4).</li>
+<li><q>In the exam, the f1, f2, I can give different examples that can be minimized one step… I will ask you to derive these steps… exact formula for these steps</q> <span class="ts">Ch 10 lec 1 [24:00]</span> → "here are $f_1, f_2$: derive the 3 updates in closed form". Practise new pairs (below).</li>
 <li><q>For the exam point of view, the basic three-step scheme… you should be able to write the iteration… That's all for the exam</q> <span class="ts">Ch 10 lec 1 [31:30]</span></li>
-<li><q>This convergence condition, I'm not going to ask you</q> <span class="ts">Ch 10 lec 1 [31:00]</span> → skip convergence theory.</li>
-<li>Completing the square: <q>this exercise I don't want to do. You should be able to do it</q> <span class="ts">Ch 10 lec 1 [38:00]</span>; verify by expanding: <q>These are the exercises you should do</q> <span class="ts">Ch 10 lec 2 [13:00]</span></li>
-<li><q>This topic is important for the final exam</q> <span class="ts">Ch 10 lec 2 [00:30]</span>; the constraint/indicator example <q>is also important… makes your understanding for ADMM complete</q> <span class="ts">[03:00]</span></li>
-<li><q>In the exam, I will not give some arbitrary C</q>; a box $[0,B]$ → projection is just clipping <span class="ts">Ch 10 lec 2 [16:00]</span>; provable with the Ch 6 tangent-cone first-order condition <span class="ts">[17:00]</span></li>
-<li>Soft thresholding <q>is important because… handling non-differential cost function using graphical arguments</q> <span class="ts">Ch 10 lec 2 [25:30]</span> → be able to reproduce the 2-case graphical proof.</li>
-<li><q>Exam point of view, syllabus is over</q> <span class="ts">Ch 10 lec 2 [17:30]</span> → ADMM (§10.6–10.7) is all of Ch 10 for the exam.</li>
-</ul>
-</div>
+<li><q>This convergence condition, I'm not going to ask you</q> <span class="ts">Ch 10 lec 1 [31:00]</span></li>
+<li>Completing the square: <q>you should be able to do it</q> <span class="ts">Ch 10 lec 1 [38:00]</span>; verify by expanding: <q>These are the exercises you should do</q> <span class="ts">Ch 10 lec 2 [13:00]</span></li>
+<li><q>This topic is important for the final exam</q> <span class="ts">Ch 10 lec 2 [00:30]</span>; the constraint example <q>is also important… makes your understanding for ADMM complete</q> <span class="ts">[03:00]</span></li>
+<li><q>In the exam, I will not give some arbitrary C</q>: a box → projection is clipping <span class="ts">Ch 10 lec 2 [16:00]</span>, provable with the Ch 6 first-order condition <span class="ts">[17:00]</span></li>
+<li>Soft thresholding <q>is important because… handling non-differential cost function using graphical arguments</q> <span class="ts">Ch 10 lec 2 [25:30]</span> → be able to reproduce the argument in A1.</li>
+<li><q>Exam point of view, syllabus is over</q> <span class="ts">Ch 10 lec 2 [17:30]</span> → ADMM (§10.6–10.7) is all of Ch 10.</li>
+</ul></div>
 </section>
 
-<!-- ============ 4. PRACTICE ============ -->
+<!-- ================= PRACTICE ================= -->
 <section id="practice">
-<h2>4. Practice (try first, then open the answer)</h2>
-<p class="small">No past paper has an ADMM question yet, so all questions here are new, built in his style from the class examples. Q1–Q6 are warm-ups; Q7–Q13 are exam level. Do Q7, Q9, Q11 fully on paper.</p>
+<h2>Practice (try first, then open the answer)</h2>
+<p class="small">No past paper has had an ADMM question yet, so these are new, built from the class examples. Q1–Q6 are quick checks; Q7–Q13 are exam level. Do Q7, Q9 and Q11 fully on paper.</p>
 <div class="toolbar" data-auto></div>
 
 <div class="q mcq" data-answer="c">
-  <div class="qh">Q1 <span class="src">New</span><span class="lvl">MCQ · warm-up</span></div>
+  <div class="qh">Q1 <span class="lvl">MCQ · warm-up</span></div>
   <p>For fixed $\lambda$, $\beta&gt;0$ and $w$, the function $\lambda^T(z-w)+\frac{\beta}{2}\|z-w\|^2$ equals $\frac{\beta}{2}\|z-a\|^2+$ const with</p>
   <ol class="opts">
     <li data-k="a"><b class="k">(a)</b> $a=w+\lambda/\beta$</li>
@@ -211,13 +359,13 @@ $$(M^TM+\beta I)z^\star=M^Tb+\frac{\beta}{2}(a_k+b_k).$$</li>
     <li data-k="d"><b class="k">(d)</b> $a=w-\lambda$</li>
   </ol>
   <details class="ans"><summary>Show answer</summary><div>
-    <p><b>(c).</b> Expand $\frac{\beta}{2}\|z-w+\lambda/\beta\|^2=\frac{\beta}{2}\|z-w\|^2+\lambda^T(z-w)+\frac{\|\lambda\|^2}{2\beta}$. So the centre is $w-\lambda/\beta$. (a) is the centre when the linear term is $\lambda^T(w-z)$ — the $x_2$-step situation. (b), (d) have the wrong scaling: the shift must be $\lambda/\beta$ so that $\beta\cdot$shift $=\lambda$.</p>
+    <p><b>(c).</b> Expanding $\frac{\beta}{2}\|z-w+\lambda/\beta\|^2$ gives $\frac{\beta}{2}\|z-w\|^2+\lambda^T(z-w)+\frac{\|\lambda\|^2}{2\beta}$. (a) is the centre when the tilt is $\lambda^T(w-z)$, which is the step-2 situation. (b) and (d) have the wrong scaling: the shift must be $\lambda/\beta$ so that $\beta\times$shift $=\lambda$.</p>
   </div></details>
 </div>
 
 <div class="q mcq" data-answer="b">
-  <div class="qh">Q2 <span class="src">New</span><span class="lvl">MCQ · warm-up</span></div>
-  <p>With $\gamma=1$, $\beta=2$: $S_{\gamma/\beta}$ applied componentwise to $y=(1.2,\,-0.3,\,-2,\,0.5)$ gives</p>
+  <div class="qh">Q2 <span class="lvl">MCQ · warm-up</span></div>
+  <p>With $\gamma=1$, $\beta=2$: $S_{\gamma/\beta}$ applied entrywise to $y=(1.2,\,-0.3,\,-2,\,0.5)$ gives</p>
   <ol class="opts">
     <li data-k="a"><b class="k">(a)</b> $(0.2,\,0,\,-1,\,0)$</li>
     <li data-k="b"><b class="k">(b)</b> $(0.7,\,0,\,-1.5,\,0)$</li>
@@ -225,13 +373,13 @@ $$(M^TM+\beta I)z^\star=M^Tb+\frac{\beta}{2}(a_k+b_k).$$</li>
     <li data-k="d"><b class="k">(d)</b> $(0.7,\,0.2,\,-2.5,\,0)$</li>
   </ol>
   <details class="ans"><summary>Show answer</summary><div>
-    <p><b>(b).</b> Threshold $\tau=\gamma/\beta=0.5$. $1.2\to0.7$; $|-0.3|\le0.5\to0$; $-2\to-1.5$; $|0.5|\le0.5\to0$. (a) used $\tau=\gamma=1$. (c) forgot to zero out the small component. (d) pushed away from zero — that's the wrong direction (and changes sign for $-0.3$).</p>
+    <p><b>(b).</b> The threshold is $\gamma/\beta=0.5$. $1.2\to0.7$; $|-0.3|\le0.5\to0$; $-2\to-1.5$; $|0.5|\le0.5\to0$. (a) used threshold $\gamma=1$. (c) forgot to zero the small entry. (d) pushes away from zero, the wrong direction.</p>
   </div></details>
 </div>
 
 <div class="q mcq" data-answer="a">
-  <div class="qh">Q3 <span class="src">New</span><span class="lvl">MCQ</span></div>
-  <p>In one ADMM iteration, the $x_2$-update minimises</p>
+  <div class="qh">Q3 <span class="lvl">MCQ</span></div>
+  <p>In one ADMM round, the $x_2$-update minimises</p>
   <ol class="opts">
     <li data-k="a"><b class="k">(a)</b> $L_A(x_1^{(k+1)},x_2,\lambda^{(k)})$</li>
     <li data-k="b"><b class="k">(b)</b> $L_A(x_1^{(k)},x_2,\lambda^{(k)})$</li>
@@ -239,12 +387,12 @@ $$(M^TM+\beta I)z^\star=M^Tb+\frac{\beta}{2}(a_k+b_k).$$</li>
     <li data-k="d"><b class="k">(d)</b> $L(x_1^{(k+1)},x_2,\lambda^{(k)})$ (the ordinary Lagrangian)</li>
   </ol>
   <details class="ans"><summary>Show answer</summary><div>
-    <p><b>(a).</b> Gauss–Seidel order: use the freshly computed $x_1^{(k+1)}$; $\lambda$ is updated only after both primal steps. (b) would be a Jacobi (parallel) update — not ADMM. (c): $\lambda^{(k+1)}$ doesn't exist yet. (d) drops the penalty; then the step may be unbounded or not unique.</p>
+    <p><b>(a).</b> New $x_1$, old $\lambda$. (b) uses the stale $x_1$ (that would be a parallel, Jacobi-style update, not ADMM). (c): $\lambda^{(k+1)}$ hasn't been computed yet. (d) drops the penalty, so the step may be unbounded or not unique.</p>
   </div></details>
 </div>
 
 <div class="q mcq" data-answer="d">
-  <div class="qh">Q4 <span class="src">New</span><span class="lvl">MCQ</span></div>
+  <div class="qh">Q4 <span class="lvl">MCQ</span></div>
   <p>Let $C=[0,2]^3$ and $P$ its indicator. Then $\arg\min_v\ P(v)+\frac{\beta}{2}\|v-y\|^2$ for $y=(-1,\,0.4,\,3)$ is</p>
   <ol class="opts">
     <li data-k="a"><b class="k">(a)</b> $(0,\,0.4,\,3)$</li>
@@ -253,26 +401,26 @@ $$(M^TM+\beta I)z^\star=M^Tb+\frac{\beta}{2}(a_k+b_k).$$</li>
     <li data-k="d"><b class="k">(d)</b> $(0,\,0.4,\,2)$</li>
   </ol>
   <details class="ans"><summary>Show answer</summary><div>
-    <p><b>(d).</b> $P$ restricts $v$ to $C$, so the problem is $\min_{v\in C}\|v-y\|^2$ = projection onto the box = clip each component to $[0,2]$. $\beta&gt;0$ only scales the objective, so it doesn't change the minimiser (not (c)). (a), (b) clip only one side.</p>
+    <p><b>(d).</b> $P$ forces $v\in C$, so this is "nearest point of the box" = clip each entry to $[0,2]$. $\beta&gt;0$ only scales the objective, so it doesn't move the minimiser. (a) and (b) clip only one side.</p>
   </div></details>
 </div>
 
 <div class="q mcq" data-answer="c">
-  <div class="qh">Q5 <span class="src">New, Example 2 trap</span><span class="lvl">MCQ</span></div>
-  <p>For $\min\|Mx-b\|^2+\gamma\|x\|_1+P(x)$ (no ½ on the data term), split with $x_2=(u,v)$ and $\begin{bmatrix}x_1\\x_1\end{bmatrix}=x_2$. With centres $a_k=u^{(k)}-\lambda_u^{(k)}/\beta$, $b_k=v^{(k)}-\lambda_v^{(k)}/\beta$, the $x_1$-update solves</p>
+  <div class="qh">Q5 <span class="lvl">MCQ · Example 2 trap</span></div>
+  <p>For $\min\|Mx-b\|^2+\gamma\|x\|_1+P(x)$ (no ½ on the data term), split with $x_2=(u,v)$ and $\begin{bmatrix}x_1\\x_1\end{bmatrix}=x_2$. With centres $a_k=u^{(k)}-\lambda_u^{(k)}/\beta$, $c_k=v^{(k)}-\lambda_v^{(k)}/\beta$, the $x_1$-update solves</p>
   <ol class="opts">
-    <li data-k="a"><b class="k">(a)</b> $(M^TM+\beta I)z=M^Tb+\beta(a_k+b_k)$</li>
-    <li data-k="b"><b class="k">(b)</b> $(M^TM+2\beta I)z=M^Tb+\beta(a_k+b_k)$</li>
-    <li data-k="c"><b class="k">(c)</b> $(M^TM+\beta I)z=M^Tb+\frac{\beta}{2}(a_k+b_k)$</li>
-    <li data-k="d"><b class="k">(d)</b> $(2M^TM+\beta I)z=2M^Tb+\beta(a_k+b_k)$</li>
+    <li data-k="a"><b class="k">(a)</b> $(M^TM+\beta I)z=M^Tb+\beta(a_k+c_k)$</li>
+    <li data-k="b"><b class="k">(b)</b> $(M^TM+2\beta I)z=M^Tb+\beta(a_k+c_k)$</li>
+    <li data-k="c"><b class="k">(c)</b> $(M^TM+\beta I)z=M^Tb+\frac{\beta}{2}(a_k+c_k)$</li>
+    <li data-k="d"><b class="k">(d)</b> $(2M^TM+\beta I)z=2M^Tb+\beta(a_k+c_k)$</li>
   </ol>
   <details class="ans"><summary>Show answer</summary><div>
-    <p><b>(c).</b> Gradient: $2M^T(Mz-b)+\beta(z-a_k)+\beta(z-b_k)=0$ ⇒ $(2M^TM+2\beta I)z=2M^Tb+\beta(a_k+b_k)$; divide by 2. (d) forgot that there are <i>two</i> penalty terms (should be $2\beta I$). (b) would be right only if the data term had a ½. (a) mixes the two.</p>
+    <p><b>(c).</b> Gradient: $2M^T(Mz-b)+\beta(z-a_k)+\beta(z-c_k)=0$, so $(2M^TM+2\beta I)z=2M^Tb+\beta(a_k+c_k)$; divide by 2. (d) forgot there are <i>two</i> penalty terms. (b) is right only if the data term had a ½. (a) mixes the two.</p>
   </div></details>
 </div>
 
 <div class="q mcq" data-answer="b">
-  <div class="qh">Q6 <span class="src">New, theory (links Ch 7)</span><span class="lvl">MCQ</span></div>
+  <div class="qh">Q6 <span class="lvl">MCQ · theory (links Ch 7)</span></div>
   <p>Assume strong duality with both optima attained, and let $\lambda^*$ be dual optimal. Which statement is correct in general?</p>
   <ol class="opts">
     <li data-k="a"><b class="k">(a)</b> Every minimiser of $L(\cdot,\lambda^*)$ is primal optimal.</li>
@@ -281,20 +429,20 @@ $$(M^TM+\beta I)z^\star=M^Tb+\frac{\beta}{2}(a_k+b_k).$$</li>
     <li data-k="d"><b class="k">(d)</b> A minimiser of $L(\cdot,\lambda^*)$ is always feasible.</li>
   </ol>
   <details class="ans"><summary>Show answer</summary><div>
-    <p><b>(b).</b> Every primal optimum minimises $L(\cdot,\lambda^*)$; if that minimiser is unique, the primal optimum must be it. (a)/(d) are false: e.g. $\min x$ s.t. $-x\le0$ (Ch 7) — $L(\cdot,\mu^*)$ is constant, every $x$ minimises it, including infeasible ones. (c) is irrelevant: the result uses only optimality and attainment.</p>
+    <p><b>(b).</b> Every primal optimum minimises $L(\cdot,\lambda^*)$; if that minimiser is unique, the primal optimum must be it. (a) and (d) are false: for $\min x$ s.t. $-x\le0$ (Ch 7), $L(\cdot,\mu^*)$ is constant, so every $x$ minimises it, including infeasible ones. (c) is irrelevant: the result uses only optimality and attainment.</p>
   </div></details>
 </div>
 
 <div class="q">
-  <div class="qh">Q7 <span class="src">New — "derive the steps" (the promised type)</span><span class="lvl">Descriptive · exam level</span></div>
-  <p>Consider the box-constrained least-squares problem $\min_x \frac12\|Mx-b\|_2^2$ s.t. $x\in[0,B]^n$. (a) Write it as a two-block ADMM problem (state $f_1$, $f_2$, $A_1$, $A_2$, $b$). (b) Write $L_A$. (c) Derive closed-form $x_1$-, $x_2$-, $\lambda$-updates.</p>
-  <details class="hint"><summary>Hint</summary><p>Put the constraint into $f_2$ as an indicator. The $x_2$-step is a projection.</p></details>
+  <div class="qh">Q7 <span class="src">the promised type</span><span class="lvl">Descriptive · exam level</span></div>
+  <p>Box-constrained least squares: $\min_x \frac12\|Mx-b\|^2$ s.t. $x\in[0,B]^n$. (a) Write it as two-block ADMM (state $f_1$, $f_2$, $A_1$, $A_2$, $b$). (b) Write $L_A$. (c) Derive closed-form $x_1$-, $x_2$- and $\lambda$-updates.</p>
+  <details class="hint"><summary>Hint</summary><p>Put the constraint into $f_2$ as an indicator (E1). Step 2 is then a projection.</p></details>
   <details class="ans"><summary>Show answer</summary><div>
   <ol class="steps">
     <li>(a) $f_1(x_1)=\frac12\|Mx_1-b\|^2$, $f_2(x_2)=P(x_2)$ = indicator of $C=[0,B]^n$. Constraint $x_1-x_2=0$: $A_1=I$, $A_2=-I$, $b=0$. Equivalent since $x_1=x_2\in C$.</li>
     <li>(b) $L_A=\frac12\|Mx_1-b\|^2+P(x_2)+\lambda^T(x_1-x_2)+\frac{\beta}{2}\|x_1-x_2\|^2$.</li>
-    <li>(c) $x_1$: $f_{1,k}(z)=\frac12\|Mz-b\|^2+\frac{\beta}{2}\|z-a_k\|^2+$const, $a_k=x_2^{(k)}-\lambda^{(k)}/\beta$. Gradient $=0$: $\boxed{(M^TM+\beta I)x_1^{(k+1)}=M^Tb+\beta x_2^{(k)}-\lambda^{(k)}}$ (PD matrix ⇒ unique).</li>
-    <li>$x_2$: $f_{2,k}(z)=P(z)+\frac{\beta}{2}\|z-y\|^2+$const, $y=x_1^{(k+1)}+\lambda^{(k)}/\beta$ ⇒ $\boxed{x_{2,i}^{(k+1)}=\min\big(\max(y_i,0),B\big)}$ (projection onto the box = clipping).</li>
+    <li>(c) $x_1$: $\frac12\|Mz-b\|^2+\frac{\beta}{2}\|z-a_k\|^2+$ const with $a_k=x_2^{(k)}-\lambda^{(k)}/\beta$. Gradient $=0$: $\boxed{(M^TM+\beta I)x_1^{(k+1)}=M^Tb+\beta x_2^{(k)}-\lambda^{(k)}}$ (PD matrix, so unique).</li>
+    <li>$x_2$: $P(z)+\frac{\beta}{2}\|z-y\|^2+$ const with $y=x_1^{(k+1)}+\lambda^{(k)}/\beta$, so $\boxed{x_{2,i}^{(k+1)}=\min\big(\max(y_i,0),B\big)}$ (clip).</li>
     <li>$\boxed{\lambda^{(k+1)}=\lambda^{(k)}+\beta(x_1^{(k+1)}-x_2^{(k+1)})}$.</li>
   </ol>
   <p class="small">Checked numerically: the iteration converges to the same answer as a bounded least-squares solver.</p>
@@ -302,97 +450,109 @@ $$(M^TM+\beta I)z^\star=M^Tb+\frac{\beta}{2}(a_k+b_k).$$</li>
 </div>
 
 <div class="q">
-  <div class="qh">Q8 <span class="src">New — one hand iteration</span><span class="lvl">Descriptive · computation</span></div>
-  <p>Scalar LASSO: $\min_x \frac12(x-3)^2+|x|$ (so $M=1$, $b=3$, $\gamma=1$). Run ADMM with $\beta=1$, $x_2^{(0)}=0$, $\lambda^{(0)}=0$ for two iterations. What is the exact minimiser, and what do the iterates approach?</p>
+  <div class="qh">Q8 <span class="lvl">Descriptive · computation</span></div>
+  <p>Redo section C's table yourself without looking: $\min_x \frac12(x-3)^2+|x|$, $\beta=1$, $x_2^{(0)}=0$, $\lambda^{(0)}=0$, three rounds. Then explain in one sentence why $\lambda$ ends at 1.</p>
   <details class="ans"><summary>Show answer</summary><div>
-  <p>Updates: $(1+\beta)x_1=3+\beta x_2-\lambda$; $x_2=S_{1}(x_1+\lambda)$; $\lambda\leftarrow\lambda+(x_1-x_2)$.</p>
-  <table><tr><th>k</th><th>$x_1^{(k)}$</th><th>$x_2^{(k)}$</th><th>$\lambda^{(k)}$</th></tr>
-  <tr><td>1</td><td>$(3+0-0)/2=1.5$</td><td>$S_1(1.5)=0.5$</td><td>$0+(1.5-0.5)=1$</td></tr>
-  <tr><td>2</td><td>$(3+0.5-1)/2=1.25$</td><td>$S_1(2.25)=1.25$</td><td>$1+0=1$</td></tr>
-  <tr><td>3</td><td>$1.625$</td><td>$1.625$</td><td>$1$</td></tr></table>
-  <p>Exact minimiser: $x^*=S_1(3)=2$. Fixed point of ADMM: $x_1=x_2=x$, $2x=3+x-\lambda$ and $x=x+\lambda-1$ ⇒ $\lambda^*=1$, $x^*=2$. The iterates approach 2 ($1.5, 1.25, 1.625, 1.8125, 1.906,\dots$), and $\lambda^*=1$ is exactly the "subgradient" $\operatorname{sign}(x^*)\gamma$.</p>
+  <p>Rounds: $(x_1,x_2,\lambda)=(1.5,0.5,1)$, $(1.25,1.25,1)$, $(1.625,1.625,1)$, heading to $x^*=2$. At the answer, step 1's condition $(x-3)+\lambda=0$ with $x=2$ gives $\lambda=1$: the slope of $|x|$ at $x=2$, i.e. the force the $|x|$ piece exerts.</p>
   </div></details>
 </div>
 
 <div class="q">
-  <div class="qh">Q9 <span class="src">New — general $A$ (harder)</span><span class="lvl">Descriptive · exam level</span></div>
+  <div class="qh">Q9 <span class="src">general linking matrix (harder)</span><span class="lvl">Descriptive · exam level</span></div>
   <p>Let $D\in\mathbb{R}^{(n-1)\times n}$ be the difference matrix $(Dx)_i=x_{i+1}-x_i$. Consider $\min_x \frac12\|x-c\|^2+\gamma\|Dx\|_1$ ("total variation" denoising). Split as $f_1(x_1)=\frac12\|x_1-c\|^2$, $f_2(x_2)=\gamma\|x_2\|_1$, $Dx_1-x_2=0$. Derive all three updates.</p>
-  <details class="hint"><summary>Hint</summary><p>Here $A_1=D$. In the $x_1$-step the penalty is $\frac{\beta}{2}\|Dz-x_2^{(k)}\|^2$; differentiate directly (gradient of $\frac{\beta}{2}\|Dz-w\|^2$ is $\beta D^T(Dz-w)$).</p></details>
+  <details class="hint"><summary>Hint</summary><p>Here $A_1=D$. In step 1 differentiate directly: the gradient of $\frac{\beta}{2}\|Dz-w\|^2$ is $\beta D^T(Dz-w)$.</p></details>
   <details class="ans"><summary>Show answer</summary><div>
   <ol class="steps">
     <li>$L_A=\frac12\|x_1-c\|^2+\gamma\|x_2\|_1+\lambda^T(Dx_1-x_2)+\frac{\beta}{2}\|Dx_1-x_2\|^2$.</li>
-    <li>$x_1$: gradient of $f_{1,k}(z)=\frac12\|z-c\|^2+\lambda^{(k)T}(Dz-x_2^{(k)})+\frac{\beta}{2}\|Dz-x_2^{(k)}\|^2$ is $(z-c)+D^T\lambda^{(k)}+\beta D^T(Dz-x_2^{(k)})$. Set to 0:
-    $$\boxed{(I+\beta D^TD)\,x_1^{(k+1)}=c+D^T\big(\beta x_2^{(k)}-\lambda^{(k)}\big)}$$ ($I+\beta D^TD\succ0$ ⇒ unique).</li>
-    <li>$x_2$: $\gamma\|z\|_1+\lambda^{(k)T}(Dx_1^{(k+1)}-z)+\frac{\beta}{2}\|Dx_1^{(k+1)}-z\|^2=\gamma\|z\|_1+\frac{\beta}{2}\|z-y\|^2+$const with $y=Dx_1^{(k+1)}+\lambda^{(k)}/\beta$ ⇒ $\boxed{x_2^{(k+1)}=S_{\gamma/\beta}\big(Dx_1^{(k+1)}+\lambda^{(k)}/\beta\big)}$.</li>
+    <li>$x_1$: the gradient $(z-c)+D^T\lambda^{(k)}+\beta D^T(Dz-x_2^{(k)})=0$ gives $$\boxed{(I+\beta D^TD)\,x_1^{(k+1)}=c+D^T\big(\beta x_2^{(k)}-\lambda^{(k)}\big)}$$ ($I+\beta D^TD$ is PD, so unique).</li>
+    <li>$x_2$: $\gamma\|z\|_1+\frac{\beta}{2}\|z-y\|^2+$ const with $y=Dx_1^{(k+1)}+\lambda^{(k)}/\beta$, so $\boxed{x_2^{(k+1)}=S_{\gamma/\beta}\big(Dx_1^{(k+1)}+\lambda^{(k)}/\beta\big)}$.</li>
     <li>$\boxed{\lambda^{(k+1)}=\lambda^{(k)}+\beta\big(Dx_1^{(k+1)}-x_2^{(k+1)}\big)}$.</li>
   </ol>
-  <p><b>Why split this way:</b> $\|Dx\|_1$ is not separable in $x$, so soft thresholding doesn't apply directly; giving $Dx$ its own variable makes it separable.</p>
+  <p><b>Why split this way:</b> $\|Dx\|_1$ doesn't separate into entries of $x$, so soft thresholding can't be applied to $x$ directly. Giving $Dx$ its own variable makes it separable.</p>
   </div></details>
 </div>
 
 <div class="q">
-  <div class="qh">Q10 <span class="src">New — modified prox</span><span class="lvl">Descriptive</span></div>
-  <p>Suppose $f_2(x_2)=\gamma\|x_2\|_1+\frac{\varepsilon}{2}\|x_2\|^2$ ("elastic net"), with the LASSO split $x_1-x_2=0$. Show the $x_2$-update is $x_2^{(k+1)}=S_{\gamma/(\varepsilon+\beta)}\!\Big(\frac{\beta}{\varepsilon+\beta}\,y\Big)$, $y=x_1^{(k+1)}+\lambda^{(k)}/\beta$.</p>
+  <div class="qh">Q10 <span class="lvl">Descriptive</span></div>
+  <p>Suppose $f_2(x_2)=\gamma\|x_2\|_1+\frac{\varepsilon}{2}\|x_2\|^2$ ("elastic net"), with the LASSO split $x_1-x_2=0$. Show that the $x_2$-update is $x_2^{(k+1)}=S_{\gamma/(\varepsilon+\beta)}\!\Big(\frac{\beta}{\varepsilon+\beta}\,y\Big)$, where $y=x_1^{(k+1)}+\lambda^{(k)}/\beta$.</p>
   <details class="ans"><summary>Show answer</summary><div>
-  <p>Per component: $\gamma|z|+\frac{\varepsilon}{2}z^2+\frac{\beta}{2}(z-y)^2$. Combine the two quadratics: $\frac{\varepsilon}{2}z^2+\frac{\beta}{2}(z-y)^2=\frac{\varepsilon+\beta}{2}\big(z-\frac{\beta y}{\varepsilon+\beta}\big)^2+$const. So it's $\gamma|z|+\frac{c}{2}(z-\tilde y)^2$ with $c=\varepsilon+\beta$, $\tilde y=\beta y/(\varepsilon+\beta)$ ⇒ minimiser $S_{\gamma/c}(\tilde y)$. (Check: $\gamma=1,\varepsilon=2,\beta=1,y=4$ → $\tilde y=4/3$, threshold $1/3$, answer $1$ ✓.)</p>
+  <p>Per entry: $\gamma|z|+\frac{\varepsilon}{2}z^2+\frac{\beta}{2}(z-y)^2$. The two squares merge: $\frac{\varepsilon}{2}z^2+\frac{\beta}{2}(z-y)^2=\frac{\varepsilon+\beta}{2}\big(z-\frac{\beta y}{\varepsilon+\beta}\big)^2+$ const. So it's $\gamma|z|+\frac{c}{2}(z-\tilde y)^2$ with $c=\varepsilon+\beta$, $\tilde y=\beta y/(\varepsilon+\beta)$, and the threshold rule from A1 gives $S_{\gamma/c}(\tilde y)$. (Check: $\gamma=1,\varepsilon=2,\beta=1,y=4$ → $\tilde y=4/3$, threshold $1/3$, answer $1$ ✓.)</p>
   </div></details>
 </div>
 
 <div class="q">
-  <div class="qh">Q11 <span class="src">New — L1 + nonnegativity in one block</span><span class="lvl">Descriptive · exam level</span></div>
-  <p>$\min_x \frac12\|Mx-b\|^2+\gamma\,\mathbf{1}^Tx$ s.t. $x\ge0$. Use $f_1(x_1)=\frac12\|Mx_1-b\|^2$, $f_2(x_2)=\gamma\mathbf{1}^Tx_2+P_{\ge0}(x_2)$, $x_1-x_2=0$. Derive the updates. (Note: on $x\ge0$, $\gamma\mathbf{1}^Tx=\gamma\|x\|_1$, so this is non-negative LASSO.)</p>
+  <div class="qh">Q11 <span class="lvl">Descriptive · exam level</span></div>
+  <p>$\min_x \frac12\|Mx-b\|^2+\gamma\,\mathbf{1}^Tx$ s.t. $x\ge0$. Use $f_1(x_1)=\frac12\|Mx_1-b\|^2$, $f_2(x_2)=\gamma\mathbf{1}^Tx_2+P_{\ge0}(x_2)$, $x_1-x_2=0$. Derive the updates. (On $x\ge0$, $\gamma\mathbf{1}^Tx=\gamma\|x\|_1$, so this is non-negative LASSO.)</p>
   <details class="ans"><summary>Show answer</summary><div>
   <ol class="steps">
     <li>$x_1$: same as LASSO: $(M^TM+\beta I)x_1^{(k+1)}=M^Tb+\beta x_2^{(k)}-\lambda^{(k)}$.</li>
-    <li>$x_2$: per component $\min_{z\ge0}\ \gamma z+\frac{\beta}{2}(z-y_i)^2$, $y=x_1^{(k+1)}+\lambda^{(k)}/\beta$. Unconstrained minimiser $\hat z=y_i-\gamma/\beta$; it's a convex parabola, so if $\hat z\ge0$ take it, else the minimum over $z\ge0$ is at 0 (same argument as the soft-threshold proof): $\boxed{x_{2,i}^{(k+1)}=\max(y_i-\gamma/\beta,\,0)}$ — a "one-sided" soft threshold.</li>
+    <li>$x_2$: per entry, $\min_{z\ge0}\ \gamma z+\frac{\beta}{2}(z-y_i)^2$ with $y=x_1^{(k+1)}+\lambda^{(k)}/\beta$. The unconstrained minimiser is $\hat z=y_i-\gamma/\beta$. If it's $\ge0$, take it; otherwise the parabola only rises on $[0,\infty)$, so take 0 (the same argument as A1): $\boxed{x_{2,i}^{(k+1)}=\max(y_i-\gamma/\beta,\,0)}$, a one-sided soft threshold.</li>
     <li>$\lambda^{(k+1)}=\lambda^{(k)}+\beta(x_1^{(k+1)}-x_2^{(k+1)})$.</li>
   </ol>
-  <p>Alternative (also correct): use Example 2's two-copy split with $u$ for the L1 term and $v$ for the constraint. Both are valid two-block ADMMs; the one-block version is shorter.</p>
+  <p>Also correct: Example 2's two-copy split ($u$ for the linear term, $v$ for the constraint). Both are valid two-block ADMMs; this one is shorter.</p>
   </div></details>
 </div>
 
 <div class="q">
-  <div class="qh">Q12 <span class="src">New — reproduce the class proof</span><span class="lvl">Descriptive · proof</span></div>
+  <div class="qh">Q12 <span class="lvl">Descriptive · proof</span></div>
   <p>Without subgradients, show that $\arg\min_z\ \tau|z|+\frac12(z-y)^2=S_\tau(y)$ for $\tau&gt;0$.</p>
   <details class="ans"><summary>Show answer</summary><div>
-  <p>Follow §2.5: (i) if $y&gt;0$ the function increases for $z&lt;0$ and for $z&gt;y$, so $z^*\in[0,y]$; (ii) hence $z^*$ = minimiser of the differentiable $\tau z+\frac12(z-y)^2$ over $z\ge0$; (iii) unconstrained critical point $y-\tau$: if $\ge0$ it's the answer; otherwise the convex function is increasing on $[0,\infty)$ so the answer is 0; (iv) mirror for $y&lt;0$; (v) combine into $\operatorname{sign}(y)\max(|y|-\tau,0)$. Draw the graph: dead zone $[-\tau,\tau]$.</p>
+  <p>Follow A1: (i) for $y&gt;0$ the function increases for $z&lt;0$ and for $z&gt;y$, so $z^*\in[0,y]$; (ii) so $z^*$ minimises the smooth $\tau z+\frac12(z-y)^2$ over $z\ge0$; (iii) the unconstrained critical point is $y-\tau$: if it's $\ge0$ it's the answer, otherwise the function rises on $[0,\infty)$ and the answer is 0; (iv) mirror for $y&lt;0$; (v) combine into $\operatorname{sign}(y)\max(|y|-\tau,0)$. Draw the graph with its dead zone $[-\tau,\tau]$.</p>
   </div></details>
 </div>
 
 <div class="q">
-  <div class="qh">Q13 <span class="src">New — Example 2 with a box, fully</span><span class="lvl">Descriptive · exam level</span></div>
+  <div class="qh">Q13 <span class="lvl">Descriptive · exam level</span></div>
   <p>Derive the complete ADMM iteration for $\min_x \|Mx-b\|^2+\gamma\|x\|_1$ s.t. $0\le x_i\le B$ using the two-copy split $x_2=(u,v)$. Explain why it is two-block even though $x_2\in\mathbb{R}^{2n}$.</p>
   <details class="ans"><summary>Show answer</summary><div>
   <ol class="steps">
-    <li>$f_1(x_1)=\|Mx_1-b\|^2$, $f_2(u,v)=\gamma\|u\|_1+P_{[0,B]^n}(v)$, constraint $x_1-u=0$, $x_1-v=0$. Multipliers $\lambda_u,\lambda_v$.</li>
+    <li>$f_1(x_1)=\|Mx_1-b\|^2$, $f_2(u,v)=\gamma\|u\|_1+P_{[0,B]^n}(v)$, constraints $x_1-u=0$ and $x_1-v=0$. Multipliers $\lambda_u,\lambda_v$.</li>
     <li>$x_1$: $(M^TM+\beta I)x_1^{(k+1)}=M^Tb+\frac{\beta}{2}\big(u^{(k)}-\lambda_u^{(k)}/\beta+v^{(k)}-\lambda_v^{(k)}/\beta\big)$.</li>
     <li>$u^{(k+1)}=S_{\gamma/\beta}\big(x_1^{(k+1)}+\lambda_u^{(k)}/\beta\big)$; $v^{(k+1)}_i=\min\big(\max(x_{1,i}^{(k+1)}+\lambda_{v,i}^{(k)}/\beta,0),B\big)$.</li>
     <li>$\lambda_u^{(k+1)}=\lambda_u^{(k)}+\beta(x_1^{(k+1)}-u^{(k+1)})$, $\lambda_v^{(k+1)}=\lambda_v^{(k)}+\beta(x_1^{(k+1)}-v^{(k+1)})$.</li>
-    <li>Two-block: the variables are grouped into exactly two blocks, $x_1$ and $x_2=(u,v)$, each minimised once per iteration; $f_2$ just happens to separate into $u$ and $v$ parts so the $x_2$-step splits into two independent small problems. Three-block ADMM would update $x_1$, $u$, $v$ <i>sequentially</i> with three separate functions — a different method.</li>
+    <li>Two-block: there are exactly two blocks, $x_1$ and $x_2=(u,v)$, each minimised once per round. $f_2$ separates into $u$ and $v$ parts, so step 2 splits into two independent problems. Three-block ADMM would update $x_1$, $u$, $v$ one after another with three separate functions, which is a different method.</li>
   </ol>
   </div></details>
 </div>
 </section>
 
-<!-- ============ 5. SELF-TEST ============ -->
+<!-- ================= SELF-TEST ================= -->
 <section id="selftest">
-<h2>5. Self-test (no looking)</h2>
+<h2>Self-test (no looking)</h2>
 <div class="toolbar" data-auto></div>
-<div class="q"><div class="qh">S1</div><p>Write $L_A$ for the general two-block problem.</p>
+<div class="q"><div class="qh">S1</div><p>In one sentence: why do we need both the penalty and the price $\lambda$?</p>
+  <details class="ans"><summary>Show answer</summary><div><p>The penalty alone leaves a gap of size about $1/\beta$ between the copies; the price learns the exact force needed so the gap goes to zero, while the penalty keeps each step well-behaved.</p></div></details></div>
+<div class="q"><div class="qh">S2</div><p>Write $L_A$ for the general two-block problem.</p>
   <details class="ans"><summary>Show answer</summary><div><p>$f_1(x_1)+f_2(x_2)+\lambda^T(A_1x_1+A_2x_2-b)+\frac{\beta}{2}\|A_1x_1+A_2x_2-b\|^2$.</p></div></details></div>
-<div class="q"><div class="qh">S2</div><p>Write the three ADMM steps (which iterates does each use?).</p>
-  <details class="ans"><summary>Show answer</summary><div><p>$x_1$: argmin $L_A(\cdot,x_2^{(k)},\lambda^{(k)})$; $x_2$: argmin $L_A(x_1^{(k+1)},\cdot,\lambda^{(k)})$; $\lambda^{(k+1)}=\lambda^{(k)}+\beta(A_1x_1^{(k+1)}+A_2x_2^{(k+1)}-b)$.</p></div></details></div>
-<div class="q"><div class="qh">S3</div><p>$S_\tau(t)$ formula in three cases.</p>
-  <details class="ans"><summary>Show answer</summary><div><p>$t-\tau$ ($t&gt;\tau$); 0 ($|t|\le\tau$); $t+\tau$ ($t&lt;-\tau$).</p></div></details></div>
-<div class="q"><div class="qh">S4</div><p>LASSO: the three closed-form updates.</p>
-  <details class="ans"><summary>Show answer</summary><div><p>$(M^TM+\beta I)x_1=M^Tb+\beta x_2^{(k)}-\lambda^{(k)}$; $x_2=S_{\gamma/\beta}(x_1^{(k+1)}+\lambda^{(k)}/\beta)$; $\lambda\mathrel{+}=\beta(x_1-x_2)$.</p></div></details></div>
-<div class="q"><div class="qh">S5</div><p>Centre after completing the square in the $x_1$-step and in the $x_2$-step of LASSO?</p>
-  <details class="ans"><summary>Show answer</summary><div><p>$a_k=x_2^{(k)}-\lambda^{(k)}/\beta$; $y=x_1^{(k+1)}+\lambda^{(k)}/\beta$.</p></div></details></div>
-<div class="q"><div class="qh">S6</div><p>Prox of the indicator of $[0,B]^n$? Why is it unique?</p>
-  <details class="ans"><summary>Show answer</summary><div><p>Projection = clip each component to $[0,B]$; unique because $C$ is nonempty, closed and convex (strictly convex squared distance).</p></div></details></div>
+<div class="q"><div class="qh">S3</div><p>Write the three ADMM steps. Which iterates does each one use?</p>
+  <details class="ans"><summary>Show answer</summary><div><p>$x_1$: argmin of $L_A(\cdot,x_2^{(k)},\lambda^{(k)})$; $x_2$: argmin of $L_A(x_1^{(k+1)},\cdot,\lambda^{(k)})$; $\lambda^{(k+1)}=\lambda^{(k)}+\beta(A_1x_1^{(k+1)}+A_2x_2^{(k+1)}-b)$.</p></div></details></div>
+<div class="q"><div class="qh">S4</div><p>$S_\tau(t)$ in three cases. What is the threshold for $\gamma|z|+\frac{\beta}{2}(z-y)^2$?</p>
+  <details class="ans"><summary>Show answer</summary><div><p>$t-\tau$ ($t&gt;\tau$); 0 ($|t|\le\tau$); $t+\tau$ ($t&lt;-\tau$). The threshold is $\gamma/\beta$.</p></div></details></div>
+<div class="q"><div class="qh">S5</div><p>LASSO: the three closed-form updates.</p>
+  <details class="ans"><summary>Show answer</summary><div><p>$(M^TM+\beta I)x_1=M^Tb+\beta x_2^{(k)}-\lambda^{(k)}$; $x_2=S_{\gamma/\beta}(x_1^{(k+1)}+\lambda^{(k)}/\beta)$; $\lambda\leftarrow\lambda+\beta(x_1-x_2)$.</p></div></details></div>
+<div class="q"><div class="qh">S6</div><p>How do you write "$x\in C$" inside an $f_i$, and what does the corresponding step become for a box?</p>
+  <details class="ans"><summary>Show answer</summary><div><p>Use the indicator $P$ (0 on $C$, $+\infty$ outside). The step becomes the projection onto $C$; for a box that's clipping each entry. It's unique because $C$ is nonempty, closed and convex.</p></div></details></div>
 <div class="q"><div class="qh">S7</div><p>When is a minimiser of $L(\cdot,\lambda^*)$ guaranteed to be primal optimal?</p>
-  <details class="ans"><summary>Show answer</summary><div><p>Under strong duality with attainment: if it is feasible, or if it is the unique minimiser (e.g. $f_1+f_2$ strictly convex).</p></div></details></div>
+  <details class="ans"><summary>Show answer</summary><div><p>Under strong duality with attainment: if it is feasible, or if it is the unique minimiser (e.g. when the full objective is strictly convex in all its variables).</p></div></details></div>
 <p><label><input type="checkbox" data-key="m1-done"> I finished this module</label></p>
+</section>
+
+<!-- ================= SUMMARY ================= -->
+<section id="must">
+<h2>Summary card (for revision; the formula sheet copies this)</h2>
+<div class="box must"><span class="tag">Memorise cold</span>
+<ul>
+<li><b>Problem:</b> $\min f_1(x_1)+f_2(x_2)$ s.t. $A(x_1,x_2)=A_1x_1+A_2x_2-b=0$. Each piece gets its own copy; only the constraint links them.</li>
+<li><b>Augmented Lagrangian</b> ($\beta&gt;0$ fixed): $L_A=f_1(x_1)+f_2(x_2)+\lambda^TA(x_1,x_2)+\frac{\beta}{2}\|A(x_1,x_2)\|^2$ (price + penalty).</li>
+<li><b>One round:</b> $x_1^{(k+1)}=\arg\min L_A(\cdot,x_2^{(k)},\lambda^{(k)})$; $x_2^{(k+1)}=\arg\min L_A(x_1^{(k+1)},\cdot,\lambda^{(k)})$; $\lambda^{(k+1)}=\lambda^{(k)}+\beta A(x_1^{(k+1)},x_2^{(k+1)})$. New $x_1$, old $\lambda$ in step 2.</li>
+<li><b>Completing the square:</b> $\lambda^T(z-c)+\frac{\beta}{2}\|z-c\|^2=\frac{\beta}{2}\|z-(c-\lambda/\beta)\|^2+$ const. With $\lambda^T(c-z)$ the centre is $c+\lambda/\beta$.</li>
+<li><b>Soft threshold:</b> $\arg\min_z\gamma|z|+\frac{\beta}{2}(z-y)^2=S_{\gamma/\beta}(y)$, $S_\tau(t)=\operatorname{sign}(t)\max(|t|-\tau,0)$.</li>
+<li><b>Indicator → projection:</b> $\arg\min_v P_C(v)+\frac{\beta}{2}\|v-y\|^2=\Pi_C(y)$; box = clip, orthant = $\max(y_i,0)$.</li>
+<li><b>LASSO</b> ($\frac12\|Mx-b\|^2+\gamma\|x\|_1$, split $x_1=x_2$): $(M^TM+\beta I)x_1=M^Tb+\beta x_2^{(k)}-\lambda^{(k)}$; $x_2=S_{\gamma/\beta}(x_1^{(k+1)}+\lambda^{(k)}/\beta)$; $\lambda\leftarrow\lambda+\beta(x_1-x_2)$.</li>
+<li><b>Example 2</b> ($\|Mx-b\|^2$ with no ½, $+\gamma\|x\|_1+P_C(x)$; two copies $u,v$; prices $\lambda_u,\lambda_v$): with $a_k=u^{(k)}-\lambda_u^{(k)}/\beta$, $c_k=v^{(k)}-\lambda_v^{(k)}/\beta$: $(M^TM+\beta I)x_1^{(k+1)}=M^Tb+\frac{\beta}{2}(a_k+c_k)$; with $y_u=x_1^{(k+1)}+\lambda_u^{(k)}/\beta$, $y_v=x_1^{(k+1)}+\lambda_v^{(k)}/\beta$: $u=S_{\gamma/\beta}(y_u)$, $v=\Pi_C(y_v)$; then $\lambda_u\mathrel{+}=\beta(x_1-u)$, $\lambda_v\mathrel{+}=\beta(x_1-v)$.</li>
+<li><b>Price update sign:</b> $\lambda\leftarrow\lambda+\beta\times$(whatever $\lambda$ multiplies in $L_A$).</li>
+</ul>
+</div>
 </section>
 
 </main>

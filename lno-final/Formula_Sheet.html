@@ -5,35 +5,22 @@
 <script>window.MathJax = { tex: { inlineMath: [['$','$'],['\\(','\\)']], displayMath: [['$$','$$'],['\\[','\\]']] } };</script>
 <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml.js"></script>
 <style>@media print{h2{break-before:auto;margin-top:14px} .box{break-inside:avoid} .small{display:none}}</style>
-</head><body><div class="layout"><nav class="toc"><a class="home" href="./">← START HERE</a><a href="#M1">M1 · ADMM (Alternating Direction Method of Multipliers)</a><a href="#M2">M2 · Constrained optimality: KKT, cones, second order</a><a href="#M3">M3 · Convexity and duality (incl. LP duality)</a><a href="#M4">M4 · LP (simplex concepts) and QP</a><a href="#M5">M5 · Unconstrained algorithms: line search, GD, Newton, CG</a><a href="#M6">M6 · Unconstrained optimality and convexity</a><a href="#traps">Trap checklist</a></nav>
+</head><body><div class="layout"><nav class="toc"><a class="home" href="./">← START HERE</a><a href="#M1">M1 · ADMM, from zero</a><a href="#M2">M2 · Constrained optimality: KKT, cones, second order</a><a href="#M3">M3 · Convexity and duality (incl. LP duality)</a><a href="#M4">M4 · LP (simplex concepts) and QP</a><a href="#M5">M5 · Unconstrained algorithms: line search, GD, Newton, CG</a><a href="#M6">M6 · Unconstrained optimality and convexity</a><a href="#traps">Trap checklist</a></nav>
 <main><h1>Formula sheet: everything to have cold</h1>
 <p class="sub">The "Must remember" boxes of all six modules on one page, plus the trap checklist. Read it aloud tomorrow morning; copy what you can't recall onto your handwritten sheet. Print with Ctrl+P (answers and buttons are hidden in print).</p>
-<section id="M1"><h2>M1 · ADMM (Alternating Direction Method of Multipliers) <a class="small" href="M1_ADMM.html">open module →</a></h2>
+<section id="M1"><h2>M1 · ADMM, from zero <a class="small" href="M1_ADMM.html">open module →</a></h2>
 
 <div class="box must"><span class="tag">Memorise cold</span>
 <ul>
-<li><b>Problem:</b> $\min_{x_1,x_2}\ f_1(x_1)+f_2(x_2)$ s.t. $A(x_1,x_2)=A_1x_1+A_2x_2-b=0$.</li>
-<li><b>Augmented Lagrangian</b> ($\beta&gt;0$ fixed):
-$$L_A(x_1,x_2,\lambda)=f_1(x_1)+f_2(x_2)+\lambda^T A(x_1,x_2)+\frac{\beta}{2}\|A(x_1,x_2)\|_2^2$$</li>
-<li><b>One ADMM iteration</b> (order matters):
-$$\begin{aligned}
-x_1^{(k+1)}&\in\arg\min_{x_1} L_A(x_1,\,x_2^{(k)},\,\lambda^{(k)})\\
-x_2^{(k+1)}&\in\arg\min_{x_2} L_A(x_1^{(k+1)},\,x_2,\,\lambda^{(k)})\\
-\lambda^{(k+1)}&=\lambda^{(k)}+\beta\,A(x_1^{(k+1)},x_2^{(k+1)})
-\end{aligned}$$
-The $x_2$-step uses the <b>new</b> $x_1$ and the <b>old</b> $\lambda$.</li>
-<li><b>Completing the square</b> (the one identity you use every time):
-$$\lambda^T(z-c)+\frac{\beta}{2}\|z-c\|^2=\frac{\beta}{2}\Big\|z-\big(c-\tfrac{\lambda}{\beta}\big)\Big\|^2-\frac{\|\lambda\|^2}{2\beta}$$
-If the sign inside is flipped ($\lambda^T(c-z)$), the centre is $c+\lambda/\beta$.</li>
-<li><b>Soft thresholding:</b> $\arg\min_z\ \gamma|z|+\frac{\beta}{2}(z-y)^2=S_{\gamma/\beta}(y)$, with
-$S_\tau(t)=\operatorname{sign}(t)\max(|t|-\tau,0)$, i.e. $t-\tau$ if $t&gt;\tau$; $0$ if $|t|\le\tau$; $t+\tau$ if $t&lt;-\tau$.</li>
-<li><b>Indicator → projection:</b> $\arg\min_v\ P_C(v)+\frac{\beta}{2}\|v-y\|^2=\Pi_C(y)$. Box $[0,B]^n$: clip each component, $\min(\max(y_i,0),B)$. Orthant: $\max(y_i,0)$.</li>
-<li><b>LASSO answer</b> ($\min \frac12\|Mx-b\|^2+\gamma\|x\|_1$, split $x_1-x_2=0$):
-$$\begin{aligned}
-(M^TM+\beta I)\,x_1^{(k+1)}&=M^Tb+\beta x_2^{(k)}-\lambda^{(k)}\\
-x_2^{(k+1)}&=S_{\gamma/\beta}\big(x_1^{(k+1)}+\lambda^{(k)}/\beta\big)\\
-\lambda^{(k+1)}&=\lambda^{(k)}+\beta\,(x_1^{(k+1)}-x_2^{(k+1)})
-\end{aligned}$$</li>
+<li><b>Problem:</b> $\min f_1(x_1)+f_2(x_2)$ s.t. $A(x_1,x_2)=A_1x_1+A_2x_2-b=0$. Each piece gets its own copy; only the constraint links them.</li>
+<li><b>Augmented Lagrangian</b> ($\beta&gt;0$ fixed): $L_A=f_1(x_1)+f_2(x_2)+\lambda^TA(x_1,x_2)+\frac{\beta}{2}\|A(x_1,x_2)\|^2$ (price + penalty).</li>
+<li><b>One round:</b> $x_1^{(k+1)}=\arg\min L_A(\cdot,x_2^{(k)},\lambda^{(k)})$; $x_2^{(k+1)}=\arg\min L_A(x_1^{(k+1)},\cdot,\lambda^{(k)})$; $\lambda^{(k+1)}=\lambda^{(k)}+\beta A(x_1^{(k+1)},x_2^{(k+1)})$. New $x_1$, old $\lambda$ in step 2.</li>
+<li><b>Completing the square:</b> $\lambda^T(z-c)+\frac{\beta}{2}\|z-c\|^2=\frac{\beta}{2}\|z-(c-\lambda/\beta)\|^2+$ const. With $\lambda^T(c-z)$ the centre is $c+\lambda/\beta$.</li>
+<li><b>Soft threshold:</b> $\arg\min_z\gamma|z|+\frac{\beta}{2}(z-y)^2=S_{\gamma/\beta}(y)$, $S_\tau(t)=\operatorname{sign}(t)\max(|t|-\tau,0)$.</li>
+<li><b>Indicator → projection:</b> $\arg\min_v P_C(v)+\frac{\beta}{2}\|v-y\|^2=\Pi_C(y)$; box = clip, orthant = $\max(y_i,0)$.</li>
+<li><b>LASSO</b> ($\frac12\|Mx-b\|^2+\gamma\|x\|_1$, split $x_1=x_2$): $(M^TM+\beta I)x_1=M^Tb+\beta x_2^{(k)}-\lambda^{(k)}$; $x_2=S_{\gamma/\beta}(x_1^{(k+1)}+\lambda^{(k)}/\beta)$; $\lambda\leftarrow\lambda+\beta(x_1-x_2)$.</li>
+<li><b>Example 2</b> ($\|Mx-b\|^2$ with no ½, $+\gamma\|x\|_1+P_C(x)$; two copies $u,v$; prices $\lambda_u,\lambda_v$): with $a_k=u^{(k)}-\lambda_u^{(k)}/\beta$, $c_k=v^{(k)}-\lambda_v^{(k)}/\beta$: $(M^TM+\beta I)x_1^{(k+1)}=M^Tb+\frac{\beta}{2}(a_k+c_k)$; with $y_u=x_1^{(k+1)}+\lambda_u^{(k)}/\beta$, $y_v=x_1^{(k+1)}+\lambda_v^{(k)}/\beta$: $u=S_{\gamma/\beta}(y_u)$, $v=\Pi_C(y_v)$; then $\lambda_u\mathrel{+}=\beta(x_1-u)$, $\lambda_v\mathrel{+}=\beta(x_1-v)$.</li>
+<li><b>Price update sign:</b> $\lambda\leftarrow\lambda+\beta\times$(whatever $\lambda$ multiplies in $L_A$).</li>
 </ul>
 </div>
 </section><section id="M2"><h2>M2 · Constrained optimality: KKT, cones, second order <a class="small" href="M2_Constrained_Optimality_KKT.html">open module →</a></h2>
