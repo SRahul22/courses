@@ -1,0 +1,835 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>M2 · Constrained optimality: KKT, cones, second order</title>
+<link rel="stylesheet" href="assets/fe.css">
+<script>
+  // MathJax: inline $...$ or \(...\), display $$...$$ or \[...\]
+  window.MathJax = { tex: { inlineMath: [['$','$'],['\\(','\\)']], displayMath: [['$$','$$'],['\\[','\\]']] } };
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml.js"></script>
+</head>
+<body>
+<div class="layout">
+<nav class="toc">
+  <a class="home" href="./">← START HERE</a>
+  <a href="#must">1. Must remember</a>
+  <a href="#concepts">2. Concepts</a>
+  <a href="#c-setup">&nbsp;&nbsp;2.1 Setup and Lagrangian</a>
+  <a href="#c-kkt">&nbsp;&nbsp;2.2 The five KKT parts</a>
+  <a href="#c-ladder">&nbsp;&nbsp;2.3 The KKT ladder</a>
+  <a href="#c-enum">&nbsp;&nbsp;2.4 Active-set enumeration</a>
+  <a href="#c-licq">&nbsp;&nbsp;2.5 LICQ</a>
+  <a href="#c-cones">&nbsp;&nbsp;2.6 Cones, Farkas, FONC</a>
+  <a href="#c-crit">&nbsp;&nbsp;2.7 Critical cone</a>
+  <a href="#c-so">&nbsp;&nbsp;2.8 SONC and SOSC</a>
+  <a href="#c-eig">&nbsp;&nbsp;2.9 Eigenvector problems</a>
+  <a href="#c-bank">&nbsp;&nbsp;2.10 Counter-example bank</a>
+  <a href="#c-proof">&nbsp;&nbsp;2.11 The FONC proof</a>
+  <a href="#prof">3. What he said</a>
+  <a href="#practice">4. Practice</a>
+  <a href="#p-a">&nbsp;&nbsp;A. Warm-up traps</a>
+  <a href="#p-b">&nbsp;&nbsp;B. Quiz 3 MCQs</a>
+  <a href="#p-c">&nbsp;&nbsp;C. Medium (new)</a>
+  <a href="#p-d">&nbsp;&nbsp;D. Midterm 2 III</a>
+  <a href="#p-e">&nbsp;&nbsp;E. Midterm 2 IV–VI</a>
+  <a href="#p-f">&nbsp;&nbsp;F. Exam level (new)</a>
+  <a href="#selftest">5. Self-test</a>
+</nav>
+<main>
+<h1>M2 · Constrained optimality: KKT, cones, second order</h1>
+<p class="sub">Chapter 6 · about 90 min (Must remember 5 · Concepts 35 · What he said 3 · Practice 40 · Self-test 7) · Goal: given any smooth constrained problem, run the full KKT ladder (rewrite → Lagrangian → KKT → active sets → multipliers → LICQ → critical cone → SONC/SOSC → classify) without a single sign error, and answer every cone/LICQ/second-order trap MCQ.</p>
+
+<!-- ============ 1. MUST REMEMBER ============ -->
+<section id="must">
+<h2>1. Must remember</h2>
+<div class="box must"><span class="tag">Memorise cold (course form, Theorem 6.3.3 and 6.4.1–6.4.2)</span>
+  <ul>
+    <li><b>Problem form:</b> $\min f(x)$ s.t. $h_i(x)=0$ ($i=1..m$), $g_j(x)\le 0$ ($j=1..p$). Rewrite every constraint into this form <i>first</i>: $x_1\ge 0 \to -x_1\le 0$; $x^\top Qx\ge 1\to 1-x^\top Qx\le 0$. For a max, minimise $-F$.</li>
+    <li><b>Lagrangian:</b> $\ell(x,\lambda,\mu)=f(x)+\sum_i\lambda_i h_i(x)+\sum_j \mu_j g_j(x)$ (plus signs). Matrix form of stationarity: $\nabla f(x^\star)+J_h(x^\star)\lambda^\star+J_g(x^\star)\mu^\star=0$, with $J$ = columns are gradients.</li>
+    <li><b>KKT (five parts):</b> (1) stationarity $\nabla_x\ell=0$; (2) $h(x^\star)=0$; (3) $g(x^\star)\le 0$; (4) $\mu^\star\ge 0$; (5) $\mu_j^\star g_j(x^\star)=0$ for every $j$. $\lambda$ has <b>no sign</b>.</li>
+    <li><b>KKT is necessary only at regular points</b> (LICQ: gradients of all equalities + active inequalities linearly independent). Under LICQ the multipliers are unique.</li>
+    <li><b>Active split:</b> $\mathcal A_+=\{j\in\mathcal A:\mu_j^\star\gt 0\}$, $\mathcal A_0=\{j\in\mathcal A:\mu_j^\star=0\}$.</li>
+    <li><b>Critical cone:</b> $C=\{d:\ \nabla h_i^\top d=0\ \forall i,\ \ \nabla g_j^\top d=0\ (j\in\mathcal A_+),\ \ \nabla g_j^\top d\le 0\ (j\in\mathcal A_0)\}$. Equivalently $C=\{d\in\mathcal L_\Omega:\nabla f(x^\star)^\top d=0\}$.</li>
+    <li><b>$L_\star=\nabla^2_{xx}\ell(x^\star,\lambda^\star,\mu^\star)$</b> = $\nabla^2 f+\sum\lambda_i^\star\nabla^2h_i+\sum\mu_j^\star\nabla^2 g_j$ (multipliers held fixed).</li>
+    <li><b>SONC</b> (needs regular + local min): $d^\top L_\star d\ge 0$ for every $d\in C$. Fails ⇒ <b>not</b> a local min.</li>
+    <li><b>SOSC</b> (needs only KKT, <b>no LICQ</b>): $d^\top L_\star d\gt 0$ for every $0\ne d\in C$ ⇒ <b>strict</b> local min. $C=\{0\}$ ⇒ SOSC passes (nothing to test).</li>
+    <li><b>Cones:</b> $T_\Omega\subseteq\mathcal L_\Omega$ always; regular ⇒ $T_\Omega=\mathcal L_\Omega$; LICQ is sufficient, not necessary; all constraints linear ⇒ $T=\mathcal L$. Geometric FONC (no CQ): $\nabla f(x^\star)^\top d\ge 0$ for all $d\in T_\Omega(x^\star)$.</li>
+    <li><b>Farkas:</b> [$c^\top d\ge 0$ whenever $A^\top d=0,\ B^\top d\le 0$] ⇔ [$c+A\lambda+B\mu=0$ for some $\lambda$ free, $\mu\ge 0$].</li>
+    <li><b>Eigenvector answer:</b> $\max x^\top x$ s.t. $x^\top Qx\le 1$ → $1/\lambda_1$ at $\pm v_1/\sqrt{\lambda_1}$; $\min x^\top x$ s.t. $x^\top Qx\ge 1$ (or $=1$) → $1/\lambda_n$ at $\pm v_n/\sqrt{\lambda_n}$.</li>
+  </ul>
+</div>
+</section>
+
+<!-- ============ 2. CONCEPTS ============ -->
+<section id="concepts">
+<h2>2. Concepts</h2>
+
+<h3 id="c-setup">2.1 Setup: rewrite, then build the Lagrangian</h3>
+<p><b>In plain words:</b> the professor's whole sign system rests on one convention: every inequality is written as "something $\le 0$". If you write it the other way, the sign of $\mu$ flips and you will reject the right answer. So step zero of every problem is: rewrite the constraints, give each one a name, then write $\ell$.</p>
+<p><b>Precisely:</b> $\Omega=\{x: h_i(x)=0,\ i=1..m;\ g_j(x)\le 0,\ j=1..p\}$; active set $\mathcal A(x^\star)=\{j:g_j(x^\star)=0\}$; $\ell=f+\lambda^\top h+\mu^\top g$. (The notes write $\ell$ for the Lagrangian and $L_\star$ for its Hessian; Midterm 2 wrote $L$ for the Lagrangian. Same thing; read the notation in the question.)</p>
+<div class="box example"><span class="tag">Worked example</span>
+  Problem: $\max\ x_1x_2$ s.t. $x_1+x_2\ge 1$, $x_1^2+x_2^2=4$, $x_2\le 3$.
+  <ol class="steps">
+    <li>Max → min: $f(x)=-x_1x_2$.</li>
+    <li>Equality: $h(x)=x_1^2+x_2^2-4=0$.</li>
+    <li>Inequalities: $g_1(x)=1-x_1-x_2\le 0$, $g_2(x)=x_2-3\le 0$.</li>
+    <li>$\ell=-x_1x_2+\lambda(x_1^2+x_2^2-4)+\mu_1(1-x_1-x_2)+\mu_2(x_2-3)$, $\lambda$ free, $\mu_1,\mu_2\ge 0$.</li>
+  </ol>
+</div>
+<div class="box trap"><span class="tag">Trap</span> Writing $g=x_1+x_2-1\ge 0$ and then $\ell=f+\mu g$ with $\mu\ge 0$ gives the wrong sign. He said: <i>other books' forms "not accepted"</i>. Always "$\le 0$" and "+".</div>
+
+<h3 id="c-kkt">2.2 The five KKT parts</h3>
+<p><b>In plain words:</b> at a (regular) minimum, the downhill direction $-\nabla f$ must be "pushed back" by the constraints: it is a combination of equality gradients (any sign: an equality can push either way) and active inequality gradients with <i>nonnegative</i> weights (a wall can only push you back inside, never pull you out). Inactive constraints get weight zero; complementary slackness is just the bookkeeping that says so without naming the active set.</p>
+<p><b>Precisely (Theorem 6.3.3, KKT necessary conditions):</b> if $f,h,g$ are $C^1$ near a local minimizer $x^\star$ and $x^\star$ is regular, then there exist $\lambda^\star\in\mathbb R^m$, $\mu^\star\in\mathbb R^p$ with</p>
+<div class="mathwide">$$\underbrace{\nabla f(x^\star)+\sum_{i=1}^m\lambda_i^\star\nabla h_i(x^\star)+\sum_{j=1}^p\mu_j^\star\nabla g_j(x^\star)=0}_{\text{stationarity}},\quad \underbrace{h(x^\star)=0,\ g(x^\star)\le 0}_{\text{primal feasibility}},\quad \underbrace{\mu^\star\ge 0}_{\text{dual feasibility}},\quad \underbrace{\mu_j^\star g_j(x^\star)=0\ \forall j}_{\text{complementarity}}.$$</div>
+<p>Facts: $\mu_j\gt 0\Rightarrow g_j=0$ (active); $g_j\lt 0\Rightarrow\mu_j=0$; but <b>active does not imply $\mu_j\gt 0$</b> (degenerate active constraint). Because every product $\mu_jg_j\le 0$, the single equation $\mu^\top g=0$ is equivalent to all $p$ products being zero (no cancellation).</p>
+<div class="box example"><span class="tag">Worked example (Quiz 3 Q14)</span>
+  $\min (x-2)^2$ s.t. $g(x)=x-1\le 0$. $\ell=(x-2)^2+\mu(x-1)$.
+  <ol class="steps">
+    <li>KKT: $2(x-2)+\mu=0$, $x\le 1$, $\mu\ge 0$, $\mu(x-1)=0$.</li>
+    <li>Inactive ($\mu=0$): $x=2$, infeasible. Reject.</li>
+    <li>Active ($x=1$): $\mu=2\ge 0$. KKT pair $(x^\star,\mu^\star)=(1,2)$.</li>
+    <li>$\mu\gt 0$ so $C=\{d: 1\cdot d=0\}=\{0\}$ ⇒ SOSC passes vacuously ⇒ strict local min (in fact global, convex problem).</li>
+  </ol>
+</div>
+
+<h3 id="c-ladder">2.3 The KKT ladder: the procedure for every descriptive question</h3>
+<div class="box must"><span class="tag">The ladder (write every rung)</span>
+  <ol class="steps">
+    <li><b>Rewrite</b> constraints as $h=0$, $g\le 0$; max → min of $-F$.</li>
+    <li><b>Lagrangian</b> $\ell=f+\lambda^\top h+\mu^\top g$.</li>
+    <li><b>Write all five KKT parts</b> explicitly (he marks this).</li>
+    <li><b>Enumerate active sets</b> $\mathcal A\subseteq\{1..p\}$: set $\mu_j=0$ for $j\notin\mathcal A$, $g_j=0$ for $j\in\mathcal A$.</li>
+    <li><b>Solve</b> stationarity + $h=0$ + active $g_j=0$ for $x,\lambda,\mu_{\mathcal A}$.</li>
+    <li><b>Check</b> $\mu_{\mathcal A}\ge 0$ and that inactive $g_j(x)\lt 0$ (or $\le 0$) and $h=0$. Discard failures, saying which condition fails.</li>
+    <li><b>LICQ</b> at each survivor (also ask: could a non-regular feasible point be a minimum the KKT search missed?).</li>
+    <li><b>Split</b> active set into $\mathcal A_+$ ($\mu\gt 0$) and $\mathcal A_0$ ($\mu=0$).</li>
+    <li><b>Critical cone</b> $C$: equalities for $h$ and $\mathcal A_+$, "$\le$" for $\mathcal A_0$.</li>
+    <li><b>Hessian of $\ell$</b> with multipliers fixed: $L_\star$.</li>
+    <li><b>Test</b> $d^\top L_\star d$ on $C$: $\gt 0$ for all $d\ne 0$ ⇒ SOSC; some $d\in C$ with $\lt 0$ at a regular point ⇒ SONC fails; $\ge 0$ with some zero ⇒ inconclusive. $C=\{0\}$ ⇒ SOSC passes.</li>
+    <li><b>Classify</b> each point in one clear sentence (strict local min / not a local min / undecided), then global (compare values; existence via compactness or coercivity).</li>
+  </ol>
+</div>
+<div class="box example"><span class="tag">Worked example: full ladder (Quiz 3 Q13)</span>
+  $\min (u-2)^2+v^2$ s.t. $u+v=1$, $u\ge 0$, $v\ge 0$.
+  <ol class="steps">
+    <li>$h=u+v-1=0$, $g_1=-u\le 0$, $g_2=-v\le 0$. $\ell=(u-2)^2+v^2+\lambda(u+v-1)-\mu_1u-\mu_2v$.</li>
+    <li>KKT: $2(u-2)+\lambda-\mu_1=0$, $2v+\lambda-\mu_2=0$; $u+v=1$; $u,v\ge 0$; $\mu_1,\mu_2\ge 0$; $\mu_1u=0$, $\mu_2v=0$.</li>
+    <li>$\mathcal A=\varnothing$: $\mu=0$ ⇒ $2(u-2)=2v$ with $u+v=1$ ⇒ $(u,v)=(3/2,-1/2)$, $\lambda=1$: violates $v\ge 0$. Reject.</li>
+    <li>$\mathcal A=\{1\}$: $u=0,v=1$, $\mu_2=0$ ⇒ $\lambda=-2$, $\mu_1=2(0-2)+\lambda=-6\lt 0$. Reject (dual feasibility).</li>
+    <li>$\mathcal A=\{2\}$: $v=0,u=1$, $\mu_1=0$ ⇒ $\lambda=2$, $\mu_2=\lambda=2\ge 0$. <b>KKT point $(1,0)$, $\lambda^\star=2$, $\mu^\star=(0,2)$.</b></li>
+    <li>$\mathcal A=\{1,2\}$: $u=v=0$ violates $u+v=1$. Impossible.</li>
+    <li>LICQ at $(1,0)$: $\nabla h=(1,1)$, $\nabla g_2=(0,-1)$ independent ✓.</li>
+    <li>$\mathcal A_+=\{2\}$, $\mathcal A_0=\varnothing$. $C=\{d: d_1+d_2=0,\ -d_2=0\}=\{0\}$.</li>
+    <li>$L_\star=2I$ (constraints linear). $C=\{0\}$ ⇒ SOSC passes ⇒ <b>$(1,0)$ is a strict local minimizer</b> (global too: convex problem; it is the only KKT point).</li>
+  </ol>
+</div>
+<p><b>Parametric version.</b> When $f$ contains a parameter $a$, the active set changes with $a$. Method: do the enumeration with $a$ symbolic; each case gives a condition on $a$ ("$\mu\ge 0$ iff $a\ge 1$", "inactive iff $a\lt 1$"). Then <b>treat each transition value separately</b>: at the switch value the constraint is usually active with $\mu=0$ (it is in $\mathcal A_0$), so its row in $C$ is "$\le$", not "$=$". Full example: Midterm 2 IV and new question F1 below.</p>
+
+<h3 id="c-enum">2.4 Active-set enumeration tricks</h3>
+<p><b>In plain words:</b> with $p$ inequalities there are $2^p$ cases. Kill most of them fast:</p>
+<ul>
+  <li><b>Geometrically impossible sets:</b> if forcing some $g_j=0$ together makes another constraint fail, that exact active set never occurs (Midterm 2 III.1: $g_2=g_3=0$ forces $x=0$ where $g_1=4\gt 0$).</li>
+  <li><b>Too many actives:</b> more active constraints than unknowns usually has no solution, and if it does, check LICQ (more than $n$ gradients cannot be independent).</li>
+  <li><b>Sign contradictions:</b> e.g. Midterm 2 IV: if $x_2\gt 0$ then $\mu_2=0$ and $(1+2\mu_1)x_2+1=0$ is impossible, so $x_2=0$ at every KKT point.</li>
+  <li><b>Homogeneity trick:</b> dot stationarity with $x$ when $g$'s are linear and homogeneous: $2\|x\|^2+\mu_2g_2+\mu_3g_3=2\|x\|^2=0$ (Midterm 2 III.2).</li>
+  <li>Report infeasible roots and negative multipliers explicitly; the examiner gives marks for the rejections.</li>
+</ul>
+
+<h3 id="c-licq">2.5 LICQ (regular point)</h3>
+<p><b>In plain words:</b> the constraint gradients that matter at the point (all equalities + active inequalities) must be linearly independent. Then the linear picture of the constraints is faithful, KKT multipliers must exist at every local min, and they are unique.</p>
+<p><b>Precisely (Def. 6.1.4.1):</b> $x^\star$ is regular if $\{\nabla h_i(x^\star)\}_{i=1}^m\cup\{\nabla g_j(x^\star)\}_{j\in\mathcal A(x^\star)}$ is linearly independent, i.e. $\operatorname{rank}J(x^\star)=m+|\mathcal A(x^\star)|$. No active constraints ⇒ LICQ holds vacuously.</p>
+<ul>
+  <li>LICQ depends on the <i>representation</i>: $v=0$ is regular at the origin, $v^2=0$ (or $v^3=0$) is not, though the set is the same.</li>
+  <li>Under LICQ the multipliers are unique (full column rank). This does <b>not</b> mean the minimizer is unique.</li>
+  <li>LICQ is about gradient independence; <b>strict complementarity</b> ($\mathcal A_0=\varnothing$) is about multiplier signs. Different things: Midterm 2 IV at $a=1$ has LICQ but not strict complementarity.</li>
+</ul>
+<div class="box example"><span class="tag">Worked example</span>
+  Midterm 2 III at $(3,1)$: active $g_1,g_2$ with $\nabla g_1=(-1,-2x_2)=(-1,-2)$, $\nabla g_2=(-1,3)$. $\det\begin{pmatrix}-1&-1\\-2&3\end{pmatrix}=-3-2=-5\ne 0$ ⇒ LICQ holds.
+</div>
+
+<h3 id="c-cones">2.6 Tangent cone, linearized cone, Farkas, geometric FONC</h3>
+<p><b>In plain words:</b> the <i>tangent cone</i> $T_\Omega$ is the set of directions in which you can actually leave $x^\star$ while staying feasible (possibly along a curve). The <i>linearized cone</i> $\mathcal L_\Omega$ is what the constraint gradients <i>claim</i> are the feasible directions. The gradients can only over-promise, never under-promise: $T\subseteq\mathcal L$. At a regular point they agree, and then Farkas turns "no feasible descent direction" into "multipliers exist".</p>
+<p><b>Precisely:</b></p>
+<ul>
+  <li>Def 6.1.2.1: $d\in T_\Omega(x^\star)$ iff there are $t_k\downarrow 0$, $d_k\to d$ with $x^\star+t_kd_k\in\Omega$.</li>
+  <li>Def 6.1.3.1: $\mathcal L_\Omega(x^\star)=\{d:\nabla h_i(x^\star)^\top d=0\ \forall i,\ \nabla g_j(x^\star)^\top d\le 0\ \forall j\in\mathcal A(x^\star)\}$ (closed convex cone).</li>
+  <li>Theorem 6.1.1: $T_\Omega\subseteq\mathcal L_\Omega$ always ($C^1$ constraints); $x^\star$ regular ⇒ $T_\Omega=\mathcal L_\Omega$. LICQ is sufficient, not necessary (e.g. $v=0$ and $2v=0$ together: dependent gradients, yet both cones are the horizontal axis). All constraints affine ⇒ $T=\mathcal L$.</li>
+  <li>$T_\Omega$ need not be convex or a subspace ($uv=0$: the union of the two axes).</li>
+  <li>Theorem 6.2.1 (fundamental FONC, <b>no constraint qualification</b>): $x^\star$ local min ⇒ $d^\top\nabla f(x^\star)\ge 0$ for every $d\in T_\Omega(x^\star)$.</li>
+  <li>Lemma 6.3.1 (Farkas): $d^\top c\ge 0$ for every $d$ with $A^\top d=0$, $B^\top d\le 0$ ⇔ $\exists\lambda$ (free), $\mu\ge 0$: $c+A\lambda+B\mu=0$. No rank assumption.</li>
+  <li>Chain to KKT: local min ⇒ FONC on $T$ ⇒ (regular: $T=\mathcal L$) FONC on $\mathcal L$ ⇒ (Farkas with $c=\nabla f$, $A=J_h$, $B=J_{g,\mathcal A}$) stationarity with $\mu_{\mathcal A}\ge 0$.</li>
+  <li>Reverse direction holds without LICQ: a KKT point always satisfies the tangent-cone FOC, because $T\subseteq\mathcal L$ and KKT gives $\nabla f^\top d\ge 0$ on all of $\mathcal L$.</li>
+</ul>
+<div class="box example"><span class="tag">Worked example (Quiz 3 Q12, linear constraints so T = L)</span>
+  $f=u+2v$ on $u+v+w=0$, $u\ge 0$, $v\le 1$. At the origin.
+  <ol class="steps">
+    <li>Active: $-u\le 0$ (active), $v-1\le 0$ (inactive, $-1$).</li>
+    <li>Linear constraints ⇒ $T=\mathcal L=\{(a,b,c): a+b+c=0,\ -a\le 0\}$.</li>
+    <li>$\nabla f=(1,2,0)$. Try $d=(0,-1,1)$: in $T$ ($0+(-1)+1=0$, $a=0\ge 0$) and $\nabla f^\top d=-2\lt 0$ ⇒ FONC fails ⇒ origin is not a local min.</li>
+    <li>$(-1,0,1)$ also gives $-1$ but is <i>not</i> tangent ($a=-1\lt 0$).</li>
+  </ol>
+</div>
+<div class="box trap"><span class="tag">Trap</span> He said he will not ask you to compute tangent cones for curved constraints, only linear ones (where $T=\mathcal L$). But MCQs test the <i>facts</i>: $T\subseteq\mathcal L$, which examples break equality, which sign Farkas uses.</div>
+
+<h3 id="c-crit">2.7 Critical cone and the $\mathcal A_+/\mathcal A_0$ split</h3>
+<p><b>In plain words:</b> at a KKT point, every linearized-feasible direction has first-order change $\nabla f^\top d\ge 0$. Directions with $\gt 0$ are settled (you go uphill). Only directions with first-order change exactly $0$ (the "ties") need a second-order look. Those are the critical directions. A constraint with $\mu_j\gt 0$ is "pushing", so moving off it strictly costs first-order increase: critical directions must stay on it ($=0$). A constraint with $\mu_j=0$ (active but not pushing) costs nothing to leave, so you may move inward ($\le 0$).</p>
+<p><b>Precisely (Def 6.4.1.1):</b> $C=\{d\in\mathcal L_\Omega(x^\star):\nabla g_j(x^\star)^\top d=0\ \forall j\in\mathcal A_+\}$, i.e. equalities for $h$ and $\mathcal A_+$, inequalities $\le 0$ for $\mathcal A_0$. At a KKT point $C=\{d\in\mathcal L_\Omega:\nabla f(x^\star)^\top d=0\}$, because $d^\top\nabla f=-\sum_{j\in\mathcal A_+}\mu_j^\star\nabla g_j^\top d\ge 0$ with equality iff each term vanishes. $C$ is a closed convex cone; it is a subspace when $\mathcal A_0=\varnothing$.</p>
+<div class="box example"><span class="tag">Worked example (notes Ex. 6.4.3.2)</span>
+  $f=u+v^2$ on $u\ge 0$, $v\ge 0$, at the origin. $g_1=-u$, $g_2=-v$.
+  <ol class="steps">
+    <li>Stationarity: $(1,2v)+\mu_1(-1,0)+\mu_2(0,-1)=0$ at $(0,0)$ ⇒ $\mu_1=1$, $\mu_2=0$.</li>
+    <li>$\mathcal A=\{1,2\}$, $\mathcal A_+=\{1\}$, $\mathcal A_0=\{2\}$.</li>
+    <li>$\mathcal L_\Omega=\{a\ge 0,b\ge 0\}$; $C=\{-a=0,\ -b\le 0\}=\{(0,b):b\ge 0\}$ (a <b>ray</b>, not the line, not $\{0\}$).</li>
+    <li>$L_\star=\operatorname{diag}(0,2)$; $d^\top L_\star d=2b^2\gt 0$ for $b\gt 0$ ⇒ SOSC ⇒ strict local min.</li>
+    <li>Swap to $f=u-v^2$: same $\mu$ and $C$, but $d^\top L_\star d=-2b^2\lt 0$ ⇒ SONC fails ⇒ not a min (indeed $f(0,t)=-t^2$). If you had wrongly written $=0$ for the $\mathcal A_0$ row, $C$ would be $\{0\}$ and you would wrongly "pass" SOSC.</li>
+  </ol>
+</div>
+
+<h3 id="c-so">2.8 Second-order conditions (SONC, SOSC)</h3>
+<p><b>In plain words:</b> on the tie directions, look at curvature, but the curvature of the <i>Lagrangian</i>, not of $f$: the constraint's own bending matters (a curved constraint can turn a hill into a valley along the feasible curve). And only on $C$, not on all of $\mathbb R^n$.</p>
+<p><b>Precisely:</b></p>
+<ul>
+  <li><b>Theorem 6.4.1 (SONC):</b> $f,h,g\in C^2$, $x^\star$ a local minimizer, $x^\star$ regular ⇒ KKT multipliers exist and $d^\top L_\star d\ge 0$ for every $d\in C$.</li>
+  <li><b>Theorem 6.4.2 (SOSC):</b> $f,h,g\in C^2$, $(x^\star,\lambda^\star,\mu^\star)$ satisfies KKT, and $d^\top L_\star d\gt 0$ for every $0\ne d\in C$ ⇒ $x^\star$ is a <b>strict</b> local minimizer. <b>No regularity needed.</b></li>
+</ul>
+<table>
+<tr><th>Situation on $C$</th><th>Conclusion</th></tr>
+<tr><td>$C=\{0\}$</td><td>SOSC holds vacuously ⇒ strict local min (do not say "SOSC fails/not applicable")</td></tr>
+<tr><td>$d^\top L_\star d\gt 0$ for all $0\ne d\in C$</td><td>SOSC ⇒ strict local min, even if $L_\star$ is indefinite or singular on $\mathbb R^n$</td></tr>
+<tr><td>Some $d\in C$ with $d^\top L_\star d\lt 0$, point regular</td><td>SONC fails ⇒ not a local min</td></tr>
+<tr><td>$\ge 0$ on $C$, $=0$ for some $d\ne 0$</td><td>SONC holds, SOSC fails ⇒ undecided (use higher order or the objective directly)</td></tr>
+<tr><td>Negative curvature on $C$ but LICQ fails</td><td>No conclusion from SONC (it needs regularity)</td></tr>
+</table>
+<p><b>Why $\mathcal A_0$ rows keep "$\le$":</b> in the SONC proof you restrict to $\Omega_+$ (keep $\mathcal A_+$ constraints active); a zero-multiplier constraint contributes nothing to $\ell_\star-f$, so there is no reason to force it to stay active. Forcing "$=$" would throw away genuine feasible tie directions (the $u-v^2$ example above).</p>
+<div class="box example"><span class="tag">Worked example: constraint curvature (notes Ex. 6.4.3.1)</span>
+  $\min f=v-u^2$ s.t. $h=v-2u^2=0$, at the origin.
+  <ol class="steps">
+    <li>$\nabla f=(0,1)$, $\nabla h=(0,1)\ne 0$ ⇒ regular. Stationarity $(0,1)+\lambda(0,1)=0$ ⇒ $\lambda^\star=-1$.</li>
+    <li>$C=\{d:\nabla h^\top d=0\}=\{(a,0)\}$.</li>
+    <li>$\nabla^2 f=\operatorname{diag}(-2,0)$ (negative on $C$!), $\nabla^2h=\operatorname{diag}(-4,0)$. $L_\star=\nabla^2f+\lambda^\star\nabla^2h=\operatorname{diag}(-2+4,0)=\operatorname{diag}(2,0)$.</li>
+    <li>$d^\top L_\star d=2a^2\gt 0$ for $a\ne 0$ ⇒ SOSC ⇒ strict local min. Check: $f(u,2u^2)=u^2$. Using $\nabla^2 f$ alone would give the wrong answer.</li>
+  </ol>
+</div>
+<div class="box example"><span class="tag">Worked example: full Hessian indefinite, yet SOSC (Midterm 2 III corners)</span>
+  At $(3,1)$: $\mu=(4,2,0)$, both actives in $\mathcal A_+$, two independent rows ⇒ $C=\{0\}$. $L_\star=\operatorname{diag}(2,2-2\cdot 4)=\operatorname{diag}(2,-6)$ is indefinite, but there is no nonzero critical direction ⇒ SOSC passes ⇒ strict local min.
+</div>
+
+<h3 id="c-eig">2.9 Eigenvector problems (practise every variant)</h3>
+<p><b>In plain words:</b> stationarity always looks like $x=\mu Qx$ (or $Qx=\text{const}\cdot x$), so every boundary KKT point is an eigenvector scaled onto the constraint surface, and the multiplier is $1/\lambda_i$ (or $\lambda_i$). The critical cone at $\pm v_i$ is everything orthogonal to $v_i$, i.e. the span of the <i>other</i> eigenvectors. Then $d^\top L_\star d$ is a sum $\sum_{j\ne i}(\text{something with }\lambda_j-\lambda_i)\alpha_j^2$, and its sign picks out the smallest or largest eigenvalue.</p>
+<p><b>Setup:</b> $Q$ symmetric PD, distinct eigenvalues $0\lt\lambda_1\lt\dots\lt\lambda_n$, orthonormal $v_i$. Write $d=\sum_{j\ne i}\alpha_jv_j$.</p>
+<div class="box example"><span class="tag">Worked template: $\min x^\top x$ s.t. $x^\top Qx\ge 1$</span>
+  <ol class="steps">
+    <li>$g=1-x^\top Qx\le 0$. $\ell=x^\top x+\mu(1-x^\top Qx)$.</li>
+    <li>KKT: $2x-2\mu Qx=0$; $x^\top Qx\ge 1$; $\mu\ge 0$; $\mu(1-x^\top Qx)=0$.</li>
+    <li>Inactive ⇒ $\mu=0$ ⇒ $x=0$, infeasible. So active: $Qx=\tfrac1\mu x$ ⇒ $x=tv_i$, $\mu=1/\lambda_i\gt 0$, $\lambda_it^2=1$: $x_i^\pm=\pm v_i/\sqrt{\lambda_i}$, value $1/\lambda_i$.</li>
+    <li>LICQ: $\nabla g=-2Qx=-2\lambda_ix\ne 0$ ✓. $\mu\gt 0$ ⇒ $C=\{d:v_i^\top d=0\}=\operatorname{span}\{v_j:j\ne i\}$.</li>
+    <li>$L_\star=2(I-Q/\lambda_i)$, $d^\top L_\star d=2\sum_{j\ne i}(1-\lambda_j/\lambda_i)\alpha_j^2$.</li>
+    <li>$i=n$: all $\lambda_j\lt\lambda_n$ ⇒ every coefficient $\gt 0$ ⇒ SOSC ⇒ strict local min. $i\lt n$: $d=v_n$ gives $2(1-\lambda_n/\lambda_i)\lt 0$ ⇒ SONC fails.</li>
+    <li>Feasible set closed, $f$ coercive ⇒ global min exists ⇒ $\min=1/\lambda_n$ at $\pm v_n/\sqrt{\lambda_n}$.</li>
+  </ol>
+</div>
+<table>
+<tr><th>Variant ($Q\succ 0$)</th><th>KKT points</th><th>Answer</th></tr>
+<tr><td>$\max x^\top x$, $x^\top Qx\le 1$ (Midterm 2 VI)</td><td>$0$ ($\mu=0$) and $\pm v_i/\sqrt{\lambda_i}$ ($\mu=1/\lambda_i$)</td><td>$1/\lambda_1$ at $\pm v_1/\sqrt{\lambda_1}$; origin fails SONC</td></tr>
+<tr><td>$\max x^\top x$, $x^\top Qx=1$</td><td>$\pm v_i/\sqrt{\lambda_i}$ ($\lambda$ free)</td><td>$1/\lambda_1$ at $\pm v_1/\sqrt{\lambda_1}$</td></tr>
+<tr><td>$\max x^\top x$, $x^\top Qx\ge 1$</td><td>none</td><td>unbounded, no maximizer</td></tr>
+<tr><td>$\min x^\top x$, $x^\top Qx\le 1$</td><td>only $x=0$ (boundary would need $\mu\lt 0$)</td><td>$0$ at the origin</td></tr>
+<tr><td>$\min x^\top x$, $x^\top Qx=1$ or $\ge 1$</td><td>$\pm v_i/\sqrt{\lambda_i}$</td><td>$1/\lambda_n$ at $\pm v_n/\sqrt{\lambda_n}$</td></tr>
+<tr><td>$\max x^\top Qx$, $x^\top x\le 1$ or $=1$ (Q and I swapped)</td><td>$\pm v_i$ (and $0$ for $\le$)</td><td>$\lambda_n$ at $\pm v_n$</td></tr>
+<tr><td>$\min x^\top Qx$, $x^\top x=1$ or $\ge 1$</td><td>$\pm v_i$, multiplier $\lambda_i$ (sign per form)</td><td>$\lambda_1$ at $\pm v_1$</td></tr>
+<tr><td>$\min x^\top Qx$, $x^\top x\le 1$</td><td>only $0$</td><td>$0$</td></tr>
+</table>
+<p class="small">Every row was checked numerically (random sampling with $Q$ having eigenvalues 2, 4, 6). The unit-norm versions follow by putting $Q\leftrightarrow I$: e.g. $\min x^\top Qx$ s.t. $x^\top x=1$ has $L_\star=2(Q-\lambda_iI)$ on $C=v_i^\perp$, giving $2\sum_{j\ne i}(\lambda_j-\lambda_i)\alpha_j^2$.</p>
+
+<h3 id="c-bank">2.10 Counter-example bank (MCQ trap fuel)</h3>
+<table>
+<tr><th>Example</th><th>What it shows</th></tr>
+<tr><td>$v=u^2$ (or $v=2u^2$) at origin</td><td>$(1,0)\in T_\Omega$ (via the curve $(t,t^2)$) but the straight ray $(t,0)$ is infeasible: tangent ≠ feasible-ray direction. Here regular, so $T=\mathcal L=\{(a,0)\}$.</td></tr>
+<tr><td>$uv=0$ at origin</td><td>$T$ = union of both axes (not convex, not a subspace); $\nabla h=0$ ⇒ $\mathcal L=\mathbb R^2$; $T\ne\mathcal L$. FONC on $T$ forces $\nabla f(0)=0$.</td></tr>
+<tr><td>$v^3=0$ (or $v^2=0$) at origin</td><td>Same set as $v=0$, so $T=\mathbb R\times\{0\}$, but $\nabla h=0$ ⇒ $\mathcal L=\mathbb R^2$. LICQ depends on the representation.</td></tr>
+<tr><td>$\min x$ s.t. $-x^3\le 0$</td><td>$x=0$ is the global min, FONC on $T=[0,\infty)$ holds, but KKT fails: $1+\mu\cdot 0=0$ impossible. Not a contradiction: LICQ fails ($g'(0)=0$). Rewrite as $-x\le 0$ ⇒ $\mu=1$.</td></tr>
+<tr><td>$\min x^2$ vs $\min -x^2$ s.t. $-x\le 0$</td><td>Both: active at $0$ with $\mu=0$ (active ⇏ $\mu\gt 0$). $\mathcal A_0=\{1\}$, $C=\{d\ge 0\}$. $x^2$: SOSC, strict min. $-x^2$: $L_\star=-2$, SONC fails. KKT is only necessary.</td></tr>
+<tr><td>$f_\pm=v\pm u^4$ on $v\ge 0$</td><td>Both KKT with $\mu=1$, $C=\{(a,0)\}$, $L_\star=0$: SONC holds, SOSC fails for both. $f_+$ has a strict min, $f_-$ has no min. Second-order tests can be inconclusive.</td></tr>
+<tr><td>$\min v^2-u^2$ s.t. $u^4=0$</td><td>Strict min, but LICQ fails, $C=\mathbb R^2$, $L_\star=\operatorname{diag}(-2,2)$: "SONC fails" yet it is a min. SONC needs regularity.</td></tr>
+<tr><td>$\min u^2+v^2$ s.t. $u^2=0$</td><td>LICQ fails, but KKT with $\lambda=0$ and $L_\star=2I$ PD ⇒ SOSC still certifies a strict min (SOSC needs no LICQ).</td></tr>
+</table>
+
+<h3 id="c-proof">2.11 The FONC proof (the only proof in the Ch 6 syllabus)</h3>
+<p><b>Statement (Theorem 6.2.1):</b> $x^\star\in\Omega$ local minimizer, $f$ differentiable at $x^\star$ ⇒ $d^\top\nabla f(x^\star)\ge 0$ for all $d\in T_\Omega(x^\star)$. <b>Proof chain:</b></p>
+<ol class="steps">
+  <li>Take any $d\in T_\Omega(x^\star)$: there are $t_k\downarrow 0$, $d_k\to d$ with $x_k=x^\star+t_kd_k\in\Omega$; so $x_k\to x^\star$.</li>
+  <li>Local min ⇒ for large $k$: $f(x_k)-f(x^\star)\ge 0$.</li>
+  <li>Differentiability: $f(x_k)-f(x^\star)=t_kd_k^\top\nabla f(x^\star)+o(t_k)$; the remainder is $o(t_k)$ because $d_k$ is bounded ($R(t_kd_k)/t_k=\tfrac{R(t_kd_k)}{\|t_kd_k\|}\|d_k\|\to 0$).</li>
+  <li>Divide by $t_k\gt 0$: $0\le d_k^\top\nabla f(x^\star)+o(1)$.</li>
+  <li>Let $k\to\infty$: $d^\top\nabla f(x^\star)\ge 0$. No regularity used anywhere.</li>
+</ol>
+<p>Try it as MCQ steps (click an option):</p>
+<div class="q mcq" data-answer="c">
+  <div class="qh">P1 <span class="src">Guided proof step</span><span class="lvl">MCQ</span></div>
+  <p>Why can we divide $f(x_k)-f(x^\star)\ge 0$ by $t_k$ and keep the inequality?</p>
+  <ol class="opts">
+    <li data-k="a"><b class="k">(a)</b> Because $d_k\to d$.</li>
+    <li data-k="b"><b class="k">(b)</b> Because $x^\star$ is regular.</li>
+    <li data-k="c"><b class="k">(c)</b> Because $t_k\gt 0$.</li>
+    <li data-k="d"><b class="k">(d)</b> Because $\nabla f(x^\star)=0$.</li>
+  </ol>
+  <details class="ans"><summary>Show answer</summary><div><p><b>(c).</b> Dividing by a positive number keeps "$\ge$". (a) is used later, for the limit and the remainder. (b) regularity is never used in this proof. (d) is false in general: at a boundary min $\nabla f\ne 0$.</p></div></details>
+</div>
+<div class="q mcq" data-answer="b">
+  <div class="qh">P2 <span class="src">Guided proof step</span><span class="lvl">MCQ</span></div>
+  <p>Why is the remainder $o(t_k)$ and not just $o(\|t_kd_k\|)$?</p>
+  <ol class="opts">
+    <li data-k="a"><b class="k">(a)</b> Because $f$ is convex.</li>
+    <li data-k="b"><b class="k">(b)</b> Because $d_k$ converges, hence is bounded, so $o(\|t_kd_k\|)/t_k\to 0$.</li>
+    <li data-k="c"><b class="k">(c)</b> Because $\|d_k\|=1$ by definition of the tangent cone.</li>
+    <li data-k="d"><b class="k">(d)</b> Because $x_k$ is feasible.</li>
+  </ol>
+  <details class="ans"><summary>Show answer</summary><div><p><b>(b).</b> $R(t_kd_k)/t_k=\frac{R(t_kd_k)}{\|t_kd_k\|}\|d_k\|$; the first factor $\to 0$ and $\|d_k\|$ is bounded. (a) no convexity assumed. (c) the course definition does <i>not</i> normalise $d_k$. (d) feasibility gives the sign $f(x_k)\ge f(x^\star)$, not the remainder size.</p></div></details>
+</div>
+<div class="q mcq" data-answer="d">
+  <div class="qh">P3 <span class="src">Guided proof step</span><span class="lvl">MCQ</span></div>
+  <p>Which hypothesis is <b>not</b> needed for Theorem 6.2.1?</p>
+  <ol class="opts">
+    <li data-k="a"><b class="k">(a)</b> $x^\star$ is a local minimizer.</li>
+    <li data-k="b"><b class="k">(b)</b> $f$ is differentiable at $x^\star$.</li>
+    <li data-k="c"><b class="k">(c)</b> The definition of $T_\Omega$ via sequences.</li>
+    <li data-k="d"><b class="k">(d)</b> LICQ at $x^\star$.</li>
+  </ol>
+  <details class="ans"><summary>Show answer</summary><div><p><b>(d).</b> The geometric FONC needs no constraint qualification. LICQ enters only at the next step ($T=\mathcal L$), which is what turns FONC into KKT.</p></div></details>
+</div>
+</section>
+
+<!-- ============ 3. WHAT HE SAID ============ -->
+<section id="prof">
+<h2>3. What the professor said about this</h2>
+<div class="box prof"><span class="tag">In class (Qwen transcripts; wording is speech-to-text)</span>
+  <ul>
+    <li><q>Seventy percent of mark is covered by memorizing this equation and the following KKT.</q> <span class="ts">Ch 6 lec 3 [11:30]</span> → Section 1 must be automatic; then drill the ladder.</li>
+    <li><q>you have five set of equations… the gradient equation, the equality constraint, inequality constraints… complementarity, and then… the non negativity</q> <span class="ts">Ch 6 lec 2 [38:30]</span> → always write all five KKT parts.</li>
+    <li><q>these inequality gradient, they are restricted. You can have only non-negative weights</q> <span class="ts">Ch 6 lec 2 [24:00]</span> → $\mu\ge 0$, $\lambda$ free.</li>
+    <li><q>just strictly follow the convention we have here</q> <span class="ts">Ch 6 lec 4 [07:00]</span> → $g\le 0$, $\ell=f+\lambda^\top h+\mu^\top g$; other books' forms "not accepted" (Ch 7 lec 2 [41:00]).</li>
+    <li><q>that's an important distinction you have to remember</q> <span class="ts">Ch 6 lec 2 [29:00]</span> → an active constraint can have $\mu=0$.</li>
+    <li><q>A feasible KKT point satisfies the tangent cone first order condition even without LICQ. Okay, it's very important.</q> <span class="ts">Ch 6 lec 2 [44:30]</span></li>
+    <li><q>KKT is necessary only when the point is regular. Very important.</q> <span class="ts">Ch 6 lec 4 [22:30]</span>; LICQ-dependence is <q>a weakness of the theory</q> <span class="ts">Ch 6 lec 2 [42:30]</span>; under full rank the <q>multiplier is unique</q> but not the minimizer <span class="ts">Ch 6 lec 2 [44:00]</span>.</li>
+    <li><q>when we state sufficiency, we always state for strict</q> <span class="ts">Ch 6 lec 4 [33:30]</span>; <q>No LICQ assumption is required once KKT is given</q> <span class="ts">Ch 6 lec 4 [34:00]</span>.</li>
+    <li><q>when your critical cone is only zero vector, you don't say SOSC is failed</q> <span class="ts">Ch 6 lec 4 [52:00]</span> → $C=\{0\}$ ⇒ SOSC passes.</li>
+    <li><q>objective function or constraint function alone can be misleading</q> <span class="ts">Ch 6 lec 4 [45:30]</span> → always use $L_\star$, never $\nabla^2 f$ alone.</li>
+    <li><q>I will not ask you to compute tangent cone.</q> <span class="ts">Ch 6 lec 3 [44:30]</span>; <q>if… all constraint are linear, tangent cone is again is the same</q> <span class="ts">Ch 6 lec 3 [45:00]</span> → only linear-constraint cones (Midterm 2 V).</li>
+    <li><q>this is the only theorem we'll prove in this chapter</q> <span class="ts">Ch 6 lec 1 [1:04:00]</span> → the tangent-cone FONC proof (2.11).</li>
+    <li><q>Try different combination, maximization, minimization, direction of inequality, interchanging identity with Q.</q> <span class="ts">Ch 6 lec 4 [1:15:00]</span> → the variant table in 2.9; Midterm 2 VI was one.</li>
+  </ul>
+</div>
+<div class="box prof"><span class="tag">Exam pattern (from the end-term guide)</span>
+  <ul>
+    <li>KKT + second order has been in every constrained paper: Quiz 3 (all 20 MCQs), Midterm 2 III (12-MCQ active-set chain), IV (parametric KKT), V (cones + Farkas), VI (eigenvector problem).</li>
+    <li>He reuses his own problems: Midterm 2 was <q>90% repetition</q> of tutorial/problem-set problems <span class="ts">Ch 8 lec 1 [01:30]</span>. Problem Sets 2–3 are worth a look after this page.</li>
+    <li>Difficulty "same level" as the midterms; possibly a no-sheet short-answer part ("things you have to remember absolutely").</li>
+  </ul>
+</div>
+</section>
+
+<!-- ============ 4. PRACTICE ============ -->
+<section id="practice">
+<h2>4. Practice (try first, then open the answer)</h2>
+<p class="small">Order: warm-up traps → past Quiz 3 → medium new → Midterm 2 (past exam) → exam-level new. Every number below was re-computed with a sympy script.</p>
+<div class="toolbar" data-auto></div>
+
+<h3 id="p-a">A. Warm-up traps (new, easy)</h3>
+
+<div class="q mcq" data-answer="a">
+  <div class="qh">A1 <span class="src">New, in his style</span><span class="lvl">MCQ · easy</span></div>
+  <p>$\min (x_1+1)^2+x_2^2$ s.t. $x_1\ge 0$. A student writes $\ell=f+\mu x_1$, $\mu\ge 0$. At $x=(0,0)$, which is correct?</p>
+  <ol class="opts">
+    <li data-k="a"><b class="k">(a)</b> With the course form $g=-x_1\le 0$: $\mu^\star=2$, KKT holds, $C=\{(0,t)\}$, SOSC ⇒ strict local min.</li>
+    <li data-k="b"><b class="k">(b)</b> $\mu^\star=-2\lt 0$, so $(0,0)$ is not a KKT point and not a minimizer.</li>
+    <li data-k="c"><b class="k">(c)</b> $\mu^\star=0$ because the constraint is active.</li>
+    <li data-k="d"><b class="k">(d)</b> KKT fails because $\nabla f(0,0)=(2,0)\ne 0$.</li>
+  </ol>
+  <details class="ans"><summary>Show answer</summary><div>
+    <p><b>(a).</b> Rewrite $x_1\ge 0$ as $g=-x_1\le 0$. Stationarity: $(2,0)+\mu(-1,0)=0$ ⇒ $\mu=2\ge 0$. $\mu\gt 0$ ⇒ $C=\{d:-d_1=0\}=\{(0,t)\}$; $L_\star=2I$ ⇒ $2t^2\gt 0$ ⇒ SOSC ⇒ strict local min (global too, convex).</p>
+    <p>(b) is the student's sign error: with $+\mu x_1$ he gets $\mu=-2$ and wrongly rejects the true minimum. (c) active does not force $\mu=0$ (nor $\mu\gt 0$); here it is $2$. (d) at a boundary point $\nabla f\ne 0$ is normal; stationarity is for $\ell$, not $f$.</p>
+  </div></details>
+</div>
+
+<div class="q mcq" data-answer="c">
+  <div class="qh">A2 <span class="src">New, in his style</span><span class="lvl">MCQ · easy</span></div>
+  <p>$\min -x^2$ s.t. $x\ge 0$, at $x^\star=0$. Which statement is correct?</p>
+  <ol class="opts">
+    <li data-k="a"><b class="k">(a)</b> KKT fails because the constraint is active but $\mu^\star=0$.</li>
+    <li data-k="b"><b class="k">(b)</b> $C=\{0\}$, so SOSC passes and $0$ is a strict local min.</li>
+    <li data-k="c"><b class="k">(c)</b> KKT holds with $\mu^\star=0$, $C=\{d\ge 0\}$, $d^\top L_\star d=-2d^2\lt 0$ for $d\gt 0$, so SONC fails and $0$ is not a local min.</li>
+    <li data-k="d"><b class="k">(d)</b> KKT holds with $\mu^\star=0$; since $\mathcal A_0$ rows become equalities, $C=\{0\}$ and the tests are inconclusive.</li>
+  </ol>
+  <details class="ans"><summary>Show answer</summary><div>
+    <p><b>(c).</b> $g=-x$; stationarity $-2x-\mu=0$ at $0$ ⇒ $\mu=0$: active with zero multiplier, so $\mathcal A_0=\{1\}$, and the row stays one-sided: $C=\{d:-d\le 0\}=\{d\ge 0\}$. $L_\star=-2$, regular ($g'=-1\ne 0$) ⇒ SONC fails. Check: $f(t)=-t^2\lt 0$.</p>
+    <p>(a) KKT allows active with $\mu=0$. (b) and (d) both wrongly turn the $\mathcal A_0$ row into "$=0$" and lose the direction $d\gt 0$.</p>
+  </div></details>
+</div>
+
+<div class="q mcq" data-answer="b">
+  <div class="qh">A3 <span class="src">New, in his style</span><span class="lvl">MCQ · easy</span></div>
+  <p>$\min x$ s.t. $g(x)=-x^3\le 0$. Which statement about $x^\star=0$ is correct?</p>
+  <ol class="opts">
+    <li data-k="a"><b class="k">(a)</b> $0$ is not a minimizer because KKT fails there.</li>
+    <li data-k="b"><b class="k">(b)</b> $0$ is the global minimizer; the tangent-cone FONC holds, but no KKT multiplier exists because LICQ fails.</li>
+    <li data-k="c"><b class="k">(c)</b> KKT holds with $\mu^\star=1/3$.</li>
+    <li data-k="d"><b class="k">(d)</b> $T_\Omega(0)=\mathcal L_\Omega(0)=[0,\infty)$.</li>
+  </ol>
+  <details class="ans"><summary>Show answer</summary><div>
+    <p><b>(b).</b> Feasible set $[0,\infty)$, so $0$ is the global min. $T=[0,\infty)$ and $f'(0)d=d\ge 0$ there. But $g'(0)=0$: stationarity $1+\mu\cdot 0=0$ is impossible. KKT is only necessary at regular points, and $0$ is not regular.</p>
+    <p>(a) confuses "KKT fails" with "not a min". (c) $g'(0)=-3x^2=0$, so no $\mu$ works. (d) $\mathcal L=\mathbb R$ since the gradient is zero; $T\subsetneq\mathcal L$. Writing $-x\le 0$ instead gives $\mu=1$.</p>
+  </div></details>
+</div>
+
+<div class="q mcq" data-answer="d">
+  <div class="qh">A4 <span class="src">New, in his style</span><span class="lvl">MCQ · easy</span></div>
+  <p>$\Omega=\{(u,v):uv=0\}$ and $f(u,v)=u+v^2$. At the origin, which statement is correct?</p>
+  <ol class="opts">
+    <li data-k="a"><b class="k">(a)</b> $T_\Omega=\mathcal L_\Omega=\mathbb R^2$, and the origin is a local min.</li>
+    <li data-k="b"><b class="k">(b)</b> $T_\Omega$ is a subspace, so $\nabla f(0)\perp T_\Omega$ is the right test.</li>
+    <li data-k="c"><b class="k">(c)</b> KKT holds with $\lambda^\star=-1$ since $\nabla h(0)=0$.</li>
+    <li data-k="d"><b class="k">(d)</b> $T_\Omega$ is the union of the two axes, $\mathcal L_\Omega=\mathbb R^2$; $d=(-1,0)\in T_\Omega$ gives $\nabla f^\top d=-1\lt 0$, so the origin is not a local min.</li>
+  </ol>
+  <details class="ans"><summary>Show answer</summary><div>
+    <p><b>(d).</b> Feasible points near $0$ lie on the axes, so $T$ = axes (not convex). $\nabla h=(v,u)=0$ ⇒ $\mathcal L=\mathbb R^2$. $\nabla f(0)=(1,0)$; along the feasible ray $(-t,0)$: $f=-t\lt 0$. FONC fails.</p>
+    <p>(a) $T\ne\mathcal L$ here. (b) the union of axes is not a subspace (contains $(1,0)$ and $(0,1)$, not their sum). (c) $\nabla h(0)=0$ means stationarity reads $(1,0)+\lambda(0,0)=0$: no $\lambda$ works.</p>
+  </div></details>
+</div>
+
+<h3 id="p-b">B. Quiz 3 MCQs (past paper, version V059 option letters)</h3>
+
+<div class="q mcq" data-answer="c">
+  <div class="qh">B1 <span class="src">Quiz 3 Q1 (past paper)</span><span class="lvl">MCQ</span></div>
+  <p>Let $f$ be differentiable at a local minimizer $x^\star$ over a feasible set $\Omega$. Which statement must hold <i>without</i> a constraint qualification?</p>
+  <ol class="opts">
+    <li data-k="a"><b class="k">(A)</b> $\nabla f(x^\star)=0$.</li>
+    <li data-k="b"><b class="k">(B)</b> $\nabla f(x^\star)^\top d\ge 0$ for every $d\in\mathcal L_\Omega(x^\star)$ whenever a differentiable constraint representation is given.</li>
+    <li data-k="c"><b class="k">(C)</b> $\nabla f(x^\star)^\top d\ge 0$ for every $d\in T_\Omega(x^\star)$.</li>
+    <li data-k="d"><b class="k">(D)</b> $\nabla f(x^\star)^\top d=0$ for every $d\in T_\Omega(x^\star)$.</li>
+  </ol>
+  <details class="ans"><summary>Show answer</summary><div><p><b>(C).</b> Theorem 6.2.1 needs no CQ. (A) false at boundary minima. (B) $\mathcal L$ may be larger than $T$ without LICQ (e.g. $\min x$ on $-x^3\le 0$: $d=-1\in\mathcal L$ gives $-1$). (D) inward directions can give $\gt 0$.</p></div></details>
+</div>
+
+<div class="q mcq" data-answer="a">
+  <div class="qh">B2 <span class="src">Quiz 3 Q2 (past paper)</span><span class="lvl">MCQ</span></div>
+  <p>For $C^1$ equality and inequality constraints, which relationship between the tangent cone and the linearized cone is correct at a feasible point?</p>
+  <ol class="opts">
+    <li data-k="a"><b class="k">(A)</b> $T_\Omega\subseteq\mathcal L_\Omega$ always; LICQ is sufficient, but not necessary, for equality.</li>
+    <li data-k="b"><b class="k">(B)</b> $\mathcal L_\Omega\subseteq T_\Omega$ always.</li>
+    <li data-k="c"><b class="k">(C)</b> Whenever LICQ fails, $T_\Omega$ is a proper subset of $\mathcal L_\Omega$.</li>
+    <li data-k="d"><b class="k">(D)</b> $T_\Omega=\mathcal L_\Omega$ at every feasible point.</li>
+  </ol>
+  <details class="ans"><summary>Show answer</summary><div><p><b>(A).</b> Theorem 6.1.1. (B) reversed. (C) LICQ failing does not force strict inclusion: $v=0$ and $2v=0$ have dependent gradients but $T=\mathcal L$ = horizontal axis. (D) fails for $uv=0$ or $v^3=0$.</p></div></details>
+</div>
+
+<div class="q mcq" data-answer="c">
+  <div class="qh">B3 <span class="src">Quiz 3 Q3 (past paper)</span><span class="lvl">MCQ</span></div>
+  <p>Let $A\in\mathbb R^{n\times m}$, $B\in\mathbb R^{n\times r}$, $c\in\mathbb R^n$. Farkas' lemma states that "$c^\top d\ge 0$ whenever $A^\top d=0$, $B^\top d\le 0$" is equivalent to which multiplier statement?</p>
+  <ol class="opts">
+    <li data-k="a"><b class="k">(A)</b> $c+A\lambda+B\mu=0$ for some unrestricted $\lambda$ and some $\mu\le 0$.</li>
+    <li data-k="b"><b class="k">(B)</b> $c+A\lambda+B\mu=0$ for some $\lambda\ge 0$ and $\mu\ge 0$.</li>
+    <li data-k="c"><b class="k">(C)</b> $c+A\lambda+B\mu=0$ for some unrestricted $\lambda$ and some $\mu\ge 0$.</li>
+    <li data-k="d"><b class="k">(D)</b> $c+A\lambda+B\mu=0$ for some unrestricted $\lambda$ and unrestricted $\mu$.</li>
+  </ol>
+  <details class="ans"><summary>Show answer</summary><div><p><b>(C).</b> Check one direction: $c^\top d=-\lambda^\top A^\top d-\mu^\top B^\top d=-\mu^\top(B^\top d)\ge 0$ needs $\mu\ge 0$ (since $B^\top d\le 0$). (A) wrong sign. (B) restricts the equality multiplier for no reason. (D) loses the inequality sign. No rank assumption on $A,B$.</p></div></details>
+</div>
+
+<div class="q mcq" data-answer="c">
+  <div class="qh">B4 <span class="src">Quiz 3 Q4 (past paper)</span><span class="lvl">MCQ</span></div>
+  <p>At a feasible KKT point, with $g_j\le 0$ and $\mu_j\ge 0$, which implication is always valid?</p>
+  <ol class="opts">
+    <li data-k="a"><b class="k">(A)</b> $\mu_j^\star\gt 0\Rightarrow g_j(x^\star)\lt 0$.</li>
+    <li data-k="b"><b class="k">(B)</b> $g_j(x^\star)=0\Rightarrow\mu_j^\star\gt 0$.</li>
+    <li data-k="c"><b class="k">(C)</b> $g_j(x^\star)\lt 0\Rightarrow\mu_j^\star=0$.</li>
+    <li data-k="d"><b class="k">(D)</b> $\mu_j^\star=0\Rightarrow g_j(x^\star)\lt 0$.</li>
+  </ol>
+  <details class="ans"><summary>Show answer</summary><div><p><b>(C).</b> From $\mu_jg_j=0$. (A) backwards: $\mu\gt 0$ forces active. (B) and (D) fail for degenerate active constraints ($x^2$ on $x\ge 0$: active, $\mu=0$).</p></div></details>
+</div>
+
+<div class="q mcq" data-answer="d">
+  <div class="qh">B5 <span class="src">Quiz 3 Q10 (past paper)</span><span class="lvl">MCQ</span></div>
+  <p>At a feasible KKT point, split the active inequalities into $\mathcal A_+=\{j:\mu_j^\star\gt 0\}$, $\mathcal A_0=\{j:\mu_j^\star=0\}$. Which additional condition on $d\in\mathcal L_\Omega(x^\star)$ defines membership in the critical cone?</p>
+  <ol class="opts">
+    <li data-k="a"><b class="k">(A)</b> $\nabla g_j(x^\star)^\top d=0$ for every $j\in\mathcal A_+\cup\mathcal A_0$.</li>
+    <li data-k="b"><b class="k">(B)</b> $\nabla g_j(x^\star)^\top d=0$ for every $j\in\mathcal A_0$.</li>
+    <li data-k="c"><b class="k">(C)</b> $\nabla g_j(x^\star)^\top d\lt 0$ for at least one $j\in\mathcal A_+$.</li>
+    <li data-k="d"><b class="k">(D)</b> $\nabla g_j(x^\star)^\top d=0$ for every $j\in\mathcal A_+$.</li>
+  </ol>
+  <details class="ans"><summary>Show answer</summary><div><p><b>(D).</b> $\mathcal L_\Omega$ already gives $\le 0$ for all active $j$; criticality adds $=0$ for $\mathcal A_+$. (A) freezes $\mathcal A_0$ too and discards critical directions. (B) freezes the wrong group. (C) describes the complement $\bar C$ (strictly positive first-order change).</p></div></details>
+</div>
+
+<div class="q mcq" data-answer="a">
+  <div class="qh">B6 <span class="src">Quiz 3 Q11 (past paper)</span><span class="lvl">MCQ</span></div>
+  <p>Let $\Omega=\{(u,v): h(u,v)=v^3=0\}$. At $(0,0)$, which pair gives the tangent cone and the linearized cone?</p>
+  <ol class="opts">
+    <li data-k="a"><b class="k">(A)</b> $T_\Omega=\mathbb R\times\{0\}$ and $\mathcal L_\Omega=\mathbb R^2$.</li>
+    <li data-k="b"><b class="k">(B)</b> $T_\Omega=\{(0,0)\}$ and $\mathcal L_\Omega=\mathbb R^2$.</li>
+    <li data-k="c"><b class="k">(C)</b> $T_\Omega=\mathbb R^2$ and $\mathcal L_\Omega=\mathbb R\times\{0\}$.</li>
+    <li data-k="d"><b class="k">(D)</b> $T_\Omega=\mathcal L_\Omega=\mathbb R\times\{0\}$.</li>
+  </ol>
+  <details class="ans"><summary>Show answer</summary><div><p><b>(A).</b> The set is the horizontal axis, so $T$ is that axis. $\nabla h=(0,3v^2)=0$ at the origin ⇒ linearized equation $0=0$ ⇒ $\mathcal L=\mathbb R^2$. (C) reverses $T\subseteq\mathcal L$, impossible. (D) would be true for $h=v$. (B) the axis has nonzero tangents.</p></div></details>
+</div>
+
+<div class="q mcq" data-answer="d">
+  <div class="qh">B7 <span class="src">Quiz 3 Q15 (past paper)</span><span class="lvl">MCQ</span></div>
+  <p>Minimize $f(u,v)=3u+v^2$ on $u\ge 0$, $v\ge 0$ ($g_1=-u$, $g_2=-v$). What is the critical cone at the origin?</p>
+  <ol class="opts">
+    <li data-k="a"><b class="k">(A)</b> $C=\{(a,b):a\ge 0,b\ge 0\}$.</li>
+    <li data-k="b"><b class="k">(B)</b> $C=\{(0,0)\}$.</li>
+    <li data-k="c"><b class="k">(C)</b> $C=\{(0,b):b\in\mathbb R\}$.</li>
+    <li data-k="d"><b class="k">(D)</b> $C=\{(0,b):b\ge 0\}$.</li>
+  </ol>
+  <details class="ans"><summary>Show answer</summary><div><p><b>(D).</b> Stationarity $(3,0)-\mu_1(1,0)-\mu_2(0,1)=0$ ⇒ $\mu=(3,0)$. $\mathcal A_+=\{1\}$ ⇒ $d_1=0$; $\mathcal A_0=\{2\}$ ⇒ $-d_2\le 0$. Ray. (A) is $\mathcal L_\Omega$ (forgot $\mathcal A_+$). (B) froze $\mathcal A_0$ too. (C) dropped $d_2\ge 0$. Then $L_\star=\operatorname{diag}(0,2)$, $2b^2\gt 0$ ⇒ SOSC, strict local min.</p></div></details>
+</div>
+
+<div class="q mcq" data-answer="a">
+  <div class="qh">B8 <span class="src">Quiz 3 Q16 (past paper)</span><span class="lvl">MCQ</span></div>
+  <p>Minimize $f(u,v)=v-2u^2$ s.t. $h(u,v)=v-3u^2=0$. At the origin, critical directions have the form $d=(a,0)$. Which statement is correct for $\ell=f+\lambda h$?</p>
+  <ol class="opts">
+    <li data-k="a"><b class="k">(A)</b> $\lambda^\star=-1$ and $d^\top L_\star d=2a^2$; SOSC gives a strict local minimum.</li>
+    <li data-k="b"><b class="k">(B)</b> $\lambda^\star=-1$ and $d^\top L_\star d=-4a^2$; SONC rules out a minimum.</li>
+    <li data-k="c"><b class="k">(C)</b> $\lambda^\star=1$ and $d^\top L_\star d=2a^2$; SOSC gives a strict local minimum.</li>
+    <li data-k="d"><b class="k">(D)</b> $\lambda^\star=-1$ and $d^\top L_\star d=0$; the second-order tests are inconclusive.</li>
+  </ol>
+  <details class="ans"><summary>Show answer</summary><div><p><b>(A).</b> $(0,1)+\lambda(0,1)=0$ ⇒ $\lambda=-1$. $L_\star=\operatorname{diag}(-4,0)-\operatorname{diag}(-6,0)=\operatorname{diag}(2,0)$ ⇒ $2a^2$. (B) uses $\nabla^2 f$ only (forgets constraint curvature). (C) wrong multiplier sign. (D) arithmetic slip. Check: $f(u,3u^2)=u^2$.</p></div></details>
+</div>
+
+<div class="q mcq" data-answer="d">
+  <div class="qh">B9 <span class="src">Quiz 3 Q18 (past paper)</span><span class="lvl">MCQ</span></div>
+  <p>For $f(u,v)=u^2+6uv+v^2$ on $u\ge 0$, $v\ge 0$, consider the origin. Which statement is correct?</p>
+  <ol class="opts">
+    <li data-k="a"><b class="k">(A)</b> KKT fails because both active inequality multipliers are zero.</li>
+    <li data-k="b"><b class="k">(B)</b> SONC fails because the Hessian has a negative eigenvalue.</li>
+    <li data-k="c"><b class="k">(C)</b> SONC holds, but SOSC fails because both active multipliers are zero.</li>
+    <li data-k="d"><b class="k">(D)</b> SOSC holds on the critical cone, even though the Hessian is indefinite on $\mathbb R^2$.</li>
+  </ol>
+  <details class="ans"><summary>Show answer</summary><div><p><b>(D).</b> $\nabla f(0)=0$ ⇒ $\mu=(0,0)$, both in $\mathcal A_0$ ⇒ $C$ = first quadrant. $L_\star=\begin{pmatrix}2&6\\6&2\end{pmatrix}$ (eigenvalues $8,-4$: indefinite). On $C$: $2a^2+12ab+2b^2\ge 2(a^2+b^2)\gt 0$. The negative direction $(1,-1)$ is outside $C$. (A) zero multipliers are allowed. (B) tests the whole space. (C) zero multipliers do not make SOSC fail.</p></div></details>
+</div>
+
+<div class="q mcq" data-answer="d">
+  <div class="qh">B10 <span class="src">Quiz 3 Q20 (past paper)</span><span class="lvl">MCQ</span></div>
+  <p>For minimization of $f(u,v)=2v-u^4$ s.t. $v\ge 0$, which statement about the origin is correct?</p>
+  <ol class="opts">
+    <li data-k="a"><b class="k">(A)</b> KKT fails because the objective gradient is nonzero.</li>
+    <li data-k="b"><b class="k">(B)</b> SONC fails because some nearby feasible points have a smaller objective value.</li>
+    <li data-k="c"><b class="k">(C)</b> KKT and SOSC hold, so the origin is a strict local minimum.</li>
+    <li data-k="d"><b class="k">(D)</b> KKT and SONC hold, SOSC fails, and the origin is not a local minimum.</li>
+  </ol>
+  <details class="ans"><summary>Show answer</summary><div><p><b>(D).</b> $g=-v$: $(0,2)+\mu(0,-1)=0$ ⇒ $\mu=2\gt 0$ ⇒ $C=\{(a,0)\}$. $L_\star=\nabla^2(-u^4)=0$ at the origin ⇒ $d^\top L_\star d=0$: SONC holds, SOSC fails. Directly $f(t,0)=-t^4\lt 0$ ⇒ not a min. (A) nonzero $\nabla f$ is fine at a boundary. (B) SONC is a curvature test; it holds here even though the point is not a min. (C) SOSC needs strict positivity.</p></div></details>
+</div>
+
+<h3 id="p-c">C. Medium (new)</h3>
+
+<div class="q">
+  <div class="qh">C1 <span class="src">New, in his style (full ladder)</span><span class="lvl">Descriptive · medium</span></div>
+  <p>$\min f(x)=x_1x_2$ s.t. $x_1^2+x_2^2\le 2$. (a) Write the complete KKT conditions. (b) Find all KKT points and multipliers. (c) Check LICQ. (d) Find the critical cone and $L_\star$ at each KKT point and classify every point. (e) Give the global minimum.</p>
+  <details class="hint"><summary>Hint</summary><p>Two cases: inactive ($\mu=0$) and active. In the active case add and subtract the two stationarity equations.</p></details>
+  <details class="ans"><summary>Show answer</summary><div>
+    <ol class="steps">
+      <li><b>Form.</b> $g(x)=x_1^2+x_2^2-2\le 0$; $\ell=x_1x_2+\mu(x_1^2+x_2^2-2)$.</li>
+      <li><b>KKT.</b> $x_2+2\mu x_1=0$, $x_1+2\mu x_2=0$; $x_1^2+x_2^2\le 2$; $\mu\ge 0$; $\mu(x_1^2+x_2^2-2)=0$.</li>
+      <li><b>Inactive ($\mu=0$):</b> $x_2=0$, $x_1=0$. $(0,0)$, $g=-2\lt 0$ ✓. KKT point $x^{(0)}=(0,0)$, $\mu=0$.</li>
+      <li><b>Active:</b> adding: $(x_1+x_2)(1+2\mu)=0$ ⇒ $x_2=-x_1$ (since $1+2\mu\gt 0$). Then $-x_1+2\mu x_1=0$ ⇒ $\mu=\tfrac12$. On the circle: $2x_1^2=2$ ⇒ $x=(1,-1)$ or $(-1,1)$, $\mu=\tfrac12\ge 0$ ✓, $f=-1$. (The points $(1,1),(-1,-1)$ satisfy stationarity only with $\mu=-\tfrac12\lt 0$: rejected; they are the maximizers, $f=1$.)</li>
+      <li><b>LICQ.</b> Origin: no active constraint ⇒ holds vacuously. On the circle: $\nabla g=2x\ne 0$ ⇒ holds.</li>
+      <li><b>Origin.</b> No active constraints, $\nabla f(0)=0$ ⇒ $C=\mathbb R^2$. $L_\star=\nabla^2 f=\begin{pmatrix}0&1\\1&0\end{pmatrix}$. $d=(1,-1)$: $d^\top L_\star d=-2\lt 0$. Regular ⇒ <b>SONC fails ⇒ not a local min</b> (saddle: $f(t,-t)=-t^2$).</li>
+      <li><b>$(1,-1)$, $\mu=\tfrac12$.</b> $\mathcal A_+=\{1\}$, $\nabla g=(2,-2)$ ⇒ $C=\{d:2d_1-2d_2=0\}=\{t(1,1)\}$. $L_\star=\begin{pmatrix}0&1\\1&0\end{pmatrix}+2\cdot\tfrac12 I=\begin{pmatrix}1&1\\1&1\end{pmatrix}$ (eigenvalues $0,2$: singular!). $d^\top L_\star d=t^2(1+1+1+1)=4t^2\gt 0$ for $t\ne 0$ ⇒ <b>SOSC ⇒ strict local min</b>. Same at $(-1,1)$ with $\nabla g=(-2,2)$, same $C$, same result.</li>
+      <li><b>Global.</b> Feasible set compact, $f$ continuous ⇒ global min exists and is a KKT point (LICQ holds everywhere). Values: $f(0)=0$, $f(\pm(1,-1))=-1$. <b>Global min $=-1$ at $(1,-1)$ and $(-1,1)$</b> (both strict local minima, neither a strict global min).</li>
+    </ol>
+  </div></details>
+</div>
+
+<div class="q mcq" data-answer="b">
+  <div class="qh">C2 <span class="src">New, in his style (eigen variant, Q and I swapped)</span><span class="lvl">MCQ · medium</span></div>
+  <p>$Q\succ 0$ with distinct eigenvalues $\lambda_1\lt\dots\lt\lambda_n$, orthonormal $v_i$. Consider $\min x^\top Qx$ s.t. $h(x)=x^\top x-1=0$ with $\ell=x^\top Qx+\lambda(x^\top x-1)$. Which statement is correct?</p>
+  <ol class="opts">
+    <li data-k="a"><b class="k">(a)</b> KKT points are $\pm v_i$ with $\lambda=\lambda_i$; all of them satisfy SOSC because $Q\succ 0$.</li>
+    <li data-k="b"><b class="k">(b)</b> KKT points are $\pm v_i$ with $\lambda=-\lambda_i$; $C=\operatorname{span}\{v_j:j\ne i\}$, $d^\top L_\star d=2\sum_{j\ne i}(\lambda_j-\lambda_i)\alpha_j^2$; only $\pm v_1$ pass SONC, and they satisfy SOSC.</li>
+    <li data-k="c"><b class="k">(c)</b> Only $\pm v_n$ satisfy SOSC, because the multiplier must be nonnegative.</li>
+    <li data-k="d"><b class="k">(d)</b> $L_\star=2Q$ is PD, so every KKT point is a strict local minimizer.</li>
+  </ol>
+  <details class="ans"><summary>Show answer</summary><div>
+    <p><b>(b).</b> Stationarity $2Qx+2\lambda x=0$ ⇒ $Qx=-\lambda x$ ⇒ $x=\pm v_i$, $\lambda=-\lambda_i$ (equality multiplier: any sign is fine). $\nabla h=2x$ ⇒ $C=v_i^\perp$. $L_\star=2Q+2\lambda I=2(Q-\lambda_iI)$. With $d=\sum_{j\ne i}\alpha_jv_j$: $2\sum_{j\ne i}(\lambda_j-\lambda_i)\alpha_j^2$. For $i=1$ all coefficients $\gt 0$ ⇒ SOSC; for $i\gt 1$, $d=v_1$ gives $2(\lambda_1-\lambda_i)\lt 0$ ⇒ SONC fails. Min value $\lambda_1$.</p>
+    <p>(a) wrong multiplier sign and ignores the $-\lambda_iI$ term. (c) puts a sign restriction on an equality multiplier and picks the wrong end. (d) forgets the constraint's contribution $2\lambda I$ to $L_\star$.</p>
+  </div></details>
+</div>
+
+<h3 id="p-d">D. Midterm 2 Question III (past paper, 12-part MCQ chain)</h3>
+<p>$\min f(x)=x_1^2+x_2^2$ s.t. $g_1=4-x_1-x_2^2\le 0$, $g_2=3x_2-x_1\le 0$, $g_3=-3x_2-x_1\le 0$. $L=f+\mu_1g_1+\mu_2g_2+\mu_3g_3$, $\mu\ge 0$. "Exact active set" $\mathcal A(x)=\{i:g_i(x)=0\}$. KKT: $2x_1-\mu_1-\mu_2-\mu_3=0$, $2x_2(1-\mu_1)+3\mu_2-3\mu_3=0$, plus feasibility, signs, complementarity.</p>
+
+<div class="q mcq" data-answer="a">
+  <div class="qh">D1 <span class="src">Midterm 2 III.1 (past paper)</span><span class="lvl">MCQ</span></div>
+  <p>Which pair lists all the exact active sets that cannot occur at any feasible point?</p>
+  <ol class="opts">
+    <li data-k="a"><b class="k">(a)</b> $\{2,3\}$ and $\{1,2,3\}$.</li>
+    <li data-k="b"><b class="k">(b)</b> $\varnothing$ and $\{1\}$.</li>
+    <li data-k="c"><b class="k">(c)</b> $\{2\}$ and $\{3\}$.</li>
+    <li data-k="d"><b class="k">(d)</b> $\{1,2\}$ and $\{1,3\}$.</li>
+  </ol>
+  <details class="ans"><summary>Show answer</summary><div><p><b>(a).</b> $g_2=g_3=0$ ⇒ $x_1=3x_2=-3x_2$ ⇒ $x=0$, where $g_1=4\gt 0$: infeasible. Every other set occurs: e.g. $\varnothing$ at $(10,0)$, $\{1\}$ at $(4,0)$, $\{2\}$ at $(30,10)$, $\{1,2\}$ at $(3,1)$.</p></div></details>
+</div>
+<div class="q mcq" data-answer="d">
+  <div class="qh">D2 <span class="src">Midterm 2 III.2 (past paper)</span><span class="lvl">MCQ</span></div>
+  <p>Consider the exact active sets $\varnothing,\{2\},\{3\}$. Which statement is correct?</p>
+  <ol class="opts">
+    <li data-k="a"><b class="k">(a)</b> None of the three can occur at feasible points.</li>
+    <li data-k="b"><b class="k">(b)</b> All three can occur at feasible points, but only $\{2\}$ and $\{3\}$ can occur at KKT points.</li>
+    <li data-k="c"><b class="k">(c)</b> All three can occur at feasible points, and all three can occur at KKT points.</li>
+    <li data-k="d"><b class="k">(d)</b> All three can occur at feasible points, but none can occur at KKT points.</li>
+  </ol>
+  <details class="ans"><summary>Show answer</summary><div><p><b>(d).</b> In all three, $\mu_1=0$. Dot stationarity with $x$: $0=2\|x\|^2+\mu_2g_2(x)+\mu_3g_3(x)=2\|x\|^2$ (complementarity kills the last two; $g_2,g_3$ are linear homogeneous so $\nabla g_i^\top x=g_i(x)$). So $x=0$, infeasible.</p></div></details>
+</div>
+<div class="q mcq" data-answer="b">
+  <div class="qh">D3 <span class="src">Midterm 2 III.3 (past paper)</span><span class="lvl">MCQ</span></div>
+  <p>Only $g_1$ active: impose $g_1=0$, $\mu_2=\mu_3=0$, solve stationarity with $\mu_1\ge 0$ (before checking $g_2,g_3$). Which option lists all resulting pairs $(x,\mu_1)$?</p>
+  <ol class="opts">
+    <li data-k="a"><b class="k">(a)</b> $((4,0)^\top,4)$, $((\tfrac12,\pm\sqrt{7/2})^\top,1)$.</li>
+    <li data-k="b"><b class="k">(b)</b> $((4,0)^\top,8)$, $((\tfrac12,\pm\sqrt{7/2})^\top,1)$.</li>
+    <li data-k="c"><b class="k">(c)</b> $((4,0)^\top,8)$, $((\tfrac12,\pm\sqrt{7/2})^\top,2)$.</li>
+    <li data-k="d"><b class="k">(d)</b> $((4,0)^\top,8)$, $((1,\pm\sqrt 3)^\top,2)$.</li>
+  </ol>
+  <details class="ans"><summary>Show answer</summary><div><p><b>(b).</b> $\mu_1=2x_1$, $x_2(1-\mu_1)=0$, $x_1+x_2^2=4$. Branch $x_2=0$: $x_1=4$, $\mu_1=8$. Branch $\mu_1=1$: $x_1=\tfrac12$, $x_2^2=\tfrac72$.</p></div></details>
+</div>
+<div class="q mcq" data-answer="d">
+  <div class="qh">D4 <span class="src">Midterm 2 III.4 (past paper)</span><span class="lvl">MCQ</span></div>
+  <p>After checking all constraints and KKT conditions, which pair is valid with exact active set $\{1\}$?</p>
+  <ol class="opts">
+    <li data-k="a"><b class="k">(a)</b> $x=(\tfrac12,-\sqrt{7/2})^\top$, $\mu=(1,0,0)^\top$.</li>
+    <li data-k="b"><b class="k">(b)</b> $x=(4,0)^\top$, $\mu=(4,0,0)^\top$.</li>
+    <li data-k="c"><b class="k">(c)</b> $x=(\tfrac12,\sqrt{7/2})^\top$, $\mu=(1,0,0)^\top$.</li>
+    <li data-k="d"><b class="k">(d)</b> $x=(4,0)^\top$, $\mu=(8,0,0)^\top$.</li>
+  </ol>
+  <details class="ans"><summary>Show answer</summary><div><p><b>(d).</b> $(\tfrac12,\pm\sqrt{7/2})$ violate $x_1\ge 3|x_2|$ ($\tfrac12\lt 3\cdot 1.87$). At $(4,0)$: $g_2=g_3=-4\lt 0$ ✓, $\mu_1=8$.</p></div></details>
+</div>
+<div class="q mcq" data-answer="c">
+  <div class="qh">D5 <span class="src">Midterm 2 III.5 (past paper)</span><span class="lvl">MCQ</span></div>
+  <p>For the exact active set $\{1,2\}$, which pair satisfies all KKT conditions?</p>
+  <ol class="opts">
+    <li data-k="a"><b class="k">(a)</b> $x=(3,1)^\top$, $\mu=(2,4,0)^\top$.</li>
+    <li data-k="b"><b class="k">(b)</b> $x=(-12,-4)^\top$, $\mu=(16,-40,0)^\top$.</li>
+    <li data-k="c"><b class="k">(c)</b> $x=(3,1)^\top$, $\mu=(4,2,0)^\top$.</li>
+    <li data-k="d"><b class="k">(d)</b> $x=(3,1)^\top$, $\mu=(4,0,2)^\top$.</li>
+  </ol>
+  <details class="ans"><summary>Show answer</summary><div><p><b>(c).</b> $x_1=3x_2$ and $4-3x_2-x_2^2=0$ ⇒ $(x_2-1)(x_2+4)=0$. $(-12,-4)$: $g_3=24\gt 0$, infeasible (and $\mu_2=-40$). At $(3,1)$: $\mu_1+\mu_2=6$, $2(1-\mu_1)+3\mu_2=0$ ⇒ $-2\mu_1+3\mu_2=-2$ ⇒ $\mu_1=4$, $\mu_2=2$. (a) swaps them; (d) puts weight on the inactive $g_3$.</p></div></details>
+</div>
+<div class="q mcq" data-answer="a">
+  <div class="qh">D6 <span class="src">Midterm 2 III.6 (past paper)</span><span class="lvl">MCQ</span></div>
+  <p>For the exact active set $\{1,3\}$, which pair satisfies all KKT conditions?</p>
+  <ol class="opts">
+    <li data-k="a"><b class="k">(a)</b> $x=(3,-1)^\top$, $\mu=(4,0,2)^\top$.</li>
+    <li data-k="b"><b class="k">(b)</b> $x=(-12,4)^\top$, $\mu=(16,0,-40)^\top$.</li>
+    <li data-k="c"><b class="k">(c)</b> $x=(3,-1)^\top$, $\mu=(2,0,4)^\top$.</li>
+    <li data-k="d"><b class="k">(d)</b> $x=(3,-1)^\top$, $\mu=(4,2,0)^\top$.</li>
+  </ol>
+  <details class="ans"><summary>Show answer</summary><div><p><b>(a).</b> Mirror image: $x_1=-3x_2$, $(x_2+1)(x_2-4)=0$; $(-12,4)$ has $g_2=24\gt 0$. At $(3,-1)$: $\mu_1+\mu_3=6$, $2\mu_1-3\mu_3=2$ ⇒ $\mu_1=4$, $\mu_3=2$.</p></div></details>
+</div>
+<div class="q mcq" data-answer="b">
+  <div class="qh">D7 <span class="src">Midterm 2 III.7 (past paper)</span><span class="lvl">MCQ</span></div>
+  <p>What is the Hessian of the Lagrangian with respect to $x$?</p>
+  <ol class="opts">
+    <li data-k="a"><b class="k">(a)</b> $\begin{pmatrix}2&0\\0&2\end{pmatrix}$.</li>
+    <li data-k="b"><b class="k">(b)</b> $\begin{pmatrix}2&0\\0&2-2\mu_1\end{pmatrix}$.</li>
+    <li data-k="c"><b class="k">(c)</b> $\begin{pmatrix}2-2\mu_1&0\\0&2\end{pmatrix}$.</li>
+    <li data-k="d"><b class="k">(d)</b> $\begin{pmatrix}2&0\\0&2+2\mu_1\end{pmatrix}$.</li>
+  </ol>
+  <details class="ans"><summary>Show answer</summary><div><p><b>(b).</b> Only $g_1$ is curved: $\nabla^2g_1=\operatorname{diag}(0,-2)$. $L_\star=2I+\mu_1\operatorname{diag}(0,-2)$. (a) ignores constraint curvature; (d) wrong sign of $\nabla^2 g_1$.</p></div></details>
+</div>
+<div class="q mcq" data-answer="d">
+  <div class="qh">D8 <span class="src">Midterm 2 III.8 (past paper)</span><span class="lvl">MCQ</span></div>
+  <p>Let $\bar x$ be the feasible KKT point for $\mathcal A=\{1\}$. What is its critical cone?</p>
+  <ol class="opts">
+    <li data-k="a"><b class="k">(a)</b> $\{0\}$.</li>
+    <li data-k="b"><b class="k">(b)</b> $\{d:d_1\ge 0\}$.</li>
+    <li data-k="c"><b class="k">(c)</b> $\{d:d_2=0\}$.</li>
+    <li data-k="d"><b class="k">(d)</b> $\{d:d_1=0\}$.</li>
+  </ol>
+  <details class="ans"><summary>Show answer</summary><div><p><b>(d).</b> At $(4,0)$, $\mu_1=8\gt 0$, $\nabla g_1=(-1,-2x_2)=(-1,0)$ ⇒ $-d_1=0$. (b) would be the $\mathcal A_0$ (one-sided) version, wrong because $\mu_1\gt 0$.</p></div></details>
+</div>
+<div class="q mcq" data-answer="c">
+  <div class="qh">D9 <span class="src">Midterm 2 III.9 (past paper)</span><span class="lvl">MCQ</span></div>
+  <p>Which statement correctly describes the second-order analysis at the KKT point associated with $\{1\}$?</p>
+  <ol class="opts">
+    <li data-k="a"><b class="k">(a)</b> Nonnegative on $C$ but vanishes along a nonzero critical direction, so SONC holds while SOSC fails.</li>
+    <li data-k="b"><b class="k">(b)</b> The Lagrangian Hessian is positive definite, so SOSC holds.</li>
+    <li data-k="c"><b class="k">(c)</b> There is a nonzero critical direction with negative Lagrangian curvature, so SONC fails and the point is not a local minimizer.</li>
+    <li data-k="d"><b class="k">(d)</b> The critical cone contains only the zero vector, so SOSC holds automatically.</li>
+  </ol>
+  <details class="ans"><summary>Show answer</summary><div><p><b>(c).</b> $L_\star=\operatorname{diag}(2,2-16)=\operatorname{diag}(2,-14)$; $d=(0,t)$: $-14t^2\lt 0$. LICQ holds ($\nabla g_1\ne 0$) ⇒ SONC applies and fails. Direct check: $x(t)=(4-t^2,t)$ is feasible for small $t$ and $f=16-7t^2+t^4\lt 16$.</p></div></details>
+</div>
+<div class="q mcq" data-answer="c">
+  <div class="qh">D10 <span class="src">Midterm 2 III.10 (past paper)</span><span class="lvl">MCQ</span></div>
+  <p>Let $x^{(+)}=(3,1)$, $x^{(-)}=(3,-1)$. Which option gives their critical cones?</p>
+  <ol class="opts">
+    <li data-k="a"><b class="k">(a)</b> Both $\mathbb R^2$.</li>
+    <li data-k="b"><b class="k">(b)</b> $C(x^{(+)})=\{-d_1-2d_2=0\}$, $C(x^{(-)})=\{-d_1+2d_2=0\}$.</li>
+    <li data-k="c"><b class="k">(c)</b> Both $\{0\}$.</li>
+    <li data-k="d"><b class="k">(d)</b> Both $\{d:d_1=0\}$.</li>
+  </ol>
+  <details class="ans"><summary>Show answer</summary><div><p><b>(c).</b> Both active multipliers positive ⇒ two equality rows. At $x^{(+)}$: $-d_1-2d_2=0$, $-d_1+3d_2=0$ ⇒ $d=0$. Similarly at $x^{(-)}$. (b) keeps only the $g_1$ row (forgot $g_2$/$g_3\in\mathcal A_+$).</p></div></details>
+</div>
+<div class="q mcq" data-answer="a">
+  <div class="qh">D11 <span class="src">Midterm 2 III.11 (past paper)</span><span class="lvl">MCQ</span></div>
+  <p>What does SOSC imply at these two KKT points?</p>
+  <ol class="opts">
+    <li data-k="a"><b class="k">(a)</b> Both satisfy SOSC because there are no nonzero critical directions on which positivity must be checked.</li>
+    <li data-k="b"><b class="k">(b)</b> Neither satisfies SOSC because the full Lagrangian Hessian has a negative eigenvalue.</li>
+    <li data-k="c"><b class="k">(c)</b> Only the point associated with $\{1,2\}$ satisfies SOSC.</li>
+    <li data-k="d"><b class="k">(d)</b> Neither satisfies SOSC because a critical cone containing only the zero vector makes SOSC inapplicable.</li>
+  </ol>
+  <details class="ans"><summary>Show answer</summary><div><p><b>(a).</b> $L_\star=\operatorname{diag}(2,-6)$ is indefinite, but $C=\{0\}$ ⇒ SOSC passes vacuously. (b) tests the full space. (d) is exactly what he said not to say.</p></div></details>
+</div>
+<div class="q mcq" data-answer="b">
+  <div class="qh">D12 <span class="src">Midterm 2 III.12 (past paper)</span><span class="lvl">MCQ</span></div>
+  <p>After examining all possible active sets and second-order conditions, which statement is correct?</p>
+  <ol class="opts">
+    <li data-k="a"><b class="k">(a)</b> The only strict local minimizer is $(4,0)^\top$.</li>
+    <li data-k="b"><b class="k">(b)</b> The strict local minimizers are exactly $(3,1)^\top$ and $(3,-1)^\top$.</li>
+    <li data-k="c"><b class="k">(c)</b> The problem has no strict local minimizers.</li>
+    <li data-k="d"><b class="k">(d)</b> All three points are strict local minimizers.</li>
+  </ol>
+  <details class="ans"><summary>Show answer</summary><div><p><b>(b).</b> LICQ holds at every feasible point, so every local min is among the three KKT points; $(4,0)$ fails SONC; the corners pass SOSC. Both have $f=10$, which is the global min ($f$ coercive, feasible set closed).</p></div></details>
+</div>
+
+<h3 id="p-e">E. Midterm 2 Questions IV–VI (past paper, descriptive)</h3>
+
+<div class="q">
+  <div class="qh">E1 <span class="src">Midterm 2 IV (past paper)</span><span class="lvl">Descriptive · exam</span></div>
+  <p>For a parameter $a\ge 0$: $\min f_a(x)=\tfrac12[(x_1-a)^2+(x_2+1)^2]$ s.t. $g_1=x_1^2+x_2^2-1\le 0$, $g_2=-x_2\le 0$; $L=f_a+\mu_1g_1+\mu_2g_2$.<br>
+  (a) Complete KKT conditions. (b) All KKT points and multipliers for every $a\ge 0$; active sets and where they change. (c) LICQ and strict complementarity; any $a$ with an active constraint having zero multiplier. (d) Critical cone in each regime (treat transition values separately). (e) Hessian of $L$, SOSC, which KKT points are strict local minimizers.</p>
+  <details class="hint"><summary>Hint</summary><p>Show first that $x_2\gt 0$ is impossible at a KKT point.</p></details>
+  <details class="ans"><summary>Show answer</summary><div>
+    <ol class="steps">
+      <li><b>(a)</b> $L=\tfrac12[(x_1-a)^2+(x_2+1)^2]+\mu_1(x_1^2+x_2^2-1)-\mu_2x_2$. Stationarity: $(1+2\mu_1)x_1-a=0$, $(1+2\mu_1)x_2+1-\mu_2=0$. Primal: $x_1^2+x_2^2\le 1$, $x_2\ge 0$. Dual: $\mu_1,\mu_2\ge 0$. Complementarity: $\mu_1(x_1^2+x_2^2-1)=0$, $\mu_2x_2=0$.</li>
+      <li><b>(b)</b> If $x_2\gt 0$ then $\mu_2=0$ and $(1+2\mu_1)x_2+1=0$ is impossible. So $x_2=0$, $\mu_2=1$, $x_1=a/(1+2\mu_1)\ge 0$.
+        <ul><li>$g_1\lt 0$: $\mu_1=0$, $x_1=a$, needs $0\le a\lt 1$.</li>
+        <li>$g_1=0$: $x_1=1$, $\mu_1=(a-1)/2\ge 0$ iff $a\ge 1$.</li></ul>
+        <table><tr><th>$a$</th><th>$x^\star$</th><th>$\mu^\star$</th><th>$\mathcal A$</th></tr>
+        <tr><td>$0\le a\lt 1$</td><td>$(a,0)$</td><td>$(0,1)$</td><td>$\{2\}$</td></tr>
+        <tr><td>$a=1$</td><td>$(1,0)$</td><td>$(0,1)$</td><td>$\{1,2\}$</td></tr>
+        <tr><td>$a\gt 1$</td><td>$(1,0)$</td><td>$((a-1)/2,1)$</td><td>$\{1,2\}$</td></tr></table>
+        The disk becomes active at $a=1$; its multiplier is positive only for $a\gt 1$.</li>
+      <li><b>(c)</b> $a\lt 1$: only $\nabla g_2=(0,-1)\ne 0$. $a\ge 1$: $\nabla g_1=(2,0)$, $\nabla g_2=(0,-1)$ independent. LICQ holds at every KKT point. Strict complementarity holds for $a\ne 1$; at $a=1$, $g_1$ is active with $\mu_1=0$ (fails), while LICQ still holds.</li>
+      <li><b>(d)</b> $\mu_2=1\gt 0$ always ⇒ $-d_2=0$. $a\lt 1$: disk inactive ⇒ $C=\{(t,0):t\in\mathbb R\}$. $a=1$: $g_1\in\mathcal A_0$ ⇒ $2d_1\le 0$ ⇒ $C=\{(t,0):t\le 0\}$. $a\gt 1$: $g_1\in\mathcal A_+$ ⇒ $2d_1=0$ ⇒ $C=\{0\}$.</li>
+      <li><b>(e)</b> $L_\star=(1+2\mu_1^\star)I$ = $I$ for $a\le 1$, $aI$ for $a\gt 1$. $a\lt 1$: $d^\top L_\star d=t^2\gt 0$. $a=1$: $t^2\gt 0$ for $t\lt 0$. $a\gt 1$: $C=\{0\}$, vacuous. <b>SOSC holds in every regime ⇒ the KKT point is a strict local minimizer for every $a\ge 0$</b> (and the unique global minimizer, convex problem with strictly convex $f$): $x^\star=(\min\{a,1\},0)$, $p^\star(a)=\tfrac12(1+[\max\{a-1,0\}]^2)$.</li>
+    </ol>
+  </div></details>
+</div>
+
+<div class="q">
+  <div class="qh">E2 <span class="src">Midterm 2 V (past paper)</span><span class="lvl">Descriptive · exam</span></div>
+  <p>For fixed $c\in\mathbb R^3$: $\min f_c(x)=c^\top x+\tfrac12\|x\|^2$ s.t. $h=x_1+x_2+x_3=0$, $g_1=-x_1\le 0$, $g_2=-x_2\le 0$, $g_3=-x_3-2\le 0$. Examine $x^\star=0$.<br>
+  (a) Active set, LICQ, tangent cone and linearized cone. (b) Exact conditions on $c$ for $c^\top d\ge 0$ on every tangent direction. (c) Farkas multipliers when (b) holds; a descent tangent direction when it fails. (d) Show (b) is necessary and sufficient for $0$ to be the unique global minimizer.</p>
+  <details class="ans"><summary>Show answer</summary><div>
+    <ol class="steps">
+      <li><b>(a)</b> $g_1=g_2=0$, $g_3=-2$ ⇒ $\mathcal A=\{1,2\}$. $J=[\nabla h\ \nabla g_1\ \nabla g_2]=\begin{pmatrix}1&-1&0\\1&0&-1\\1&0&0\end{pmatrix}$, $\det J=1$ ⇒ LICQ. $\mathcal L=\{d:d_1+d_2+d_3=0,\ d_1\ge 0,\ d_2\ge 0\}=\{(r,s,-r-s):r,s\ge 0\}$. Constraints linear (and $td$ feasible for small $t$) ⇒ $T=\mathcal L$.</li>
+      <li><b>(b)</b> $\nabla f_c(0)=c$. $c^\top d=(c_1-c_3)r+(c_2-c_3)s\ge 0$ for all $r,s\ge 0$ ⇔ <b>$c_1\ge c_3$ and $c_2\ge c_3$</b> (test $(r,s)=(1,0),(0,1)$).</li>
+      <li><b>(c)</b> $\mu_3=0$ (inactive). Stationarity $c+\lambda(1,1,1)-\mu_1e_1-\mu_2e_2=0$ ⇒ $\lambda^\star=-c_3$, $\mu_1^\star=c_1-c_3$, $\mu_2^\star=c_2-c_3$ (unique; $\ge 0$ exactly under (b)). If $c_1\lt c_3$: $d=(1,0,-1)$, $c^\top d=c_1-c_3\lt 0$; if $c_2\lt c_3$: $d=(0,1,-1)$. Then $f_c(td)=tc^\top d+t^2\lt 0$ for $0\lt t\lt\min\{2,-c^\top d\}$.</li>
+      <li><b>(d)</b> Necessity: global ⇒ local ⇒ FONC (b). Sufficiency: on $\Omega$, $x_3=-x_1-x_2$ with $x_1,x_2\ge 0$, so $f_c(x)=(c_1-c_3)x_1+(c_2-c_3)x_2+\tfrac12\|x\|^2\ge\tfrac12\|x\|^2\gt 0=f_c(0)$ for $x\ne 0$. <b>$0$ is the unique global minimizer ⇔ $c_1\ge c_3$ and $c_2\ge c_3$.</b></li>
+    </ol>
+  </div></details>
+</div>
+
+<div class="q">
+  <div class="qh">E3 <span class="src">Midterm 2 VI (past paper)</span><span class="lvl">Descriptive · exam</span></div>
+  <p>$Q\succ 0$, $n\ge 2$, distinct eigenvalues $0\lt\lambda_1\lt\dots\lt\lambda_n$. $\max F(x)=x^\top x$ s.t. $g(x)=x^\top Qx-1\le 0$. Use $f=-x^\top x$ and $\mu\ge 0$.<br>
+  (a) Feasible set compact, global max exists. (b) Lagrangian and complete KKT. (c) All KKT points and multipliers. (d) LICQ and critical cones. (e) Hessian and SONC; exclude points, exhibit failing directions. (f) SOSC on the survivors; strict local maximizers.</p>
+  <details class="ans"><summary>Show answer</summary><div>
+    <ol class="steps">
+      <li><b>(a)</b> $0\in\Omega$; closed (continuity). $\lambda_1\|x\|^2\le x^\top Qx\le 1$ ⇒ $\|x\|\le 1/\sqrt{\lambda_1}$ ⇒ bounded ⇒ compact ⇒ $F$ attains its max (Weierstrass).</li>
+      <li><b>(b)</b> $L=-x^\top x+\mu(x^\top Qx-1)$. KKT: $2(\mu Q-I)x=0$; $x^\top Qx\le 1$; $\mu\ge 0$; $\mu(x^\top Qx-1)=0$.</li>
+      <li><b>(c)</b> Inactive ⇒ $\mu=0$ ⇒ $x=0$: KKT pair $(0,0)$. Active ⇒ $x\ne 0$ ⇒ $\mu\ne 0$ ⇒ $Qx=\tfrac1\mu x$ ⇒ $x=tv_i$, $\lambda_it^2=1$: $x_i^\pm=\pm v_i/\sqrt{\lambda_i}$, $\mu_i=1/\lambda_i$, $F=1/\lambda_i$. Total $2n+1$ KKT points.</li>
+      <li><b>(d)</b> Origin: no active constraint, LICQ vacuous, $\nabla f(0)=0$ ⇒ $C_0=\mathbb R^n$. Boundary: $\nabla g=2Qx_i^\pm=2\lambda_ix_i^\pm\ne 0$ ⇒ LICQ; $\mu_i\gt 0$ ⇒ $C_i^\pm=\{d:v_i^\top d=0\}=\operatorname{span}\{v_j:j\ne i\}$.</li>
+      <li><b>(e)</b> $H(\mu)=2(\mu Q-I)$. Origin: $H=-2I$, $v_1^\top Hv_1=-2\lt 0$ ⇒ SONC fails ⇒ origin is not a local max of $F$. At $x_i^\pm$: $H_i=2(Q/\lambda_i-I)$, $d=\sum_{j\ne i}\alpha_jv_j$: $d^\top H_id=2\sum_{j\ne i}(\lambda_j/\lambda_i-1)\alpha_j^2$. For $i\ge 2$: $d=v_1$ gives $2(\lambda_1/\lambda_i-1)\lt 0$ ⇒ SONC fails ⇒ excluded. For $i=1$: all coefficients $\gt 0$ ⇒ SONC holds.</li>
+      <li><b>(f)</b> At $x_1^\pm$: $d^\top H_1d=2\sum_{j\ge 2}(\lambda_j/\lambda_1-1)\alpha_j^2\gt 0$ for $d\ne 0$ in $C$ ⇒ SOSC ⇒ <b>$\pm v_1/\sqrt{\lambda_1}$ are strict local minimizers of $f$, i.e. strict local maximizers of $F$</b> (note $H_1v_1=0$, but $v_1\notin C$, so no conflict).</li>
+      <li><b>(g, global)</b> $x^\top Qx-\lambda_1\|x\|^2=\sum_{j\ge 2}(\lambda_j-\lambda_1)\beta_j^2\ge 0$ ⇒ $F\le x^\top Qx/\lambda_1\le 1/\lambda_1$, equality only at $\pm v_1/\sqrt{\lambda_1}$. <b>$F^\star=1/\lambda_1$</b>, two global maximizers (strict local, not strict global).</li>
+    </ol>
+  </div></details>
+</div>
+
+<h3 id="p-f">F. Exam level (new)</h3>
+
+<div class="q">
+  <div class="qh">F1 <span class="src">New, in his style (parametric ladder, nonconvex feasible set)</span><span class="lvl">Descriptive · exam level</span></div>
+  <p>For $a\ge 0$: $\min f_a(x)=\tfrac12(x_1-a)^2+\tfrac12x_2^2$ s.t. $x_1^2+x_2^2\ge 1$ (stay outside the unit disk).<br>
+  (a) Rewrite in course form and write the complete KKT conditions. (b) Find all KKT points and multipliers as functions of $a$; state where the active set changes. (c) Check LICQ. (d) For each KKT point and each parameter regime (treat $a=0$ and $a=1$ separately) find $C$, $L_\star$, and classify. (e) State the global minimizer for each $a$.</p>
+  <details class="hint"><summary>Hint</summary><p>Second stationarity equation: $x_2(1-2\mu)=0$. Split into $x_2=0$ and $\mu=\tfrac12$.</p></details>
+  <details class="ans"><summary>Show answer</summary><div>
+    <ol class="steps">
+      <li><b>(a)</b> $g(x)=1-x_1^2-x_2^2\le 0$. $\ell=\tfrac12(x_1-a)^2+\tfrac12x_2^2+\mu(1-x_1^2-x_2^2)$. KKT: $(1-2\mu)x_1-a=0$, $(1-2\mu)x_2=0$; $x_1^2+x_2^2\ge 1$; $\mu\ge 0$; $\mu(1-x_1^2-x_2^2)=0$.</li>
+      <li><b>(b) Inactive</b> ($\mu=0$): $x=(a,0)$; strictly inactive needs $a\gt 1$. <b>Active</b> ($x_1^2+x_2^2=1$):
+        <ul>
+          <li>$x_2=0$, $x_1=1$: $1-2\mu=a$ ⇒ $\mu=(1-a)/2\ge 0$ iff $a\le 1$.</li>
+          <li>$x_2=0$, $x_1=-1$: $-(1-2\mu)=a$ ⇒ $\mu=(1+a)/2\gt 0$ for every $a\ge 0$.</li>
+          <li>$\mu=\tfrac12$: first equation gives $a=0$; then <i>every</i> point of the circle is a KKT point with $\mu=\tfrac12$.</li>
+        </ul>
+        <table><tr><th>$a$</th><th>KKT points (multiplier)</th></tr>
+        <tr><td>$a=0$</td><td>every $x$ with $\|x\|=1$ ($\mu=\tfrac12$)</td></tr>
+        <tr><td>$0\lt a\lt 1$</td><td>$(1,0)$ ($\mu=\tfrac{1-a}2\gt 0$); $(-1,0)$ ($\mu=\tfrac{1+a}2$)</td></tr>
+        <tr><td>$a=1$</td><td>$(1,0)$ ($\mu=0$, active: degenerate); $(-1,0)$ ($\mu=1$)</td></tr>
+        <tr><td>$a\gt 1$</td><td>$(a,0)$ ($\mu=0$, inactive); $(-1,0)$ ($\mu=\tfrac{1+a}2$). [$(1,0)$ would need $\mu=\tfrac{1-a}2\lt 0$: rejected.]</td></tr></table>
+        The constraint stops being active at $(1,0)$ when $a$ passes $1$.</li>
+      <li><b>(c)</b> On the circle $\nabla g=-2x\ne 0$; at $(a,0)$ for $a\gt 1$ nothing is active. LICQ holds at every feasible point, so every local min is a KKT point.</li>
+      <li><b>(d)</b> $L_\star=\nabla^2f+\mu\nabla^2g=I-2\mu I=(1-2\mu)I$.
+        <ul>
+          <li><b>$(1,0)$, $0\lt a\lt 1$:</b> $\mu\gt 0$, $\nabla g=(-2,0)$ ⇒ $C=\{(0,t)\}$. $L_\star=aI$ ⇒ $at^2\gt 0$ ⇒ SOSC ⇒ <b>strict local min</b>.</li>
+          <li><b>$(1,0)$, $a=1$:</b> $\mu=0$, $g\in\mathcal A_0$ ⇒ $C=\{d:-2d_1\le 0\}=\{d_1\ge 0\}$ (a half-plane). $L_\star=I$ ⇒ $\|d\|^2\gt 0$ ⇒ SOSC ⇒ <b>strict local min</b>.</li>
+          <li><b>$(a,0)$, $a\gt 1$:</b> inactive, $\nabla f=0$ ⇒ $C=\mathbb R^2$, $L_\star=I$ ⇒ SOSC ⇒ <b>strict local min</b> ($f=0$).</li>
+          <li><b>$(-1,0)$, $a\gt 0$:</b> $\mu=\tfrac{1+a}2\gt 0$, $\nabla g=(2,0)$ ⇒ $C=\{(0,t)\}$; $L_\star=(1-(1+a))I=-aI$ ⇒ $-at^2\lt 0$; regular ⇒ <b>SONC fails ⇒ not a local min</b> (it is the farthest point from $(a,0)$ locally).</li>
+          <li><b>$a=0$, any circle point:</b> $\mu=\tfrac12$ ⇒ $L_\star=0$, $C=\{d:x^\top d=0\}$ (tangent line) ⇒ SONC holds, SOSC fails ⇒ second-order tests are <b>inconclusive</b>. Directly: $f=\tfrac12\|x\|^2\ge\tfrac12$ on $\Omega$ with equality on the whole circle ⇒ every circle point is a global (hence local) minimizer, <b>none strict</b>.</li>
+        </ul></li>
+      <li><b>(e)</b> $f_a$ is half the squared distance to $(a,0)$. $a=0$: whole unit circle, value $\tfrac12$. $0\lt a\le 1$: $(1,0)$, value $\tfrac12(1-a)^2$. $a\gt 1$: $(a,0)$, value $0$. (Checked numerically on a grid for $a=0.5,1,2$.)</li>
+    </ol>
+  </div></details>
+</div>
+
+<div class="q">
+  <div class="qh">F2 <span class="src">New, in his style (eigenvector variant he asked you to try)</span><span class="lvl">Descriptive · exam level</span></div>
+  <p>Let $Q=\begin{pmatrix}3&1\\1&3\end{pmatrix}$. Solve $\min f(x)=x^\top x$ s.t. $x^\top Qx\ge 1$ by the full ladder: KKT points with multipliers, LICQ, critical cones, $L_\star$, SONC/SOSC classification, and the global minimum. Then state the general answer for $Q\succ 0$ with distinct eigenvalues.</p>
+  <details class="hint"><summary>Hint</summary><p>Eigenpairs: $\lambda_1=2$, $v_1=(1,-1)/\sqrt2$; $\lambda_2=4$, $v_2=(1,1)/\sqrt2$.</p></details>
+  <details class="ans"><summary>Show answer</summary><div>
+    <ol class="steps">
+      <li><b>Form.</b> $g=1-x^\top Qx\le 0$; $\ell=x^\top x+\mu(1-x^\top Qx)$.</li>
+      <li><b>KKT.</b> $2x-2\mu Qx=0$; $x^\top Qx\ge 1$; $\mu\ge 0$; $\mu(1-x^\top Qx)=0$.</li>
+      <li><b>Inactive</b> ⇒ $\mu=0$ ⇒ $x=0$, but $g(0)=1\gt 0$: infeasible. So the constraint is active, $\mu\ne 0$, $Qx=\tfrac1\mu x$.</li>
+      <li><b>$\lambda=4$:</b> $x=\pm v_2/2=\pm(\tfrac{\sqrt2}4,\tfrac{\sqrt2}4)$, $\mu=\tfrac14$, $f=\tfrac14$. <b>$\lambda=2$:</b> $x=\pm v_1/\sqrt2=\pm(\tfrac12,-\tfrac12)$, $\mu=\tfrac12$, $f=\tfrac12$. All $\mu\gt 0$ ✓, all on $x^\top Qx=1$ ✓.</li>
+      <li><b>LICQ.</b> $\nabla g=-2Qx=-2\lambda_ix\ne 0$ ✓ at all four.</li>
+      <li><b>Critical cones.</b> $\mu\gt 0$ ⇒ $C=\{d:(Qx)^\top d=0\}=\{d:x^\top d=0\}$: at $\pm v_2/2$, $C=\operatorname{span}\{(1,-1)\}$; at $\pm v_1/\sqrt2$, $C=\operatorname{span}\{(1,1)\}$.</li>
+      <li><b>$L_\star=2(I-\mu Q)$.</b> At $\mu=\tfrac14$: $L_\star=\begin{pmatrix}\tfrac12&-\tfrac12\\-\tfrac12&\tfrac12\end{pmatrix}$, $d=(1,-1)$: $d^\top L_\star d=2\gt 0$ ⇒ SOSC ⇒ <b>$\pm(\tfrac{\sqrt2}4,\tfrac{\sqrt2}4)$ strict local minimizers</b>. At $\mu=\tfrac12$: $L_\star=\begin{pmatrix}-1&-1\\-1&-1\end{pmatrix}$, $d=(1,1)$: $-4\lt 0$, regular ⇒ <b>SONC fails ⇒ $\pm(\tfrac12,-\tfrac12)$ are not local minimizers</b>.</li>
+      <li><b>Global.</b> Feasible set closed and nonempty, $f$ coercive ⇒ a global min exists; it is a KKT point (LICQ everywhere) ⇒ <b>$\min=\tfrac14=1/\lambda_{\max}$ at $\pm(\tfrac{\sqrt2}4,\tfrac{\sqrt2}4)$</b>.</li>
+      <li><b>General.</b> KKT points $\pm v_i/\sqrt{\lambda_i}$, $\mu=1/\lambda_i$; on $C=v_i^\perp$: $d^\top L_\star d=2\sum_{j\ne i}(1-\lambda_j/\lambda_i)\alpha_j^2$ ⇒ only $i=n$ passes (SOSC); answer $1/\lambda_n$ at $\pm v_n/\sqrt{\lambda_n}$.</li>
+    </ol>
+  </div></details>
+</div>
+</section>
+
+<!-- ============ 5. SELF-TEST ============ -->
+<section id="selftest">
+<h2>5. Self-test (no looking)</h2>
+<div class="toolbar" data-auto></div>
+<div class="q"><div class="qh">S1</div><p>Write the Lagrangian and all five KKT conditions for $\min f$ s.t. $h=0$, $g\le 0$. Which multipliers have a sign restriction?</p>
+  <details class="ans"><summary>Show answer</summary><div><p>$\ell=f+\lambda^\top h+\mu^\top g$. $\nabla f+J_h\lambda+J_g\mu=0$; $h=0$; $g\le 0$; $\mu\ge 0$; $\mu_jg_j=0\ \forall j$. Only $\mu\ge 0$; $\lambda$ free.</p></div></details></div>
+<div class="q"><div class="qh">S2</div><p>Define LICQ. Under LICQ, what is unique and what is not?</p>
+  <details class="ans"><summary>Show answer</summary><div><p>Gradients of all equalities and active inequalities linearly independent. The KKT multipliers are unique; the minimizer need not be.</p></div></details></div>
+<div class="q"><div class="qh">S3</div><p>State the relation between $T_\Omega$ and $\mathcal L_\Omega$, and two cases where they are equal.</p>
+  <details class="ans"><summary>Show answer</summary><div><p>$T\subseteq\mathcal L$ always ($C^1$ constraints). Equal at regular points (LICQ, sufficient not necessary) and whenever all constraints are affine.</p></div></details></div>
+<div class="q"><div class="qh">S4</div><p>Write the critical cone with the $\mathcal A_+/\mathcal A_0$ split. Why do $\mathcal A_0$ rows keep "$\le$"?</p>
+  <details class="ans"><summary>Show answer</summary><div><p>$C=\{d:\nabla h_i^\top d=0,\ \nabla g_j^\top d=0\ (j\in\mathcal A_+),\ \nabla g_j^\top d\le 0\ (j\in\mathcal A_0)\}$. A zero-multiplier constraint costs no first-order increase when you move inward, so those inward directions are still "ties" and must be tested; forcing "$=$" would lose them (e.g. $u-v^2$ on the quadrant).</p></div></details></div>
+<div class="q"><div class="qh">S5</div><p>State SONC and SOSC with all hypotheses. Which one needs LICQ? Which gives a strict minimum?</p>
+  <details class="ans"><summary>Show answer</summary><div><p>SONC: $C^2$, local min, regular ⇒ $d^\top L_\star d\ge 0$ on $C$ (needs LICQ). SOSC: $C^2$, KKT holds, $d^\top L_\star d\gt 0$ for all $0\ne d\in C$ ⇒ strict local min (no LICQ).</p></div></details></div>
+<div class="q"><div class="qh">S6</div><p>$C=\{0\}$ at a KKT point. Does SOSC pass or fail? What if $L_\star$ is indefinite?</p>
+  <details class="ans"><summary>Show answer</summary><div><p>Passes (vacuously) ⇒ strict local min. Indefinite $L_\star$ on $\mathbb R^n$ is irrelevant; only $C$ matters.</p></div></details></div>
+<div class="q"><div class="qh">S7</div><p>State Farkas' lemma in the course form (signs!).</p>
+  <details class="ans"><summary>Show answer</summary><div><p>$d^\top c\ge 0$ for all $d$ with $A^\top d=0$, $B^\top d\le 0$ ⇔ $\exists\lambda$ free, $\mu\ge 0$ with $c+A\lambda+B\mu=0$.</p></div></details></div>
+<div class="q"><div class="qh">S8</div><p>Give one example each: (i) a minimum where KKT fails; (ii) an active constraint with $\mu=0$; (iii) KKT + SONC hold, SOSC fails, not a min.</p>
+  <details class="ans"><summary>Show answer</summary><div><p>(i) $\min x$ s.t. $-x^3\le 0$ at $0$. (ii) $\min x^2$ s.t. $-x\le 0$ at $0$. (iii) $\min v-u^4$ s.t. $-v\le 0$ at the origin ($\mu=1$, $C=\{(a,0)\}$, $L_\star=0$, $f(t,0)=-t^4$).</p></div></details></div>
+<p><label><input type="checkbox" data-key="m2-done"> I finished this module</label></p>
+</section>
+
+</main>
+</div>
+<script src="assets/fe.js"></script>
+</body>
+</html>

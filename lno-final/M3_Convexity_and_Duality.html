@@ -1,0 +1,805 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>M3 · Convexity and duality (incl. LP duality)</title>
+<link rel="stylesheet" href="assets/fe.css">
+<script>
+  // MathJax: inline $...$ or \(...\), display $$...$$ or \[...\]
+  window.MathJax = { tex: { inlineMath: [['$','$'],['\\(','\\)']], displayMath: [['$$','$$'],['\\[','\\]']] } };
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml.js"></script>
+</head>
+<body>
+<div class="layout">
+<nav class="toc">
+  <a class="home" href="./">← START HERE</a>
+  <a href="#must">1. Must remember</a>
+  <a href="#concepts">2. Concepts</a>
+  <a href="#prof">3. What he said</a>
+  <a href="#practice">4. Practice</a>
+  <a href="#selftest">5. Self-test</a>
+</nav>
+<main>
+<h1>M3 · Convexity and duality (incl. LP duality)</h1>
+<p class="sub">Chapter 7 (+ LP KKT used again in Ch 8) · about 60 min · Goal: derive the dual of any LP or small convex QP he gives you with the recipe, recover the primal answer, and state exactly what weak duality, Slater, the KKT-equivalence theorem, primal recovery and the LP duality theorem do and do <b>not</b> give.</p>
+<p class="small">Time plan: Must remember 8 min · Concepts 22 min · What he said 2 min · Practice 23 min (do at least the Quiz 4 block, Q17–Q19 and Midterm Q II) · Self-test 5 min.</p>
+
+<!-- ============ 1. MUST REMEMBER ============ -->
+<section id="must">
+<h2>1. Must remember</h2>
+<div class="box must"><span class="tag">Memorise cold</span>
+  <ul>
+    <li><b>Primal</b> (always rewrite into this form first): $\min_x f(x)$ s.t. $h(x)=0$, $g(x)\le 0$. <b>Lagrangian</b> $L(x,\lambda,\mu)=f(x)+\lambda^Th(x)+\mu^Tg(x)$, $\lambda$ free, $\mu\ge 0$. (The notes write the multipliers as $y=(u,v)$; same thing.)</li>
+    <li><b>Dual function</b> $q(\lambda,\mu)=\inf_{x\in\mathbb{R}^n}L(x,\lambda,\mu)$: infimum over <b>all</b> $x$, constraints are <b>not</b> put back. Domain $\mathbb{D}=\{(\lambda,\mu):q\gt-\infty\}$. <b>Dual problem</b>: $\max q(\lambda,\mu)$ s.t. $(\lambda,\mu)\in\mathbb{D}$, $\mu\ge0$.</li>
+    <li><b>Linear-in-$x$ rule:</b> $\inf_x (r^Tx+\beta)=\beta$ if $r=0$, and $-\infty$ otherwise. ("The infimum is finite if and only if the coefficient of $x$ vanishes.")</li>
+    <li>$q$ is <b>concave</b> and $\mathbb{D}$ is <b>convex</b>, even when the primal is nonconvex (because $L$ is affine in the multipliers).</li>
+    <li><b>Weak duality:</b> $x$ feasible, $\mu\ge0$ ⇒ $q(\lambda,\mu)\le L(x,\lambda,\mu)\le f(x)$. Hence $d^*\le p^*$.</li>
+    <li><b>Standard LP pair:</b> $\ \min c^Tx$ s.t. $Ax=b,\ x\ge0\quad\Longleftrightarrow\quad \max b^T\lambda$ s.t. $A^T\lambda\le c$ ($\lambda$ free).</li>
+    <li><b>LP KKT:</b> $A^T\lambda^*+\mu^*=c,\ \ \mu^*\ge0,\ \ Ax^*=b,\ \ x^*\ge0,\ \ (\mu^*)^Tx^*=0$. <b>Value identity</b> $c^Tx^*=b^T\lambda^*$.</li>
+    <li><b>LP duality theorem:</b> (i) one has an optimal solution ⇒ both do, equal values. (ii) one unbounded ⇒ the other <b>infeasible</b>. The converse of (ii) is FALSE: both can be infeasible.</li>
+    <li><b>KKT-equivalence (Thm 7.4.1)</b>, differentiable convex, full space: a KKT pair exists ⇔ $p^*=d^*\in\mathbb{R}$ <b>and both are attained</b>. Then every primal optimum with every dual optimum is a KKT pair.</li>
+    <li><b>Slater (Thm 7.4.3):</b> $f,g$ convex, $h$ affine, some $x^0$ with $h(x^0)=0$, $g(x^0)\lt 0$, and $p^*$ finite ⇒ $p^*=d^*$ and the <b>dual</b> optimum is attained. Primal attainment is NOT guaranteed.</li>
+    <li><b>Primal recovery (Cor 7.4.2):</b> KKT pair exists, $\bar y$ dual optimal, $L(\cdot,\bar y)$ has a <b>unique</b> minimiser $\bar x$ ⇒ $\bar x$ is the unique primal optimum (feasibility and complementary slackness come free). Uniqueness, not strict convexity, is the hypothesis.</li>
+    <li><b>Convex feasible set from:</b> $h(x)=0$ with $h$ affine; $g(x)\le0$ with $g$ convex; $g(x)\ge0$ with $g$ concave.</li>
+    <li>Never write "concave optimization problem" or "concave set".</li>
+  </ul>
+</div>
+<div class="box must"><span class="tag">LP dual sign table (a check, not a replacement for the derivation)</span>
+<p>Primal is a <b>min</b> $c^Tx$; dual is a <b>max</b> $b^Ty$ with one $y_i$ per row of $A$ and one dual constraint per column $a_j$ of $A$.</p>
+<table>
+<tr><th>Primal row $i$</th><th>Dual variable $y_i$</th><th>Primal variable $x_j$</th><th>Dual constraint $j$</th></tr>
+<tr><td>$a_i^Tx\ge b_i$</td><td>$y_i\ge0$</td><td>$x_j\ge0$</td><td>$a_j^Ty\le c_j$</td></tr>
+<tr><td>$a_i^Tx=b_i$</td><td>$y_i$ free</td><td>$x_j$ free</td><td>$a_j^Ty=c_j$</td></tr>
+<tr><td>$a_i^Tx\le b_i$</td><td>$y_i\le0$</td><td>$x_j\le0$</td><td>$a_j^Ty\ge c_j$</td></tr>
+</table>
+<p class="small">Check: standard form ($=$ rows, $x\ge0$) gives $y$ free, $A^Ty\le c$. A <b>max</b> primal: first rewrite as $\min(-c^Tx)$.</p>
+</div>
+</section>
+
+<!-- ============ 2. CONCEPTS ============ -->
+<section id="concepts">
+<h2>2. Concepts</h2>
+
+<h3>2.1 What makes a problem convex, and what convexity buys you</h3>
+<p><b>In plain words:</b> a convex problem is "minimise a bowl-shaped function over a set with no dents". Then any local minimum is the global one, and the KKT equations are enough to prove a point is the global minimum.</p>
+<p><b>Precisely:</b> the problem $\min f(x)$ s.t. $h(x)=0,\ g(x)\le0$ is a <b>convex optimization problem</b> if $f$ and every $g_j$ are convex and $h$ is affine. For such problems:</p>
+<ul>
+  <li>Feasible set is convex (Thm 7.2.1: affine $=$, convex $\le$, concave $\ge$; intersections stay convex).</li>
+  <li>Local minimum ⇒ global minimum (Thm 7.2.3). The set of minimisers is convex (Cor 7.2.6).</li>
+  <li><b>Geometric FONC</b> (Thm 7.2.4): $x^*$ is a global minimiser iff $\nabla f(x^*)^T(y-x^*)\ge0$ for every feasible $y$. So $\nabla f(x^*)$ need not be $0$ at a constrained optimum.</li>
+  <li><b>KKT ⇒ global minimum</b> (Thm 7.2.8), with <b>no</b> constraint qualification needed. But KKT is <b>not necessary</b> without a CQ (e.g. Slater).</li>
+</ul>
+<div class="box example"><span class="tag">Worked example: which constraints keep the feasible set convex?</span>
+  <ol class="steps">
+    <li>$x_1^2+x_2^2-4\le0$: convex function $\le 0$ ✓.</li>
+    <li>$-x_1\le0$ (i.e. $x_1\ge0$): affine is convex ✓.</li>
+    <li>$\ln x_1\ge 0$ (on $x_1\gt0$): concave function $\ge0$ ✓.</li>
+    <li>$x_1^2+x_2^2=1$: equality with a <b>non-affine</b> function ✗ (circle, not convex).</li>
+    <li>$x_1^2-x_2\ge0$: convex function $\ge0$ ✗ (outside of a parabola, not convex).</li>
+  </ol>
+</div>
+<div class="box example"><span class="tag">Worked example: KKT holds nowhere, yet the optimum exists</span>
+<p>$\min (x-1)^2$ s.t. $x^2\le0$. Only feasible point $x^*=0$, so it is the global minimiser. Stationarity would need $2(0-1)+2\mu\cdot0=0$, i.e. $-2=0$: no multiplier. Strict convexity does not replace a constraint qualification. (Slater fails: no $x$ with $x^2\lt0$.)</p>
+</div>
+<div class="box trap"><span class="tag">Trap: convexity along a line</span> $f=x_1^2-x_2^2$ is not convex on $\mathbb{R}^2$, but restricted to the line $\{(t,at)\}$ it is $(1-a^2)t^2$, convex iff $|a|\le1$. Only the curvature <b>along the set</b> matters ($F^T\nabla^2 f\,F\succeq0$), not the full Hessian. And at $a=\pm1$ the restriction is constant, which still counts as convex.</div>
+
+<h3>2.2 The proof chain: KKT ⇒ global minimum (Midterm 2 Q I)</h3>
+<p><b>In plain words:</b> take any feasible $y$, look at the step $d=y-x^*$, and show $f$ cannot go down along it.</p>
+<div class="box example"><span class="tag">The five steps (learn the reason for each)</span>
+  <ol class="steps">
+    <li>Equality: $Ad=Ay-Ax^*=b-b=0$, so $d^TJ_h(x^*)=(Ad)^T=0^T$ (here $J_h=A^T$).</li>
+    <li>Convex $g_j$: $\nabla g_j(x^*)^Td\le g_j(y)-g_j(x^*)$. Active $j$ ($g_j(x^*)=0$): $\le g_j(y)\le0$. Inactive: no fixed sign.</li>
+    <li>Complementary slackness kills inactive $\mu_j$; active ones are $\ge0$ times $\le0$: so $d^TJ_g(x^*)\mu^*\le0$.</li>
+    <li>Convex $f$ + stationarity of the Lagrangian: $f(y)-f(x^*)\ge\nabla f(x^*)^Td=-d^T[J_h\lambda^*+J_g\mu^*]$.</li>
+    <li>Combine: $f(y)-f(x^*)\ge -d^TJ_g\mu^*\ge0$. Global minimum. Contrapositive: a point that is not a (local) minimiser cannot satisfy KKT.</li>
+  </ol>
+</div>
+
+<h3>2.3 Lagrangian, dual function, and its domain $\mathbb{D}$</h3>
+<p><b>In plain words:</b> for each fixed price vector $(\lambda,\mu)$ you minimise the "penalised" cost $L$ over <b>every</b> $x$, ignoring the constraints. The answer $q(\lambda,\mu)$ is a lower bound on the true optimum. Where the minimisation runs off to $-\infty$, that price vector is useless (outside $\mathbb{D}$).</p>
+<p><b>Precisely:</b> $q(\lambda,\mu)=\inf_{x\in\mathbb{R}^n}L(x,\lambda,\mu)$; $\mathbb{D}=\{q\gt-\infty\}$. If the problem has an explicit <b>function domain</b> (e.g. $y\gt0$ because of $x^2/y$), that domain stays in the infimum; only constraints you put into $L$ are dropped.</p>
+<p>How to compute the infimum:</p>
+<ul>
+  <li>$L$ <b>linear</b> in some variable: coefficient must be $0$, else $q=-\infty$.</li>
+  <li>$L$ a <b>positive definite quadratic</b> in $x$: set $\nabla_xL=0$, solve for $x(\lambda,\mu)$, substitute back (or complete the square).</li>
+  <li>Quadratic with coefficient that can be $\le 0$, or exponential terms: check the edge cases separately (e.g. $e^x+\mu x$: $\mu\gt0$ gives $-\infty$ as $x\to-\infty$).</li>
+</ul>
+<div class="box example"><span class="tag">Worked example (notes Example 7.4.2)</span>
+<p>$\min x$ s.t. $-x\le0$. $L=x-\mu x=(1-\mu)x$. Linear in $x$: finite only if $1-\mu=0$.</p>
+<p>$q(\mu)=0$ if $\mu=1$, $-\infty$ otherwise. $\mathbb{D}=\{1\}$, $d^*=0=p^*$ (at $x^*=0$).</p>
+<p>But $L(x,1)\equiv0$: every $x$ minimises it, including $x=-1$ (infeasible) and $x=1$ (feasible, not optimal). So minimising $L$ at $\mu^*$ does not by itself give $x^*$ when the minimiser is not unique.</p>
+</div>
+
+<h3>2.4 Weak duality, and why $q$ is always concave</h3>
+<p><b>In plain words:</b> every dual value is below every feasible primal value. So any feasible pair with <b>equal</b> values proves both are optimal.</p>
+<p><b>Proof (he wants this remembered):</b> for feasible $\bar x$ and $\bar\mu\ge0$:
+$$q(\bar\lambda,\bar\mu)\le L(\bar x,\bar\lambda,\bar\mu)=f(\bar x)+\bar\lambda^T\underbrace{h(\bar x)}_{=0}+\underbrace{\bar\mu^Tg(\bar x)}_{\le0}\le f(\bar x).$$</p>
+<p><b>Concavity of $q$:</b> for fixed $x$, $L$ is affine in $(\lambda,\mu)$. An infimum of affine functions is concave: $q(\alpha y_0+(1-\alpha)y_1)=\inf_x[\alpha L(x,y_0)+(1-\alpha)L(x,y_1)]\ge\alpha q(y_0)+(1-\alpha)q(y_1)$. Then $\mathbb{D}$ is convex because the right side is $\gt-\infty$ when both endpoints are in $\mathbb{D}$. No convexity of $f,g$ used. So the dual is <b>always a convex optimization problem</b> (maximise concave = minimise convex $-q$).</p>
+<div class="box example"><span class="tag">Worked example</span> A feasible $\hat x$ has $f(\hat x)=7$, a dual-feasible $\hat\eta$ has $q(\hat\eta)=4$. Then $4\le d^*\le p^*\le7$. Nothing more: no zero gap, no optimality of either point.</div>
+
+<h3>2.5 THE RECIPE: deriving a dual (and the QP example from the tutorial)</h3>
+<div class="box must"><span class="tag">Recipe (write every step in the exam)</span>
+<ol class="steps">
+  <li>Rewrite constraints as $h(x)=0$, $g(x)\le0$ (e.g. $x_1\ge2\to 2-x_1\le0$; $x\ge0\to -x\le0$). Name multipliers: $\lambda$ free for $h$, $\mu\ge0$ for $g$.</li>
+  <li>Write $L=f+\lambda^Th+\mu^Tg$ and <b>collect terms in $x$</b>.</li>
+  <li>Take $\inf$ over <b>all</b> $x\in\mathbb{R}^n$ (no constraints put back). Linear parts: coefficient $=0$. Quadratic parts: $\nabla_xL=0$.</li>
+  <li>Write $q$ with its domain $\mathbb{D}$ (where it is $\gt-\infty$).</li>
+  <li>Eliminate "slack" multipliers (those that appear only in the coefficient conditions, e.g. $\mu$ for $x\ge0$): $\mu=\ldots\ge0$ becomes an inequality on the rest.</li>
+  <li>Dual: maximise $q$ over the remaining multipliers with their sign restrictions.</li>
+  <li>(QP) Maximise; check $\mu^*\ge0$ (if the unconstrained maximiser has $\mu\lt0$, maximise on the boundary $\mu=0$). Recover $\bar x=\arg\min_xL(x,\lambda^*,\mu^*)$; if unique it is $x^*$. Check $p^*=d^*$. Name a Slater point.</li>
+</ol>
+</div>
+<div class="box example"><span class="tag">Worked example: Ch 7 tutorial problem V (Problem set part 2, V)</span>
+<p>$\displaystyle\min_{x\in\mathbb{R}^2}\tfrac12(2x_1^2+x_2^2)$ s.t. $h(x)=x_1+x_2-4=0$, $g(x)=2-x_1\le0$.</p>
+<ol class="steps">
+  <li><b>Slater point:</b> $x^0=(3,1)$: $h=0$, $g=-1\lt0$ ✓. $f$ strictly convex ⇒ any KKT point is the unique global minimiser.</li>
+  <li>$L=x_1^2+\tfrac12x_2^2+\lambda(x_1+x_2-4)+\mu(2-x_1)$, $\lambda\in\mathbb{R}$, $\mu\ge0$.</li>
+  <li>$L$ is a PD quadratic in $x$ for every $(\lambda,\mu)$, so $\nabla_xL=0$: $2x_1+\lambda-\mu=0$, $x_2+\lambda=0$ ⇒ $x_1=\frac{\mu-\lambda}{2}$, $x_2=-\lambda$. Here $\mathbb{D}=\mathbb{R}^2$.</li>
+  <li>Substitute: $q(\lambda,\mu)=-\tfrac14(\lambda-\mu)^2-\tfrac12\lambda^2-4\lambda+2\mu$.</li>
+  <li>Complete the square: $q(\lambda,\mu)=6-\tfrac14(\lambda-\mu+4)^2-\tfrac12(\lambda+2)^2$. Max when both squares are $0$: $\lambda^*=-2$, $\mu^*=2\ge0$ ✓, $d^*=6$.</li>
+  <li><b>Recover:</b> $L(x,-2,2)=(x_1-2)^2+\tfrac12(x_2-2)^2+6$, unique minimiser $\bar x=(2,2)$ ⇒ $x^*=(2,2)$ by the recovery corollary.</li>
+  <li><b>Check:</b> $x_1+x_2=4$ ✓, $x_1=2\ge2$ (active) ✓, $p^*=\tfrac12(8+4)=6=d^*$ ✓. Stationarity: $(2x_1,x_2)+\lambda(1,1)+\mu(-1,0)=(4-2-2,\,2-2)=(0,0)$ ✓. CS: $\mu(2-x_1)=2\cdot0=0$ ✓.</li>
+</ol>
+</div>
+<div class="box trap"><span class="tag">Trap: two errors in older summaries</span> The end-term guide's one-liner says "$2x_1^2+x_2^2$ … $x^*=(1,2)$". Wrong: $(1,2)$ is not even feasible ($1+2=3\ne4$, and $1\lt2$). The objective has a $\tfrac12$ and the answer is $x^*=(2,2)$, $\lambda^*=-2$, $\mu^*=2$, $p^*=d^*=6$ (checked with sympy). The handwritten tutorial solution's completed square shows $\tfrac12(\lambda-\mu+4)^2$; the correct coefficient is $\tfrac14$ (same maximiser, same value).</div>
+
+<h3>2.6 Strong duality, attainment, Slater, recovery: who gives what</h3>
+<p><b>In plain words:</b> four different things can be true or false separately: (1) zero gap $p^*=d^*$; (2) primal optimum attained; (3) dual optimum attained; (4) the Lagrangian at $\mu^*$ has a unique minimiser. Each theorem gives a specific subset.</p>
+<table>
+<tr><th>Result</th><th>Assumes</th><th>Gives</th><th>Does NOT give</th></tr>
+<tr><td>Weak duality</td><td>nothing (any problem)</td><td>$d^*\le p^*$</td><td>zero gap</td></tr>
+<tr><td>Thm 7.4.1 (KKT equivalence)</td><td>differentiable convex, full space</td><td>KKT pair ⇔ zero gap + both attained</td><td>uniqueness; KKT from zero gap alone</td></tr>
+<tr><td>Slater (Thm 7.4.3)</td><td>convex, affine $h$, strictly feasible $x^0$, $p^*$ finite</td><td>zero gap + <b>dual</b> attained</td><td>primal attained; unique multipliers; unique Lagrangian minimiser</td></tr>
+<tr><td>Slater + a primal optimum exists</td><td>as above + differentiable</td><td>a KKT pair; then $x$ optimal ⇔ KKT multipliers exist at $x$</td><td></td></tr>
+<tr><td>Recovery (Cor 7.4.2)</td><td>KKT pair exists + $L(\cdot,\bar y)$ unique minimiser $\bar x$</td><td>$\bar x$ = unique primal optimum, feasible, CS holds</td><td>anything if minimiser not unique</td></tr>
+</table>
+<div class="box example"><span class="tag">The pathological examples (each is a past MCQ)</span>
+<table>
+<tr><th>Problem</th><th>Slater?</th><th>What happens</th></tr>
+<tr><td>$\min(x-1)^2$ s.t. $x^2\le0$</td><td>No</td><td>$q(\mu)=\frac{\mu}{1+\mu}$; $p^*=d^*=1$; primal attained ($x=0$), dual <b>not</b> ($q\to1$ only as $\mu\to\infty$); no KKT.</td></tr>
+<tr><td>$\min e^x$ s.t. $x\le0$</td><td>Yes ($x=-1$)</td><td>$q(0)=0$, $q(\mu)=-\infty$ for $\mu\gt0$; $p^*=d^*=0$; dual attained, primal <b>not</b> ($e^x\to0$ as $x\to-\infty$).</td></tr>
+<tr><td>$\min-2u+(v-1)^2$ s.t. $u\le1$</td><td>Yes ($(0,1)$)</td><td>$\mu^*=2$, $p^*=d^*=-2$; $L(u,v,2)=(v-1)^2-2$: minimisers = whole line $v=1$. Recovery corollary does not apply; CS $2(u-1)=0$ selects $(1,1)$. $(0,1)$ is feasible and minimises $L$ but is not optimal.</td></tr>
+<tr><td>$\min x$ s.t. $-x\le0$</td><td>Yes ($x=1$)</td><td>$\mu^*=1$, $L(\cdot,1)\equiv0$; $x=-1$ minimises $L$ but is infeasible.</td></tr>
+<tr><td>$\min e^{-x}$ s.t. $x^2/y\le0$, domain $y\gt0$</td><td>No</td><td>$p^*=1$ (at $(0,y)$), $q(\lambda)=0$ (take $x=k$, $y=k^4$), $d^*=0$: <b>gap 1</b>, both attained, inner infimum never attained. (Restricted domain, so Thm 7.4.1 does not apply.)</td></tr>
+</table>
+</div>
+
+<h3>2.7 LP duality: the standard-form derivation and LP KKT</h3>
+<p><b>In plain words:</b> for an LP the Lagrangian is linear in $x$, so the dual function is finite only when the coefficient of $x$ is zero. That one condition becomes the dual constraints.</p>
+<p><b>Precisely</b> (his derivation, Ch 7 §7.6): $\min c^Tx$ s.t. $Ax=b$, $x\ge0$. Use $h(x)=b-Ax$ (multiplier $\lambda$ free), $g(x)=-x$ (multiplier $\mu\ge0$):
+$$L=c^Tx+\lambda^T(b-Ax)-\mu^Tx=(c-A^T\lambda-\mu)^Tx+b^T\lambda.$$
+$$q(\lambda,\mu)=\begin{cases}b^T\lambda,& A^T\lambda+\mu=c\\-\infty,&\text{otherwise}\end{cases}\quad\Rightarrow\quad \max_\lambda b^T\lambda\ \text{ s.t. } \mu=c-A^T\lambda\ge0\iff A^T\lambda\le c.$$
+LP weak duality in one line: $c^Tx-b^T\lambda=(c-A^T\lambda)^Tx=\mu^Tx\ge0$. LP KKT (no LICQ needed, because the tangent cone of linear constraints is exact): $A^T\lambda^*+\mu^*=c$, $\mu^*\ge0$, $Ax^*=b$, $x^*\ge0$, $(\mu^*)^Tx^*=0$, and then $c^Tx^*=(A^T\lambda^*+\mu^*)^Tx^*=b^T\lambda^*$.</p>
+<div class="box example"><span class="tag">Worked example: Ch 7 tutorial problem II (Problem set part 2, II)</span>
+<p>$\min 2x_1+3x_2+6x_3$ s.t. $x_1+x_2+x_3=5$, $2x_1+x_2=6$, $x\ge0$.</p>
+<ol class="steps">
+  <li>$A=\begin{pmatrix}1&1&1\\2&1&0\end{pmatrix}$, $b=(5,6)$, $c=(2,3,6)$. Dual: $\max 5\lambda_1+6\lambda_2$ s.t. $\lambda_1+2\lambda_2\le2$, $\lambda_1+\lambda_2\le3$, $\lambda_1\le6$; $\lambda$ free.</li>
+  <li>Try $\lambda=(4,-1)$: $\mu=c-A^T\lambda=(2-2,\ 3-3,\ 6-4)=(0,0,2)\ge0$ ✓ dual feasible; dual value $20-6=14$.</li>
+  <li>CS: $\mu_3=2\gt0$ ⇒ $x_3=0$. Then $x_1+x_2=5$, $2x_1+x_2=6$ ⇒ $x=(1,4,0)\ge0$ ✓. Primal value $2+12=14$.</li>
+  <li>Equal values ⇒ both optimal (weak duality). $p^*=d^*=14$ (checked with linprog). Since $x_1,x_2\gt0$, CS forces the first two dual constraints tight ⇒ $\lambda=(4,-1)$ is the unique dual optimum.</li>
+</ol>
+</div>
+
+<h3>2.8 Non-standard LP forms (what he will give you)</h3>
+<p>Use the same recipe; only the bookkeeping changes. The three patterns:</p>
+<ul>
+  <li><b>Free variable</b> $x_j$ (no sign constraint, no multiplier): its coefficient in $L$ must be exactly $0$ ⇒ an <b>equality</b> in the dual.</li>
+  <li><b>Sign-constrained variable</b> $x_j\ge0$: gives a multiplier $s_j\ge0$ in the coefficient; eliminating it gives an <b>inequality</b> in the dual.</li>
+  <li><b>Inequality row</b> ($\ge$ or $\le$): rewrite as $(\cdot)\le0$; its multiplier is $\ge0$. Equality row: multiplier free.</li>
+</ul>
+<div class="box example"><span class="tag">Worked example: inequality form, $x$ free</span>
+<p>$\min c^Tx$ s.t. $Ax\le b$. $g=Ax-b\le0$, $\mu\ge0$. $L=c^Tx+\mu^T(Ax-b)=(c+A^T\mu)^Tx-b^T\mu$. $x$ free ⇒ need $c+A^T\mu=0$. Dual: $\max_\mu -b^T\mu$ s.t. $A^T\mu=-c$, $\mu\ge0$.</p>
+</div>
+<div class="box example"><span class="tag">Worked example: the self-dual LP (Midterm 2 Q II, summary)</span>
+<p>$\min q^Tz$ s.t. $Mz\ge-q$, $z\ge0$, with $M^T=-M$. Multipliers $\lambda\ge0$ for $-Mz-q\le0$, $\mu\ge0$ for $-z\le0$. Using $-\lambda^TMz=-(M^T\lambda)^Tz=(M\lambda)^Tz$: $L=(q+M\lambda-\mu)^Tz-q^T\lambda$. Finite iff $\mu=q+M\lambda$; $\mu\ge0\iff M\lambda\ge-q$. Dual: $\max -q^T\lambda$ s.t. $M\lambda\ge-q$, $\lambda\ge0$: <b>same feasible set</b>, so $d^*=-p^*$. Since $z^TMz=0$, every feasible $z$ has $q^Tz=z^T(Mz+q)\ge0$. Feasible ⇒ bounded ⇒ optimal; strong duality ⇒ $p^*=d^*=-p^*$ ⇒ both $0$.</p>
+</div>
+<div class="box trap"><span class="tag">Traps in LP duals</span>
+<ul>
+<li>Primal is a <b>max</b>? Convert to $\min(-c^Tx)$ first, derive, then flip back. $\max c^Tx$, $Ax\le b$, $x\ge0$ has dual $\min b^Ty$, $A^Ty\ge c$, $y\ge0$.</li>
+<li>Equality multiplier sign depends on whether you wrote $b-Ax$ or $Ax-b$; both are right if you are consistent (they differ by $\lambda\to-\lambda$). He says: don't change the convention mid-problem.</li>
+<li>Infeasible ⇏ unbounded. Example: $A=[0]$, $b=1$, $c=-1$: primal $0\cdot x=1$ and dual $0\cdot\lambda\le-1$ are both infeasible.</li>
+</ul>
+</div>
+</section>
+
+<!-- ============ 3. WHAT HE SAID ============ -->
+<section id="prof">
+<h2>3. What the professor said about this</h2>
+<div class="box prof"><span class="tag">In class</span>
+  <ul>
+    <li><q>different form of linear program I will give and ask you to derive the dual</q> <span class="ts">Ch 7 lec 3 [1:08:00]</span> → expect a non-standard LP (free variables, $\ge$ rows, max form). Practise Q16–Q19.</li>
+    <li><q>The infimum is finite if and only if the coefficients of x vanishes. That is very important thing.</q> <span class="ts">Ch 7 lec 3 [1:10:30]</span> → this one sentence is the whole LP-dual derivation.</li>
+    <li>Standard LP dual is <q>worth memorizing</q>; <q>if you memorize, you save time</q> <span class="ts">Ch 7 lec 3 [1:14:00]</span> (the guide notes he estimated 10–15 minutes lost re-deriving).</li>
+    <li>LP KKT system: <q>You have to remember it.</q> <span class="ts">Ch 7 lec 3 [1:00:00]</span>; in Ch 8 he said stationarity is the one part to memorise <span class="ts">Ch 8 lec 2 [13:30]</span>.</li>
+    <li><q>Always remember that you have these five equations.</q> <span class="ts">Ch 7 lec 3 [53:30]</span> → always write all five KKT parts.</li>
+    <li>KKT sufficiency for convex problems: <q>this section is very important</q> <span class="ts">Ch 7 lec 1 [1:08:00]</span> → became Midterm 2 Q I.</li>
+    <li>Weak duality: <q>it's used frequently. You should always remember this.</q> <span class="ts">Ch 7 lec 2 [1:18:30]</span></li>
+    <li><q>Be sure that you don't write concave optimization problem. Never, exam.</q> <span class="ts">Ch 7 lec 2 [59:30]</span>; <q>there is nothing called concave set</q> <span class="ts">Ch 7 lec 2 [1:08:30]</span>.</li>
+    <li><q>Many students make that mistake. Being d infeasible doesn't imply p unbounded.</q> <span class="ts">Ch 7 lec 3 [1:38:00]</span></li>
+    <li>Tutorial: <q>in the midterm, I will not give this form</q> … you need to know how to build your Lagrangian <span class="ts">Ch 6–7 tutorial 1 [35:00]</span> → constraints come in non-standard form; convert to $h=0$, $g\le0$ yourself.</li>
+    <li>Tutorial problems: <q>similar problems you can expect</q> <span class="ts">Ch 6–7 tutorial 1 [01:30]</span>; Midterm 2 was mostly repetition of tutorial/problem-set problems (Ch 8 lec 1 [01:30], per the guide).</li>
+    <li>He mentioned a possible short-answer part written without any sheet <span class="ts">Ch 7 lec 3 [1:14:30]</span> → the theorem statements in Section 1 must be word-perfect, in the course's own forms (other books' forms "not accepted", Ch 7 lec 2 [41:00]).</li>
+  </ul>
+</div>
+</section>
+
+<!-- ============ 4. PRACTICE ============ -->
+<section id="practice">
+<h2>4. Practice (try first, then open the answer)</h2>
+<p class="small">Order: Quiz 4 (Q1–Q12) → new MCQs (Q13–Q16) → new descriptive (Q17–Q19) → Midterm 2 Q I and Q II (Q20–Q35). Numbers checked with sympy / scipy linprog.</p>
+<div class="toolbar" data-auto></div>
+
+<h3>Part A · Quiz 4 (all 12, past paper)</h3>
+
+<div class="q mcq" data-answer="a">
+  <div class="qh">Q1 <span class="src">Quiz 4 Q1 (past paper)</span><span class="lvl">MCQ</span></div>
+  <p>Let $f(x_1,x_2)=x_1^2-x_2^2$ and $\Omega_a=\{(t,at):t\in\mathbb{R}\}$. For exactly which $a$ is the restriction of $f$ to $\Omega_a$ convex?</p>
+  <ol class="opts">
+    <li data-k="a"><b class="k">(a)</b> $|a|\le1$.</li>
+    <li data-k="b"><b class="k">(b)</b> $|a|\lt1$.</li>
+    <li data-k="c"><b class="k">(c)</b> $|a|\ge1$.</li>
+    <li data-k="d"><b class="k">(d)</b> For no $a$, because the full Hessian of $f$ is indefinite.</li>
+  </ol>
+  <details class="ans"><summary>Show answer</summary><div>
+    <p><b>Answer: (a).</b> $\phi_a(t)=f(t,at)=(1-a^2)t^2$, $\phi_a''=2(1-a^2)\ge0\iff|a|\le1$.</p>
+    <p>(b) drops $a=\pm1$, where $\phi$ is constant: constant functions are convex (just not strictly). (c) is where the restriction is concave. (d) The ambient Hessian is irrelevant; only curvature along the line counts.</p>
+  </div></details>
+</div>
+
+<div class="q mcq" data-answer="d">
+  <div class="qh">Q2 <span class="src">Quiz 4 Q2 (past paper)</span><span class="lvl">MCQ</span></div>
+  <p>$q(\eta)=\inf_{x\in D}L(x,\eta)$ where $L$ is affine in $\eta$ for each fixed $x$; $\mathcal{D}=\{\eta:q(\eta)\gt-\infty\}$ nonempty, $q$ never $+\infty$. Which must hold?</p>
+  <ol class="opts">
+    <li data-k="a"><b class="k">(a)</b> $q$ is convex and $\mathcal{D}$ is convex.</li>
+    <li data-k="b"><b class="k">(b)</b> $q$ is concave only when the primal objective is strictly convex.</li>
+    <li data-k="c"><b class="k">(c)</b> $q$ is concave, but $\mathcal{D}$ need not be convex.</li>
+    <li data-k="d"><b class="k">(d)</b> $q$ is concave and $\mathcal{D}$ is convex, even when the primal problem is nonconvex.</li>
+  </ol>
+  <details class="ans"><summary>Show answer</summary><div>
+    <p><b>Answer: (d).</b> Infimum of affine functions is concave; finiteness at two endpoints plus concavity keeps the combination finite, so $\mathcal{D}$ is convex. No convexity of $f,g$ is used.</p>
+    <p>(a) $q$ is concave, not convex. (b) concavity needs nothing from the primal. (c) $\mathcal{D}$ is always convex.</p>
+  </div></details>
+</div>
+
+<div class="q mcq" data-answer="b">
+  <div class="qh">Q3 <span class="src">Quiz 4 Q3 (past paper)</span><span class="lvl">MCQ</span></div>
+  <p>A primal-feasible $\hat x$ and a dual-feasible $\hat\eta$ satisfy $f(\hat x)=7$, $q(\hat\eta)=4$. Neither is known to be optimal. Which must hold?</p>
+  <ol class="opts">
+    <li data-k="a"><b class="k">(a)</b> $4\le p^*\le d^*\le7$.</li>
+    <li data-k="b"><b class="k">(b)</b> $4\le d^*\le p^*\le7$.</li>
+    <li data-k="c"><b class="k">(c)</b> $p^*\le4\le7\le d^*$.</li>
+    <li data-k="d"><b class="k">(d)</b> $p^*=7$ and $d^*=4$.</li>
+  </ol>
+  <details class="ans"><summary>Show answer</summary><div>
+    <p><b>Answer: (b).</b> $4=q(\hat\eta)\le d^*$ (sup), $d^*\le p^*$ (weak duality), $p^*\le f(\hat x)=7$ (inf).</p>
+    <p>(a) puts $p^*\le d^*$: wrong direction of weak duality. (c) reverses both bounds. (d) treats feasible values as optimal.</p>
+  </div></details>
+</div>
+
+<div class="q mcq" data-answer="a">
+  <div class="qh">Q4 <span class="src">Quiz 4 Q4 (past paper; also Ch 7 problem 3)</span><span class="lvl">MCQ</span></div>
+  <p>$\min_{x\in\mathbb{R}}x^2+1$ s.t. $(x-2)(x-4)\le0$, $L=x^2+1+\lambda(x-2)(x-4)$. The dual function for $\lambda\ge0$ and its maximiser?</p>
+  <ol class="opts">
+    <li data-k="a"><b class="k">(a)</b> $q(\lambda)=10-\lambda-\frac{9}{1+\lambda}$, $\lambda^*=2$.</li>
+    <li data-k="b"><b class="k">(b)</b> $q(\lambda)=10+\lambda-\frac{9}{1+\lambda}$, $\lambda^*=2$.</li>
+    <li data-k="c"><b class="k">(c)</b> $q(\lambda)=10-\lambda-\frac{9}{1+\lambda}$, $\lambda^*=1$.</li>
+    <li data-k="d"><b class="k">(d)</b> $q(\lambda)=5$ for every $\lambda\ge0$.</li>
+  </ol>
+  <details class="ans"><summary>Show answer</summary><div>
+    <p><b>Answer: (a).</b> $L=(1+\lambda)x^2-6\lambda x+1+8\lambda$, minimiser $x_\lambda=\frac{3\lambda}{1+\lambda}$ (over all of $\mathbb{R}$), $q=1+8\lambda-\frac{9\lambda^2}{1+\lambda}=10-\lambda-\frac{9}{1+\lambda}$. $q'=-1+\frac{9}{(1+\lambda)^2}=0\Rightarrow\lambda^*=2$, $q(2)=5=f(2)$, $x^*=2$.</p>
+    <p>(b) sign error: then $q(2)=9\gt p^*=5$, violating weak duality. (c) $q'(1)=-1+\frac94\gt0$, still increasing. (d) comes from restricting the inner minimisation to $[2,4]$, which is not allowed.</p>
+  </div></details>
+</div>
+
+<div class="q mcq" data-answer="c">
+  <div class="qh">Q5 <span class="src">Quiz 4 Q5 (past paper)</span><span class="lvl">MCQ</span></div>
+  <p>$f,g_i$ convex, $h$ affine, $\exists x^0$: $h(x^0)=0$, $g_i(x^0)\lt0$; $p^*$ finite. What does Slater's theorem guarantee?</p>
+  <ol class="opts">
+    <li data-k="a"><b class="k">(a)</b> Primal and dual optimal solutions both exist and are unique.</li>
+    <li data-k="b"><b class="k">(b)</b> Zero gap and primal attainment; dual attainment need not hold.</li>
+    <li data-k="c"><b class="k">(c)</b> Zero gap and dual attainment; primal attainment is not guaranteed.</li>
+    <li data-k="d"><b class="k">(d)</b> Zero gap only if $f$ is strictly convex.</li>
+  </ol>
+  <details class="ans"><summary>Show answer</summary><div>
+    <p><b>Answer: (c).</b> Exactly Thm 7.4.3.</p>
+    <p>(a) no uniqueness of anything. (b) swaps primal and dual ($e^x$, $x\le0$: Slater holds, primal not attained). (d) strict convexity is not a hypothesis.</p>
+  </div></details>
+</div>
+
+<div class="q mcq" data-answer="d">
+  <div class="qh">Q6 <span class="src">Quiz 4 Q6 (past paper)</span><span class="lvl">MCQ</span></div>
+  <p>Differentiable convex program, affine equalities, convex inequalities, full space. Which condition is equivalent to the existence of a KKT pair?</p>
+  <ol class="opts">
+    <li data-k="a"><b class="k">(a)</b> Primal optimum finite and attained; nothing about the dual.</li>
+    <li data-k="b"><b class="k">(b)</b> $p^*=d^*\in\mathbb{R}$; neither needs to be attained.</li>
+    <li data-k="c"><b class="k">(c)</b> Dual optimum finite and attained; nothing about primal or gap.</li>
+    <li data-k="d"><b class="k">(d)</b> $p^*=d^*\in\mathbb{R}$, and both are attained.</li>
+  </ol>
+  <details class="ans"><summary>Show answer</summary><div>
+    <p><b>Answer: (d).</b> Thm 7.4.1. Proof idea: with zero gap and both attained, $q(\eta^*)\le L(x^*,\eta^*)\le f(x^*)$ has equal ends; the first equality gives stationarity, the second complementary slackness.</p>
+    <p>(a) fails for $(x-1)^2$, $x^2\le0$ (primal attained, no KKT). (b) same example: zero gap, still no KKT (dual not attained). (c) fails for $e^x$, $x\le0$ (dual attained, no primal optimum, so no KKT point).</p>
+  </div></details>
+</div>
+
+<div class="q mcq" data-answer="b">
+  <div class="qh">Q7 <span class="src">Quiz 4 Q7 (past paper)</span><span class="lvl">MCQ</span></div>
+  <p>$\min(x-1)^2$ s.t. $x^2\le0$, $q(\mu)=\inf_x\big((x-1)^2+\mu x^2\big)$, $\mu\ge0$. Which is correct?</p>
+  <ol class="opts">
+    <li data-k="a"><b class="k">(a)</b> $p^*=d^*=1$, both attained.</li>
+    <li data-k="b"><b class="k">(b)</b> $p^*=d^*=1$; primal attained, dual supremum not.</li>
+    <li data-k="c"><b class="k">(c)</b> $p^*=1$, $d^*=0$, both attained.</li>
+    <li data-k="d"><b class="k">(d)</b> $p^*=d^*=1$, neither attained.</li>
+  </ol>
+  <details class="ans"><summary>Show answer</summary><div>
+    <p><b>Answer: (b).</b> Only feasible point $x=0$, $p^*=1$. $(x-1)^2+\mu x^2=(1+\mu)\big(x-\frac1{1+\mu}\big)^2+\frac{\mu}{1+\mu}$, so $q(\mu)=\frac{\mu}{1+\mu}\lt1$ for all finite $\mu$, $\to1$: $d^*=1$ not attained. No KKT multiplier ($-2=0$).</p>
+    <p>(a) dual not attained. (c) $d^*$ is the supremum, $1$, not $q(0)=0$. (d) the primal is attained at $x=0$.</p>
+  </div></details>
+</div>
+
+<div class="q mcq" data-answer="a">
+  <div class="qh">Q8 <span class="src">Quiz 4 Q8 (past paper; Ch 7 problem 5)</span><span class="lvl">MCQ</span></div>
+  <p>$\min_{x\in\mathbb{R},\,y\gt0}e^{-x}$ s.t. $x^2/y\le0$. The domain $y\gt0$ stays in the inner infimum: $q(\lambda)=\inf_{x,\,y\gt0}\big(e^{-x}+\lambda x^2/y\big)$. Which is correct?</p>
+  <ol class="opts">
+    <li data-k="a"><b class="k">(a)</b> $p^*=1$, $d^*=0$, both attained; the inner infimum is not attained for any $\lambda\ge0$.</li>
+    <li data-k="b"><b class="k">(b)</b> $p^*=d^*=1$, both attained; inner infimum attained at every dual optimum.</li>
+    <li data-k="c"><b class="k">(c)</b> $p^*=1$, $d^*=0$; only the primal optimum is attained.</li>
+    <li data-k="d"><b class="k">(d)</b> $p^*=1$, $d^*=0$, both attained; inner infimum attained for every $\lambda\ge0$.</li>
+  </ol>
+  <details class="ans"><summary>Show answer</summary><div>
+    <p><b>Answer: (a).</b> $y\gt0$ and $x^2/y\le0$ force $x=0$: $p^*=1$ at every $(0,y)$. For any $\lambda\ge0$, along $x=k$, $y=k^4$: $L=e^{-k}+\lambda/k^2\to0$, and $L\gt0$ always, so $q(\lambda)=0$, never attained inside. $q\equiv0$ ⇒ every $\lambda\ge0$ is dual optimal, $d^*=0$ attained. Gap $=1$.</p>
+    <p>(b) $d^*=0$, not 1. (c) the dual is attained too ($q\equiv0$). (d) the inner infimum $0$ is never reached since $L\gt0$.</p>
+  </div></details>
+</div>
+
+<div class="q mcq" data-answer="c">
+  <div class="qh">Q9 <span class="src">Quiz 4 Q9 (past paper)</span><span class="lvl">MCQ</span></div>
+  <p>Differentiable convex setting, $p^*=d^*\in\mathbb{R}$, both attained. $\bar\eta$ dual optimal and $L(\cdot,\bar\eta)$ has a unique global minimiser $\bar x$. What follows from the recovery corollary?</p>
+  <ol class="opts">
+    <li data-k="a"><b class="k">(a)</b> $\bar x$ is only a stationary point; primal feasibility must be assumed separately.</li>
+    <li data-k="b"><b class="k">(b)</b> Feasibility follows, but complementary slackness must still be verified.</li>
+    <li data-k="c"><b class="k">(c)</b> $\bar x$ is the unique primal optimum; feasibility and CS follow automatically.</li>
+    <li data-k="d"><b class="k">(d)</b> Recovery also needs strict convexity of every $g_i$.</li>
+  </ol>
+  <details class="ans"><summary>Show answer</summary><div>
+    <p><b>Answer: (c).</b> Any primal optimum $x^*$ with $\bar\eta$ is a KKT pair, so $x^*$ minimises the convex $L(\cdot,\bar\eta)$; uniqueness forces $x^*=\bar x$. Everything is inherited from $x^*$.</p>
+    <p>(a), (b) the extra checks are unnecessary under the corollary. (d) the hypothesis is uniqueness of the Lagrangian minimiser, not strict convexity.</p>
+  </div></details>
+</div>
+
+<div class="q mcq" data-answer="d">
+  <div class="qh">Q10 <span class="src">Quiz 4 Q10 (past paper; tutorial III)</span><span class="lvl">MCQ</span></div>
+  <p>$\min_{u,v}-2u+(v-1)^2$ s.t. $u-1\le0$. $L=(\lambda-2)u+(v-1)^2-\lambda$, dual optimum $\lambda^*=2$. Which is correct?</p>
+  <ol class="opts">
+    <li data-k="a"><b class="k">(a)</b> The only minimiser of $L(\cdot,\cdot,2)$ is $(1,1)$, also the primal optimum.</li>
+    <li data-k="b"><b class="k">(b)</b> The minimiser set is $\{(u,1):u\le1\}$, and every point in it is primal optimal.</li>
+    <li data-k="c"><b class="k">(c)</b> The minimiser set is $\{(1,v):v\in\mathbb{R}\}$; only $(1,1)$ is primal optimal.</li>
+    <li data-k="d"><b class="k">(d)</b> The minimiser set is $\{(u,1):u\in\mathbb{R}\}$; only $(1,1)$ is primal optimal.</li>
+  </ol>
+  <details class="ans"><summary>Show answer</summary><div>
+    <p><b>Answer: (d).</b> $L(u,v,2)=(v-1)^2-2$, independent of $u$: minimisers are the whole line $v=1$. Primal: $f+2=2(1-u)+(v-1)^2\ge0$, zero only at $(1,1)$. CS $2(u-1)=0$ selects $u=1$.</p>
+    <p>(a) the minimiser is not unique. (b) $u$ is not restricted in the inner minimisation, and $(0,1)$ is not optimal. (c) wrong line: $v$ is fixed at 1, $u$ is free.</p>
+  </div></details>
+</div>
+
+<div class="q mcq" data-answer="a">
+  <div class="qh">Q11 <span class="src">Quiz 4 Q11 (past paper)</span><span class="lvl">MCQ</span></div>
+  <p>$\min 2x_1+3x_2$ s.t. $x_1+x_2=1$, $x\ge0$, with $L=2x_1+3x_2+\nu(1-x_1-x_2)-\mu_1x_1-\mu_2x_2$, $\mu\ge0$. After eliminating $\mu$, the dual is ($\nu\in\mathbb{R}$):</p>
+  <ol class="opts">
+    <li data-k="a"><b class="k">(a)</b> $\max\nu$ s.t. $\nu\le2,\ \nu\le3$.</li>
+    <li data-k="b"><b class="k">(b)</b> $\max\nu$ s.t. $\nu\ge2,\ \nu\ge3$.</li>
+    <li data-k="c"><b class="k">(c)</b> $\min\nu$ s.t. $\nu\le2,\ \nu\le3$.</li>
+    <li data-k="d"><b class="k">(d)</b> $\max(-\nu)$ s.t. $\nu\le2,\ \nu\le3$.</li>
+  </ol>
+  <details class="ans"><summary>Show answer</summary><div>
+    <p><b>Answer: (a).</b> $L=(2-\nu-\mu_1)x_1+(3-\nu-\mu_2)x_2+\nu$. Finite iff both coefficients vanish: $q=\nu$, $\mu_1=2-\nu\ge0$, $\mu_2=3-\nu\ge0$. $\nu^*=2=p^*$ at $x=(1,0)$ (linprog ✓).</p>
+    <p>(b) inequalities reversed. (c) a dual of a min is a max. (d) the constant term is $+\nu$.</p>
+  </div></details>
+</div>
+
+<div class="q mcq" data-answer="b">
+  <div class="qh">Q12 <span class="src">Quiz 4 Q12 (past paper)</span><span class="lvl">MCQ</span></div>
+  <p>For (P) $\min c^Tx$, $Ax=b$, $x\ge0$ and (D) $\max b^T\nu$, $A^T\nu\le c$, which is always valid?</p>
+  <ol class="opts">
+    <li data-k="a"><b class="k">(a)</b> If (P) is infeasible, (D) must be unbounded above.</li>
+    <li data-k="b"><b class="k">(b)</b> If either has an optimal solution, so does the other, with equal values.</li>
+    <li data-k="c"><b class="k">(c)</b> If (P) is unbounded below, (D) is also unbounded above.</li>
+    <li data-k="d"><b class="k">(d)</b> Every primal-feasible and dual-feasible pair has equal objective values.</li>
+  </ol>
+  <details class="ans"><summary>Show answer</summary><div>
+    <p><b>Answer: (b).</b> LP duality theorem part (i).</p>
+    <p>(a) infeasible ⇏ unbounded ($A=[0]$, $b=1$, $c=-1$: both infeasible). (c) unbounded ⇒ the other is <b>infeasible</b>. (d) only $b^T\nu\le c^Tx$ (weak duality).</p>
+  </div></details>
+</div>
+
+<h3>Part B · New MCQs in his style</h3>
+
+<div class="q mcq" data-answer="b">
+  <div class="qh">Q13 <span class="src">New (based on notes Example 7.4.2)</span><span class="lvl">MCQ</span></div>
+  <p>$\min_{x\in\mathbb{R}}x$ s.t. $-x\le0$, $L=(1-\mu)x$, $\mu\ge0$. Slater holds ($x=1$) and the dual optimum is $\mu^*=1$. Which statement is correct?</p>
+  <ol class="opts">
+    <li data-k="a"><b class="k">(a)</b> Since Slater holds, every minimiser of $L(\cdot,1)$ is primal optimal.</li>
+    <li data-k="b"><b class="k">(b)</b> $p^*=d^*=0$; $L(\cdot,1)\equiv0$, so every $x\in\mathbb{R}$ minimises it, and the recovery corollary cannot be used to find $x^*=0$.</li>
+    <li data-k="c"><b class="k">(c)</b> Slater fails, because the optimum $x^*=0$ lies on the boundary of the feasible set.</li>
+    <li data-k="d"><b class="k">(d)</b> Because $L(\cdot,1)$ has no unique minimiser, there is a positive duality gap.</li>
+  </ol>
+  <details class="ans"><summary>Show answer</summary><div>
+    <p><b>Answer: (b).</b> $q(\mu)=0$ if $\mu=1$, $-\infty$ otherwise, so $d^*=0=p^*$. At $\mu^*=1$ the Lagrangian is identically $0$.</p>
+    <p>(a) $x=-1$ minimises $L(\cdot,1)$ but is infeasible; $x=1$ is feasible but violates CS ($1\cdot(-1)\ne0$) and is not optimal. Slater gives zero gap and dual attainment, nothing about Lagrangian minimisers. (c) Slater needs one strictly feasible point anywhere, not at the optimum. (d) the gap is zero; non-uniqueness affects recovery, not the gap.</p>
+  </div></details>
+</div>
+
+<div class="q mcq" data-answer="b">
+  <div class="qh">Q14 <span class="src">New (Ch 7 problem set part 2, IV with t = 0)</span><span class="lvl">MCQ</span></div>
+  <p>$\min_{x\in\mathbb{R}}-3x$ s.t. $(x-1)^2\le0$, $L=-3x+\mu(x-1)^2$, $\mu\ge0$, inner infimum over all $x$. Which is correct?</p>
+  <ol class="opts">
+    <li data-k="a"><b class="k">(a)</b> Slater holds, so the dual optimum is attained.</li>
+    <li data-k="b"><b class="k">(b)</b> $q(\mu)=-3-\frac{9}{4\mu}$ for $\mu\gt0$; $p^*=d^*=-3$; primal attained at $x=1$, dual not attained; no KKT multiplier exists at $x=1$.</li>
+    <li data-k="c"><b class="k">(c)</b> $p^*=-3$ but $d^*=-\infty$, an infinite gap.</li>
+    <li data-k="d"><b class="k">(d)</b> $L(\cdot,\mu)$ has a unique minimiser for every $\mu\gt0$, so the recovery corollary gives a KKT pair.</li>
+  </ol>
+  <details class="ans"><summary>Show answer</summary><div>
+    <p><b>Answer: (b).</b> Only $x=1$ is feasible, $p^*=-3$. For $\mu\gt0$: $\partial_xL=-3+2\mu(x-1)=0\Rightarrow x=1+\frac{3}{2\mu}$, $q=-3-\frac9{2\mu}+\frac9{4\mu}=-3-\frac{9}{4\mu}$; $q(0)=-\infty$. Sup $=-3$ as $\mu\to\infty$, never reached. Stationarity at $x=1$: $-3+2\mu\cdot0=-3\ne0$.</p>
+    <p>(a) no $x$ has $(x-1)^2\lt0$: Slater fails. (c) $d^*$ is a supremum, $-3$. (d) the corollary needs a dual <b>optimum</b> (and a KKT pair) first; here no dual optimum exists.</p>
+  </div></details>
+</div>
+
+<div class="q mcq" data-answer="a">
+  <div class="qh">Q15 <span class="src">New (max-form LP)</span><span class="lvl">MCQ</span></div>
+  <p>Which is the dual of $\ \max_x c^Tx$ s.t. $Ax\le b$, $x\ge0$?</p>
+  <ol class="opts">
+    <li data-k="a"><b class="k">(a)</b> $\min_y b^Ty$ s.t. $A^Ty\ge c$, $y\ge0$.</li>
+    <li data-k="b"><b class="k">(b)</b> $\min_y b^Ty$ s.t. $A^Ty\le c$, $y\ge0$.</li>
+    <li data-k="c"><b class="k">(c)</b> $\max_y b^Ty$ s.t. $A^Ty\ge c$, $y\ge0$.</li>
+    <li data-k="d"><b class="k">(d)</b> $\min_y b^Ty$ s.t. $A^Ty=c$, $y\ge0$.</li>
+  </ol>
+  <details class="ans"><summary>Show answer</summary><div>
+    <ol class="steps">
+      <li>Convert: $\min -c^Tx$ s.t. $Ax-b\le0$ ($y\ge0$), $-x\le0$ ($s\ge0$).</li>
+      <li>$L=-c^Tx+y^T(Ax-b)-s^Tx=(A^Ty-c-s)^Tx-b^Ty$.</li>
+      <li>Finite iff $s=A^Ty-c$; $s\ge0\iff A^Ty\ge c$. $q=-b^Ty$.</li>
+      <li>Dual: $\max -b^Ty$ s.t. $A^Ty\ge c$, $y\ge0$, i.e. $\min b^Ty$ with the same constraints. <b>Answer (a).</b></li>
+    </ol>
+    <p>(b) inequality direction lost (that would be the $\ge$-row min primal's dual, flipped). (c) the min/max flip is missing. (d) equality would need $x$ free.</p>
+    <p>Numerical check: $c=(3,2)$, $A=\begin{pmatrix}1&1\\1&3\end{pmatrix}$, $b=(4,6)$: primal max $12$ at $x=(4,0)$; dual min $12$ at $y=(3,0)$ (linprog).</p>
+  </div></details>
+</div>
+
+<div class="q mcq" data-answer="a">
+  <div class="qh">Q16 <span class="src">New (free variables)</span><span class="lvl">MCQ</span></div>
+  <p>Which is the dual of $\ \min_x c^Tx$ s.t. $Ax\ge b$, with $x$ <b>free</b>?</p>
+  <ol class="opts">
+    <li data-k="a"><b class="k">(a)</b> $\max_y b^Ty$ s.t. $A^Ty=c$, $y\ge0$.</li>
+    <li data-k="b"><b class="k">(b)</b> $\max_y b^Ty$ s.t. $A^Ty\le c$, $y\ge0$.</li>
+    <li data-k="c"><b class="k">(c)</b> $\max_y b^Ty$ s.t. $A^Ty=c$, $y$ free.</li>
+    <li data-k="d"><b class="k">(d)</b> $\max_y -b^Ty$ s.t. $A^Ty=-c$, $y\ge0$.</li>
+  </ol>
+  <details class="ans"><summary>Show answer</summary><div>
+    <p><b>Answer: (a).</b> $g=b-Ax\le0$, $y\ge0$: $L=c^Tx+y^T(b-Ax)=(c-A^Ty)^Tx+b^Ty$. $x$ free and no slack multiplier ⇒ $A^Ty=c$ exactly. $q=b^Ty$.</p>
+    <p>(b) is the dual when $x\ge0$ (slack multiplier turns $=$ into $\le$). (c) is the dual of $Ax=b$ (equality rows give free $y$). (d) comes from writing $Ax-b\le0$, which is the wrong direction for a $\ge$ constraint.</p>
+    <p>Check: $\min x_1+x_2$ s.t. $x_1+2x_2\ge2$, $2x_1+x_2\ge2$: $p^*=\frac43$ at $(\frac23,\frac23)$; dual $y=(\frac13,\frac13)$, $d^*=\frac43$ (linprog).</p>
+  </div></details>
+</div>
+
+<h3>Part C · New descriptive problems (exam level)</h3>
+
+<div class="q">
+  <div class="qh">Q17 <span class="src">New, in his style (≥ constraints)</span><span class="lvl">Descriptive</span></div>
+  <p>Consider $\ \min_{x\in\mathbb{R}^2}3x_1+2x_2$ s.t. $x_1+x_2\ge4$, $x_1+3x_2\ge6$, $x_1,x_2\ge0$.</p>
+  <p>(1) Rewrite the constraints in $g\le0$ form, build the Lagrangian, derive $q$ and its domain. (2) Eliminate the multipliers of $x\ge0$ and write the dual. (3) Show $x=(0,4)$ and $y=(2,0)$ are optimal for primal and dual. (4) Verify complementary slackness.</p>
+  <details class="hint"><summary>Hint</summary><p>Rows: $4-x_1-x_2\le0$, $6-x_1-3x_2\le0$ with $y\ge0$; $-x\le0$ with $s\ge0$. Collect the coefficient of $x$.</p></details>
+  <details class="ans"><summary>Show answer</summary><div>
+    <ol class="steps">
+      <li>$L=3x_1+2x_2+y_1(4-x_1-x_2)+y_2(6-x_1-3x_2)-s_1x_1-s_2x_2=(3-y_1-y_2-s_1)x_1+(2-y_1-3y_2-s_2)x_2+4y_1+6y_2$, $y,s\ge0$.</li>
+      <li>Inf over all $x\in\mathbb{R}^2$: $q=4y_1+6y_2$ if $s_1=3-y_1-y_2$ and $s_2=2-y_1-3y_2$; $-\infty$ otherwise.</li>
+      <li>$s\ge0$ ⇒ dual: $\max\ 4y_1+6y_2$ s.t. $y_1+y_2\le3$, $y_1+3y_2\le2$, $y\ge0$. (Matches $\max b^Ty$, $A^Ty\le c$, $y\ge0$.)</li>
+      <li>Primal feasibility of $(0,4)$: $4\ge4$ ✓, $12\ge6$ ✓, value $8$. Dual feasibility of $(2,0)$: $2\le3$ ✓, $2\le2$ ✓, value $8$. Equal values + weak duality ⇒ both optimal, $p^*=d^*=8$ (linprog ✓).</li>
+      <li>CS: row 2 slack ($12\gt6$) ⇒ $y_2=0$ ✓; $x_2=4\gt0$ ⇒ dual constraint 2 tight ($y_1+3y_2=2$) ✓; $y_1=2\gt0$ ⇒ row 1 tight ✓; $x_1=0$, no condition needed (dual constraint 1 slack: $2\lt3$).</li>
+    </ol>
+  </div></details>
+</div>
+
+<div class="q">
+  <div class="qh">Q18 <span class="src">New, in his style (free variable + mixed rows)</span><span class="lvl">Descriptive</span></div>
+  <p>Consider $\ \min x_1+2x_2$ s.t. $x_1+x_2=4$, $x_1-x_2\le2$, $x_1$ <b>free</b>, $x_2\ge0$.</p>
+  <p>(1) Derive the dual with $\nu$ (free) for $x_1+x_2-4=0$, $\lambda\ge0$ for $x_1-x_2-2\le0$, $s\ge0$ for $-x_2\le0$. (2) Solve the dual. (3) Recover the primal solution using complementary slackness and confirm $p^*=d^*$.</p>
+  <details class="hint"><summary>Hint</summary><p>The free $x_1$ gives an equality, the constrained $x_2$ gives an inequality after eliminating $s$.</p></details>
+  <details class="ans"><summary>Show answer</summary><div>
+    <ol class="steps">
+      <li>$L=x_1+2x_2+\nu(x_1+x_2-4)+\lambda(x_1-x_2-2)-sx_2=(1+\nu+\lambda)x_1+(2+\nu-\lambda-s)x_2-4\nu-2\lambda$.</li>
+      <li>Finite iff $1+\nu+\lambda=0$ (from free $x_1$) and $s=2+\nu-\lambda$. With $s\ge0$: dual is $\max\ -4\nu-2\lambda$ s.t. $1+\nu+\lambda=0$, $2+\nu-\lambda\ge0$, $\lambda\ge0$, $\nu$ free.</li>
+      <li>Eliminate $\nu=-1-\lambda$: objective $4+4\lambda-2\lambda=4+2\lambda$; constraint $1-2\lambda\ge0\iff\lambda\le\frac12$. Max at $\lambda^*=\frac12$, $\nu^*=-\frac32$, $d^*=5$.</li>
+      <li>CS: $\lambda^*\gt0$ ⇒ $x_1-x_2=2$; with $x_1+x_2=4$: $x^*=(3,1)$. $x_2=1\ge0$ ✓; $s^*=2-\frac32-\frac12=0$ consistent with $x_2\gt0$ ✓. $p^*=3+2=5=d^*$ (linprog ✓).</li>
+      <li>Table check (with $y_1=-\nu=\frac32$ free, $y_2=-\lambda=-\frac12\le0$ for a $\le$ row): $\max 4y_1+2y_2$, $y_1+y_2=1$ (free $x_1$), $y_1-y_2\le2$ ($x_2\ge0$): value $6-1=5$ ✓.</li>
+    </ol>
+  </div></details>
+</div>
+
+<div class="q">
+  <div class="qh">Q19 <span class="src">New, in his style (tutorial V with new numbers)</span><span class="lvl">Descriptive</span></div>
+  <p>$\min_{x\in\mathbb{R}^2}x_1^2+x_2^2$ s.t. $h(x)=x_1+x_2-2=0$, $x_1\ge3$. Use $L=f+\lambda h+\mu g$ with $g$ in $\le0$ form.</p>
+  <p>(a) Give a Slater point and explain why a KKT point is the unique global minimiser. (b) Derive $q(\lambda,\mu)$ by minimising $L$ over all $x$; complete the squares. (c) Solve the dual. (d) Recover $x^*$, give $p^*$, $d^*$, check KKT. (e) Redo (c)–(d) if the constraint is $x_1\ge0$ instead.</p>
+  <details class="hint"><summary>Hint</summary><p>$g=3-x_1\le0$. $x_1(\lambda,\mu)=\frac{\mu-\lambda}2$, $x_2=-\frac\lambda2$. In (e) the unconstrained maximiser has $\mu\lt0$.</p></details>
+  <details class="ans"><summary>Show answer</summary><div>
+    <ol class="steps">
+      <li>(a) $x^0=(4,-2)$: $h=0$, $g=-1\lt0$ ✓. $f$ strictly convex, $h$ affine, $g$ affine ⇒ convex problem; KKT ⇒ global min; strict convexity ⇒ unique.</li>
+      <li>(b) $L=x_1^2+x_2^2+\lambda(x_1+x_2-2)+\mu(3-x_1)$. $\nabla_xL=0$: $2x_1+\lambda-\mu=0$, $2x_2+\lambda=0$. Substitute: $q=-\tfrac14(\mu-\lambda)^2-\tfrac14\lambda^2-2\lambda+3\mu=10-\tfrac14(\mu-\lambda-6)^2-\tfrac14(\lambda-2)^2$, $\mathbb{D}=\mathbb{R}^2$.</li>
+      <li>(c) Max: $\lambda^*=2$, $\mu^*=\lambda^*+6=8\ge0$ ✓, $d^*=10$.</li>
+      <li>(d) $L(x,2,8)=x_1^2+x_2^2-6x_1+2x_2+20=(x_1-3)^2+(x_2+1)^2+10$, unique minimiser $x^*=(3,-1)$. $p^*=9+1=10=d^*$. KKT: $\nabla f=(6,-2)$, $+2(1,1)+8(-1,0)=(0,0)$ ✓; $h=0$ ✓; $g=0$ (active) ✓; $\mu=8\ge0$ ✓; CS $8\cdot0=0$ ✓.</li>
+      <li>(e) $g=-x_1\le0$: $q=-\tfrac14(\mu-\lambda)^2-\tfrac14\lambda^2-2\lambda$. Unconstrained max is $\lambda=\mu=-4$: <b>not allowed</b> ($\mu\lt0$). On $\mu=0$: $q=-\tfrac12\lambda^2-2\lambda$, max at $\lambda=-2$, $q=2$. There $\partial q/\partial\mu=\frac{\lambda-\mu}{2}=-1\lt0$, so increasing $\mu$ only lowers $q$: $(\lambda^*,\mu^*)=(-2,0)$, $d^*=2$. Recover $x=(1,1)$, $p^*=2$, constraint inactive and $\mu^*=0$ (CS ✓).</li>
+    </ol>
+  </div></details>
+</div>
+
+<h3>Part D · Midterm 2 Question I (guided proof: KKT ⇒ global minimum)</h3>
+<p>$\min f(x)$ s.t. $h(x)=Ax-b=0$, $g(x)\le0$; $f,g_1,\dots,g_r$ differentiable convex. $J_h=[\nabla h_1\cdots\nabla h_m]$, $J_g=[\nabla g_1\cdots\nabla g_r]$, $L=f+\lambda^Th+\mu^Tg$, $\lambda$ free. For parts 2–8, $(x^*,\lambda^*,\mu^*)$ is a KKT triplet, $y$ any feasible point, $d=y-x^*$.</p>
+
+<div class="q mcq" data-answer="d">
+  <div class="qh">Q20 <span class="src">Midterm 2 I.1 (past paper)</span><span class="lvl">MCQ</span></div>
+  <p>Which system gives the complete KKT conditions? (All options include $h(x^*)=0$, $g(x^*)\le0$.)</p>
+  <ol class="opts">
+    <li data-k="a"><b class="k">(a)</b> $\nabla f+J_h\lambda^*+J_g\mu^*=0$, $\mu^*\le0$, $\mu_i^*g_i(x^*)=0$.</li>
+    <li data-k="b"><b class="k">(b)</b> $\nabla f+J_h\lambda^*+J_g\mu^*=0$, $\mu^*\ge0$, $\mu_i^*g_i(x^*)\le0$.</li>
+    <li data-k="c"><b class="k">(c)</b> $\nabla f(x^*)=0$, $\mu^*\ge0$, $\mu_i^*g_i(x^*)=0$.</li>
+    <li data-k="d"><b class="k">(d)</b> $\nabla f+J_h\lambda^*+J_g\mu^*=0$, $\mu^*\ge0$, $\mu_i^*g_i(x^*)=0$.</li>
+  </ol>
+  <details class="ans"><summary>Show answer</summary><div>
+    <p><b>Answer: (d).</b> All five parts: stationarity of $L$, $h=0$, $g\le0$, $\mu\ge0$, $\mu_ig_i=0$; $\lambda$ free.</p>
+    <p>(a) wrong sign of $\mu$. (b) $\mu_ig_i\le0$ is automatic from $\mu\ge0,g\le0$; CS needs $=0$. (c) $\nabla f=0$ is unconstrained stationarity, not of the Lagrangian. (The OCR copy of the paper drops option (c); this list is from the PDF.)</p>
+  </div></details>
+</div>
+
+<div class="q mcq" data-answer="c">
+  <div class="qh">Q21 <span class="src">Midterm 2 I.2 (past paper)</span><span class="lvl">MCQ</span></div>
+  <p>For $h(x)=Ax-b$, the column-gradient Jacobian $J_h(x)$ is</p>
+  <ol class="opts">
+    <li data-k="a"><b class="k">(a)</b> $-A$</li>
+    <li data-k="b"><b class="k">(b)</b> $-A^T$</li>
+    <li data-k="c"><b class="k">(c)</b> $A^T$</li>
+    <li data-k="d"><b class="k">(d)</b> $A$</li>
+  </ol>
+  <details class="ans"><summary>Show answer</summary><div>
+    <p><b>Answer: (c).</b> $h_i=a_i^Tx-b_i$, $\nabla h_i=a_i$; stacking the $a_i$ as columns gives $A^T\in\mathbb{R}^{n\times m}$. (d) is the row (standard) Jacobian; (a), (b) have a sign that $Ax-b$ does not produce (they would fit $b-Ax$).</p>
+  </div></details>
+</div>
+
+<div class="q mcq" data-answer="a">
+  <div class="qh">Q22 <span class="src">Midterm 2 I.3 (past paper)</span><span class="lvl">MCQ</span></div>
+  <p>Which statement about $d^TJ_h(x^*)$ is correct?</p>
+  <ol class="opts">
+    <li data-k="a"><b class="k">(a)</b> It is $0^T$, because $Ad=Ay-Ax^*=b-b=0$.</li>
+    <li data-k="b"><b class="k">(b)</b> It is $b^T$.</li>
+    <li data-k="c"><b class="k">(c)</b> It is $-b^T$.</li>
+    <li data-k="d"><b class="k">(d)</b> It is $0^T$, because the Jacobian of an affine function is zero.</li>
+  </ol>
+  <details class="ans"><summary>Show answer</summary><div>
+    <p><b>Answer: (a).</b> $d^TA^T=(Ad)^T=0^T$ since both points are feasible.</p>
+    <p>(d) right value, wrong reason: the Jacobian is the constant $A^T$, not zero. (b), (c) $b$ cancels.</p>
+  </div></details>
+</div>
+
+<div class="q mcq" data-answer="c">
+  <div class="qh">Q23 <span class="src">Midterm 2 I.4 (past paper)</span><span class="lvl">MCQ</span></div>
+  <p>What can be asserted in general about $d^T\nabla g_j(x^*)$ for constraints active and inactive at $x^*$?</p>
+  <ol class="opts">
+    <li data-k="a"><b class="k">(a)</b> Active: nonpositive. Inactive: nonpositive.</li>
+    <li data-k="b"><b class="k">(b)</b> Active: zero. Inactive: no fixed sign.</li>
+    <li data-k="c"><b class="k">(c)</b> Active: nonpositive. Inactive: no fixed sign.</li>
+    <li data-k="d"><b class="k">(d)</b> Active: nonpositive. Inactive: nonnegative.</li>
+  </ol>
+  <details class="ans"><summary>Show answer</summary><div>
+    <p><b>Answer: (c).</b> Convexity: $\nabla g_j(x^*)^Td\le g_j(y)-g_j(x^*)$. Active: $=g_j(y)\le0$. Inactive: the bound $g_j(y)-g_j(x^*)$ can be positive. Example: $g(t)=t-1$, $t^*=0$: $y=\pm\frac12$ give opposite signs.</p>
+    <p>(b) "zero" is for equality constraints. (a), (d) inactive constraints have no fixed sign.</p>
+  </div></details>
+</div>
+
+<div class="q mcq" data-answer="b">
+  <div class="qh">Q24 <span class="src">Midterm 2 I.5 (past paper)</span><span class="lvl">MCQ</span></div>
+  <p>Which statement correctly gives the multiplier-weighted inequality and its justification?</p>
+  <ol class="opts">
+    <li data-k="a"><b class="k">(a)</b> $d^TJ_g\mu^*\le0$: nonnegativity of multipliers alone suffices, even if inactive multipliers are nonzero.</li>
+    <li data-k="b"><b class="k">(b)</b> $d^TJ_g\mu^*\le0$: CS makes inactive multipliers zero; the rest are nonnegative multipliers times nonpositive directional derivatives.</li>
+    <li data-k="c"><b class="k">(c)</b> $d^TJ_g\mu^*\ge0$: CS makes the active multipliers zero.</li>
+    <li data-k="d"><b class="k">(d)</b> $d^TJ_g\mu^*=0$: CS implies $\mu_j^*d^T\nabla g_j=0$ for every $j$.</li>
+  </ol>
+  <details class="ans"><summary>Show answer</summary><div>
+    <p><b>Answer: (b).</b> This is where complementary slackness enters the proof.</p>
+    <p>(a) a nonzero inactive multiplier times a positive directional derivative breaks the sign. (c) CS kills the <b>inactive</b> ones. (d) CS says $\mu_jg_j(x^*)=0$, not $\mu_jd^T\nabla g_j=0$.</p>
+  </div></details>
+</div>
+
+<div class="q mcq" data-answer="b">
+  <div class="qh">Q25 <span class="src">Midterm 2 I.6 (past paper)</span><span class="lvl">MCQ</span></div>
+  <p>Which relation is valid?</p>
+  <ol class="opts">
+    <li data-k="a"><b class="k">(a)</b> $f(y)-f(x^*)=-d^T[J_h\lambda^*+J_g\mu^*]$</li>
+    <li data-k="b"><b class="k">(b)</b> $f(y)-f(x^*)\ge-d^T[J_h\lambda^*+J_g\mu^*]$</li>
+    <li data-k="c"><b class="k">(c)</b> $f(y)-f(x^*)\le d^T[J_h\lambda^*+J_g\mu^*]$</li>
+    <li data-k="d"><b class="k">(d)</b> $f(y)-f(x^*)\le-d^T[J_h\lambda^*+J_g\mu^*]$</li>
+  </ol>
+  <details class="ans"><summary>Show answer</summary><div>
+    <p><b>Answer: (b).</b> $f(y)-f(x^*)\ge\nabla f(x^*)^Td$ (convexity) and $\nabla f(x^*)=-(J_h\lambda^*+J_g\mu^*)$ (stationarity).</p>
+    <p>(a) equality only for affine $f$. (c), (d) the convexity inequality goes the other way.</p>
+  </div></details>
+</div>
+
+<div class="q mcq" data-answer="d">
+  <div class="qh">Q26 <span class="src">Midterm 2 I.7 (past paper)</span><span class="lvl">MCQ</span></div>
+  <p>Which two concepts directly produce the relation in I.6?</p>
+  <ol class="opts">
+    <li data-k="a"><b class="k">(a)</b> Convexity of the $g_j$ and stationarity of the Lagrangian.</li>
+    <li data-k="b"><b class="k">(b)</b> Convexity of $f$ and complementary slackness.</li>
+    <li data-k="c"><b class="k">(c)</b> Convexity of $f$ and stationarity of $f$.</li>
+    <li data-k="d"><b class="k">(d)</b> Convexity of $f$ and stationarity of the Lagrangian.</li>
+  </ol>
+  <details class="ans"><summary>Show answer</summary><div>
+    <p><b>Answer: (d).</b> (a) convexity of $g_j$ was used in I.4, not here. (b) CS was used in I.5. (c) $\nabla f(x^*)$ need not be $0$.</p>
+  </div></details>
+</div>
+
+<div class="q mcq" data-answer="a">
+  <div class="qh">Q27 <span class="src">Midterm 2 I.8 (past paper)</span><span class="lvl">MCQ</span></div>
+  <p>Combining the preceding results, which conclusion follows?</p>
+  <ol class="opts">
+    <li data-k="a"><b class="k">(a)</b> Any point that is not a local minimiser must violate the KKT conditions.</li>
+    <li data-k="b"><b class="k">(b)</b> Stationarity of the Lagrangian alone guarantees a minimum, without CS or $\mu\ge0$.</li>
+    <li data-k="c"><b class="k">(c)</b> Every KKT point is a strict local minimiser.</li>
+    <li data-k="d"><b class="k">(d)</b> A KKT point is a local minimiser but need not be global.</li>
+  </ol>
+  <details class="ans"><summary>Show answer</summary><div>
+    <p><b>Answer: (a).</b> $f(y)-f(x^*)\ge-d^TJ_g\mu^*\ge0$ for all feasible $y$: every KKT point is a global, hence local, minimiser. (a) is the contrapositive.</p>
+    <p>(b) I.5 needed CS and $\mu\ge0$. (c) nothing gives strictness ($f\equiv0$: every point is KKT, none strict). (d) it is global.</p>
+  </div></details>
+</div>
+
+<h3>Part E · Midterm 2 Question II (self-dual LP)</h3>
+<p>$(P)\ \min_{z\in\mathbb{R}^N}q^Tz$ s.t. $Mz\ge-q$, $z\ge0$, with $M^T=-M$. Multipliers $\lambda\ge0$ for $-Mz-q\le0$, $\mu\ge0$ for $-z\le0$; inner infimum over all $z\in\mathbb{R}^N$.</p>
+
+<div class="q mcq" data-answer="a">
+  <div class="qh">Q28 <span class="src">Midterm 2 II.1 (past paper)</span><span class="lvl">MCQ</span></div>
+  <p>After using $M^T=-M$, the Lagrangian is</p>
+  <ol class="opts">
+    <li data-k="a"><b class="k">(a)</b> $L=(q+M\lambda-\mu)^Tz-q^T\lambda$</li>
+    <li data-k="b"><b class="k">(b)</b> $L=(q-M\lambda-\mu)^Tz-q^T\lambda$</li>
+    <li data-k="c"><b class="k">(c)</b> $L=(q+M\lambda-\mu)^Tz+q^T\lambda$</li>
+    <li data-k="d"><b class="k">(d)</b> $L=(q+M\lambda+\mu)^Tz-q^T\lambda$</li>
+  </ol>
+  <details class="ans"><summary>Show answer</summary><div>
+    <p><b>Answer: (a).</b> $L=q^Tz+\lambda^T(-Mz-q)-\mu^Tz=(q-M^T\lambda-\mu)^Tz-q^T\lambda=(q+M\lambda-\mu)^Tz-q^T\lambda$.</p>
+    <p>(b) forgot $M^T=-M$. (c) constant term is $-q^T\lambda$. (d) $\mu$ enters through $-\mu^Tz$.</p>
+  </div></details>
+</div>
+
+<div class="q mcq" data-answer="b">
+  <div class="qh">Q29 <span class="src">Midterm 2 II.2 (past paper)</span><span class="lvl">MCQ</span></div>
+  <p>Write $L=r^Tz+\beta$. $\phi(\lambda,\mu)=\inf_{z\in\mathbb{R}^N}L$ is</p>
+  <ol class="opts">
+    <li data-k="a"><b class="k">(a)</b> $-\beta$ if $r=0$, $-\infty$ otherwise.</li>
+    <li data-k="b"><b class="k">(b)</b> $\beta$ if $r=0$, $-\infty$ otherwise.</li>
+    <li data-k="c"><b class="k">(c)</b> $\beta$ if $r\ge0$, $-\infty$ otherwise.</li>
+    <li data-k="d"><b class="k">(d)</b> $\beta$ if $r=0$, $+\infty$ otherwise.</li>
+  </ol>
+  <details class="ans"><summary>Show answer</summary><div>
+    <p><b>Answer: (b).</b> If $r\ne0$, take $z=-tr$: $L=-t\|r\|^2+\beta\to-\infty$.</p>
+    <p>(a) sign of constant. (c) "$r\ge0$" would be right only if $z\ge0$ were kept in the infimum, but it was dualised. (d) an infimum of a function that takes finite values cannot be $+\infty$.</p>
+  </div></details>
+</div>
+
+<div class="q mcq" data-answer="d">
+  <div class="qh">Q30 <span class="src">Midterm 2 II.3 (past paper)</span><span class="lvl">MCQ</span></div>
+  <p>Using the finite-value condition to eliminate $\mu\ge0$ (with $\lambda\ge0$ kept), which constraint on $\lambda$ remains?</p>
+  <ol class="opts">
+    <li data-k="a"><b class="k">(a)</b> $M\lambda\le-q$</li>
+    <li data-k="b"><b class="k">(b)</b> $M\lambda\ge q$</li>
+    <li data-k="c"><b class="k">(c)</b> $M\lambda=-q$</li>
+    <li data-k="d"><b class="k">(d)</b> $M\lambda\ge-q$</li>
+  </ol>
+  <details class="ans"><summary>Show answer</summary><div>
+    <p><b>Answer: (d).</b> $\mu=q+M\lambda\ge0$. (a) wrong direction. (b) sign of $q$. (c) forgets that $\mu$ can be positive (equality only if there were no $z\ge0$ constraint).</p>
+  </div></details>
+</div>
+
+<div class="q mcq" data-answer="c">
+  <div class="qh">Q31 <span class="src">Midterm 2 II.4 (past paper)</span><span class="lvl">MCQ</span></div>
+  <p>The dual of $(P)$ is</p>
+  <ol class="opts">
+    <li data-k="a"><b class="k">(a)</b> $\max q^T\lambda$ s.t. $M\lambda\ge-q$, $\lambda\ge0$</li>
+    <li data-k="b"><b class="k">(b)</b> $\max -q^T\lambda$ s.t. $M\lambda\ge q$, $\lambda\ge0$</li>
+    <li data-k="c"><b class="k">(c)</b> $\max -q^T\lambda$ s.t. $M\lambda\ge-q$, $\lambda\ge0$</li>
+    <li data-k="d"><b class="k">(d)</b> $\max -q^T\lambda$ s.t. $M\lambda\le-q$, $\lambda\ge0$</li>
+  </ol>
+  <details class="ans"><summary>Show answer</summary><div>
+    <p><b>Answer: (c).</b> Objective is $\beta=-q^T\lambda$; constraint from II.3. Same feasible set as $(P)$, which is why it is called self-dual. (a) sign of objective; (b), (d) wrong constraint.</p>
+  </div></details>
+</div>
+
+<div class="q mcq" data-answer="a">
+  <div class="qh">Q32 <span class="src">Midterm 2 II.5 (past paper)</span><span class="lvl">MCQ</span></div>
+  <p>For every feasible $z$ of $(P)$, which is guaranteed?</p>
+  <ol class="opts">
+    <li data-k="a"><b class="k">(a)</b> $q^Tz\ge0$</li>
+    <li data-k="b"><b class="k">(b)</b> $q^Tz=0$</li>
+    <li data-k="c"><b class="k">(c)</b> $q^Tz\gt0$</li>
+    <li data-k="d"><b class="k">(d)</b> $q^Tz\lt0$</li>
+  </ol>
+  <details class="ans"><summary>Show answer</summary><div>
+    <p><b>Answer: (a).</b> $z^TMz=z^TM^Tz=-z^TMz\Rightarrow z^TMz=0$. So $q^Tz=z^T(Mz+q)\ge0$ (both factors $\ge0$). (b), (c) too strong: zero only at optimal points, and $z=0$ is feasible when $q\ge0$. (d) impossible.</p>
+  </div></details>
+</div>
+
+<div class="q mcq" data-answer="b">
+  <div class="qh">Q33 <span class="src">Midterm 2 II.6 (past paper)</span><span class="lvl">MCQ</span></div>
+  <p>Suppose $(P)$ is feasible. Which must hold?</p>
+  <ol class="opts">
+    <li data-k="a"><b class="k">(a)</b> It has an optimal solution, but the optimal value may be strictly positive.</li>
+    <li data-k="b"><b class="k">(b)</b> It has an optimal solution, and its optimal value is zero.</li>
+    <li data-k="c"><b class="k">(c)</b> Its infimum is zero but need not be attained.</li>
+    <li data-k="d"><b class="k">(d)</b> It has a unique optimal solution, with value zero.</li>
+  </ol>
+  <details class="ans"><summary>Show answer</summary><div>
+    <p><b>Answer: (b).</b> Bounded below by $0$ and feasible ⇒ an LP attains its minimum. LP duality: $p^*=d^*$. Same feasible set: $d^*=\sup(-q^T\lambda)=-p^*$. So $p^*=-p^*=0$.</p>
+    <p>(a) the value is forced to $0$. (c) LPs that are feasible and bounded attain. (d) not unique: $M=0$, $q=0$ makes every $z\ge0$ optimal. (Random instances checked with linprog: optimum $0$.)</p>
+  </div></details>
+</div>
+
+<p>For Q34–Q35: $M=\begin{pmatrix}0&-A^T\\A&0\end{pmatrix}$, $q=\begin{pmatrix}c\\-b\end{pmatrix}$, $z=\begin{pmatrix}x\\y\end{pmatrix}$.</p>
+
+<div class="q mcq" data-answer="c">
+  <div class="qh">Q34 <span class="src">Midterm 2 II.7 (past paper)</span><span class="lvl">MCQ</span></div>
+  <p>The constraints of $(P)$ describe simultaneous feasibility for which pair (first: $\min c^Tx$; second: $\max b^Ty$)?</p>
+  <ol class="opts">
+    <li data-k="a"><b class="k">(a)</b> $Ax=b,\ x\ge0$; $A^Ty\le c$, $y$ free.</li>
+    <li data-k="b"><b class="k">(b)</b> $Ax\le b,\ x\ge0$; $A^Ty\ge c$, $y\ge0$.</li>
+    <li data-k="c"><b class="k">(c)</b> $Ax\ge b,\ x\ge0$; $A^Ty\le c$, $y\ge0$.</li>
+    <li data-k="d"><b class="k">(d)</b> $Ax\ge b,\ x\ge0$; $A^Ty\ge c$, $y\ge0$.</li>
+  </ol>
+  <details class="ans"><summary>Show answer</summary><div>
+    <p><b>Answer: (c).</b> $Mz\ge-q$: top block $-A^Ty\ge-c\iff A^Ty\le c$; bottom block $Ax\ge b$; $z\ge0$ gives $x,y\ge0$. (Matches the sign table: $\ge$ rows ↔ $y\ge0$, $x\ge0$ ↔ $\le$.) (a) is the standard-form pair, but $z\ge0$ forces $y\ge0$. (b), (d) wrong directions.</p>
+  </div></details>
+</div>
+
+<div class="q mcq" data-answer="d">
+  <div class="qh">Q35 <span class="src">Midterm 2 II.8 (past paper)</span><span class="lvl">MCQ</span></div>
+  <p>$z=(x,y)$ is feasible and $q^Tz=0$. What follows?</p>
+  <ol class="opts">
+    <li data-k="a"><b class="k">(a)</b> $x$ is primal optimal, but $y$ may fail to be dual optimal.</li>
+    <li data-k="b"><b class="k">(b)</b> $y$ is dual optimal, but $x$ may fail to be primal optimal.</li>
+    <li data-k="c"><b class="k">(c)</b> Both are optimal, and their objective values must be zero.</li>
+    <li data-k="d"><b class="k">(d)</b> Both are optimal, and their objective values are equal.</li>
+  </ol>
+  <details class="ans"><summary>Show answer</summary><div>
+    <p><b>Answer: (d).</b> $q^Tz=c^Tx-b^Ty=0$: a feasible pair with zero gap; by weak duality both are optimal.</p>
+    <p>(a), (b) zero gap certifies both. (c) values need not be $0$: $A=b=c=1$, $x=y=1$ gives $c^Tx=b^Ty=1$.</p>
+  </div></details>
+</div>
+</section>
+
+<!-- ============ 5. SELF-TEST ============ -->
+<section id="selftest">
+<h2>5. Self-test (no looking)</h2>
+<div class="toolbar" data-auto></div>
+<div class="q"><div class="qh">S1</div><p>Write the dual of $\min c^Tx$ s.t. $Ax=b$, $x\ge0$, and the one-line weak-duality identity for this pair.</p>
+  <details class="ans"><summary>Show answer</summary><div><p>$\max_\lambda b^T\lambda$ s.t. $A^T\lambda\le c$ ($\lambda$ free). $c^Tx-b^T\lambda=(c-A^T\lambda)^Tx=\mu^Tx\ge0$.</p></div></details></div>
+<div class="q"><div class="qh">S2</div><p>Write the full LP KKT system and the value identity.</p>
+  <details class="ans"><summary>Show answer</summary><div><p>$A^T\lambda^*+\mu^*=c$, $\mu^*\ge0$, $Ax^*=b$, $x^*\ge0$, $(\mu^*)^Tx^*=0$. Then $c^Tx^*=(A^T\lambda^*+\mu^*)^Tx^*=b^T\lambda^*$.</p></div></details></div>
+<div class="q"><div class="qh">S3</div><p>Define $q$ and $\mathbb{D}$. Over which set is the infimum taken? What two properties do they always have, and why?</p>
+  <details class="ans"><summary>Show answer</summary><div><p>$q(\lambda,\mu)=\inf_{x\in\mathbb{R}^n}L(x,\lambda,\mu)$, over the whole space (or the function domain), not the feasible set. $\mathbb{D}=\{q\gt-\infty\}$. $q$ concave, $\mathbb{D}$ convex, because $L$ is affine in the multipliers; no convexity of the primal needed.</p></div></details></div>
+<div class="q"><div class="qh">S4</div><p>State weak duality and prove it in one line.</p>
+  <details class="ans"><summary>Show answer</summary><div><p>$x$ feasible, $\mu\ge0$: $q(\lambda,\mu)\le L(x,\lambda,\mu)=f(x)+\lambda^Th(x)+\mu^Tg(x)\le f(x)$ since $h(x)=0$ and $\mu^Tg(x)\le0$. So $d^*\le p^*$.</p></div></details></div>
+<div class="q"><div class="qh">S5</div><p>State Slater's theorem (hypotheses and conclusion) and name one thing it does NOT give, with an example.</p>
+  <details class="ans"><summary>Show answer</summary><div><p>$f,g_j$ convex, $h$ affine, $\exists x^0$: $h(x^0)=0$, $g_j(x^0)\lt0\ \forall j$; if $p^*$ finite then $p^*=d^*$ and a dual optimum exists. Not primal attainment: $\min e^x$, $x\le0$. Also not a unique Lagrangian minimiser: $-2u+(v-1)^2$, $u\le1$.</p></div></details></div>
+<div class="q"><div class="qh">S6</div><p>State the KKT-equivalence theorem (7.4.1) and the primal-recovery corollary (7.4.2).</p>
+  <details class="ans"><summary>Show answer</summary><div><p>Differentiable convex $f,g$, affine $h$, full space: a KKT pair exists ⇔ $p^*=d^*\in\mathbb{R}$ and both are attained; then every primal optimum with every dual optimum is a KKT pair. Recovery: under this, if $\bar y$ is dual optimal and $L(\cdot,\bar y)$ has a unique minimiser $\bar x$, then $\bar x$ is the unique primal optimum (feasible, CS holds automatically).</p></div></details></div>
+<div class="q"><div class="qh">S7</div><p>State the LP duality theorem (both parts) and the false converse, with a counter-example.</p>
+  <details class="ans"><summary>Show answer</summary><div><p>(i) If (P) or (D) has an optimal solution, so does the other and the values are equal. (ii) If one is unbounded, the other is infeasible. False: "infeasible ⇒ other unbounded". $A=[0]$, $b=1$, $c=-1$: both infeasible.</p></div></details></div>
+<div class="q"><div class="qh">S8</div><p>Which three constraint types give a convex feasible set? Is KKT necessary for a convex problem? Sufficient? Give the counter-example for one of them.</p>
+  <details class="ans"><summary>Show answer</summary><div><p>$h=0$ with $h$ affine; $g\le0$ with $g$ convex; $g\ge0$ with $g$ concave. KKT is sufficient for a global minimum (no CQ needed), not necessary without a CQ: $\min(x-1)^2$ s.t. $x^2\le0$, optimum $x=0$, no multiplier. (And say "convex optimization problem", never "concave optimization problem" or "concave set".)</p></div></details></div>
+<p><label><input type="checkbox" data-key="m3-done"> I finished this module</label></p>
+</section>
+
+</main>
+</div>
+<script src="assets/fe.js"></script>
+</body>
+</html>

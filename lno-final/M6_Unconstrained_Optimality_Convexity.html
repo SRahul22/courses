@@ -1,0 +1,610 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>M6 · Unconstrained optimality and convexity</title>
+<link rel="stylesheet" href="assets/fe.css">
+<script>
+  // MathJax: inline $...$ or \(...\), display $$...$$ or \[...\]
+  window.MathJax = { tex: { inlineMath: [['$','$'],['\\(','\\)']], displayMath: [['$$','$$'],['\\[','\\]']] } };
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml.js"></script>
+</head>
+<body>
+<div class="layout">
+<nav class="toc">
+  <a class="home" href="./">← START HERE</a>
+  <a href="#must">1. Must remember</a>
+  <a href="#concepts">2. Concepts</a>
+  <a href="#c1">&nbsp;&nbsp;2.1 FONC / SONC / SOSC</a>
+  <a href="#c2">&nbsp;&nbsp;2.2 Classifying stationary points</a>
+  <a href="#c3">&nbsp;&nbsp;2.3 Quadratics, least squares</a>
+  <a href="#c4">&nbsp;&nbsp;2.4 Convexity</a>
+  <a href="#c5">&nbsp;&nbsp;2.5 Peano, Weierstrass, little-o</a>
+  <a href="#prof">3. What he said</a>
+  <a href="#practice">4. Practice</a>
+  <a href="#pq">&nbsp;&nbsp;Quiz 1 MCQs</a>
+  <a href="#pm">&nbsp;&nbsp;Midterm 1 I, IV, VII</a>
+  <a href="#pn">&nbsp;&nbsp;New questions</a>
+  <a href="#selftest">5. Self-test</a>
+</nav>
+<main>
+<h1>M6 · Unconstrained optimality and convexity</h1>
+<p class="sub">Chapter 1 · about 30–40 min (cheap MCQ marks: be quick, but be exact) · Goal: state FONC/SONC/SOSC exactly and know what they do <i>not</i> say, classify stationary points from the Hessian, handle quadratics and least squares, and test or prove convexity.</p>
+
+<p class="small">Time plan: Must remember 5 min · Concepts 12 min · Practice 15–20 min · Self-test 3 min.</p>
+
+<!-- ============ 1. MUST REMEMBER ============ -->
+<section id="must">
+<h2>1. Must remember</h2>
+<div class="box must"><span class="tag">Memorise cold</span>
+  <ul>
+    <li><b>FONC</b> (necessary): $x^*$ local min, $f$ differentiable $\Rightarrow \nabla f(x^*) = 0$.</li>
+    <li><b>SONC</b> (necessary): $x^*$ local min, $f \in C^2$ $\Rightarrow \nabla f(x^*) = 0$ <b>and</b> $\nabla^2 f(x^*) \succeq 0$ (PSD).</li>
+    <li><b>SOSC</b> (sufficient): $\nabla f(x^*) = 0$ <b>and</b> $\nabla^2 f(x^*) \succ 0$ (PD) $\Rightarrow x^*$ is a <b>strict</b> (strong) local min.</li>
+    <li>The gaps: $x^4$ (strict min, $f''=0$: PD is <b>not necessary</b>); $x^3$ and $-x^4$ (FONC+SONC hold, not a min: PSD is <b>not sufficient</b>).</li>
+    <li><b>Quadratics</b> $f = \tfrac12 x^\top Q x - b^\top x + r$: $\nabla f = Qx - b$, $\nabla^2 f = Q$. Here "both directions" hold: $\{\nabla f = 0,\ Q\succeq 0\}$ ⇔ (global) min; $\{\nabla f = 0,\ Q \succ 0\}$ ⇔ strict (unique) min. $Q$ has a negative eigenvalue ⇒ unbounded below. $Q \succeq 0$ singular: $b\in\text{range}(Q)$ ⇒ infinitely many minimisers; $b\notin\text{range}(Q)$ ⇒ none.</li>
+    <li><b>Directional derivatives</b>: $\frac{d}{dt}f(x+td)\big|_{0} = \nabla f(x)^\top d$, $\ \frac{d^2}{dt^2}f(x+td)\big|_{0} = d^\top \nabla^2 f(x)\, d$.</li>
+    <li><b>PD / PSD tests</b> (symmetric $A$): PD ⇔ all eigenvalues $\gt 0$ ⇔ all <b>leading</b> principal minors $\gt 0$ (Sylvester). PSD ⇔ all eigenvalues $\ge 0$ ⇔ <b>all</b> principal minors $\ge 0$ (leading ones are not enough).</li>
+    <li><b>Least squares</b> $\tfrac12\|Ax-\bar b\|^2$: normal equations $A^\top A x^* = A^\top \bar b$ (always solvable, since range$(A^\top A)$ = range$(A^\top)$). Unique ⇔ $A$ has full column rank; then $x^* = (A^\top A)^{-1}A^\top \bar b$, projector $P = A(A^\top A)^{-1}A^\top$ ($P^2=P$, $P^\top=P$), projector onto null$(A^\top)$ is $I-P$.</li>
+    <li><b>Convexity</b> ($f\in C^2$ on $\mathbb R^n$): definition $f(\theta x+(1-\theta)y)\le\theta f(x)+(1-\theta)f(y)$ ⇔ $f(y)\ge f(x)+\nabla f(x)^\top(y-x)$ for all $x,y$ ⇔ $\nabla^2 f(x)\succeq 0$ <b>for every</b> $x$ ⇔ every restriction to a line is convex. Convex: local min = global min; stationary point = global min. Max of convex functions is convex.</li>
+    <li><b>Peano-type</b>: $f(y,z) = (z-py^2)(z-qy^2)$, $0\lt p\lt q$: min at 0 along every line, but $f(y,my^2)\lt 0$ for $p\lt m\lt q$ ⇒ not a local min.</li>
+    <li><b>Weierstrass</b>: $X$ nonempty closed, $f$ proper, lsc, <b>coercive</b> ($\|x\|\to\infty \Rightarrow f(x)\to+\infty$), $X\cap\text{dom} f\ne\emptyset$ ⇒ a minimiser exists. $r(h) = o(h^2)$ means $r(h)/h^2 \to 0$.</li>
+  </ul>
+</div>
+</section>
+
+<!-- ============ 2. CONCEPTS ============ -->
+<section id="concepts">
+<h2>2. Concepts</h2>
+
+<h3 id="c1">2.1 FONC, SONC, SOSC and what they do NOT say</h3>
+<p><b>In plain words:</b> At the bottom of a valley the ground is flat (gradient zero) and curves up or stays flat in every direction (Hessian PSD). Those are things a minimum <i>must</i> have (<b>necessary</b>). If the ground is flat and curves <i>strictly</i> up in every direction (Hessian PD), you are surely at a strict bottom (<b>sufficient</b>). The trouble lives in the gap: Hessian PSD but singular (some direction with zero curvature). Then the second derivative says nothing and the higher-order terms decide.</p>
+<p><b>Precisely</b> (course: Theorems 1.3.2–1.3.4). Let $f\in C^2$ near $x^*$. Taylor: $f(x^*+h) = f(x^*) + \nabla f(x^*)^\top h + \tfrac12 h^\top \nabla^2 f(x^*) h + o(\|h\|^2)$.</p>
+<div class="mathwide"><table>
+<tr><th>Condition</th><th>Statement</th><th>Type</th></tr>
+<tr><td>FONC</td><td>local min ⇒ $\nabla f(x^*)=0$</td><td>necessary</td></tr>
+<tr><td>SONC</td><td>local min ⇒ $\nabla f(x^*)=0,\ \nabla^2 f(x^*)\succeq 0$</td><td>necessary</td></tr>
+<tr><td>SOSC</td><td>$\nabla f(x^*)=0,\ \nabla^2 f(x^*)\succ 0$ ⇒ strict local min</td><td>sufficient</td></tr>
+</table></div>
+<p><b>What SONC means:</b> if the Hessian at a stationary point has even one negative eigenvalue, that point is <b>not</b> a local min (it is a saddle or a max). That is the useful, "contrapositive" use of SONC.<br>
+<b>What SONC does NOT mean:</b> "FONC + PSD ⇒ local min" is false. And "strict local min ⇒ PD" is false.</p>
+<div class="box example"><span class="tag">Worked example: the four test functions</span>
+<div class="mathwide"><table>
+<tr><th>$f$ at 0</th><th>FONC</th><th>SONC (PSD)</th><th>SOSC (PD)</th><th>What 0 really is</th><th>Lesson</th></tr>
+<tr><td>$x^4$</td><td>✓</td><td>✓ ($f''=0$)</td><td>✗</td><td>strict global min</td><td>PD is sufficient, <b>not necessary</b></td></tr>
+<tr><td>$x^3$</td><td>✓</td><td>✓</td><td>✗</td><td>not a min (inflection)</td><td>FONC+SONC are <b>not sufficient</b></td></tr>
+<tr><td>$-x^4$</td><td>✓</td><td>✓</td><td>✗</td><td>strict local <b>max</b>!</td><td>PSD Hessian does not even rule out a max</td></tr>
+<tr><td>$x_1^4 + x_2^2 + \dots + x_n^2$</td><td>✓</td><td>✓, $\nabla^2 f(0)=\text{diag}(0,2,\dots,2)$ singular</td><td>✗</td><td>strict min</td><td>$n$-D version of $x^4$</td></tr>
+<tr><td>$x_1^3 - 3x_1x_2^2$ (monkey saddle)</td><td>✓</td><td>✓ ($\nabla^2 f(0)=0$)</td><td>✗</td><td>saddle: $f(t,0)=t^3\gt 0$, $f(t,t)=-2t^3\lt 0$ for $t\gt 0$</td><td>zero Hessian: must test directions</td></tr>
+</table></div>
+</div>
+<p><b>"Group 1 / Group 2"</b> (his revision-class language): <b>G1</b> = {$\nabla f(x^*)=0$, $\nabla^2 f(x^*)\succeq 0$}, <b>G2</b> = {$\nabla f(x^*)=0$, $\nabla^2 f(x^*)\succ 0$}.</p>
+<ul>
+<li>General $f$: local min ⇒ G1 (G1 necessary). G2 ⇒ strict local min (G2 sufficient). The reverse arrows fail ($x^3$, $x^4$).</li>
+<li>Quadratic $f$: <b>both arrows hold</b>: G1 ⇔ min (global); G2 ⇔ strict min (unique global). Reason: the Taylor expansion is exact (no $o(\|h\|^2)$ term), because the Hessian $Q$ is constant. It is <b>not</b> because PSD becomes PD.</li>
+</ul>
+<div class="box trap"><span class="tag">Trap</span> "SOSC fails ⇒ not a minimum" is wrong ($x^4$). "SONC holds ⇒ minimum" is wrong ($x^3$, $-x^4$). A local minimum (non-strict) by definition includes strict minima. Weak inequality $\succeq$ in SONC, strict $\succ$ in SOSC: Quiz 1 tested exactly this.</div>
+
+<h3 id="c2">2.2 Classifying stationary points (Hessian eigenvalues / Sylvester)</h3>
+<p><b>In plain words:</b> solve $\nabla f = 0$; at each solution look at the signs of the Hessian's eigenvalues. All $\gt 0$: strict local min. All $\lt 0$: strict local max. Both signs: saddle. Some zero and the rest one sign: the test is inconclusive (look at higher-order terms or along curves).</p>
+<p><b>Precisely:</b> for symmetric $A$, PD ⇔ $\det A_k \gt 0$ for the leading $k\times k$ blocks, $k=1..n$ (Sylvester). PSD ⇔ <b>every</b> principal minor (keep the same set of rows and columns) is $\ge 0$. Example why leading minors are not enough for PSD: $A=\begin{bmatrix}0&0\\0&-1\end{bmatrix}$ has leading minors $0, 0$ (both $\ge0$) but the principal minor $a_{22}=-1\lt 0$: not PSD. For a 2×2: $\det\lt0$ ⇒ indefinite (saddle).</p>
+<div class="box example"><span class="tag">Worked example (Tutorial 1, problem 7a)</span> $f(x,y) = (x^2-4)^2 + y^2$.
+  <ol class="steps">
+    <li>$\nabla f = \begin{bmatrix}4x(x^2-4)\\ 2y\end{bmatrix} = 0 \Rightarrow (0,0),\ (2,0),\ (-2,0)$.</li>
+    <li>$\nabla^2 f = \begin{bmatrix}12x^2-16 & 0\\ 0 & 2\end{bmatrix}$.</li>
+    <li>$(0,0)$: diag$(-16, 2)$, one negative and one positive eigenvalue ⇒ <b>saddle</b> (SONC fails, so not a min; also not a max).</li>
+    <li>$(\pm2,0)$: diag$(32, 2)\succ 0$ ⇒ SOSC ⇒ strict local min. Since $f\ge 0$ and $f(\pm 2,0)=0$, both are <b>global</b> minima.</li>
+  </ol>
+</div>
+<div class="box trap"><span class="tag">Trap</span> A strict local min need not be global ($x^3+y^3-3xy$ has a strict local min at $(1,1)$ but $f\to-\infty$). To claim "global", give a reason: $f\ge$ value, convexity, or coercive + compare all stationary values.</div>
+
+<h3 id="c3">2.3 Quadratics and least squares</h3>
+<p><b>In plain words:</b> a quadratic is a bowl, a trough, or a saddle, decided entirely by $Q$. Bowl ($Q\succ0$): one bottom at $Q^{-1}b$. Trough ($Q\succeq 0$ singular): either a flat valley floor of minimisers (if the tilt $b$ does not point along the flat direction, i.e. $b\in$ range$(Q)$) or the floor tilts downhill forever (no minimiser). Any negative eigenvalue: walk along that eigenvector and $f\to-\infty$.</p>
+<p><b>Precisely:</b> $f(x)=\tfrac12x^\top Qx-b^\top x+r$, $Q=Q^\top$: $\nabla f=Qx-b$, $\nabla^2 f=Q$ (only the symmetric part of $Q$ matters). Least squares $f(x)=\tfrac12\|Ax-\bar b\|_2^2 = \tfrac12x^\top(A^\top A)x-(A^\top\bar b)^\top x+\tfrac12\|\bar b\|^2$, so $Q=A^\top A\succeq0$ always, and $x^\top A^\top A x=\|Ax\|^2\gt0$ for $x\neq0$ exactly when $A$ has full column rank. Then SOSC holds and the solution is unique. Projection: $\hat b = A x^* = P\bar b$ with $P=A(A^\top A)^{-1}A^\top$; residual $\tilde b=\bar b-\hat b=(I-P)\bar b \perp$ range$(A)$, i.e. $A^\top\tilde b=0$.</p>
+<div class="box example"><span class="tag">Worked example: fit a line through (0,0), (1,1), (2,1)</span>
+  <ol class="steps">
+    <li>Model $c_0 + c_1 t$: $A=\begin{bmatrix}1&0\\1&1\\1&2\end{bmatrix}$, $\bar b=(0,1,1)^\top$. Columns independent ⇒ full column rank ⇒ unique solution.</li>
+    <li>$A^\top A=\begin{bmatrix}3&3\\3&5\end{bmatrix}$, $A^\top\bar b=(2,3)^\top$. Solve: $x^*=\tfrac16\begin{bmatrix}5&-3\\-3&3\end{bmatrix}\begin{bmatrix}2\\3\end{bmatrix}=(1/6,\ 1/2)^\top$.</li>
+    <li>Residual $\bar b-Ax^*=(-1/6,\ 1/3,\ -1/6)^\top$; check $A^\top(\text{residual})=(0,0)^\top$ ✓ (that is the normal equation).</li>
+  </ol>
+</div>
+<div class="box trap"><span class="tag">Trap</span> "The least-squares solution is always unique": false (only with full column rank). But the normal equations <b>always have a solution</b>, because range$(A^\top A)$ = range$(A^\top)$. The projector onto range$(A)$ is $A(A^\top A)^{-1}A^\top$, not $A^\top(AA^\top)^{-1}A$ (that one is for range$(A^\top)$ when $A$ has full <i>row</i> rank).</div>
+
+<h3 id="c4">2.4 Convexity</h3>
+<p><b>In plain words:</b> a convex function's chord always lies above the graph; equivalently its tangent plane always lies below the graph; equivalently it curves up (or is flat) in every direction <b>at every point</b>. Big payoff: no false valleys. Any local min is global, and any stationary point is a global min.</p>
+<p><b>Precisely</b> (Theorems 1.8.1–1.8.4), $C$ convex:</p>
+<ol>
+<li>Definition: $f(\theta x+(1-\theta)y)\le\theta f(x)+(1-\theta)f(y)$, all $x,y\in C$, $\theta\in[0,1]$. Strict ($\lt$ for $x\ne y$, $\theta\in(0,1)$) = strictly convex.</li>
+<li>Lines: $f$ convex ⇔ $g(\alpha)=f(x+\alpha s)$ convex for every $x$, $s$.</li>
+<li>First order ($f$ differentiable): convex ⇔ $f(y)\ge f(x)+\nabla f(x)^\top(y-x)$ for all $x,y$. Consequence: $\nabla f(x^*)=0$ ⇒ global min.</li>
+<li>Second order ($f\in C^2$): convex ⇔ $\nabla^2 f(x)\succeq0$ <b>for all</b> $x$. PD everywhere ⇒ strictly convex (not ⇔: $x^4$ is strictly convex with $f''(0)=0$).</li>
+<li>Local min of convex $f$ ⇒ global min (Theorem 1.8.2).</li>
+<li>$f=\max_i f_i$ with each $f_i$ convex ⇒ $f$ convex (no Hessian needed, works when $f$ is not differentiable).</li>
+</ol>
+<p><b>Contrast with SONC:</b> SONC is PSD <b>at one point</b>, a property of a candidate. Convexity is PSD <b>at every point</b>, a property of the whole function.</p>
+<p><b>How to check convexity:</b> (a) Hessian PSD everywhere (eigenvalues or all principal minors); (b) to disprove, find <b>one</b> point where the Hessian has a negative eigenvalue, or a <b>midpoint counterexample</b> $f(\tfrac{u+v}2)\gt\tfrac{f(u)+f(v)}2$, or a line along which $g''\lt0$; (c) rules: sums with nonnegative weights, max, affine composition.</p>
+<div class="box example"><span class="tag">Worked example: log-sum-exp $f(x,y)=\log(e^x+e^y)$ (Tutorial 1, problem 14)</span>
+  <ol class="steps">
+    <li>Let $p_1=e^x/(e^x+e^y)$, $p_2=e^y/(e^x+e^y)$, so $p_1+p_2=1$, $p_i\gt0$.</li>
+    <li>$\nabla^2 f=\text{diag}(p)-pp^\top=\begin{bmatrix}p_1-p_1^2&-p_1p_2\\-p_1p_2&p_2-p_2^2\end{bmatrix}=p_1p_2\begin{bmatrix}1&-1\\-1&1\end{bmatrix}$ (using $p_1-p_1^2 = p_1p_2$).</li>
+    <li>$d^\top\nabla^2 f\,d=p_1p_2(d_1-d_2)^2\ge0$ for all $d$ ⇒ PSD at every point ⇒ <b>convex</b>. In $n$-D: $\sum p_id_i^2-(\sum p_id_i)^2\ge0$ by Cauchy–Schwarz.</li>
+    <li>Not PD: $\nabla^2 f\,(1,1)^\top=0$ (along $(1,1)$, $f(x+t,y+t)=f(x,y)+t$ is a straight line). So not strictly convex.</li>
+  </ol>
+</div>
+<div class="box example"><span class="tag">Worked example: max of convex is convex (Tutorial 1, problem 20)</span> $f=\max\{x^2,y^2\}$. For each $i$: $f_i(\theta u+(1-\theta)v)\le\theta f_i(u)+(1-\theta)f_i(v)\le\theta f(u)+(1-\theta)f(v)$ (since $f_i\le f$, $\theta\ge0$). The right side does not depend on $i$, so take the max over $i$ on the left: $f(\theta u+(1-\theta)v)\le\theta f(u)+(1-\theta)f(v)$. ∎</div>
+<div class="box trap"><span class="tag">Trap</span> $f\ge0$ does not imply convex: $(x_1^2-x_2^2)^2$ is not convex (Midterm 1 Q I). Convexity needs PSD <b>everywhere</b>, so one bad point kills it; one good point proves nothing. "PD Hessian" in a quiz means strict convexity is sufficient, not necessary. Never say "concave set".</div>
+
+<h3 id="c5">2.5 Peano-type counterexample, Weierstrass, little-o</h3>
+<p><b>Peano (Tutorial 1, problem 8):</b> If $x^*$ minimises $f$ along every line through it, then $g'(0)=\nabla f(x^*)^\top d=0$ for all $d$ ⇒ $\nabla f(x^*)=0$ (part a). But $x^*$ need <b>not</b> be a local min (part b):</p>
+<div class="box example"><span class="tag">Worked example</span> $f(y,z)=(z-py^2)(z-qy^2)$, $0\lt p\lt q$.
+<ol class="steps">
+<li>Line $(y,z)=\alpha(a,b)$: $g(\alpha)=\alpha^2(b-pa^2\alpha)(b-qa^2\alpha)$. $g'(0)=0$, $g''(0)=2b^2$. If $b\ne0$: $g''(0)\gt0$, strict min at $\alpha=0$. If $b=0$: $g=pqa^4\alpha^4$, again min at 0.</li>
+<li>Along the curve $z=my^2$ with $p\lt m\lt q$: $f=(m-p)(m-q)y^4\lt0=f(0,0)$ for $y\ne0$, arbitrarily close to 0. So 0 is <b>not</b> a local min.</li>
+<li>Lesson: "min along every line" ≠ "local min". The bad points sit on a <b>curve</b> between the two parabolas, which no straight line follows. (Hessian at 0 is diag$(0,2)$: PSD, consistent with SONC.)</li>
+</ol></div>
+<p><b>Weierstrass (coercive version, Theorem 1.3.1):</b> $X$ nonempty, closed; $f$ proper, lower semicontinuous, coercive; $X\cap\text{dom}f\ne\emptyset$ ⇒ $\min_{x\in X}f$ has a solution (solution set nonempty, compact). Use: a continuous coercive $f$ on $\mathbb R^n$ has a global min, so the global min is the stationary point with the smallest value.</p>
+<p><b>Little-o:</b> $r(h)=o(h^2)$ as $h\to0$ means $r(h)/h^2\to0$. It is why the sign of $\tfrac12 f''(x^*)h^2$ decides when $f''(x^*)\ne0$, and why it cannot decide when $f''(x^*)=0$.</p>
+</section>
+
+<!-- ============ 3. WHAT HE SAID ============ -->
+<section id="prof">
+<h2>3. What the professor said about this</h2>
+<p class="small">Quotes are from the speech-to-text transcripts of the Chapter 1 lecture recordings (wording is rough). "Ch 1 lec 3 (2025)" = <code>chapter1_2025_for_lec3</code>; "rev" = <code>chapter_rev</code>.</p>
+<div class="box prof"><span class="tag">In class</span>
+  <ul>
+    <li><q>Focus on interpreting SONC… what SONC means, what SONC doesn't mean</q> <span class="ts">Ch 1 lec 2 [1:18:00]</span> → expect the $x^3$ / $x^4$ / $-x^4$ style traps.</li>
+    <li><q>purely checking concepts… There'll be no problem solving</q>; <q>Interpretation of theorem and taking concepts</q> <span class="ts">Ch 1 rev [32:00]–[32:30]</span> → (about the revision quiz) Ch 1 MCQs test exact statements.</li>
+    <li><q>let's say you call it group one, group two</q> … <q>for quadratic function, both way both directional implications are true</q> <span class="ts">Ch 1 rev [37:30]–[38:00]</span> → G1 necessary, G2 sufficient; both "iff" for quadratics.</li>
+    <li><q>very important formula that you should remember. We'll use it almost everywhere</q> <span class="ts">Ch 1 lec 1 [1:15:00]</span> → $\frac{d}{dt}f(x^*+td)|_0=\nabla f(x^*)^\top d$.</li>
+    <li><q>looking at the leading principal minors alone is not enough. You have to look at all principal minors</q> <span class="ts">Ch 1 lec 3 (2025) [28:00]</span> → PSD test.</li>
+    <li><q>least square solution is always unique. Need not be unique</q> <span class="ts">Ch 1 lec 3 (2025) [42:00]</span>; <q>The projection expression and the expression for a projection onto the null space. These things you will be using</q> <span class="ts">[51:30]</span>.</li>
+    <li><q>the part B is important</q> <span class="ts">Ch 1 tutorial [22:30]</span> → the Peano counterexample.</li>
+    <li><q>this is important. So it talks about an important concept</q> <span class="ts">Ch 1 tutorial [55:30]</span> → max of convex functions is convex (proof without Hessian).</li>
+    <li>The convexity proofs lecture: if $x^*$ is a minimum all line restrictions have a minimum, <q>but other way around is not true</q> <span class="ts">convexity-proofs lecture [1:09:30]</span>.</li>
+  </ul>
+</div>
+<div class="box prof"><span class="tag">Exam signals (from the end-term guide)</span>
+  <ul>
+    <li>Ch 1 was asked in Quiz 1 (all 32 MCQs), Midterm 1 Q I (convexity check), Q IV (classify stationary points of $\tfrac14\|zz^\top-M\|_F^2$), Q VII (convexity proof steps).</li>
+    <li>Final exam: "same level" as the midterms; MCQ groups built as guided proof steps are likely; quizzes used +1/−¼ marking, so don't guess blindly.</li>
+    <li>Skip: pseudo-inverse / rank-deficient formulas, strong-convexity problems.</li>
+  </ul>
+</div>
+</section>
+
+<!-- ============ 4. PRACTICE ============ -->
+<section id="practice">
+<h2>4. Practice (try first, then open the answer)</h2>
+<div class="toolbar" data-auto></div>
+
+<h3 id="pq">4.1 Quiz 1 (past paper, Ch 1): 15 selected MCQs</h3>
+
+<div class="q mcq" data-answer="d">
+  <div class="qh">P1 <span class="src">Quiz 1 Q3 (past paper)</span><span class="lvl">MCQ</span></div>
+  <p>For $f(x)=x^4$, which statement is true at $x^*=0$?</p>
+  <ol class="opts">
+    <li data-k="a"><b class="k">(a)</b> FONC fails.</li>
+    <li data-k="b"><b class="k">(b)</b> SONC fails.</li>
+    <li data-k="c"><b class="k">(c)</b> SOSC holds.</li>
+    <li data-k="d"><b class="k">(d)</b> $x^*=0$ is a strict local minimum although SOSC does not hold.</li>
+  </ol>
+  <details class="ans"><summary>Show answer</summary><div>
+    <p><b>Answer: (d).</b> $f'(0)=0$ (FONC ✓), $f''(0)=0\ge0$ (SONC ✓), $f''(0)\not\gt0$ (SOSC ✗), yet $x^4\gt0$ for $x\ne0$: strict min. (a), (b) wrong since both hold; (c) wrong since $f''(0)=0$. Lesson: SOSC is not necessary.</p>
+  </div></details>
+</div>
+
+<div class="q mcq" data-answer="c">
+  <div class="qh">P2 <span class="src">Quiz 1 Q4 (past paper)</span><span class="lvl">MCQ</span></div>
+  <p>For $f(x)=x^3$, at $x=0$ we have $f'(0)=f''(0)=0$. What is the correct conclusion?</p>
+  <ol class="opts">
+    <li data-k="a"><b class="k">(a)</b> 0 is a strict local minimum.</li>
+    <li data-k="b"><b class="k">(b)</b> 0 is a local maximum.</li>
+    <li data-k="c"><b class="k">(c)</b> 0 is a stationary inflection point.</li>
+    <li data-k="d"><b class="k">(d)</b> SOSC holds at 0.</li>
+  </ol>
+  <details class="ans"><summary>Show answer</summary><div>
+    <p><b>Answer: (c).</b> $x^3\lt0$ for $x\lt0$ and $\gt0$ for $x\gt0$, so neither min (a) nor max (b). SOSC needs $f''(0)\gt0$ (d ✗). FONC and SONC both hold: they are not sufficient.</p>
+  </div></details>
+</div>
+
+<div class="q mcq" data-answer="c">
+  <div class="qh">P3 <span class="src">Quiz 1 Q6 (past paper)</span><span class="lvl">MCQ</span></div>
+  <p>For positive weights $w_i$, the minimiser of $f(x)=\sum_{i=1}^n w_i(x-y_i)^2$ is</p>
+  <ol class="opts">
+    <li data-k="a"><b class="k">(a)</b> $\frac1n\sum y_i$</li>
+    <li data-k="b"><b class="k">(b)</b> $\sum w_iy_i$</li>
+    <li data-k="c"><b class="k">(c)</b> $\sum w_iy_i/\sum w_i$</li>
+    <li data-k="d"><b class="k">(d)</b> $\sum y_i/\sum w_i$</li>
+  </ol>
+  <details class="ans"><summary>Show answer</summary><div>
+    <p><b>Answer: (c).</b> $f'(x)=2\sum w_i(x-y_i)=0\Rightarrow x^*=\sum w_iy_i/\sum w_i$; $f''=2\sum w_i\gt0$ so it is the unique min. (a) is the unweighted case only; (b), (d) are not even unchanged when all $w_i$ are scaled by 2, which the true answer must be.</p>
+  </div></details>
+</div>
+
+<div class="q mcq" data-answer="b">
+  <div class="qh">P4 <span class="src">Quiz 1 Q7 (past paper)</span><span class="lvl">MCQ</span></div>
+  <p>The notation $r(h)=o(h^2)$ $(h\to0)$ means</p>
+  <ol class="opts">
+    <li data-k="a"><b class="k">(a)</b> $r(h)=h^2$ for all sufficiently small $h$.</li>
+    <li data-k="b"><b class="k">(b)</b> $r(h)/h^2\to0$.</li>
+    <li data-k="c"><b class="k">(c)</b> $h^2/r(h)\to0$.</li>
+    <li data-k="d"><b class="k">(d)</b> $r(h)$ is always positive near 0.</li>
+  </ol>
+  <details class="ans"><summary>Show answer</summary><div>
+    <p><b>Answer: (b).</b> $r$ goes to zero faster than $h^2$. (c) says the opposite ($r$ much bigger than $h^2$); (a) and (d) say nothing about the rate; $o(h^2)$ can have any sign.</p>
+  </div></details>
+</div>
+
+<div class="q mcq" data-answer="b">
+  <div class="qh">P5 <span class="src">Quiz 1 Q8 (past paper)</span><span class="lvl">MCQ</span></div>
+  <p>At a stationary point $x^*$, $f(x^*+h)-f(x^*)=\tfrac12f''(x^*)h^2+o(h^2)$. If $f''(x^*)\lt0$, what follows?</p>
+  <ol class="opts">
+    <li data-k="a"><b class="k">(a)</b> $x^*$ can still be a local minimum because the remainder may dominate.</li>
+    <li data-k="b"><b class="k">(b)</b> $x^*$ cannot be a local minimum.</li>
+    <li data-k="c"><b class="k">(c)</b> $x^*$ must be a strict local minimum.</li>
+    <li data-k="d"><b class="k">(d)</b> No conclusion is possible even locally.</li>
+  </ol>
+  <details class="ans"><summary>Show answer</summary><div>
+    <p><b>Answer: (b).</b> Divide by $h^2$: $\frac{f(x^*+h)-f(x^*)}{h^2}\to\tfrac12 f''(x^*)\lt0$, so the difference is negative for small $h\ne0$. (This is SONC.) (a) is wrong because $o(h^2)/h^2\to0$, the remainder cannot dominate a nonzero quadratic term. (c) opposite; (d) wrong, it is in fact a strict local max.</p>
+  </div></details>
+</div>
+
+<div class="q mcq" data-answer="b">
+  <div class="qh">P6 <span class="src">Quiz 1 Q10 (past paper)</span><span class="lvl">MCQ</span></div>
+  <p>For $\phi(t)=f(x^*+td)$, with $f$ differentiable at $x^*$, $\phi'(0)$ is</p>
+  <ol class="opts">
+    <li data-k="a"><b class="k">(a)</b> $d^\top\nabla^2f(x^*)d$</li>
+    <li data-k="b"><b class="k">(b)</b> $\nabla f(x^*)^\top d$</li>
+    <li data-k="c"><b class="k">(c)</b> $\|\nabla f(x^*)\|_2^2$</li>
+    <li data-k="d"><b class="k">(d)</b> $\nabla f(x^*)+d$</li>
+  </ol>
+  <details class="ans"><summary>Show answer</summary><div>
+    <p><b>Answer: (b)</b> (chain rule). (a) is $\phi''(0)$; (c) is the special case $d=\nabla f$; (d) is a vector, not a number.</p>
+  </div></details>
+</div>
+
+<div class="q mcq" data-answer="c">
+  <div class="qh">P7 <span class="src">Quiz 1 Q13 (past paper)</span><span class="lvl">MCQ</span></div>
+  <p>For $f(x)=x_1^4+x_2^2+\dots+x_n^2$, at 0:</p>
+  <ol class="opts">
+    <li data-k="a"><b class="k">(a)</b> The Hessian is indefinite, so 0 is a saddle.</li>
+    <li data-k="b"><b class="k">(b)</b> The Hessian is positive definite.</li>
+    <li data-k="c"><b class="k">(c)</b> The Hessian is PSD but singular, and 0 is nevertheless a strict local minimum.</li>
+    <li data-k="d"><b class="k">(d)</b> The Hessian is PSD and singular, and so 0 is a non-strict local minimum.</li>
+  </ol>
+  <details class="ans"><summary>Show answer</summary><div>
+    <p><b>Answer: (c).</b> $\nabla^2f(0)=\text{diag}(0,2,\dots,2)$: PSD, singular, not indefinite (a ✗), not PD (b ✗). $f(x)\gt0$ for every $x\ne0$, so strict min. (d) wrongly infers "non-strict" from singularity: a singular Hessian decides nothing.</p>
+  </div></details>
+</div>
+
+<div class="q mcq" data-answer="b">
+  <div class="qh">P8 <span class="src">Quiz 1 Q14 (past paper)</span><span class="lvl">MCQ</span></div>
+  <p>For $f(x_1,x_2)=x_1^3-3x_1x_2^2$, which pair of directions demonstrates saddle behaviour at the origin for $t\gt0$ (evaluate $f(td)$)?</p>
+  <ol class="opts">
+    <li data-k="a"><b class="k">(a)</b> $(1,0)$ and $(0,1)$, because both give positive values.</li>
+    <li data-k="b"><b class="k">(b)</b> $(1,0)$ and $(1,1)$, because they give values of opposite sign.</li>
+    <li data-k="c"><b class="k">(c)</b> $(1,1)$ and $(-1,-1)$, because both give zero values.</li>
+    <li data-k="d"><b class="k">(d)</b> $(0,1)$ and $(0,-1)$, because both give negative values.</li>
+  </ol>
+  <details class="ans"><summary>Show answer</summary><div>
+    <p><b>Answer: (b).</b> $f(t,0)=t^3\gt0$, $f(t,t)=t^3-3t^3=-2t^3\lt0$: values above and below $f(0)=0$ ⇒ saddle. (a) $f(0,t)=0$, not positive; (c) $f(-t,-t)=2t^3\ne0$; (d) $f(0,\pm t)=0$. Here $\nabla^2 f(0)=0$, so the Hessian test is useless; directions decide.</p>
+  </div></details>
+</div>
+
+<div class="q mcq" data-answer="b">
+  <div class="qh">P9 <span class="src">Quiz 1 Q16 (past paper)</span><span class="lvl">MCQ</span></div>
+  <p>Under the coercive version of the Weierstrass theorem, which assumptions guarantee a minimiser of $f$ over $X$?</p>
+  <ol class="opts">
+    <li data-k="a"><b class="k">(a)</b> $X$ open, $f$ differentiable and bounded below.</li>
+    <li data-k="b"><b class="k">(b)</b> $X$ nonempty and closed; $f$ proper, lower semicontinuous and coercive; $X\cap\text{dom}f\ne\emptyset$.</li>
+    <li data-k="c"><b class="k">(c)</b> $X$ bounded; $f$ differentiable and convex.</li>
+    <li data-k="d"><b class="k">(d)</b> $X=\mathbb R^n$ and $\nabla f(x)=0$ somewhere.</li>
+  </ol>
+  <details class="ans"><summary>Show answer</summary><div>
+    <p><b>Answer: (b)</b>, Theorem 1.3.1 word for word. (a) $e^x$ on $\mathbb R$ is bounded below with no min; (c) $X$ bounded but not closed, e.g. $f=x$ on $(0,1)$; (d) $x^3$ has $f'(0)=0$ and no min.</p>
+  </div></details>
+</div>
+
+<div class="q mcq" data-answer="b">
+  <div class="qh">P10 <span class="src">Quiz 1 Q20 (past paper)</span><span class="lvl">MCQ</span></div>
+  <p>For positive semidefiniteness of a real symmetric matrix, which is correct?</p>
+  <ol class="opts">
+    <li data-k="a"><b class="k">(a)</b> It is enough to check only the leading principal minors.</li>
+    <li data-k="b"><b class="k">(b)</b> All principal minors must be nonnegative.</li>
+    <li data-k="c"><b class="k">(c)</b> The determinant alone must be positive.</li>
+    <li data-k="d"><b class="k">(d)</b> All off-diagonal entries must vanish.</li>
+  </ol>
+  <details class="ans"><summary>Show answer</summary><div>
+    <p><b>Answer: (b).</b> (a) fails for diag$(0,-1)$ (leading minors 0, 0). (c) a PSD matrix can have det 0; diag$(-1,-1)$ has det $1\gt0$ and is not PSD. (d) $\begin{bmatrix}1&1\\1&1\end{bmatrix}$ is PSD.</p>
+  </div></details>
+</div>
+
+<div class="q mcq" data-answer="b">
+  <div class="qh">P11 <span class="src">Quiz 1 Q23 (past paper)</span><span class="lvl">MCQ</span></div>
+  <p>$f(x)=\tfrac12x^\top Qx-b^\top x+r$, $Q=Q^\top\succeq0$, $Q$ singular, and $b\in\text{range}(Q)$. Which is correct?</p>
+  <ol class="opts">
+    <li data-k="a"><b class="k">(a)</b> There is a unique global minimiser.</li>
+    <li data-k="b"><b class="k">(b)</b> There are infinitely many global minimisers.</li>
+    <li data-k="c"><b class="k">(c)</b> The function is necessarily unbounded below.</li>
+    <li data-k="d"><b class="k">(d)</b> No stationary point exists.</li>
+  </ol>
+  <details class="ans"><summary>Show answer</summary><div>
+    <p><b>Answer: (b).</b> $b\in$ range$(Q)$ ⇒ $Qx=b$ has a solution $x_0$, and $x_0+n$ for every $n\in$ null$(Q)\ne\{0\}$ also solves it. $Q\succeq0$ ⇒ convex ⇒ every stationary point is a global min. (a) needs $Q\succ0$; (c), (d) describe $b\notin$ range$(Q)$.</p>
+  </div></details>
+</div>
+
+<div class="q mcq" data-answer="c">
+  <div class="qh">P12 <span class="src">Quiz 1 Q24 (past paper)</span><span class="lvl">MCQ</span></div>
+  <p>If symmetric $Q$ has a negative eigenvalue, then $f(x)=\tfrac12x^\top Qx-b^\top x+r$ is</p>
+  <ol class="opts">
+    <li data-k="a"><b class="k">(a)</b> necessarily bounded below.</li>
+    <li data-k="b"><b class="k">(b)</b> necessarily strictly convex.</li>
+    <li data-k="c"><b class="k">(c)</b> unbounded below.</li>
+    <li data-k="d"><b class="k">(d)</b> constant along every eigenvector.</li>
+  </ol>
+  <details class="ans"><summary>Show answer</summary><div>
+    <p><b>Answer: (c).</b> With $Qv=\lambda v$, $\lambda\lt0$: $f(tv)=\tfrac12\lambda t^2\|v\|^2-t\,b^\top v+r\to-\infty$. (a) opposite; (b) Hessian not PSD so not even convex; (d) false, the quadratic term $\tfrac12\lambda t^2$ changes.</p>
+  </div></details>
+</div>
+
+<div class="q mcq" data-answer="b">
+  <div class="qh">P13 <span class="src">Quiz 1 Q27 (past paper)</span><span class="lvl">MCQ</span></div>
+  <p>For a full-column-rank $m\times n$ matrix $A$, $m\gt n$, the orthogonal projector onto range$(A)$ is</p>
+  <ol class="opts">
+    <li data-k="a"><b class="k">(a)</b> $A^\top(AA^\top)^{-1}A$</li>
+    <li data-k="b"><b class="k">(b)</b> $A(A^\top A)^{-1}A^\top$</li>
+    <li data-k="c"><b class="k">(c)</b> $(A^\top A)^{-1}$</li>
+    <li data-k="d"><b class="k">(d)</b> $I-A(A^\top A)^{-1}A^\top$</li>
+  </ol>
+  <details class="ans"><summary>Show answer</summary><div>
+    <p><b>Answer: (b).</b> (a) $AA^\top$ is $m\times m$ of rank $n\lt m$, singular: does not exist. (c) is $n\times n$, wrong size. (d) projects onto null$(A^\top)$, the orthogonal complement.</p>
+  </div></details>
+</div>
+
+<div class="q mcq" data-answer="b">
+  <div class="qh">P14 <span class="src">Quiz 1 Q28 (past paper)</span><span class="lvl">MCQ</span></div>
+  <p>Which identity is true for every real matrix $A$?</p>
+  <ol class="opts">
+    <li data-k="a"><b class="k">(a)</b> range$(A^\top A)$ = null$(A)$</li>
+    <li data-k="b"><b class="k">(b)</b> range$(A^\top A)$ = range$(A^\top)$</li>
+    <li data-k="c"><b class="k">(c)</b> range$(A^\top A)=\mathbb R^n$</li>
+    <li data-k="d"><b class="k">(d)</b> range$(A^\top A)$ = null$(A^\top A)$</li>
+  </ol>
+  <details class="ans"><summary>Show answer</summary><div>
+    <p><b>Answer: (b).</b> This is why the normal equations $A^\top Ax=A^\top\bar b$ always have a solution. (c) only with full column rank; (a), (d) mix up range and null space (they are orthogonal complements, not equal).</p>
+  </div></details>
+</div>
+
+<div class="q mcq" data-answer="b">
+  <div class="qh">P15 <span class="src">Quiz 1 Q32 (past paper)</span><span class="lvl">MCQ</span></div>
+  <p>$f\in C^2(\mathbb R^n)$. Which condition is equivalent to convexity on $\mathbb R^n$?</p>
+  <ol class="opts">
+    <li data-k="a"><b class="k">(a)</b> $\nabla^2 f(x)\succ0$ at one point.</li>
+    <li data-k="b"><b class="k">(b)</b> $\nabla^2f(x)\succeq0$ for every $x\in\mathbb R^n$.</li>
+    <li data-k="c"><b class="k">(c)</b> $\nabla f(x)=0$ for every $x$.</li>
+    <li data-k="d"><b class="k">(d)</b> $\det\nabla^2f(x)\gt0$ for every $x$.</li>
+  </ol>
+  <details class="ans"><summary>Show answer</summary><div>
+    <p><b>Answer: (b).</b> (a) one point says nothing ($x^3$ has $f''(1)\gt0$). (c) only constants. (d) $-\|x\|^2$ in 2-D has Hessian $-2I$, det $4\gt0$, concave.</p>
+  </div></details>
+</div>
+
+<p class="small">Other Quiz 1 items (Q1, 2, 5, 9, 11, 12, 15, 17–19, 21, 22, 25, 26, 29–31) are direct statements already in Section 1. Answer key: 1C 2A 3D 4C 5B 6C 7B 8B 9A 10B 11B 12A 13C 14B 15B 16B 17A 18B 19B 20B 21A 22B 23B 24C 25B 26A 27B 28B 29A 30B 31B 32B.</p>
+
+<h3 id="pm">4.2 Midterm 1 (past paper): Q I, Q IV, Q VII</h3>
+
+<div class="q">
+  <div class="qh">M1 <span class="src">Midterm 1 Q I (20 marks)</span><span class="lvl">Descriptive</span></div>
+  <p>Determine whether each function is convex on $\mathbb R^2$. Justify.<br>
+  (1) $f_1=(x_1+x_2)^2$ (2) $f_2=x_1^2+4x_1x_2+x_2^2$ (3) $f_3=e^{x_1}+x_2^2$ (4) $f_4=x_1^4+x_2^4-2x_1^2x_2^2$.</p>
+  <details class="hint"><summary>Hint</summary><p>Hessian PSD at every point? For (4) notice $f_4=(x_1^2-x_2^2)^2\ge0$, but that is irrelevant; try the midpoint of $(1,1)$ and $(1,-1)$.</p></details>
+  <details class="ans"><summary>Show answer</summary><div>
+    <p>Test: $f\in C^2$ is convex ⇔ $\nabla^2 f(x)\succeq0$ for every $x$. 5 marks each.</p>
+    <ol class="steps">
+      <li>$\nabla^2f_1=\begin{bmatrix}2&2\\2&2\end{bmatrix}$, $v^\top\nabla^2f_1v=2(v_1+v_2)^2\ge0$ ⇒ <b>convex</b> (eigenvalues 0, 4; not strictly convex: constant on lines $x_1+x_2=c$).</li>
+      <li>$\nabla^2f_2=\begin{bmatrix}2&4\\4&2\end{bmatrix}$, eigenvalues $6,-2$ ($(1,-1)$ has eigenvalue $-2$; det $=-12\lt0$) ⇒ <b>not convex</b>. Restriction $x=(t,-t)$: $f_2=-2t^2$.</li>
+      <li>$\nabla^2f_3=\text{diag}(e^{x_1},2)$, $v^\top\nabla^2 f_3 v=e^{x_1}v_1^2+2v_2^2\gt0$ for $v\ne0$ ⇒ <b>convex</b> (strictly). No uniform lower bound is needed.</li>
+      <li>$u=(1,1)$, $v=(1,-1)$: $f_4(u)=f_4(v)=0$, but $f_4(\tfrac{u+v}2)=f_4(1,0)=1\gt0=\tfrac{f_4(u)+f_4(v)}2$ ⇒ <b>not convex</b>. Hessian route: $\nabla^2f_4=\begin{bmatrix}12x_1^2-4x_2^2&-8x_1x_2\\-8x_1x_2&12x_2^2-4x_1^2\end{bmatrix}$, at $(1,0)$ it is diag$(12,-4)$, indefinite. One bad point is enough.</li>
+    </ol>
+  </div></details>
+</div>
+
+<div class="q">
+  <div class="qh">M2 <span class="src">Midterm 1 Q IV (20 marks)</span><span class="lvl">Descriptive</span></div>
+  <p>$M\in\mathbb R^{n\times n}$ ($n\ge2$) symmetric PD with distinct eigenvalues $0\lt\lambda_1\lt\dots\lt\lambda_n$, orthonormal eigenvectors $q_1,\dots,q_n$. $\min_z f(z)=\tfrac14\|zz^\top-M\|_F^2$.<br>
+  (1) Derive $\nabla f$ and $\nabla^2 f$. (2) Find all stationary points. (3) Hessian eigenvalues at each; classify (strict local min / strict local max / saddle). (4) Gradient descent from $z_0=0$ with any fixed step: what happens, and what does it say about "zero gradient" as a stopping test?</p>
+  <details class="hint"><summary>Hint</summary><p>Expand with $\|A\|_F^2=\text{tr}(A^\top A)$: $f=\tfrac14(z^\top z)^2-\tfrac12z^\top Mz+\tfrac14\text{tr}(M^2)$. At $z=\pm\sqrt{\lambda_i}q_i$, apply the Hessian to each $q_j$.</p></details>
+  <details class="ans"><summary>Show answer</summary><div>
+    <ol class="steps">
+      <li><b>(1) [5]</b> $\|zz^\top-M\|_F^2=(z^\top z)^2-2z^\top Mz+\text{tr}(M^2)$. With $r^2=z^\top z$: $\nabla f(z)=(r^2I-M)z$. Differentiating $r^2z$ in direction $h$ gives $2(z^\top h)z+r^2h$, so $\nabla^2f(z)=r^2I+2zz^\top-M$.</li>
+      <li><b>(2) [4]</b> $(\|z\|^2I-M)z=0$. Either $z=0$, or $Mz=\|z\|^2z$: $z$ is an eigenvector, $z=cq_i$, and $\lambda_ic=c^3\Rightarrow c^2=\lambda_i$. Stationary set ($2n+1$ points): $0$ and $\pm\sqrt{\lambda_i}\,q_i$, $i=1,\dots,n$.</li>
+      <li><b>(3) [8]</b> At 0: $\nabla^2f(0)=-M$, eigenvalues $-\lambda_1,\dots,-\lambda_n\lt0$ ⇒ negative definite ⇒ <b>strict local max</b>.<br>
+      At $\pm\sqrt{\lambda_i}q_i$: $\nabla^2f=\lambda_iI+2\lambda_iq_iq_i^\top-M$. On $q_i$: $(\lambda_i+2\lambda_i-\lambda_i)q_i=2\lambda_iq_i$. On $q_j$ ($j\ne i$): $(\lambda_i-\lambda_j)q_j$. Spectrum $\{2\lambda_i\}\cup\{\lambda_i-\lambda_j: j\ne i\}$.<br>
+      $i=n$: all positive ⇒ $\pm\sqrt{\lambda_n}q_n$ are <b>strict local minima</b> (also the global minima, $f_{\min}=\tfrac14\sum_{j\lt n}\lambda_j^2$).<br>
+      $i\lt n$: $2\lambda_i\gt0$ and $\lambda_i-\lambda_n\lt0$ ⇒ <b>saddle points</b>.</li>
+      <li><b>(4) [3]</b> $\nabla f(0)=0$ ⇒ $z_1=0-\alpha\cdot0=0$, so $z_k=0$ for all $k$: GD sits forever at a strict local <b>max</b>. Zero gradient is only FONC; on a nonconvex problem it certifies neither a local nor a global min.</li>
+    </ol>
+    <p class="small">Checked numerically with $n=3$, $\lambda=(1,2,5)$: Hessian spectra $\{-4,-1,2\}$, $\{-3,1,4\}$, $\{3,4,10\}$, and $\{-5,-2,-1\}$ at 0.</p>
+  </div></details>
+</div>
+
+<p><b>Midterm 1 Q VII (guided proof, MCQ steps).</b> $f:\mathbb R^n\to\mathbb R$ differentiable with $f((1-t)x+ty)\le(1-t)f(x)+tf(y)$ for all $x,y$, $t\in[0,1]$. Fix $x,y$, $d=y-x$.</p>
+
+<div class="q mcq" data-answer="c">
+  <div class="qh">M3 <span class="src">Midterm 1 Q VII(1)</span><span class="lvl">MCQ</span></div>
+  <p>For $0\lt t\le1$, $R(t)=\dfrac{f(x+td)-f(x)}{t}$. Which bound follows from the given inequality?</p>
+  <ol class="opts">
+    <li data-k="a"><b class="k">(a)</b> $R(t)\ge f(y)-f(x)$</li>
+    <li data-k="b"><b class="k">(b)</b> $R(t)\le t[f(y)-f(x)]$</li>
+    <li data-k="c"><b class="k">(c)</b> $R(t)\le f(y)-f(x)$</li>
+    <li data-k="d"><b class="k">(d)</b> $R(t)\ge t[f(y)-f(x)]$</li>
+  </ol>
+  <details class="ans"><summary>Show answer</summary><div>
+    <p><b>Answer: (c).</b> $x+td=(1-t)x+ty$, so $f(x+td)\le f(x)+t[f(y)-f(x)]$. Subtract $f(x)$, divide by $t\gt0$ (direction kept). (a), (d) have the wrong direction; (b) forgot to divide by $t$.</p>
+  </div></details>
+</div>
+
+<div class="q">
+  <div class="qh">M4 <span class="src">Midterm 1 Q VII(2)</span><span class="lvl">Short answer</span></div>
+  <p>Evaluate $\lim_{t\downarrow0}R(t)$.</p>
+  <details class="ans"><summary>Show answer</summary><div>
+    <p>$\nabla f(x)^\top d$. Differentiability: $f(x+td)-f(x)=t\nabla f(x)^\top d+o(t)$; divide by $t$, the $o(t)/t\to0$.</p>
+  </div></details>
+</div>
+
+<div class="q mcq" data-answer="a">
+  <div class="qh">M5 <span class="src">Midterm 1 Q VII(3)</span><span class="lvl">MCQ</span></div>
+  <p>Which inequality follows from parts (1) and (2)?</p>
+  <ol class="opts">
+    <li data-k="a"><b class="k">(a)</b> $f(y)-f(x)\ge\nabla f(x)^\top d$</li>
+    <li data-k="b"><b class="k">(b)</b> $f(y)-f(x)\le\nabla f(x)^\top d$</li>
+    <li data-k="c"><b class="k">(c)</b> $f(y)-f(x)\ge\nabla f(y)^\top d$</li>
+    <li data-k="d"><b class="k">(d)</b> $f(y)-f(x)\le-\nabla f(x)^\top d$</li>
+  </ol>
+  <details class="ans"><summary>Show answer</summary><div>
+    <p><b>Answer: (a).</b> $R(t)\le f(y)-f(x)$ for every $t$; let $t\downarrow0$: $\nabla f(x)^\top d\le f(y)-f(x)$. This is the first-order inequality (tangent below graph). (c) has the gradient at the wrong point.</p>
+  </div></details>
+</div>
+
+<div class="q mcq" data-answer="d">
+  <div class="qh">M6 <span class="src">Midterm 1 Q VII(4)</span><span class="lvl">MCQ</span></div>
+  <p>Repeat with $x$ and $y$ interchanged. Which inequality results?</p>
+  <ol class="opts">
+    <li data-k="a"><b class="k">(a)</b> $f(y)-f(x)\le-\nabla f(y)^\top d$</li>
+    <li data-k="b"><b class="k">(b)</b> $f(y)-f(x)\ge\nabla f(y)^\top d$</li>
+    <li data-k="c"><b class="k">(c)</b> $f(y)-f(x)\ge-\nabla f(y)^\top d$</li>
+    <li data-k="d"><b class="k">(d)</b> $f(y)-f(x)\le\nabla f(y)^\top d$</li>
+  </ol>
+  <details class="ans"><summary>Show answer</summary><div>
+    <p><b>Answer: (d).</b> Swapped: $f(x)-f(y)\ge\nabla f(y)^\top(x-y)=-\nabla f(y)^\top d$. Multiply by $-1$ (flips): $f(y)-f(x)\le\nabla f(y)^\top d$. Careful: the direction is now $x-y=-d$.</p>
+  </div></details>
+</div>
+
+<div class="q mcq" data-answer="b">
+  <div class="qh">M7 <span class="src">Midterm 1 Q VII(5)</span><span class="lvl">MCQ</span></div>
+  <p>What follows from parts (3) and (4)?</p>
+  <ol class="opts">
+    <li data-k="a"><b class="k">(a)</b> $(\nabla f(y)-\nabla f(x))^\top(y-x)=0$</li>
+    <li data-k="b"><b class="k">(b)</b> $(\nabla f(y)-\nabla f(x))^\top(y-x)\ge0$</li>
+    <li data-k="c"><b class="k">(c)</b> $(\nabla f(y)-\nabla f(x))^\top(y-x)\le0$</li>
+    <li data-k="d"><b class="k">(d)</b> $(\nabla f(y)-\nabla f(x))^\top(y-x)\gt0$ whenever $x\ne y$</li>
+  </ol>
+  <details class="ans"><summary>Show answer</summary><div>
+    <p><b>Answer: (b)</b> (monotone gradient). $\nabla f(x)^\top d\le f(y)-f(x)\le\nabla f(y)^\top d$, subtract the outer terms. (d) is strict: that needs strict convexity, not given (e.g. $f$ linear gives 0). (a) only for affine $f$; (c) wrong sign.</p>
+  </div></details>
+</div>
+
+<h3 id="pn">4.3 New questions in his style</h3>
+
+<div class="q">
+  <div class="qh">N1 <span class="src">New, in his style (Midterm 1 IV / Tutorial 7 type)</span><span class="lvl">Descriptive</span></div>
+  <p>$f(x,y)=x^4+y^4-4xy$. (a) Find all stationary points. (b) Classify each using the Hessian. (c) Which are global minima? Justify existence.</p>
+  <details class="hint"><summary>Hint</summary><p>From $\nabla f=0$: $y=x^3$ and $x=y^3$ ⇒ $x^9=x$.</p></details>
+  <details class="ans"><summary>Show answer</summary><div>
+    <ol class="steps">
+      <li>$\nabla f=(4x^3-4y,\ 4y^3-4x)=0$ ⇒ $y=x^3$, $x=y^3=x^9$ ⇒ $x(x^8-1)=0$ ⇒ $x\in\{0,1,-1\}$ (real). Points: $(0,0)$, $(1,1)$, $(-1,-1)$.</li>
+      <li>$\nabla^2f=\begin{bmatrix}12x^2&-4\\-4&12y^2\end{bmatrix}$.</li>
+      <li>$(0,0)$: $\begin{bmatrix}0&-4\\-4&0\end{bmatrix}$, eigenvalues $\pm4$ (det $=-16\lt0$) ⇒ indefinite ⇒ <b>saddle</b>. (Check: $f(t,t)=2t^4-4t^2\lt0$, $f(t,-t)=2t^4+4t^2\gt0$ near 0.)</li>
+      <li>$(\pm1,\pm1)$ (same signs): $\begin{bmatrix}12&-4\\-4&12\end{bmatrix}$, leading minors $12\gt0$, $144-16=128\gt0$ ⇒ PD (eigenvalues 8, 16) ⇒ SOSC ⇒ <b>strict local minima</b>, $f=-2$.</li>
+      <li>Global: $f\ge x^4+y^4-2(x^2+y^2)\to+\infty$ (since $4|xy|\le2(x^2+y^2)$), so $f$ is continuous and <b>coercive</b> ⇒ by Weierstrass a global min exists; it must be a stationary point; the smallest stationary value is $-2$ ⇒ both $(1,1)$ and $(-1,-1)$ are global minima. Note $f$ is <b>not convex</b> (Hessian indefinite at 0), yet it has two global minima.</li>
+    </ol>
+  </div></details>
+</div>
+
+<div class="q">
+  <div class="qh">N2 <span class="src">New, in his style (Midterm 1 I type)</span><span class="lvl">Descriptive</span></div>
+  <p>Convex on $\mathbb R^2$ or not? Justify. (a) $g_1=e^{x+y}+x^2-xy+y^2$. (b) $g_2=x^4-x^2y^2+y^4$. (c) $g_3=\max\{x+y,\ x^2+y^2,\ e^{x}\}$.</p>
+  <details class="hint"><summary>Hint</summary><p>(a) Hessian = rank-one PSD part + constant part. (b) restrict to the line $y=1$. (c) no Hessian.</p></details>
+  <details class="ans"><summary>Show answer</summary><div>
+    <ol class="steps">
+      <li>(a) $\nabla^2g_1=e^{x+y}\begin{bmatrix}1&1\\1&1\end{bmatrix}+\begin{bmatrix}2&-1\\-1&2\end{bmatrix}$. Leading minors: $e^{x+y}+2\gt0$, det $=(e^{x+y}+2)^2-(e^{x+y}-1)^2=6e^{x+y}+3\gt0$ ⇒ PD at every point ⇒ <b>convex</b> (strictly).</li>
+      <li>(b) Restriction to the line $y=1$: $h(t)=g_2(t,1)=t^4-t^2+1$, $h''(0)=-2\lt0$ ⇒ a line restriction is not convex ⇒ <b>not convex</b>. Midpoint check: $u=(\tfrac1{\sqrt2},1)$, $v=(-\tfrac1{\sqrt2},1)$: $g_2(u)=g_2(v)=\tfrac14-\tfrac12+1=\tfrac34$, midpoint $(0,1)$: $g_2=1\gt\tfrac34$. Hessian route: $\nabla^2g_2(0,1)=\text{diag}(-2,12)$, indefinite. ($g_2\ge0$ everywhere is irrelevant.)</li>
+      <li>(c) $x+y$ (affine), $x^2+y^2$ (Hessian $2I$), $e^x$ (Hessian diag$(e^x,0)\succeq0$) are convex; the pointwise max of convex functions is <b>convex</b> (proof as in 2.4). Not differentiable everywhere, so the Hessian test cannot be used directly.</li>
+    </ol>
+  </div></details>
+</div>
+
+<div class="q">
+  <div class="qh">N3 <span class="src">New, in his style (least squares)</span><span class="lvl">Descriptive</span></div>
+  <p>(a) $A=\begin{bmatrix}1&2\\2&4\\3&6\end{bmatrix}$, $\bar b=(1,0,1)^\top$. Is the least-squares solution of $\min\tfrac12\|Ax-\bar b\|^2$ unique? Find all solutions. Why must a solution exist?<br>
+  (b) $A=\begin{bmatrix}1&0\\1&1\\1&2\end{bmatrix}$, $\bar b=(1,2,4)^\top$. Find $x^*$, the projector $P$ onto range$(A)$, and verify the residual is orthogonal to range$(A)$.</p>
+  <details class="hint"><summary>Hint</summary><p>(a) column 2 = 2 × column 1. (b) $(A^\top A)^{-1}$ of $\begin{bmatrix}3&3\\3&5\end{bmatrix}$ is $\tfrac16\begin{bmatrix}5&-3\\-3&3\end{bmatrix}$.</p></details>
+  <details class="ans"><summary>Show answer</summary><div>
+    <ol class="steps">
+      <li>(a) Rank 1, not full column rank ⇒ <b>not unique</b>. $A^\top A=\begin{bmatrix}14&28\\28&56\end{bmatrix}$, $A^\top\bar b=(4,8)^\top$. Both rows give $14(x_1+2x_2)=4$ ⇒ solution set: the line $x_1+2x_2=\tfrac27$ (infinitely many). Every one gives the same fit $Ax=\tfrac27(1,2,3)^\top$ and residual $(5/7,-4/7,1/7)^\top$, with $A^\top(\text{residual})=0$. Existence: range$(A^\top A)$ = range$(A^\top)\ni A^\top\bar b$, so the normal equations are always consistent. (This is Quiz 1 Q23: $Q=A^\top A\succeq0$ singular, $b=A^\top\bar b\in$ range$(Q)$.)</li>
+      <li>(b) Full column rank ⇒ $A^\top A\succ0$ ⇒ SOSC, unique. $A^\top A=\begin{bmatrix}3&3\\3&5\end{bmatrix}$, $A^\top\bar b=(7,10)^\top$, $x^*=\tfrac16(35-30,\ -21+30)=(5/6,\ 3/2)^\top$.</li>
+      <li>$P=A(A^\top A)^{-1}A^\top=\tfrac16\begin{bmatrix}5&2&-1\\2&2&2\\-1&2&5\end{bmatrix}$ (symmetric, $P^2=P$). $\hat b=P\bar b=Ax^*=(5/6,\ 7/3,\ 23/6)^\top$.</li>
+      <li>Residual $\bar b-\hat b=(1/6,\ -1/3,\ 1/6)^\top$; $A^\top(\bar b-\hat b)=(1/6-1/3+1/6,\ -1/3+1/3)=(0,0)$ ✓ orthogonal to both columns. Minimum value $\tfrac12\|\text{res}\|^2=\tfrac1{12}$.</li>
+    </ol>
+  </div></details>
+</div>
+
+<div class="q mcq" data-answer="c">
+  <div class="qh">N4 <span class="src">New, in his style (SONC interpretation)</span><span class="lvl">MCQ</span></div>
+  <p>$f\in C^2(\mathbb R^n)$, $\nabla f(x^*)=0$ and $\nabla^2f(x^*)\succeq0$ (singular). What can be concluded?</p>
+  <ol class="opts">
+    <li data-k="a"><b class="k">(a)</b> $x^*$ is a local minimum (SONC holds).</li>
+    <li data-k="b"><b class="k">(b)</b> $x^*$ is at least not a local maximum.</li>
+    <li data-k="c"><b class="k">(c)</b> Nothing from these conditions alone: $x^*$ may be a local min, a saddle-type point, or even a strict local max.</li>
+    <li data-k="d"><b class="k">(d)</b> $x^*$ is a local minimum or a saddle point, never a maximum.</li>
+  </ol>
+  <details class="ans"><summary>Show answer</summary><div>
+    <p><b>Answer: (c).</b> 1-D examples at 0: $x^4$ (min), $x^3$ (neither), $-x^4$ (strict local <b>max</b>, $f''(0)=0\ge0$). So (a) reverses a necessary condition; (b) and (d) are killed by $-x^4$. SONC is only useful the other way: a negative Hessian eigenvalue rules out a min.</p>
+  </div></details>
+</div>
+
+<div class="q mcq" data-answer="b">
+  <div class="qh">N5 <span class="src">New, in his style (SOSC interpretation)</span><span class="lvl">MCQ</span></div>
+  <p>$x^*$ is a <b>strict</b> local minimum of $f\in C^2(\mathbb R^n)$. Which must hold?</p>
+  <ol class="opts">
+    <li data-k="a"><b class="k">(a)</b> $\nabla^2 f(x^*)\succ0$</li>
+    <li data-k="b"><b class="k">(b)</b> $\nabla f(x^*)=0$ and $\nabla^2f(x^*)\succeq0$</li>
+    <li data-k="c"><b class="k">(c)</b> $\nabla^2 f(x^*)$ is nonsingular</li>
+    <li data-k="d"><b class="k">(d)</b> $f$ is convex near $x^*$</li>
+  </ol>
+  <details class="ans"><summary>Show answer</summary><div>
+    <p><b>Answer: (b)</b>: a strict local min is a local min, so SONC applies. (a), (c): $x_1^4+x_2^2$ has a strict min at 0 with Hessian diag$(0,2)$ (singular, not PD). (d): $f=x^4+y^4-\tfrac32x^2y^2=(x^2-y^2)^2+\tfrac12x^2y^2$ is $\gt0$ for $(x,y)\ne0$ (strict min at 0), but $\nabla^2f(t,0)=\text{diag}(12t^2,-3t^2)$ is indefinite for every $t\ne0$, so $f$ is not convex on any neighbourhood of 0. Strictness is about values; convexity is about curvature everywhere. If $f$ were quadratic, (a) would also be necessary (G2 ⇔ strict min).</p>
+  </div></details>
+</div>
+
+<div class="q mcq" data-answer="d">
+  <div class="qh">N6 <span class="src">New, in his style (quadratic, Quiz 1 Q23/24 twist)</span><span class="lvl">MCQ</span></div>
+  <p>$f(x)=\tfrac12x^\top Qx-b^\top x$ with $Q=\begin{bmatrix}2&0\\0&0\end{bmatrix}$, $b=(2,1)^\top$. Then</p>
+  <ol class="opts">
+    <li data-k="a"><b class="k">(a)</b> $x^*=(1,0)$ is the unique minimiser.</li>
+    <li data-k="b"><b class="k">(b)</b> every point $(1,t)$ is a global minimiser.</li>
+    <li data-k="c"><b class="k">(c)</b> $f$ is not convex because $Q$ is singular.</li>
+    <li data-k="d"><b class="k">(d)</b> $f$ is convex, has no stationary point, and is unbounded below.</li>
+  </ol>
+  <details class="ans"><summary>Show answer</summary><div>
+    <p><b>Answer: (d).</b> $f=x_1^2-2x_1-x_2$. $\nabla f=(2x_1-2,\ -1)\ne0$ always: $b\notin$ range$(Q)$ = span$\{e_1\}$. Along $x_2\to+\infty$, $f\to-\infty$. $Q\succeq0$ ⇒ convex (c ✗: singular ≠ not convex). (b) would be right for $b=(2,0)$: then $f=x_1^2-2x_1$ and the whole line $x_1=1$ minimises. (a) needs $Q\succ0$.</p>
+  </div></details>
+</div>
+</section>
+
+<!-- ============ 5. SELF-TEST ============ -->
+<section id="selftest">
+<h2>5. Self-test (no looking)</h2>
+<div class="toolbar" data-auto></div>
+<div class="q"><div class="qh">S1</div><p>State FONC, SONC and SOSC exactly (hypotheses on $f$, which are necessary, which sufficient, what kind of minimum).</p>
+  <details class="ans"><summary>Show answer</summary><div><p>FONC: $f$ differentiable, $x^*$ local min ⇒ $\nabla f(x^*)=0$. SONC: $f\in C^2$, local min ⇒ $\nabla f(x^*)=0$, $\nabla^2f(x^*)\succeq0$. SOSC: $f\in C^2$, $\nabla f(x^*)=0$, $\nabla^2f(x^*)\succ0$ ⇒ strict local min. First two necessary, third sufficient.</p></div></details></div>
+<div class="q"><div class="qh">S2</div><p>What does each of $x^4$, $x^3$, $-x^4$ at 0 show? For which class of functions are G1 and G2 "if and only if", and why?</p>
+  <details class="ans"><summary>Show answer</summary><div><p>$x^4$: strict min without SOSC (PD not necessary). $x^3$: FONC+SONC, not a min. $-x^4$: FONC+SONC, strict max. Quadratics: Taylor is exact (constant Hessian, no $o(\|h\|^2)$ remainder), so G1 ⇔ min, G2 ⇔ strict min.</p></div></details></div>
+<div class="q"><div class="qh">S3</div><p>PD test by minors vs PSD test by minors. Give a matrix showing the difference.</p>
+  <details class="ans"><summary>Show answer</summary><div><p>PD ⇔ leading principal minors all $\gt0$. PSD ⇔ <b>all</b> principal minors $\ge0$. diag$(0,-1)$: leading minors 0, 0 but not PSD.</p></div></details></div>
+<div class="q"><div class="qh">S4</div><p>Least squares: normal equations, when unique, $x^*$, projector, and why a solution always exists.</p>
+  <details class="ans"><summary>Show answer</summary><div><p>$A^\top Ax=A^\top\bar b$; unique ⇔ full column rank; $x^*=(A^\top A)^{-1}A^\top\bar b$; $P=A(A^\top A)^{-1}A^\top$, $I-P$ onto null$(A^\top)$; exists since range$(A^\top A)$ = range$(A^\top)$.</p></div></details></div>
+<div class="q"><div class="qh">S5</div><p>Three equivalent characterisations of convexity for $C^2$ $f$ on $\mathbb R^n$; how does the Hessian one differ from SONC? Write the 4-step chain from the definition to monotone gradient.</p>
+  <details class="ans"><summary>Show answer</summary><div><p>Definition (chord above); $f(y)\ge f(x)+\nabla f(x)^\top(y-x)$; $\nabla^2f(x)\succeq0$ for <b>every</b> $x$ (SONC: at one point). Chain: $R(t)\le f(y)-f(x)$ → limit $\nabla f(x)^\top d\le f(y)-f(x)$ → swap: $f(y)-f(x)\le\nabla f(y)^\top d$ → $(\nabla f(y)-\nabla f(x))^\top(y-x)\ge0$.</p></div></details></div>
+<div class="q"><div class="qh">S6</div><p>Write the Peano function and the curve that shows 0 is not a local min. State the coercive Weierstrass theorem.</p>
+  <details class="ans"><summary>Show answer</summary><div><p>$f(y,z)=(z-py^2)(z-qy^2)$, $0\lt p\lt q$; along $z=my^2$, $p\lt m\lt q$: $f=(m-p)(m-q)y^4\lt0$. Every line through 0 has a min at 0 ($g''(0)=2b^2$, or $pqa^4\alpha^4$). Weierstrass: $X$ nonempty closed, $f$ proper, lsc, coercive, $X\cap\text{dom}f\ne\emptyset$ ⇒ minimiser exists (set nonempty, compact).</p></div></details></div>
+<p><label><input type="checkbox" data-key="m6-done"> I finished this module</label></p>
+</section>
+
+</main>
+</div>
+<script src="assets/fe.js"></script>
+</body>
+</html>

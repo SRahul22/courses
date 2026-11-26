@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LNO Final Exam Pack</title>
+<meta name="description" content="End-term pack for IISc E1 251 Linear and Nonlinear Optimization: six topic modules ordered by marks per hour, past exam questions with hidden answers, a mock end-term paper and a formula sheet.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="LNO Final Exam Pack: E1 251 end-term in six modules">
+<meta property="og:description" content="ADMM, KKT and second order, duality, LP and QP, unconstrained algorithms, optimality and convexity. 260+ questions with hidden answers, a mock paper and a formula sheet.">
+<meta property="og:url" content="https://courses.rahuldevsharma.com/lno-final/">
+<meta property="og:image" content="https://courses.rahuldevsharma.com/lno-final/preview.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://courses.rahuldevsharma.com/lno-final/">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="assets/fe.css">
+<script>window.MathJax = { tex: { inlineMath: [['$','$']] } };</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml.js"></script>
+<style>
+  .mod{display:flex;gap:14px;align-items:flex-start;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:12px 16px;margin:10px 0}
+  .mod input{margin-top:6px;transform:scale(1.3)}
+  .mod .t{font-weight:700;font-size:18px}
+  .mod .m{color:var(--muted);font-size:14.5px}
+  .pill{display:inline-block;font-size:12px;font-weight:700;border-radius:10px;padding:1px 8px;margin-left:6px;background:var(--accent-soft);color:var(--accent)}
+</style>
+</head>
+<body>
+<div class="layout">
+<nav class="toc">
+  <a class="home" href="/">← All courses</a>
+  <a class="home" href="#">START HERE</a>
+  <a href="#how">How to use this pack</a>
+  <a href="#tonight">Tonight's plan</a>
+  <a href="#morning">Tomorrow morning</a>
+  <a href="#exam">In the exam hall</a>
+  <a href="M1_ADMM.html">M1 · ADMM</a>
+  <a href="M2_Constrained_Optimality_KKT.html">M2 · KKT &amp; second order</a>
+  <a href="M3_Convexity_and_Duality.html">M3 · Duality</a>
+  <a href="M4_LP_Simplex_and_QP.html">M4 · LP &amp; QP</a>
+  <a href="M5_Unconstrained_Algorithms.html">M5 · GD, Newton, CG</a>
+  <a href="M6_Unconstrained_Optimality_Convexity.html">M6 · Ch 1</a>
+  <a href="Mock_Endterm_Paper.html">Mock end-term</a>
+  <a href="Formula_Sheet.html">Formula sheet</a>
+</nav>
+<main>
+<h1>E1 251 Final Exam Pack</h1>
+<p class="sub">End-term: 27 Nov 2026. Built from all lecture transcripts (Ch 1–10), all 9 past papers, the problem sets and the notes. Topics are grouped by idea, not by chapter, and ordered by <b>marks per hour</b>: if you run out of time, what you skipped is worth the least.</p>
+
+<section id="how">
+<h2>How to use this pack</h2>
+<ol class="steps">
+<li>Open the modules in order. In each one: read <b>1. Must remember</b> → read <b>2. Concepts</b> (plain words first, then the exact statement, then a worked example) → glance at <b>3. What he said</b>.</li>
+<li><b>4. Practice is where marks come from.</b> Try every question on paper <i>before</i> opening the answer. For MCQs, click an option: it turns green or red and the explanation opens. If you got it wrong, read why, then move on (don't re-read the whole concept).</li>
+<li>Finish with <b>5. Self-test</b> without looking up. Anything you miss there goes onto your handwritten sheet.</li>
+<li>Tick the box when a module is done (ticks are saved in this browser).</li>
+</ol>
+<div class="box trap"><span class="tag">Rules he enforces in every answer</span>
+<ul>
+<li>Rewrite constraints as $g(x)\le0$, $h(x)=0$ first. Lagrangian $L=f+\lambda^Th+\mu^Tg$, $\mu\ge0$.</li>
+<li>Always write all five KKT parts. Use only the course's theorem forms (other books' forms "not accepted").</li>
+<li>Never write "concave optimization problem" or "concave set".</li>
+<li>No full proofs are asked, but the <i>steps</i> of proofs are (as MCQ chains or short answers).</li>
+</ul></div>
+</section>
+
+<section id="tonight">
+<h2>Tonight's plan (about 6 hours)</h2>
+<div class="mod"><input type="checkbox" data-key="m1-done"><div><a class="t" href="M1_ADMM.html">M1 · ADMM</a><span class="pill">Ch 10 · 60–75 min</span><div class="m">Promised "hard problem": derive the 3 ADMM updates for a given $f_1+f_2$; soft thresholding; box projection. Never examined before. <b>Do Q7, Q9, Q11 fully on paper.</b></div></div></div>
+<div class="mod"><input type="checkbox" data-key="m2-done"><div><a class="t" href="M2_Constrained_Optimality_KKT.html">M2 · Constrained optimality: KKT, cones, second order</a><span class="pill">Ch 6 · 90 min</span><div class="m">"70% of marks… this equation and the following KKT". The KKT ladder with active sets and a parameter, critical cone, SONC/SOSC, eigenvector problems. Midterm 2 III–VI inside.</div></div></div>
+<div class="mod"><input type="checkbox" data-key="m3-done"><div><a class="t" href="M3_Convexity_and_Duality.html">M3 · Convexity and duality (incl. LP duality)</a><span class="pill">Ch 7–8 · 60 min</span><div class="m">"Different form of linear program I will give and ask you to derive the dual." Dual function, weak duality, Slater, recovery, LP dual. Quiz 4 and Midterm 2 I–II inside.</div></div></div>
+<div class="mod"><input type="checkbox" data-key="m4-done"><div><a class="t" href="M4_LP_Simplex_and_QP.html">M4 · LP (simplex concepts) and QP</a><span class="pill">Ch 8–9 · 60 min</span><div class="m">Simplex = concepts only (no numerical pivoting). QP never examined: KKT matrix, Q PD on null(A), active-set step $\min\{1,\alpha_k\}$. Quiz 5 inside.</div></div></div>
+<div class="mod"><input type="checkbox" data-key="m5-done"><div><a class="t" href="M5_Unconstrained_Algorithms.html">M5 · Unconstrained algorithms: line search, GD, Newton, CG</a><span class="pill">Ch 2–4 · 60 min</span><div class="m">GD on quadratics (step range, best step, rate), exact line search, CG steps and facts, PCG, Newton, Wolfe. Midterm 1 II, III, V, VI and Quiz 2 inside.</div></div></div>
+<div class="mod"><input type="checkbox" data-key="m6-done"><div><a class="t" href="M6_Unconstrained_Optimality_Convexity.html">M6 · Unconstrained optimality and convexity</a><span class="pill">Ch 1 · 30–40 min</span><div class="m">Cheap MCQ marks: FONC/SONC/SOSC traps, classify stationary points, convexity tests, least squares. Quiz 1 and Midterm 1 I, IV, VII inside.</div></div></div>
+<p class="small">Breaks: 10 minutes after M2 and after M4. If you're short on time, cut M6 first, then the Newton/line-search parts of M5.</p>
+</section>
+
+<section id="morning">
+<h2>Tomorrow morning (1–2 hours)</h2>
+<div class="mod"><input type="checkbox" data-key="formula-done"><div><a class="t" href="Formula_Sheet.html">Formula sheet</a><span class="pill">20 min</span><div class="m">Read it once aloud. Copy anything you can't recall onto your own handwritten sheet (in case one is allowed for the problem part). The short-answer part may be without any sheet: these are the things "you have to remember absolutely".</div></div></div>
+<div class="mod"><input type="checkbox" data-key="mock-done"><div><a class="t" href="Mock_Endterm_Paper.html">Mock end-term paper</a><span class="pill">60–90 min</span><div class="m">Do Part A (short answers) without looking, then pick and attempt 2–3 Part B questions under time pressure. Check with the hidden solutions.</div></div></div>
+<div class="mod"><input type="checkbox" data-key="traps-done"><div><span class="t">Trap checklist</span><span class="pill">10 min</span><div class="m">Re-read the Trap boxes of M1–M3 (red boxes) and the self-tests you got wrong.</div></div></div>
+</section>
+
+<section id="exam">
+<h2>In the exam hall</h2>
+<ul>
+<li><b>Choose questions:</b> if it's "answer k of n" (like Midterm 2), take the ADMM derivation and the KKT ladder if offered (most practised, most predictable), then the MCQ groups you're surest of.</li>
+<li><b>MCQs:</b> read "valid in general under the stated assumptions". Look for the missing or extra assumption, a flipped sign, necessary vs sufficient. If negative marking (−¼) applies, skip a question when you can't eliminate at least two options.</li>
+<li><b>Descriptive:</b> write the setup lines even if you get stuck (constraint form, Lagrangian, KKT parts, $L_A$): they earn marks.</li>
+</ul>
+<p class="small">How this pack was made: every lecture and tutorial recording of the course (Ch 1–10) was transcribed and searched for what the professor said about exams, and all nine past assessments (Quiz 1–5, Midterm 1–2) were analysed for format, recurring question types and traps. Every number in every worked solution was checked with Python. Timestamps like <code>[24:00]</code> point into the lecture recordings.</p>
+</section>
+</main>
+</div>
+<script src="assets/fe.js"></script>
+</body>
+</html>

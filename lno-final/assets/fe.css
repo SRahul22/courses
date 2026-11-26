@@ -1,0 +1,92 @@
+/* Shared style for the E1 251 Final Exam pack. Light/dark via prefers-color-scheme. */
+:root{
+  --bg:#fbfaf7; --panel:#ffffff; --ink:#1d1f23; --muted:#5d636e; --line:#e3e0d8;
+  --accent:#2457a6; --accent-soft:#e8effa;
+  --must:#fff6d6; --must-line:#e0b400;
+  --prof:#eef7ee; --prof-line:#3c9a4a;
+  --trap:#fdecec; --trap-line:#c8372d;
+  --ex:#f1f0fb; --ex-line:#6a5acd;
+  --ok:#1f8a44; --bad:#c8372d;
+  --code:#f3f1ec;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#15171b; --panel:#1d2026; --ink:#e7e6e3; --muted:#a1a6b0; --line:#30343c;
+    --accent:#7fa9ec; --accent-soft:#1f2a3d;
+    --must:#2e2a17; --must-line:#c9a227;
+    --prof:#18291c; --prof-line:#4fb560;
+    --trap:#331b1b; --trap-line:#e0645a;
+    --ex:#22203a; --ex-line:#9a8cf0;
+    --ok:#4cc276; --bad:#f07067; --code:#262a31;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#15171b; --panel:#1d2026; --ink:#e7e6e3; --muted:#a1a6b0; --line:#30343c;
+  --accent:#7fa9ec; --accent-soft:#1f2a3d;
+  --must:#2e2a17; --must-line:#c9a227;
+  --prof:#18291c; --prof-line:#4fb560;
+  --trap:#331b1b; --trap-line:#e0645a;
+  --ex:#22203a; --ex-line:#9a8cf0;
+  --ok:#4cc276; --bad:#f07067; --code:#262a31;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);
+  font:17px/1.6 "Segoe UI",system-ui,-apple-system,Roboto,sans-serif}
+.layout{display:flex;max-width:1250px;margin:0 auto}
+nav.toc{position:sticky;top:0;align-self:flex-start;height:100vh;overflow:auto;
+  width:250px;flex:0 0 250px;padding:20px 14px;border-right:1px solid var(--line);font-size:14.5px}
+nav.toc a{display:block;color:var(--muted);text-decoration:none;padding:3px 6px;border-radius:5px}
+nav.toc a:hover{background:var(--accent-soft);color:var(--ink)}
+nav.toc .home{font-weight:600;color:var(--accent);margin-bottom:10px}
+main{flex:1;min-width:0;padding:28px 36px 80px}
+@media (max-width:900px){ nav.toc{display:none} main{padding:18px 16px 60px} }
+h1{font-size:30px;margin:0 0 4px} h2{font-size:24px;margin:42px 0 10px;padding-top:8px;border-top:2px solid var(--line)}
+h3{font-size:19px;margin:26px 0 8px}
+.sub{color:var(--muted);margin:0 0 18px}
+a{color:var(--accent)}
+code{background:var(--code);padding:1px 5px;border-radius:4px;font-size:.92em}
+.box{border-left:5px solid;border-radius:8px;padding:12px 16px;margin:14px 0}
+.must{background:var(--must);border-color:var(--must-line)}
+.prof{background:var(--prof);border-color:var(--prof-line)}
+.trap{background:var(--trap);border-color:var(--trap-line)}
+.example{background:var(--ex);border-color:var(--ex-line)}
+.box > .tag{font-weight:700;font-size:13px;letter-spacing:.04em;text-transform:uppercase;display:block;margin-bottom:4px}
+.prof q{font-style:italic}
+.prof .ts{color:var(--muted);font-size:13px}
+table{border-collapse:collapse;margin:12px 0;width:100%;font-size:15.5px}
+th,td{border:1px solid var(--line);padding:6px 9px;text-align:left;vertical-align:top}
+th{background:var(--accent-soft)}
+.mathwide{overflow-x:auto}
+mjx-container[display="true"]{overflow-x:auto;overflow-y:hidden;max-width:100%}
+main{overflow-wrap:anywhere}
+table{display:block;overflow-x:auto}
+/* Questions */
+.q{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:14px 18px;margin:16px 0}
+.q .qh{font-weight:700;margin-bottom:6px}
+.q .src{font-weight:400;color:var(--muted);font-size:13.5px;margin-left:6px}
+.q .lvl{font-size:12px;font-weight:700;border-radius:10px;padding:1px 8px;margin-left:6px;background:var(--accent-soft);color:var(--accent)}
+ol.opts{list-style:none;padding:0;margin:8px 0}
+ol.opts li{border:1px solid var(--line);border-radius:8px;padding:6px 10px;margin:6px 0;cursor:pointer}
+ol.opts li:hover{border-color:var(--accent)}
+ol.opts li.right{border-color:var(--ok);background:color-mix(in srgb,var(--ok) 14%,transparent)}
+ol.opts li.wrong{border-color:var(--bad);background:color-mix(in srgb,var(--bad) 14%,transparent)}
+ol.opts li b.k{margin-right:8px}
+details.ans{margin-top:8px}
+details.ans > summary{cursor:pointer;display:inline-block;background:var(--accent);color:#fff;border-radius:6px;padding:4px 12px;font-size:14.5px;list-style:none}
+details.ans > summary::-webkit-details-marker{display:none}
+details.ans[open] > summary{background:var(--muted)}
+details.ans > div{border-top:1px dashed var(--line);margin-top:10px;padding-top:8px}
+details.hint > summary{cursor:pointer;color:var(--accent);font-size:14.5px}
+.toolbar{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0}
+button{font:inherit;font-size:14px;border:1px solid var(--line);background:var(--panel);color:var(--ink);border-radius:6px;padding:4px 10px;cursor:pointer}
+button:hover{border-color:var(--accent)}
+.done-toggle{float:right}
+.steps li{margin:4px 0}
+.small{font-size:14px;color:var(--muted)}
+@media print{
+  nav.toc,.toolbar,button{display:none}
+  details.ans{display:none}
+  body{font-size:12.5px;background:#fff;color:#000}
+  main{padding:0}
+}

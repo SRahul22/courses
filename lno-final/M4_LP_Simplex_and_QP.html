@@ -1,0 +1,737 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>M4 · LP (simplex concepts) and QP</title>
+<link rel="stylesheet" href="assets/fe.css">
+<script>
+  // MathJax: inline $...$ or \(...\), display $$...$$ or \[...\]
+  window.MathJax = { tex: { inlineMath: [['$','$'],['\\(','\\)']], displayMath: [['$$','$$'],['\\[','\\]']] } };
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml.js"></script>
+</head>
+<body>
+<div class="layout">
+<nav class="toc">
+  <a class="home" href="./">← START HERE</a>
+  <a href="#must">1. Must remember</a>
+  <a href="#concepts">2. Concepts</a>
+  <a href="#c0">&nbsp;&nbsp;2.0 One idea, two chapters</a>
+  <a href="#c1">&nbsp;&nbsp;2.1 Standard form</a>
+  <a href="#c2">&nbsp;&nbsp;2.2 BFS, extreme points, FTLP</a>
+  <a href="#c3">&nbsp;&nbsp;2.3 Basis formulas + LP KKT</a>
+  <a href="#c4">&nbsp;&nbsp;2.4 One simplex step</a>
+  <a href="#c5">&nbsp;&nbsp;2.5 Tableau (4 slides)</a>
+  <a href="#c6">&nbsp;&nbsp;2.6 Equality QP</a>
+  <a href="#c7">&nbsp;&nbsp;2.7 Projector, projected CG</a>
+  <a href="#c8">&nbsp;&nbsp;2.8 Active-set QP step</a>
+  <a href="#prof">3. What he said</a>
+  <a href="#practice">4. Practice</a>
+  <a href="#pq5">&nbsp;&nbsp;A. Quiz 5 (14 MCQs)</a>
+  <a href="#pps">&nbsp;&nbsp;B. Problem Set 1 proofs</a>
+  <a href="#pnew">&nbsp;&nbsp;C. New questions</a>
+  <a href="#selftest">5. Self-test</a>
+</nav>
+<main>
+<h1>M4 · LP (simplex concepts) and QP</h1>
+<p class="sub">Chapters 8–9 · about 60 min (must 5 · concepts 25 · practice 25 · self-test 5) · Goal: explain the meaning of every simplex step and every active-set step, write the basis formulas and the QP KKT matrix from memory, and do the small one-step computations he can ask.</p>
+
+<!-- ============ 1. MUST REMEMBER ============ -->
+<section id="must">
+<h2>1. Must remember</h2>
+<div class="box must"><span class="tag">Memorise cold: Chapter 8 (LP, standard form $\min c^Tx,\ Ax=b,\ x\ge 0$, rank $A=m$)</span>
+  <ul>
+    <li><b>LP KKT</b> (Lagrangian $c^Tx+\lambda^T(b-Ax)-\mu^Tx$): $\;A^T\lambda+\mu=c,\quad Ax=b,\ x\ge0,\quad \mu\ge0,\quad \mu^Tx=0.$ ($\lambda$ free.)</li>
+    <li><b>Basis $A=[B\ N]$:</b> $\bar x_B=B^{-1}b,\ \bar x_N=0$ (feasible iff $B^{-1}b\ge0$) · $\bar\lambda=B^{-T}c_B$ · $\bar\mu_B=0$ · $\bar\mu_N=c_N-N^T\bar\lambda$ (reduced costs).</li>
+    <li><b>Optimal</b> if $\bar x_B\ge0$ <i>and</i> $\bar\mu_N\ge0$. <b>Gap identity:</b> $c^Tx'-c^T\bar x=\bar\mu_N^Tx'_N$ for every feasible $x'$.</li>
+    <li><b>Step:</b> pick $q$ with $\bar\mu_q\lt0$; $u=B^{-1}a_q$; direction $d_B=-u,\ d_q=1$ (so $Ad=0$, $c^Td=\bar\mu_q$).</li>
+    <li><b>Ratio test:</b> $\theta=\min_{i:\,u_i\gt0}(\bar x_B)_i/u_i$; cost change $=\theta\bar\mu_q$. <b>Unbounded</b> if $u\le0$ and $\bar\mu_q\lt0$. Degenerate ($\theta=0$ possible) iff some basic variable $=0$.</li>
+    <li><b>Theorems:</b> extreme point $\Leftrightarrow$ BFS; feasible $\Rightarrow$ a BFS exists; optimum exists $\Rightarrow$ an <i>optimal BFS</i> exists. $\bar x$ is a BFS iff its positive-support columns are independent.</li>
+    <li><b>Bland:</b> enter = smallest index with $\bar\mu_j\lt0$; leave = smallest original index among ratio ties. New $B'$ nonsingular since $\det B'=u_p\det B$, $u_p\gt0$.</li>
+  </ul>
+</div>
+<div class="box must"><span class="tag">Memorise cold: Chapter 9 (QP $f=\tfrac12x^TQx-c^Tx$)</span>
+  <ul>
+    <li><b>Equality QP KKT</b> ($\ell=f+\lambda^T(Ax-b)$): $\;Qx-c+A^T\lambda=0,\ Ax=b$, i.e. $\underbrace{\begin{bmatrix}Q&A^T\\A&0\end{bmatrix}}_{K}\begin{bmatrix}x\\\lambda\end{bmatrix}=\begin{bmatrix}c\\b\end{bmatrix}.$</li>
+    <li><b>Unique global minimiser $\iff H_r=Z^TQZ\succ0$</b> $\iff d^TQd\gt0$ for all $0\ne d\in\ker A$. Then $K$ is nonsingular. <b>$Q$ need not be PD.</b> $K$ nonsingular $\iff H_r$ nonsingular (not PD!).</li>
+    <li><b>Null-space:</b> $x=x_p+Zz$, $\ \phi(z)=f(x_p)+g_r^Tz+\tfrac12z^TH_rz$, $g_r=Z^T(Qx_p-c)$, solve $H_rz^*=-g_r$.</li>
+    <li><b>Range-space (Schur), $Q$ nonsingular:</b> $S=AQ^{-1}A^T$, $\ S\lambda=AQ^{-1}c-b$, $\ x=Q^{-1}(c-A^T\lambda)$. $Q\succ0\Rightarrow S\succ0$.</li>
+    <li><b>Projector:</b> $P=I-A^T(AA^T)^{-1}A=Z(Z^TZ)^{-1}Z^T$; $r=-P\nabla f$ gives $\nabla f^Tr=-\|r\|^2$. Projected CG: at most $n-m$ steps.</li>
+    <li><b>Active set:</b> $g_k=Qx_k-c$, $\ q_k(p)=g_k^Tp+\tfrac12p^TQp$ on $a_i^Tp=0\ (i\in W_k)$. If $p_k\ne0$: $g_k^Tp_k=-p_k^TQp_k\lt0$, $\ f(x_k+\alpha p_k)-f(x_k)=-\alpha(1-\tfrac\alpha2)p_k^TQp_k$.</li>
+    <li><b>Ratio test:</b> $\alpha_k=\min_{i\notin W_k,\ a_i^Tp_k\gt0}\dfrac{b_i-a_i^Tx_k}{a_i^Tp_k}$; <b>step $=\min\{1,\alpha_k\}$</b>; if $\alpha_k\le1$ add the blocker. If $p_k=0$: solve $g_k+\sum_{W_k}\lambda_ia_i=0$; all $\lambda_i\ge0\Rightarrow$ stop (global min if $Q\succeq0$); else drop the most negative.</li>
+  </ul>
+</div>
+<div class="box trap"><span class="tag">Sign conventions differ between the chapters</span>
+  Ch 8 uses $\lambda^T(b-Ax)$ so stationarity is $c=A^T\lambda+\mu$. Ch 9 uses $\lambda^T(Ax-b)$ so stationarity is $Qx-c+A^T\lambda=0$. Use the one the question states; if none is stated, say which you use.
+</div>
+</section>
+
+<!-- ============ 2. CONCEPTS ============ -->
+<section id="concepts">
+<h2>2. Concepts</h2>
+
+<h3 id="c0">2.0 One idea, two chapters (read this first, 2 min)</h3>
+<p><b>In plain words:</b> both methods guess <i>which constraints are "tight"</i>, solve an easy equality problem with only those, and then ask two questions. (1) Can I improve by moving? If yes, move along a direction until some new constraint stops you (a <b>ratio test</b>). (2) If I can't improve, are the multipliers the right sign? If one is wrong, release that constraint.</p>
+<table>
+<tr><th>Ingredient</th><th>Simplex (Ch 8)</th><th>Active-set QP (Ch 9)</th></tr>
+<tr><td>"Tight" set</td><td>nonbasic variables $x_N=0$ (basis $B$ = the rest)</td><td>working set $W_k$ of constraints held as equalities</td></tr>
+<tr><td>Equality solve</td><td>$Bx_B=b$, $B^T\lambda=c_B$</td><td>minimise $q_k(p)$ on $a_i^Tp=0,\ i\in W_k$</td></tr>
+<tr><td>Sign test</td><td>reduced costs $\bar\mu_N\ge0$? (multipliers of $x\ge0$)</td><td>$\lambda_i\ge0$ for $i\in W_k$? (when $p_k=0$)</td></tr>
+<tr><td>Wrong sign ⇒</td><td>$x_q$ with $\bar\mu_q\lt0$ <b>enters</b> (leaves the tight set $x_q=0$)</td><td>constraint $j$ with $\lambda_j\lt0$ is <b>dropped</b> from $W_k$</td></tr>
+<tr><td>Direction</td><td>$d_B=-B^{-1}a_q,\ d_q=1$</td><td>$p_k$ from the subproblem</td></tr>
+<tr><td>Ratio test</td><td>$\theta=\min_{u_i\gt0}(\bar x_B)_i/u_i$</td><td>$\alpha_k=\min_{a_i^Tp_k\gt0}(b_i-a_i^Tx_k)/a_i^Tp_k$, step $\min\{1,\alpha_k\}$</td></tr>
+<tr><td>Blocker ⇒</td><td>basic variable hitting 0 <b>leaves</b></td><td>blocking constraint is <b>added</b> to $W_k$</td></tr>
+<tr><td>Independence kept</td><td>$\det B'=u_p\det B\ne0$</td><td>blocker normal is outside span of working normals</td></tr>
+<tr><td>Zero step</td><td>degenerate pivot $\theta=0$</td><td>$\alpha_k=0$: an omitted active constraint blocks</td></tr>
+</table>
+<p>The one difference: an LP objective is linear, so it never "stops in the middle" — you always walk to the blocker. A QP has curvature, so the subproblem minimiser may lie <i>before</i> the blocker; that is why the QP step is $\min\{1,\alpha_k\}$ and the LP step is just $\theta$.</p>
+
+<h3 id="c1">2.1 Standard form and conversions</h3>
+<p><b>In plain words:</b> every LP can be rewritten as "minimise a linear cost, equalities only, all variables $\ge0$". You add a non-negative variable to soak up the gap in each inequality, and you split a free variable into two non-negative parts.</p>
+<p><b>Precisely:</b></p>
+<ul>
+  <li>$a_i^Tx\le b_i$ → $a_i^Tx+y_i=b_i,\ y_i\ge0$ (<b>slack</b>, $A'=[A\ \ I]$, cost $0$).</li>
+  <li>$a_i^Tx\ge b_i$ → $a_i^Tx-y_i=b_i,\ y_i\ge0$ (<b>surplus</b>, $A'=[A\ -I]$, cost $0$).</li>
+  <li>free $x_j$ → $x_j=x_j^+-x_j^-$, $x_j^\pm\ge0$, substitute in objective <i>and</i> constraints (the pair need not be unique).</li>
+  <li>$\max c^Tx$ → $\min(-c)^Tx$. Bound $x_j\ge\ell_j$ → $x_j=\ell_j+v_j$. Negative $b_i$: multiply the row by $-1$ (flips $\le$/$\ge$). The notes then assume $b\ge0$.</li>
+</ul>
+<div class="box example"><span class="tag">Worked example</span>
+  $\max\ 3x_1+x_2$ s.t. $x_1-x_2\le2,\ x_1+x_2\ge1,\ x_1\ge0,\ x_2$ free.
+  <ol class="steps">
+    <li>Max → min: $\min\ -3x_1-x_2$.</li>
+    <li>Split $x_2=x_2^+-x_2^-$: objective $-3x_1-x_2^++x_2^-$.</li>
+    <li>Row 1 ($\le$): add slack $s_1$: $x_1-x_2^++x_2^-+s_1=2$. Row 2 ($\ge$): subtract surplus $s_2$: $x_1+x_2^+-x_2^--s_2=1$.</li>
+    <li>Variables $(x_1,x_2^+,x_2^-,s_1,s_2)\ge0$, $n=5,\ m=2$:
+    $$A=\begin{bmatrix}1&-1&1&1&0\\1&1&-1&0&-1\end{bmatrix},\ b=\begin{bmatrix}2\\1\end{bmatrix},\ c=(-3,-1,1,0,0)^T.$$</li>
+  </ol>
+</div>
+<div class="box trap"><span class="tag">Trap</span> The column of $x_2^-$ is the <i>negative</i> of the column of $x_2^+$, and so is its cost. Slack/surplus costs are $0$. Surplus has coefficient $-1$, not $+1$.</div>
+
+<h3 id="c2">2.2 Basic solutions, BFS, degeneracy, extreme points, fundamental theorem</h3>
+<p><b>In plain words:</b> pick $m$ independent columns (a "basis"), switch every other variable off, and solve the square system. That point is a <b>basic solution</b>. If it is also $\ge0$ it is a <b>BFS</b>. Geometrically BFSs are exactly the <b>corners</b> of the feasible set, and if the LP has an optimum, some corner is optimal. So simplex only needs to hop between corners.</p>
+<p><b>Precisely:</b></p>
+<ul>
+  <li><b>Basic solution</b> (Def 8.2.1.1): $B$ = nonsingular $m\times m$ submatrix of columns; $x_N=0$, $x_B=B^{-1}b$. It need not be $\ge0$.</li>
+  <li><b>BFS:</b> basic and feasible, i.e. $B^{-1}b\ge0$. Zero basic values are allowed. <b>Degenerate</b> BFS: some basic variable $=0$ ($\Leftrightarrow$ fewer than $m$ positive components). $B$ is still nonsingular.</li>
+  <li><b>Support test:</b> a feasible $\bar x$ is a BFS $\iff$ the columns $\{a_i: \bar x_i\gt0\}$ are linearly independent (extend them to a full basis using full row rank).</li>
+  <li><b>Theorem 8.2.2:</b> $x\in K=\{Ax=b,x\ge0\}$ is an extreme point $\iff$ $x$ is a BFS.</li>
+  <li><b>Theorem 8.2.1 (fundamental theorem):</b> (i) feasible set nonempty ⇒ a BFS exists; (ii) an optimal solution exists ⇒ an <b>optimal BFS</b> exists. (Not "every optimum is a BFS", and not "feasible set bounded".)</li>
+</ul>
+<p><b>Proof ideas you must be able to write in steps</b> (Ch 6 Problem Set 1, P11–12):</p>
+<ol class="steps">
+  <li><b>Dependent support ⇒ a null direction.</b> If $\{a_i:x_i\gt0\}$ are dependent, there is $d\ne0$ with $Ad=0$ and $d_i=0$ wherever $x_i=0$.</li>
+  <li><b>Both $\pm d$ are feasible.</b> $A(x\pm\varepsilon d)=b$, and for small $\varepsilon$ the positive components stay positive while zero components stay $0$.</li>
+  <li><b>Extreme ⇒ BFS:</b> $x=\tfrac12(x+\varepsilon d)+\tfrac12(x-\varepsilon d)$, two distinct feasible points, so $x$ is not extreme. Contrapositive.</li>
+  <li><b>BFS ⇒ extreme:</b> if $x=\alpha y+(1-\alpha)z$, $0\lt\alpha\lt1$, $y,z\in K$, then $y_N=z_N=0$ (non-negative numbers averaging to 0), so $By_B=Bz_B=b=Bx_B$, and nonsingular $B$ gives $y=z=x$.</li>
+  <li><b>Reduce the support (P11):</b> choose the sign of $d$ so some $d_i\gt0$; move to $x-\varepsilon^*d$ with $\varepsilon^*=\min_{d_i\gt0}x_i/d_i$. One positive component hits $0$, no zero component becomes positive. Repeat; it ends (support shrinks each time) at independent support = BFS.</li>
+  <li><b>Optimal version (P12):</b> at an optimum $x^\star$, FONC on the feasible directions $d$ and $-d$ gives $c^Td\ge0$ and $-c^Td\ge0$, so $c^Td=0$. Since the cost is <i>linear</i>, $c^T(x^\star-td)=c^Tx^\star$ exactly along the line, so each reduction step keeps optimality ⇒ an optimal BFS.</li>
+</ol>
+<div class="box example"><span class="tag">Worked example (slides p. 79)</span>
+  $\min\ -x_3$ s.t. $x_1+x_3=1,\ x_2+x_3=1,\ x\ge0$. So $a_1=(1,0)^T,\ a_2=(0,1)^T,\ a_3=(1,1)^T$.
+  <ol class="steps">
+    <li>Basis $\{x_1,x_2\}$: $B=I$, $x_B=(1,1)$, point $(1,1,0)$: nondegenerate BFS.</li>
+    <li>Basis $\{x_3,x_2\}$: $B=\begin{bmatrix}1&0\\1&1\end{bmatrix}$, $x_B=B^{-1}b=(1,0)$, point $(0,0,1)$: a <b>degenerate</b> BFS (basic $x_2=0$).</li>
+    <li>The feasible point $x=(\tfrac12,\tfrac12,\tfrac12)$ has 3 positive components but only $m=2$ rows, so its support is dependent: $d=(1,1,-1)$ has $Ad=0$. Not a BFS, not a corner.</li>
+    <li>Reduction: $c^Td=+1\ne0$, so this $x$ is not optimal (moving along $-d$ lowers the cost). Moving $x-td$ until $t=\tfrac12$ lands on $(0,0,1)$, the optimal BFS with cost $-1$.</li>
+  </ol>
+</div>
+
+<h3 id="c3">2.3 Basis formulas, reduced costs, LP KKT</h3>
+<p><b>In plain words:</b> for a chosen basis, you can satisfy four of the five KKT conditions automatically. The only one left to check is the sign of the reduced costs $\bar\mu_N$. If they are all $\ge0$, you're optimal. If one is negative, that variable is worth increasing.</p>
+<p><b>Precisely:</b> KKT: $A^T\lambda+\mu=c$, $Ax=b$, $x\ge0$, $\mu\ge0$, $\mu^Tx=0$. The basis construction imposes $x_N=0$ and $\mu_B=0$ (complementarity), and then</p>
+$$B x_B=b,\qquad B^T\lambda=c_B,\qquad N^T\lambda+\mu_N=c_N$$
+$$\Rightarrow\ \bar x_B=B^{-1}b,\quad \bar\lambda=B^{-T}c_B,\quad \bar\mu_N=c_N-N^T\bar\lambda=c_N-N^TB^{-T}c_B.$$
+<ul>
+  <li>Equalities, stationarity and complementarity now hold. Remaining checks: $\bar x_B\ge0$ (primal feasibility) and $\bar\mu_N\ge0$ (dual feasibility). Both ⇒ optimal (and $c^T\bar x=b^T\bar\lambda$: zero duality gap).</li>
+  <li><b>Gap identity (why the sign test works):</b> for any feasible $x'$, $c^Tx'-c^T\bar x=(A^T\bar\lambda+\bar\mu)^T(x'-\bar x)=\bar\lambda^T\underbrace{A(x'-\bar x)}_{0}+\bar\mu^Tx'-\underbrace{\bar\mu^T\bar x}_{0}=\bar\mu_N^Tx'_N$. With $\bar\mu_N\ge0$ and $x'\ge0$ this is $\ge0$.</li>
+  <li>At a degenerate basis, $\mu_B=0$ is a <i>choice</i> (complementarity alone would not force it); the construction prescribes it.</li>
+</ul>
+<div class="box example"><span class="tag">Worked example (continuing 2.2)</span>
+  <ol class="steps">
+    <li>Basis $\{x_1,x_2\}$: $B=I$, $c_B=(0,0)$ ⇒ $\bar\lambda=0$, $\bar\mu_3=c_3-a_3^T\bar\lambda=-1\lt0$ ⇒ <b>not optimal</b>; $x_3$ should enter.</li>
+    <li>Basis $\{x_3,x_2\}$: $B^T\lambda=c_B=(-1,0)$ with $B^T=\begin{bmatrix}1&1\\0&1\end{bmatrix}$ ⇒ $\bar\lambda=(-1,0)$. Nonbasic $x_1$: $\bar\mu_1=0-a_1^T\bar\lambda=0-(-1)=1\ge0$ ⇒ <b>optimal</b> (even though degenerate). Check: $c^T\bar x=-1=b^T\bar\lambda=-1$. ✓</li>
+  </ol>
+</div>
+<div class="box trap"><span class="tag">Trap</span> $\bar\lambda=B^{-T}c_B$ (transpose!), not $B^{-1}c_B$. $\bar\mu_N=c_N-N^T\bar\lambda$, not $N^T\bar\lambda-c_N$. The gap identity uses $x'_N$ (the <i>other</i> point's nonbasic part), not $\bar x_N$ (which is 0).</div>
+
+<h3 id="c4">2.4 The meaning of one simplex step</h3>
+<p><b>In plain words:</b> a negative reduced cost $\bar\mu_q$ says "increasing $x_q$ by one unit lowers the cost by $|\bar\mu_q|$". To keep $Ax=b$, the basic variables must change too, by $-u$ per unit. You increase $x_q$ until the first basic variable hits zero; that one leaves, $x_q$ enters.</p>
+<p><b>Precisely</b> (from a BFS $\bar x$, basis $B$, entering $q$ with $\bar\mu_q\lt0$):</p>
+<ol class="steps">
+  <li><b>Direction.</b> $u=B^{-1}a_q$ (coordinates of $a_q$ in the basis, $Bu=a_q$). Keep other nonbasics at 0, set $d_q=1$; $Ad=0$ forces $Bd_B+a_q=0$, so $d_B=-u$. Along $x(t)=\bar x+td$: $x_B(t)=\bar x_B-tu$.</li>
+  <li><b>Cost slope.</b> $c^Td=c_q-c_B^Tu=c_q-a_q^T\bar\lambda=\bar\mu_q$, so $c^Tx(t)=c^T\bar x+t\bar\mu_q$.</li>
+  <li><b>Ratio test.</b> Row $i$ with $u_i\gt0$ decreases and allows $t\le(\bar x_B)_i/u_i$; rows with $u_i\le0$ never block. $\theta=\min_{i:u_i\gt0}(\bar x_B)_i/u_i$. The minimising row $p$ leaves.</li>
+  <li><b>Unbounded.</b> If $u\le0$, every $t\ge0$ is feasible; with $\bar\mu_q\lt0$ the cost $\to-\infty$. (With $\bar\mu_q\ge0$ this ray proves nothing.)</li>
+  <li><b>Cost change</b> $=\theta\bar\mu_q$: strictly negative iff $\theta\gt0$ and $\bar\mu_q\lt0$.</li>
+  <li><b>Degeneracy.</b> If $(\bar x_B)_p=0$ and $u_p\gt0$, then $\theta=0$: basis changes, point and cost do not. So a negative $\bar\mu_q$ at a degenerate BFS does <i>not</i> prove non-optimality (slide p. 81: $\min x_1$, $x_1+x_2=0$: $\bar\mu_2=-1$ but $\theta=0$ and the point is optimal).</li>
+  <li><b>Cycling and Bland.</b> Zero steps keep the cost equal, so bases can repeat forever. Bland's rule (smallest-index entering; smallest original index leaving among ties) prevents revisiting a basis ⇒ finite termination. Without degeneracy every step strictly lowers cost, so no basis repeats anyway.</li>
+  <li><b>New basis is nonsingular.</b> $B'=B[e_1\cdots u\cdots e_m]$ ($u$ in column $p$), so $\det B'=u_p\det B\ne0$ because the ratio test only picks rows with $u_p\gt0$. True even when $\theta=0$.</li>
+</ol>
+<div class="box example"><span class="tag">Worked example (continuing 2.2, basis $\{x_1,x_2\}$)</span>
+  <ol class="steps">
+    <li>$\bar\mu_3=-1$, $u=B^{-1}a_3=(1,1)$. Direction: $d=(-1,-1,1)$, $Ad=0$ ✓, $c^Td=-1=\bar\mu_3$ ✓.</li>
+    <li>Ratios: $x_1$: $1/1=1$, $x_2$: $1/1=1$ ⇒ $\theta=1$, a <b>tie</b>. Bland: $x_1$ leaves (smaller index).</li>
+    <li>New point $(1,1,0)+1\cdot(-1,-1,1)=(0,0,1)$; cost change $\theta\bar\mu_3=-1$ ✓. The other tied variable $x_2$ stays basic at $0$ ⇒ the new BFS is <b>degenerate</b>: a tie in the ratio test creates degeneracy.</li>
+  </ol>
+</div>
+<div class="box trap"><span class="tag">Trap</span> Ratio test: min (not max), only over $u_i\gt0$ (not $u_i\ne0$, not $u_i\lt0$). $d_B=-u$, not $+u$. "Unbounded" needs <i>both</i> $u\le0$ and $\bar\mu_q\lt0$.</div>
+
+<h3 id="c5">2.5 Tableau: only the first four slides</h3>
+<p><b>In plain words:</b> the tableau is the same algebra laid out as a matrix; its last row shows the reduced costs and minus the current cost.</p>
+<ul>
+  <li>From $Bx'_B+Nx'_N=b$: $\;x'_B=\bar x_B-B^{-1}Nx'_N$.</li>
+  <li>Cost: $c^Tx'=c_B^T\bar x_B+(c_N^T-c_B^TB^{-1}N)x'_N=z_0+r_N^Tx'_N$, with $z_0=c_B^TB^{-1}b$, $r_N=\bar\mu_N$.</li>
+  <li>Initial tableau $\begin{bmatrix}B&N&b\\c_B^T&c_N^T&0\end{bmatrix}$ → after row operations $\begin{bmatrix}I&B^{-1}N&B^{-1}b\\0&r_N^T&-z_0\end{bmatrix}$.</li>
+  <li>So: right column = $\bar x_B$; column of $x_q$ in $B^{-1}N$ = $u$; last row = reduced costs, and the bottom-right corner = $-z_0$ (minus the current cost).</li>
+</ul>
+<div class="box example"><span class="tag">Worked example</span>
+  For 2.2 with basis $\{x_1,x_2\}$ ($B=I$ already): rows $[1\ 0\ 1\,|\,1]$, $[0\ 1\ 1\,|\,1]$, last row $[0\ 0\ {-1}\,|\,0]$. Read off: $\bar x_B=(1,1)$, $u$ for $x_3$ $=(1,1)$, $r_3=-1$, $-z_0=0$ so cost $z_0=0$ ✓.
+</div>
+
+<h3 id="c6">2.6 Equality-constrained QP</h3>
+<p><b>In plain words:</b> on the plane $Ax=b$ you can only move in directions $d$ with $Ad=0$. Only the curvature of $f$ <i>along those directions</i> matters. If $f$ curves up along every allowed direction, there is exactly one minimiser, even if $f$ curves down in some forbidden direction.</p>
+<p><b>Precisely</b> ($Q=Q^T$, rank $A=m\lt n$, $Z$ = basis of $\ker A$, $H_r=Z^TQZ$, $g_r=Z^T(Qx_p-c)$, $Ax_p=b$):</p>
+<ul>
+  <li><b>KKT system:</b> $Qx-c+A^T\lambda=0$, $Ax=b$ ⇔ $K\binom{x}{\lambda}=\binom{c}{b}$. Multiplier unique at a given point ($A^T$ injective). KKT alone does not certify a minimum.</li>
+  <li><b>Theorem 9.1.1:</b> unique global minimiser $\iff H_r\succ0$. <b>Prop 9.1.2:</b> $H_r\succ0\iff d^TQd\gt0\ \forall\,0\ne d\in\ker A$; $K$ nonsingular $\iff H_r$ nonsingular. Both are independent of the choice of $Z$ ($\tilde Z=ZR$ ⇒ $\tilde H_r=R^TH_rR$).</li>
+  <li><b>So:</b> $H_r\succ0\Rightarrow K$ nonsingular, but <b>not</b> conversely: $K$ nonsingular with $H_r$ indefinite/negative gives a unique KKT point that is <i>not</i> a minimiser (P3(d)).</li>
+</ul>
+<p><b>Deriving $\phi(z)$</b> (P1(b); he called it "not difficult and also important"): put $x=x_p+Zz$ in $f$ and expand using $Q=Q^T$:</p>
+$$f(x_p+Zz)=\tfrac12x_p^TQx_p+z^TZ^TQx_p+\tfrac12z^TZ^TQZz-c^Tx_p-c^TZz+\gamma$$
+$$=f(x_p)+z^T\underbrace{Z^T(Qx_p-c)}_{g_r}+\tfrac12z^T\underbrace{Z^TQZ}_{H_r}z=:\phi(z).$$
+<p>Stationarity $\nabla\phi=H_rz+g_r=0$. If $H_r\succ0$: $z^*=-H_r^{-1}g_r$, $x^*=x_p+Zz^*$, and the exact identity $\phi(z)-\phi(z^*)=\tfrac12(z-z^*)^TH_r(z-z^*)\gt0$ for $z\ne z^*$ gives <b>global</b> uniqueness (P2(b)).</p>
+<p><b>Range-space / Schur</b> (P4, $Q$ nonsingular): from stationarity $x=Q^{-1}(c-A^T\lambda)$; put in $Ax=b$: $AQ^{-1}c-AQ^{-1}A^T\lambda=b$ ⇒ $S\lambda=AQ^{-1}c-b$, $S=AQ^{-1}A^T$. $K$ nonsingular $\iff S$ nonsingular. If $Q\succ0$: $\nu^TS\nu=(A^T\nu)^TQ^{-1}(A^T\nu)\gt0$ for $\nu\ne0$ (full row rank gives $A^T\nu\ne0$) ⇒ $S\succ0$. $Q$ nonsingular alone is not enough ($Q=\mathrm{diag}(1,-1)$, $A=[1\ 1]$ ⇒ $S=0$).</p>
+<div class="box example"><span class="tag">Worked example: three methods, one answer</span>
+  $\min\ x_1^2+x_2^2+x_3^2$ s.t. $x_1+x_2+x_3=3$. So $Q=2I$, $c=0$, $A=[1\ 1\ 1]$, $b=3$.
+  <ol class="steps">
+    <li><b>KKT matrix:</b> $2x_i+\lambda=0$ for each $i$, $\sum x_i=3$ ⇒ $x_i=-\lambda/2$, $-3\lambda/2=3$ ⇒ $\lambda=-2$, $x=(1,1,1)$.</li>
+    <li><b>Null-space:</b> $x_p=(3,0,0)$, $Z=\begin{bmatrix}-1&-1\\1&0\\0&1\end{bmatrix}$ ($AZ=0$). $H_r=2Z^TZ=\begin{bmatrix}4&2\\2&4\end{bmatrix}\succ0$, $g_r=Z^T(6,0,0)^T=(-6,-6)$. $H_rz=(6,6)$ ⇒ $z^*=(1,1)$, $x^*=(3,0,0)+(-2,1,1)=(1,1,1)$ ✓.</li>
+    <li><b>Schur:</b> $S=A(\tfrac12I)A^T=\tfrac32$, $S\lambda=0-3$ ⇒ $\lambda=-2$, $x=\tfrac12(0-A^T\lambda)=(1,1,1)$ ✓.</li>
+  </ol>
+</div>
+<div class="box trap"><span class="tag">Trap</span> "Q is indefinite, so no minimum" is wrong: test $Q$ only on $\ker A$. And "K is nonsingular, so the KKT point is the minimiser" is wrong: nonsingular $K$ only gives a <i>unique KKT point</i>.</div>
+
+<h3 id="c7">2.7 Projector, projected gradient, projected CG</h3>
+<p><b>In plain words:</b> $P$ removes the part of a vector that would break $Ax=b$. The negative projected gradient is the steepest feasible downhill direction; it is zero exactly at a KKT point.</p>
+<ul>
+  <li>$P=Z(Z^TZ)^{-1}Z^T=I-A^T(AA^T)^{-1}A$: symmetric, $P^2=P$, range $P=\ker A$ (P5(a)–(b)). To apply it without $Z$: solve $(AA^T)u=Av$, then $Pv=v-A^Tu$.</li>
+  <li>$r=P(c-Qx)=-P\nabla f(x)$: $x+\alpha r$ stays feasible for all $\alpha$, and $\nabla f^Tr=-\nabla f^TP^TP\nabla f=-\|r\|^2\lt0$ if $r\ne0$ ⇒ <b>descent direction</b>, FONC fails.</li>
+  <li>$r=0\iff$ KKT stationarity $\iff$ FONC; with $H_r\succ0$ it certifies the unique minimiser.</li>
+  <li><b>Projected CG</b> (relation only): with $Z^TZ=I$ it is ordinary CG on $H_rz=Z^T(c-Qx_p)$, so it ends in at most $n-m$ steps (CG on an $(n-m)$-dimensional problem).</li>
+</ul>
+<div class="box example"><span class="tag">Worked example</span>
+  $A=[1\ 1]$, $\nabla f(x)=(3,1)$. $AA^T=2$, $P=I-\tfrac12\begin{bmatrix}1&1\\1&1\end{bmatrix}=\begin{bmatrix}\tfrac12&-\tfrac12\\-\tfrac12&\tfrac12\end{bmatrix}$. $r=-P\nabla f=(-1,1)$: $Ar=0$ ✓, $\nabla f^Tr=-3+1=-2=-\|r\|^2$ ✓.
+</div>
+
+<h3 id="c8">2.8 Inequality QP: one active-set step</h3>
+<p><b>In plain words:</b> pretend the constraints in your working set are equalities and find the best <i>shift</i> $p$. If the shift is nonzero, walk towards $x_k+p_k$, but stop early if some other constraint gets in the way. If the shift is zero, you are optimal for the equality version; now check the multipliers' signs. A negative one means that constraint is "holding you back the wrong way", so let it go.</p>
+<p><b>Precisely</b> (problem $\min\tfrac12x^TQx-c^Tx$ s.t. $a_i^Tx\le b_i$; $W_k\subseteq\mathcal A(x_k)$ with independent normals; $g_k=Qx_k-c$):</p>
+<ol class="steps">
+  <li><b>Subproblem written via the gradient</b> (he stressed this form): $f(x_k+p)=f(x_k)+g_k^Tp+\tfrac12p^TQp$, so minimising $f(x_k+p)$ is minimising $q_k(p)=g_k^Tp+\tfrac12p^TQp$ over $S(W_k)=\{p:a_i^Tp=0,\ i\in W_k\}$. ($p_k$ solves this $\iff x_k+p_k$ solves the equality problem $P_k$.)</li>
+  <li><b>Descent:</b> if $p_k\ne0$ (and $Q$ PD on $S(W_k)$): since $\alpha p_k\in S(W_k)$, $\frac{d}{d\alpha}q_k(\alpha p_k)|_{\alpha=1}=g_k^Tp_k+p_k^TQp_k=0$ ⇒ $g_k^Tp_k=-p_k^TQp_k\lt0$. Then $f(x_k+\alpha p_k)-f(x_k)=\alpha g_k^Tp_k+\tfrac{\alpha^2}2p_k^TQp_k=-\alpha(1-\tfrac\alpha2)p_k^TQp_k$: every $0\lt\alpha\lt2$ decreases $f$; $\alpha=1$ is the best.</li>
+  <li><b>Feasibility:</b> working constraints stay equalities ($a_i^Tp_k=0$). Constraint $i\notin W_k$ is only threatened if $a_i^Tp_k\gt0$; it allows $\alpha\le(b_i-a_i^Tx_k)/a_i^Tp_k$. Hence $\alpha_k=\min_{i\notin W_k,\,a_i^Tp_k\gt0}\frac{b_i-a_i^Tx_k}{a_i^Tp_k}$ ($+\infty$ if none).</li>
+  <li><b>Step $\min\{1,\alpha_k\}$:</b> $\alpha_k\gt1$: nothing blocks, full step $x_{k+1}=x_k+p_k$, $W$ unchanged. $\alpha_k\le1$: step $\alpha_k$, add one blocker $l_k$ to $W$ (even if several tie). $\alpha_k=0$: an omitted active constraint blocks, $x$ stays, $W$ grows.</li>
+  <li><b>$p_k=0$:</b> $x_k$ is the unique minimiser on the working set; solve $g_k+\sum_{i\in W_k}\lambda_ia_i=0$. All $\lambda_i\ge0$ ⇒ (with $Q\succeq0$) $x_k$ is a <b>global minimiser</b> (Thm 9.2.4; extend $\lambda$ by 0 off $W_k$ to get full KKT). Some $\lambda_j\lt0$ ⇒ drop $j$ (most negative); the new direction has $a_j^Tp\lt0$ (moves strictly inside constraint $j$) and $g^Tp\lt0$ (P10).</li>
+</ol>
+<div class="box example"><span class="tag">Worked example (both step cases)</span>
+  $\min\tfrac12\|x-(2,2)\|^2$, i.e. $Q=I$, $c=(2,2)$; constraints (1) $x_1\le1$, (2) $x_2\le3$. Start $x_0=(0,0)$, $W_0=\varnothing$ (nothing active).
+  <ol class="steps">
+    <li>$g_0=x_0-c=(-2,-2)$. No constraints in $W_0$ ⇒ $p_0=-g_0=(2,2)$. Check $g_0^Tp_0=-8=-p_0^Tp_0$ ✓.</li>
+    <li>Ratios: (1) $a_1^Tp_0=2\gt0$, slack $1$ ⇒ $0.5$; (2) $a_2^Tp_0=2$, slack $3$ ⇒ $1.5$. $\alpha_0=0.5\lt1$ ⇒ step $0.5$: $x_1=(1,1)$, add (1): $W_1=\{1\}$.</li>
+    <li>$g_1=(-1,-1)$; $a_1^Tp=0$ ⇒ $p=(0,p_2)$, minimise $-p_2+\tfrac12p_2^2$ ⇒ $p_1=(0,1)$.</li>
+    <li>Ratio: (2) $a_2^Tp_1=1$, slack $3-1=2$ ⇒ $\alpha_1=2\gt1$ ⇒ <b>full step</b> (not 2!): $x_2=(1,2)$, $W_2=\{1\}$.</li>
+    <li>Now $p_2=0$. $g_2=(-1,0)$; $g_2+\lambda_1(1,0)=0$ ⇒ $\lambda_1=1\ge0$ ⇒ optimal: $x^*=(1,2)$ (the projection of $(2,2)$ onto $x_1\le1$ ✓).</li>
+  </ol>
+</div>
+<div class="box trap"><span class="tag">Trap</span> If $\alpha_k\gt1$ you take step <b>1</b>, not $\alpha_k$: $\alpha_k$ only says the constraints don't block; going further moves away from the subproblem minimiser. Ratio test is over $i\notin W_k$ with $a_i^Tp_k\gt0$ only. A zero direction is not "done" until the multiplier signs are checked.</div>
+</section>
+
+<!-- ============ 3. WHAT HE SAID ============ -->
+<section id="prof">
+<h2>3. What the professor said about this</h2>
+<div class="box prof"><span class="tag">In class (speech-to-text, wording rough)</span>
+  <ul>
+    <li><q>I'm not going to ask entire simplex algorithm, but concepts involved in each step</q> <span class="ts">Ch 8 lec 2 [1:07:00]</span> → expect "what does this step mean / why" questions, like Quiz 5.</li>
+    <li><q>I will ask numerical problem in other chapter, but not here</q> <span class="ts">Ch 8 lec 3 [55:00]</span> → no full simplex runs; at most a one-step formula check.</li>
+    <li><q>the theorem, fundamental theorem of linear programming, and also equivalence between extreme points and the basic feasible solution</q> <span class="ts">Ch 8 lec 3 [55:30]</span> → know statements and proof steps (P11–12, §2.2).</li>
+    <li><q>if you understand these first four slides, it is enough</q> <span class="ts">Ch 8 lec 3 [54:30]</span> → tableau: only §2.5.</li>
+    <li>On the LP KKT system: <q>It's worth memorizing</q> … <q>this is the only thing you have to memorize</q> (stationarity) <span class="ts">Ch 8 lec 2 [13:30]</span> → write $A^T\lambda+\mu=c$ instantly.</li>
+    <li><q>Focus on the concepts involved in the steps of simplex method</q> … <q>what is the meaning of a negative</q> [reduced cost] <span class="ts">Ch 8 lec 3 [16:00]</span>.</li>
+    <li><q>chapter six set one is essentially these proofs they are important</q> <span class="ts">Ch 9 lec 1 [02:00]</span> → Part B of the practice below.</li>
+    <li>On deriving $\phi(z)$: <q>it is not difficult and also important</q> <span class="ts">Ch 9 lec 1 [18:30]</span>.</li>
+    <li>On $q_k(p)$: <q>Writing this in terms of the gradient is important to understand the algorithm</q> <span class="ts">Ch 9 lec 1 [1:18:30]</span>.</li>
+    <li>On the step rule (move by $\alpha_k$ only when it is less than one): <q>That is a very important point you have to remember</q> <span class="ts">Ch 9 lec 2 [27:00]</span>.</li>
+    <li><q>it resembles with the simplex method</q> (dropping the negative multiplier) <span class="ts">Ch 9 lec 2 [34:00]</span>; finite termination: <q>it's not part of the syllabus</q>; <q>never going to ask you the full algorithm</q> <span class="ts">Ch 9 lec 2 [35:30]</span>.</li>
+  </ul>
+</div>
+<p class="small">Ch 9 has never been examined; Ch 8 only had Quiz 5 (all 14 questions were signalled in class). Source: the exam-pattern analysis of all past papers and the lecture transcripts.</p>
+</section>
+
+<!-- ============ 4. PRACTICE ============ -->
+<section id="practice">
+<h2>4. Practice (try first, then open the answer)</h2>
+<div class="toolbar" data-auto></div>
+
+<h3 id="pq5">A. Quiz 5 (Ch 8), all 14 questions</h3>
+<p class="small">Quiz conventions: standard form $\min c^Tx$, $Ax=b$, $x\ge0$, rank $A=m$; Lagrangian $c^Tx+\lambda^T(b-Ax)-\mu^Tx$; the basis construction sets $\bar x_N=0$, $\bar\mu_B=0$ and solves KKT stationarity for $\bar\lambda,\bar\mu_N$; $u$ = coefficients of $a_q$ in the ordered basis ($Bu=a_q$). Stems are shortened; options are as in the paper.</p>
+
+<div class="q mcq" data-answer="d">
+  <div class="qh">Q1 <span class="src">Quiz 5 Q1 (past paper)</span><span class="lvl">MCQ</span></div>
+  <p>Which statement gives the general definition of a basic solution for the equality constraints of the standard-form problem?</p>
+  <ol class="opts">
+    <li data-k="a"><b class="k">(a)</b> Any vector satisfying $Ax=b$ is a basic solution.</li>
+    <li data-k="b"><b class="k">(b)</b> Any feasible vector with at most $m$ positive components is a basic solution.</li>
+    <li data-k="c"><b class="k">(c)</b> Choose $m$ independent columns and require every associated basic variable to be strictly positive.</li>
+    <li data-k="d"><b class="k">(d)</b> Choose a nonsingular $m$-column submatrix $B$, set all other variables to zero, and solve $Bx_B=b$.</li>
+  </ol>
+  <details class="ans"><summary>Show answer</summary><div>
+    <p><b>Answer: (d).</b> That is Def 8.2.1.1; $x_B=B^{-1}b$ is unique. (a) most solutions of $Ax=b$ have many nonzeros. (b) "at most $m$ positive" is not enough: those columns must also be independent (and "feasible" is not part of "basic"). (c) basic variables may be zero (degenerate) or even negative (basic but infeasible).</p>
+  </div></details>
+</div>
+
+<div class="q mcq" data-answer="a">
+  <div class="qh">Q2 <span class="src">Quiz 5 Q2 (past paper)</span><span class="lvl">MCQ</span></div>
+  <p>$\bar x\in K$, $S$ = indices of its strictly positive components. Which condition is necessary and sufficient for $\bar x$ to be a BFS?</p>
+  <ol class="opts">
+    <li data-k="a"><b class="k">(a)</b> The columns of $A$ indexed by $S$ are linearly independent.</li>
+    <li data-k="b"><b class="k">(b)</b> $|S|\le m$, with no further condition on their columns.</li>
+    <li data-k="c"><b class="k">(c)</b> The columns indexed by $S$ span $\mathbb R^m$, with no independence requirement.</li>
+    <li data-k="d"><b class="k">(d)</b> Exactly $m$ positive components, with no further condition on their columns.</li>
+  </ol>
+  <details class="ans"><summary>Show answer</summary><div>
+    <p><b>Answer: (a).</b> Basic ⇒ positive coordinates are basic ⇒ their columns are part of an independent basis. Conversely extend independent support columns to $m$ independent columns (full row rank), giving the added basics value 0. (b),(d) counting is not enough: e.g. two equal columns. (d) also wrongly excludes degenerate BFSs. (c) spanning allows dependence (too many columns).</p>
+  </div></details>
+</div>
+
+<div class="q mcq" data-answer="c">
+  <div class="qh">Q3 <span class="src">Quiz 5 Q3 (past paper)</span><span class="lvl">MCQ</span></div>
+  <p>Which statement correctly relates basic feasible solutions and extreme points of $K$?</p>
+  <ol class="opts">
+    <li data-k="a"><b class="k">(a)</b> Every feasible point is an extreme point.</li>
+    <li data-k="b"><b class="k">(b)</b> Every extreme point is a nondegenerate basic feasible solution.</li>
+    <li data-k="c"><b class="k">(c)</b> A point of $K$ is extreme if and only if it is a basic feasible solution.</li>
+    <li data-k="d"><b class="k">(d)</b> If $K$ is unbounded, it has no extreme points.</li>
+  </ol>
+  <details class="ans"><summary>Show answer</summary><div>
+    <p><b>Answer: (c)</b> (Theorem 8.2.2; proof steps in §2.2). (a) midpoints of two corners are feasible but not extreme. (b) degenerate BFSs are also extreme points (e.g. $(0,0,1)$ in §2.2). (d) unbounded $K$ like $\{x\ge0: x_1-x_2=0\}$ still has the corner $0$; any nonempty standard-form $K$ has a BFS.</p>
+  </div></details>
+</div>
+
+<div class="q mcq" data-answer="a">
+  <div class="qh">Q4 <span class="src">Quiz 5 Q4 (past paper)</span><span class="lvl">MCQ</span></div>
+  <p>Feasible set nonempty and an optimal solution exists. Which conclusion is guaranteed?</p>
+  <ol class="opts">
+    <li data-k="a"><b class="k">(a)</b> At least one optimal solution is a basic feasible solution.</li>
+    <li data-k="b"><b class="k">(b)</b> Every optimal solution is a basic feasible solution.</li>
+    <li data-k="c"><b class="k">(c)</b> The feasible set is bounded.</li>
+    <li data-k="d"><b class="k">(d)</b> Every basic feasible solution is optimal.</li>
+  </ol>
+  <details class="ans"><summary>Show answer</summary><div>
+    <p><b>Answer: (a)</b> (fundamental theorem, P12): dependent support ⇒ null direction $d$ with $c^Td=0$ (FONC in $\pm d$) ⇒ slide to the boundary keeping the cost ⇒ fewer positives ⇒ eventually an optimal BFS. (b) if two corners are optimal, their midpoint is optimal but not a BFS. (c) unbounded feasible sets can have optima (e.g. $\min x_1$, $x\ge0$). (d) obviously false: corners differ in cost.</p>
+  </div></details>
+</div>
+
+<div class="q mcq" data-answer="d">
+  <div class="qh">Q5 <span class="src">Quiz 5 Q5 (past paper)</span><span class="lvl">MCQ</span></div>
+  <p>For the selected basis, which statement correctly describes $\bar x$ and its primal feasibility for every such basis?</p>
+  <ol class="opts">
+    <li data-k="a"><b class="k">(a)</b> $\bar x_B=B^{-1}b$, and nonsingularity of $B$ automatically gives $\bar x\ge0$.</li>
+    <li data-k="b"><b class="k">(b)</b> $\bar x_B=B^{-T}b$, and the candidate is feasible exactly when $B^{-T}b\ge0$.</li>
+    <li data-k="c"><b class="k">(c)</b> $\bar x_B=B^{-1}b$, and the candidate is feasible exactly when $\bar\mu_N\ge0$.</li>
+    <li data-k="d"><b class="k">(d)</b> $\bar x_B=B^{-1}b$, and the candidate is feasible exactly when $B^{-1}b\ge0$.</li>
+  </ol>
+  <details class="ans"><summary>Show answer</summary><div>
+    <p><b>Answer: (d).</b> $\bar x_N=0$ turns $Ax=b$ into $B\bar x_B=b$. (a) nonsingular says nothing about signs (e.g. $B=1$, $b=-1$). (b) the transpose belongs to $\bar\lambda$, not $\bar x_B$. (c) $\bar\mu_N\ge0$ is <i>dual</i> feasibility (optimality), not primal feasibility.</p>
+  </div></details>
+</div>
+
+<div class="q mcq" data-answer="b">
+  <div class="qh">Q6 <span class="src">Quiz 5 Q6 (past paper)</span><span class="lvl">MCQ</span></div>
+  <p>Using the stated equality-residual convention, which pair gives the equality multipliers and the nonbasic reduced costs?</p>
+  <ol class="opts">
+    <li data-k="a"><b class="k">(a)</b> $\bar\lambda=B^{-1}c_B,\ \bar\mu_N=c_N-N^T\bar\lambda$.</li>
+    <li data-k="b"><b class="k">(b)</b> $\bar\lambda=B^{-T}c_B,\ \bar\mu_N=c_N-N^T\bar\lambda$.</li>
+    <li data-k="c"><b class="k">(c)</b> $\bar\lambda=B^{-T}c_B,\ \bar\mu_N=N^T\bar\lambda-c_N$.</li>
+    <li data-k="d"><b class="k">(d)</b> $\bar\lambda=B^Tc_B,\ \bar\mu_N=c_N-N^T\bar\lambda$.</li>
+  </ol>
+  <details class="ans"><summary>Show answer</summary><div>
+    <p><b>Answer: (b).</b> Stationarity $c-A^T\bar\lambda-\bar\mu=0$; basic block with $\bar\mu_B=0$: $B^T\bar\lambda=c_B$; nonbasic block: $\bar\mu_N=c_N-N^T\bar\lambda$. (a) forgets the transpose. (c) wrong sign (that would be $-\bar\mu_N$). (d) $B^T$ instead of $B^{-T}$.</p>
+  </div></details>
+</div>
+
+<div class="q mcq" data-answer="c">
+  <div class="qh">Q7 <span class="src">Quiz 5 Q7 (past paper)</span><span class="lvl">MCQ</span></div>
+  <p>$\bar x$ a BFS with basis candidates $\bar\lambda,\bar\mu$ (dual feasibility not assumed); $x'$ any feasible point. Which objective-gap identity always holds?</p>
+  <ol class="opts">
+    <li data-k="a"><b class="k">(a)</b> $c^Tx'-c^T\bar x=b^T\bar\lambda$.</li>
+    <li data-k="b"><b class="k">(b)</b> $c^Tx'-c^T\bar x=\bar\mu_N^T\bar x_N$.</li>
+    <li data-k="c"><b class="k">(c)</b> $c^Tx'-c^T\bar x=\bar\mu_N^Tx'_N$.</li>
+    <li data-k="d"><b class="k">(d)</b> $c^Tx'-c^T\bar x=-\bar\mu_N^Tx'_N$.</li>
+  </ol>
+  <details class="ans"><summary>Show answer</summary><div>
+    <p><b>Answer: (c).</b> $c^T(x'-\bar x)=\bar\lambda^TA(x'-\bar x)+\bar\mu^T(x'-\bar x)=0+\bar\mu^Tx'-0=\bar\mu_N^Tx'_N$. (a) $b^T\bar\lambda=c^T\bar x$ is the value, not the gap. (b) $\bar x_N=0$, so (b) would claim every feasible point has the same cost. (d) sign error.</p>
+  </div></details>
+</div>
+
+<div class="q mcq" data-answer="a">
+  <div class="qh">Q8 <span class="src">Quiz 5 Q8 (past paper)</span><span class="lvl">MCQ</span></div>
+  <p>Equalities, stationarity and complementarity hold for the basis candidates. Which sign test guarantees $\bar x$ is feasible and optimal?</p>
+  <ol class="opts">
+    <li data-k="a"><b class="k">(a)</b> $\bar x_B\ge0$ and $\bar\mu_N\ge0$.</li>
+    <li data-k="b"><b class="k">(b)</b> $\bar x_B\ge0$ and $\bar\mu_N\le0$.</li>
+    <li data-k="c"><b class="k">(c)</b> $\bar x_B\le0$ and $\bar\mu_N\ge0$.</li>
+    <li data-k="d"><b class="k">(d)</b> $\bar\mu_N\ge0$, with no condition on $\bar x_B$.</li>
+  </ol>
+  <details class="ans"><summary>Show answer</summary><div>
+    <p><b>Answer: (a).</b> $\bar x_B\ge0$ = primal feasible; $\bar\mu_N\ge0$ = dual feasible; then the gap identity gives $c^Tx'-c^T\bar x=\bar\mu_N^Tx'_N\ge0$. (b) negative reduced cost means a cheaper direction may exist. (c) $\bar x_B\le0$ is infeasible unless zero. (d) without $\bar x_B\ge0$ the point need not even be feasible.</p>
+  </div></details>
+</div>
+
+<div class="q mcq" data-answer="b">
+  <div class="qh">Q9 <span class="src">Quiz 5 Q9 (past paper)</span><span class="lvl">MCQ</span></div>
+  <p>Increase nonbasic $x_q$ at unit rate, other nonbasics fixed, equalities preserved. Which formula always gives the direction $d$?</p>
+  <ol class="opts">
+    <li data-k="a"><b class="k">(a)</b> $d_B=u,\ d_q=1,\ d_j=0$ for every other nonbasic $j$.</li>
+    <li data-k="b"><b class="k">(b)</b> $d_B=-u,\ d_q=1,\ d_j=0$ for every other nonbasic $j$.</li>
+    <li data-k="c"><b class="k">(c)</b> $d_B=-u,\ d_q=-1,\ d_j=0$ for every other nonbasic $j$.</li>
+    <li data-k="d"><b class="k">(d)</b> $d_B=0,\ d_q=1,\ d_j=0$ for every other nonbasic $j$.</li>
+  </ol>
+  <details class="ans"><summary>Show answer</summary><div>
+    <p><b>Answer: (b).</b> $Ad=Bd_B+a_q=0$ ⇒ $d_B=-B^{-1}a_q=-u$. (a) gives $Ad=2a_q\ne0$. (c) decreases $x_q$ below 0: infeasible. (d) $Ad=a_q\ne0$ breaks the equalities.</p>
+  </div></details>
+</div>
+
+<div class="q mcq" data-answer="d">
+  <div class="qh">Q10 <span class="src">Quiz 5 Q10 (past paper)</span><span class="lvl">MCQ</span></div>
+  <p>At least one $u_i\gt0$. $\theta$ = the largest feasible increase in $x_q$. Which formula always gives $\theta$?</p>
+  <ol class="opts">
+    <li data-k="a"><b class="k">(a)</b> $\theta=\min_{i:u_i\ne0}(\bar x_B)_i/u_i$.</li>
+    <li data-k="b"><b class="k">(b)</b> $\theta=\min_{i:u_i\lt0}(\bar x_B)_i/(-u_i)$.</li>
+    <li data-k="c"><b class="k">(c)</b> $\theta=\max_{i:u_i\gt0}(\bar x_B)_i/u_i$.</li>
+    <li data-k="d"><b class="k">(d)</b> $\theta=\min_{i:u_i\gt0}(\bar x_B)_i/u_i$.</li>
+  </ol>
+  <details class="ans"><summary>Show answer</summary><div>
+    <p><b>Answer: (d).</b> Basic values are $\bar x_B-tu$; only rows with $u_i\gt0$ decrease. (a) includes negative $u_i$, giving negative "ratios" that are no limit at all. (b) those rows increase, they never block. (c) max overshoots: the first row to hit zero would go negative. $\theta$ may be 0 at a degenerate BFS.</p>
+  </div></details>
+</div>
+
+<div class="q mcq" data-answer="d">
+  <div class="qh">Q11 <span class="src">Quiz 5 Q11 (past paper)</span><span class="lvl">MCQ</span></div>
+  <p>Which condition on $u$ and the entering reduced cost $\bar\mu_q$ certifies that the objective is unbounded along this path?</p>
+  <ol class="opts">
+    <li data-k="a"><b class="k">(a)</b> $u\le0$ and $\bar\mu_q=0$.</li>
+    <li data-k="b"><b class="k">(b)</b> Some $u_i\gt0$, and $\bar\mu_q\lt0$.</li>
+    <li data-k="c"><b class="k">(c)</b> $u\le0$ and $\bar\mu_q\gt0$.</li>
+    <li data-k="d"><b class="k">(d)</b> $u\le0$ and $\bar\mu_q\lt0$.</li>
+  </ol>
+  <details class="ans"><summary>Show answer</summary><div>
+    <p><b>Answer: (d).</b> $u\le0$ ⇒ the whole ray is feasible; cost $=c^T\bar x+t\bar\mu_q\to-\infty$ needs $\bar\mu_q\lt0$. (a) cost constant along the ray. (b) a positive $u_i$ gives a finite $\theta$. (c) cost increases along the ray.</p>
+  </div></details>
+</div>
+
+<div class="q mcq" data-answer="b">
+  <div class="qh">Q12 <span class="src">Quiz 5 Q12 (past paper)</span><span class="lvl">MCQ</span></div>
+  <p>$x'$ obtained from BFS $\bar x$ by a feasible increase $\theta\ge0$ of $x_q$ ($\bar\mu_q$ any sign). Which statement about the objective change always holds?</p>
+  <ol class="opts">
+    <li data-k="a"><b class="k">(a)</b> The change is $-\theta\bar\mu_q$, so a negative reduced cost increases the objective.</li>
+    <li data-k="b"><b class="k">(b)</b> The change is $\theta\bar\mu_q$, and it is strictly negative exactly when $\theta\gt0$ and $\bar\mu_q\lt0$.</li>
+    <li data-k="c"><b class="k">(c)</b> A negative $\bar\mu_q$ guarantees a strict objective decrease even when $\theta=0$.</li>
+    <li data-k="d"><b class="k">(d)</b> Every positive feasible step strictly decreases the objective, regardless of $\bar\mu_q$.</li>
+  </ol>
+  <details class="ans"><summary>Show answer</summary><div>
+    <p><b>Answer: (b).</b> $c^T(x'-\bar x)=\theta(c_q-c_B^Tu)=\theta\bar\mu_q$. (a) sign error. (c) $\theta=0$ gives change $0$ (degenerate pivot). (d) if $\bar\mu_q\gt0$ the cost goes up.</p>
+  </div></details>
+</div>
+
+<div class="q mcq" data-answer="c">
+  <div class="qh">Q13 <span class="src">Quiz 5 Q13 (past paper)</span><span class="lvl">MCQ</span></div>
+  <p>Which condition characterises degeneracy of a BFS $\bar x$ with basis $B$?</p>
+  <ol class="opts">
+    <li data-k="a"><b class="k">(a)</b> Every basic variable is strictly positive.</li>
+    <li data-k="b"><b class="k">(b)</b> The basis matrix $B$ is singular.</li>
+    <li data-k="c"><b class="k">(c)</b> At least one basic variable equals zero.</li>
+    <li data-k="d"><b class="k">(d)</b> At least one nonbasic variable equals zero.</li>
+  </ol>
+  <details class="ans"><summary>Show answer</summary><div>
+    <p><b>Answer: (c).</b> Equivalent: fewer than $m$ positive components. (a) is the definition of <i>non</i>degenerate. (b) a basis is always nonsingular by definition. (d) every nonbasic variable is zero in every basic solution; it says nothing.</p>
+  </div></details>
+</div>
+
+<div class="q mcq" data-answer="a">
+  <div class="qh">Q14 <span class="src">Quiz 5 Q14 (past paper)</span><span class="lvl">MCQ</span></div>
+  <p>$\bar x$ is a degenerate BFS and the reduced cost $\bar\mu_q$ of nonbasic $x_q$ is negative. Which statement is correct?</p>
+  <ol class="opts">
+    <li data-k="a"><b class="k">(a)</b> The current point can still be optimal, because the maximum feasible step for $x_q$ may be zero.</li>
+    <li data-k="b"><b class="k">(b)</b> The current point must be nonoptimal, regardless of the maximum feasible step.</li>
+    <li data-k="c"><b class="k">(c)</b> The original objective must be unbounded below.</li>
+    <li data-k="d"><b class="k">(d)</b> A sufficiently small positive increase in $x_q$ must be feasible.</li>
+  </ol>
+  <details class="ans"><summary>Show answer</summary><div>
+    <p><b>Answer: (a).</b> If some $(\bar x_B)_r=0$ with $u_r\gt0$, then $\theta=0$ (slide example: $\min x_1$, $x_1+x_2=0$, basis $\{x_1\}$, $\bar\mu_2=-1$, $\theta=0$, and $(0,0)$ is optimal). (b) only true at a nondegenerate BFS. (c) unboundedness needs $u\le0$. (d) false exactly in the $\theta=0$ case. (Note: a zero step does not prove optimality either.)</p>
+  </div></details>
+</div>
+
+<h3 id="pps">B. Chapter 6 Problem Set 1: guided proof steps (the Ch 9 propositions)</h3>
+
+<div class="q">
+  <div class="qh">P1 <span class="src">Ch 6 PS1 Problem 1(b),(d) → Ch 9 null-space method</span><span class="lvl">Short answer</span></div>
+  <p>$f(x)=\tfrac12x^TQx-c^Tx+\gamma$, $Q=Q^T$, $Ax_p=b$, columns of $Z$ a basis of $\ker A$. (a) Show $f(x_p+Zz)=f(x_p)+g_r^Tz+\tfrac12z^TH_rz$ with $H_r=Z^TQZ$, $g_r=Z^T(Qx_p-c)$. (b) Show $Z^T(Qx-c)=0$ holds iff some $\lambda$ satisfies $Qx-c+A^T\lambda=0$.</p>
+  <details class="hint"><summary>Hint</summary><p>(a) Expand $\tfrac12(x_p+Zz)^TQ(x_p+Zz)$; the two cross terms are equal by symmetry. (b) Use $\ker(A)^\perp=\mathrm{range}(A^T)$.</p></details>
+  <details class="ans"><summary>Show answer</summary><div>
+    <ol class="steps">
+      <li>$\tfrac12(x_p+Zz)^TQ(x_p+Zz)=\tfrac12x_p^TQx_p+z^TZ^TQx_p+\tfrac12z^TZ^TQZz$ (cross terms $\tfrac12x_p^TQZz+\tfrac12z^TZ^TQx_p$ are equal since $Q=Q^T$).</li>
+      <li>$-c^T(x_p+Zz)=-c^Tx_p-z^TZ^Tc$. Add $\gamma$ and group: $f(x_p)+z^TZ^T(Qx_p-c)+\tfrac12z^TZ^TQZz=f(x_p)+g_r^Tz+\tfrac12z^TH_rz$. Stationarity: $H_rz=-g_r$.</li>
+      <li>(b) $Z^T\nabla f(x)=0$ ⇔ $\nabla f(x)\perp\ker A$ ⇔ $\nabla f(x)\in\mathrm{range}(A^T)$ ⇔ $\nabla f(x)=-A^T\lambda$ for some $\lambda$. Conversely multiply $Qx-c+A^T\lambda=0$ by $Z^T$ and use $Z^TA^T=(AZ)^T=0$.</li>
+      <li>Multiplier unique: two of them give $A^T(\lambda_1-\lambda_2)=0$, and full row rank makes $A^T$ injective. But stationarity alone does not certify a minimum.</li>
+    </ol>
+  </div></details>
+</div>
+
+<div class="q">
+  <div class="qh">P2 <span class="src">Ch 6 PS1 Problem 2(b),(d),(e) → Theorem 9.1.1</span><span class="lvl">Short answer</span></div>
+  <p>Same setting. (a) If $H_r\succ0$, with $z^*=-H_r^{-1}g_r$ prove $f(x_p+Zz)-f(x_p+Zz^*)=\tfrac12(z-z^*)^TH_r(z-z^*)$ and conclude unique global minimum. (b) Why does $H_r\succeq0$ singular contradict uniqueness? (c) Give an example with $Q$ indefinite but $H_r\succ0$.</p>
+  <details class="hint"><summary>Hint</summary><p>(a) Complete the square in $\phi$, using $g_r=-H_rz^*$. (b) A null vector $v$ of $H_r$ gives a whole line $x^*+tZv$.</p></details>
+  <details class="ans"><summary>Show answer</summary><div>
+    <ol class="steps">
+      <li>(a) $\phi(z)=f(x_p)-z^{*T}H_rz+\tfrac12z^TH_rz$ and $\phi(z^*)=f(x_p)-\tfrac12z^{*T}H_rz^*$. Subtract: $\tfrac12z^TH_rz-z^{*T}H_rz+\tfrac12z^{*T}H_rz^*=\tfrac12(z-z^*)^TH_r(z-z^*)$.</li>
+      <li>This is $\gt0$ for every $z\ne z^*$, and $z\mapsto x_p+Zz$ is a bijection onto the feasible set ($Z$ full column rank) ⇒ $x^*$ is the <b>unique global</b> minimiser (an exact identity, stronger than SOSC's local claim).</li>
+      <li>(b) If $H_rv=0$, $v\ne0$, put $d=Zv\ne0$: $Ad=0$, $d^TQd=0$, and $\nabla f(x^*)^Td=0$ (FONC). So $f(x^*+td)=f(x^*)+t\cdot0+\tfrac{t^2}2\cdot0=f(x^*)$ for all $t$: a whole line of minimisers. (Negative curvature is ruled out by SONC: $C=\ker A$, $L_\star=Q$.)</li>
+      <li>(c) $Q=\mathrm{diag}(1,-1)$, $A=[0\ 1]$, $b=0$, $c=0$: $Z=(1,0)^T$, $H_r=[1]\succ0$; unique minimiser $(0,0)$. The negative eigenvalue lives in the direction $(0,1)$, which the constraint forbids.</li>
+    </ol>
+  </div></details>
+</div>
+
+<div class="q">
+  <div class="qh">P3 <span class="src">Ch 6 PS1 Problem 3(c)–(d) and 4(a),(c) → Prop 9.1.2 and Schur method</span><span class="lvl">Short answer</span></div>
+  <p>(a) Prove: $K$ nonsingular $\iff H_r$ nonsingular (look at $Ku=0$). (b) Give a 2-D example where $K$ is nonsingular but $H_r$ is not PD. (c) Derive $S\lambda=AQ^{-1}c-b$ and show $Q\succ0\Rightarrow S\succ0$.</p>
+  <details class="hint"><summary>Hint</summary><p>(a) $Qu+A^T\nu=0$, $Au=0$; write $u=Zv$ and multiply by $Z^T$. (b) Swap the signs in P2(c).</p></details>
+  <details class="ans"><summary>Show answer</summary><div>
+    <ol class="steps">
+      <li>(a, ⇐) $Au=0$ ⇒ $u=Zv$; $Z^T(QZv+A^T\nu)=H_rv=0$ ⇒ $v=0$ ⇒ $u=0$ ⇒ $A^T\nu=0$ ⇒ $\nu=0$. Trivial kernel.</li>
+      <li>(a, ⇒ by contrapositive) $H_rv=0$, $v\ne0$: $u=Zv\ne0$, $Au=0$, $Z^TQu=0$ ⇒ $Qu\in\ker(A)^\perp=\mathrm{range}(A^T)$ ⇒ pick $\nu$ with $A^T\nu=-Qu$. Then $(u,\nu)\ne0$ is in $\ker K$.</li>
+      <li>(b) $Q=\mathrm{diag}(-1,1)$, $A=[0\ 1]$: $H_r=[-1]$ (nonsingular, not PD), $K=\begin{bmatrix}-1&0&0\\0&1&1\\0&1&0\end{bmatrix}$, $\det K=1$. Unique KKT point $(0,0)$, but $f(t,0)=-t^2/2\to-\infty$: no minimiser.</li>
+      <li>(c) $x=Q^{-1}(c-A^T\lambda)$ into $Ax=b$: $AQ^{-1}c-AQ^{-1}A^T\lambda=b$. For $\nu\ne0$, full row rank gives $A^T\nu\ne0$, so $\nu^TS\nu=(A^T\nu)^TQ^{-1}(A^T\nu)\gt0$.</li>
+    </ol>
+  </div></details>
+</div>
+
+<div class="q">
+  <div class="qh">P4 <span class="src">Ch 6 PS1 Problem 7(a)–(c) → Prop 9.2.2</span><span class="lvl">Short answer</span></div>
+  <p>$r=\nabla f(\bar x)$, $S=\{p:a_i^Tp=0,\ i\in\mathcal A\}$, $q(p)=r^Tp+\tfrac12p^TQp$, $Q$ PD on $S$, $p^\star\ne0$ minimises $q$ on $S$. (a) Show $r^Tp^\star=-p^{\star T}Qp^\star\lt0$. (b) Why is $\bar x+\alpha p^\star$ feasible for small $\alpha\gt0$? (c) Show $f(\bar x+\alpha p^\star)-f(\bar x)=-\alpha(1-\tfrac\alpha2)p^{\star T}Qp^\star$.</p>
+  <details class="hint"><summary>Hint</summary><p>(a) $h(\alpha)=q(\alpha p^\star)$ is minimised over $\alpha$ at $\alpha=1$ because $\alpha p^\star\in S$.</p></details>
+  <details class="ans"><summary>Show answer</summary><div>
+    <ol class="steps">
+      <li>(a) $h(\alpha)=\alpha r^Tp^\star+\tfrac{\alpha^2}2p^{\star T}Qp^\star$; $h'(1)=r^Tp^\star+p^{\star T}Qp^\star=0$. Since $p^\star\in S\setminus\{0\}$ and $Q$ is PD on $S$, $p^{\star T}Qp^\star\gt0$, so $r^Tp^\star\lt0$: a descent direction.</li>
+      <li>(b) Active $i$: $a_i^T(\bar x+\alpha p^\star)=b_i+0$. Inactive $i$: $a_i^T\bar x\lt b_i$ strictly, so a small enough $\alpha$ keeps it $\le b_i$ (finitely many constraints).</li>
+      <li>(c) Exact expansion of a quadratic: $f(\bar x+\alpha p)-f(\bar x)=\alpha r^Tp+\tfrac{\alpha^2}2p^TQp=-\alpha p^TQp+\tfrac{\alpha^2}2p^TQp=-\alpha(1-\tfrac\alpha2)p^TQp$, negative for $0\lt\alpha\lt2$, most negative at $\alpha=1$.</li>
+      <li>So the fundamental FONC fails at $\bar x$ ($p^\star$ is a feasible direction with $\nabla f^Tp^\star\lt0$): (b) is about feasibility, (a),(c) about the objective.</li>
+    </ol>
+  </div></details>
+</div>
+
+<div class="q">
+  <div class="qh">P5 <span class="src">Ch 6 PS1 Problem 12(a)–(b) → fundamental theorem of LP</span><span class="lvl">Short answer</span></div>
+  <p>$x^\star$ is a global minimiser of the standard-form LP whose positive-support columns are dependent; $Ad=0$, $d\ne0$, $d_i=0$ where $x^\star_i=0$. (a) Prove $c^Td=0$. (b) Why is the cost constant on the feasible part of $x^\star+td$, and why would a zero directional derivative not suffice for a general objective?</p>
+  <details class="ans"><summary>Show answer</summary><div>
+    <ol class="steps">
+      <li>(a) $A(x^\star\pm\varepsilon d)=b$, and for small $\varepsilon$ both stay $\ge0$ (only positive components move). So $d$ and $-d$ are feasible directions; FONC: $c^Td\ge0$ and $c^T(-d)\ge0$ ⇒ $c^Td=0$.</li>
+      <li>(b) $c^T(x^\star+td)=c^Tx^\star+t\,c^Td=c^Tx^\star$ exactly, because the cost is linear. For a nonlinear $f$, $\nabla f^Td=0$ only kills the first-order term; curvature could still change $f$.</li>
+      <li>Then pick the sign so some $d_i\gt0$ and move to $x^\star-\varepsilon^*d$, $\varepsilon^*=\min_{d_i\gt0}x^\star_i/d_i$: still optimal, one fewer positive component; repeat finitely often ⇒ optimal BFS.</li>
+    </ol>
+  </div></details>
+</div>
+
+<h3 id="pnew">C. New questions in his style</h3>
+
+<div class="q mcq" data-answer="c">
+  <div class="qh">N1 <span class="src">New, in his style</span><span class="lvl">MCQ</span></div>
+  <p>At a <b>nondegenerate</b> BFS, the nonbasic reduced costs are $\bar\mu_N=(2,\,0,\,-3)$ for $x_4,x_5,x_6$. Which statement is correct?</p>
+  <ol class="opts">
+    <li data-k="a"><b class="k">(a)</b> The BFS is optimal because most reduced costs are nonnegative.</li>
+    <li data-k="b"><b class="k">(b)</b> Increasing $x_4$ by a small $t\gt0$ lowers the cost by $2t$.</li>
+    <li data-k="c"><b class="k">(c)</b> Increasing $x_6$ by a small $t\gt0$ (basics adjusting) is feasible and lowers the cost by $3t$.</li>
+    <li data-k="d"><b class="k">(d)</b> The LP is unbounded below because a reduced cost is negative.</li>
+  </ol>
+  <details class="ans"><summary>Show answer</summary><div>
+    <p><b>Answer: (c).</b> Cost change $=t\bar\mu_6=-3t$; nondegenerate ⇒ $\theta\gt0$, so small $t$ is feasible. (a) one negative reduced cost is enough to fail the test (at a nondegenerate BFS it proves non-optimality). (b) $\bar\mu_4=2$ <i>raises</i> the cost. (d) unbounded needs also $u=B^{-1}a_6\le0$. (Side note: $\bar\mu_5=0$ means increasing $x_5$ leaves the cost unchanged: possible alternative optimum later.)</p>
+  </div></details>
+</div>
+
+<div class="q mcq" data-answer="b">
+  <div class="qh">N2 <span class="src">New, in his style</span><span class="lvl">MCQ</span></div>
+  <p>Ordered basis $(x_5,x_2,x_3)$ with $\bar x_B=(4,3,6)$. Entering $x_q$ has $\bar\mu_q=-1.5$ and $u=B^{-1}a_q=(2,-1,3)$. Using Bland's rule, which is correct?</p>
+  <ol class="opts">
+    <li data-k="a"><b class="k">(a)</b> $\theta=3$, $x_2$ leaves, cost changes by $-4.5$.</li>
+    <li data-k="b"><b class="k">(b)</b> $\theta=2$, $x_3$ leaves, cost changes by $-3$, and the new BFS is degenerate.</li>
+    <li data-k="c"><b class="k">(c)</b> $\theta=2$, $x_5$ leaves, cost changes by $-3$, and the new BFS is nondegenerate.</li>
+    <li data-k="d"><b class="k">(d)</b> The LP is unbounded because $u$ has a negative entry.</li>
+  </ol>
+  <details class="ans"><summary>Show answer</summary><div>
+    <p><b>Answer: (b).</b> Only $u_i\gt0$ count: $4/2=2$ ($x_5$) and $6/3=2$ ($x_3$); the $x_2$ row ($u=-1$) grows. Tie ⇒ Bland: smallest <i>original index</i> leaves ⇒ $x_3$ (not the first row!). Cost change $\theta\bar\mu_q=2(-1.5)=-3$. New basics: $\bar x_B-2u=(0,5,0)$; $x_3$ leaves, $x_5$ stays basic at 0 ⇒ degenerate. (a) uses the $u_i\lt0$ row. (c) wrong leaving variable and wrong degeneracy claim. (d) unbounded needs $u\le0$ entirely.</p>
+  </div></details>
+</div>
+
+<div class="q mcq" data-answer="d">
+  <div class="qh">N3 <span class="src">New, in his style</span><span class="lvl">MCQ</span></div>
+  <p>At a BFS, nonbasic $x_q$ has $u=B^{-1}a_q=(-1,0,-2)$. What can you conclude?</p>
+  <ol class="opts">
+    <li data-k="a"><b class="k">(a)</b> The LP is unbounded below, whatever $\bar\mu_q$ is.</li>
+    <li data-k="b"><b class="k">(b)</b> $\theta=0$, so the pivot is degenerate.</li>
+    <li data-k="c"><b class="k">(c)</b> If $\bar\mu_q\gt0$, the LP is unbounded above, so it has no minimum.</li>
+    <li data-k="d"><b class="k">(d)</b> The ray $\bar x+td$, $t\ge0$, is entirely feasible; if $\bar\mu_q\lt0$ the LP is unbounded below.</li>
+  </ol>
+  <details class="ans"><summary>Show answer</summary><div>
+    <p><b>Answer: (d).</b> $x_B(t)=\bar x_B-tu=\bar x_B+t(1,0,2)\ge0$ for all $t\ge0$; cost $c^T\bar x+t\bar\mu_q$. (a) needs $\bar\mu_q\lt0$. (b) no row has $u_i\gt0$, so there is no ratio test at all ($\theta=+\infty$). (c) going up in cost says nothing about the minimum.</p>
+  </div></details>
+</div>
+
+<div class="q mcq" data-answer="a">
+  <div class="qh">N4 <span class="src">New, in his style</span><span class="lvl">MCQ</span></div>
+  <p>Ordered basis $(x_1,x_4)$, $\bar x_B=(0,5)$, entering $x_3$ with $\bar\mu_3=-2$ and $u=(1,2)$. After the pivot:</p>
+  <ol class="opts">
+    <li data-k="a"><b class="k">(a)</b> $x_1$ leaves, $x_3$ enters at value 0; the point and cost are unchanged but the basis changes, and the new $B$ is nonsingular.</li>
+    <li data-k="b"><b class="k">(b)</b> $x_4$ leaves with $\theta=2.5$; cost drops by 5.</li>
+    <li data-k="c"><b class="k">(c)</b> The pivot is impossible because the new basis would be singular.</li>
+    <li data-k="d"><b class="k">(d)</b> The current point is proved optimal since $\theta=0$.</li>
+  </ol>
+  <details class="ans"><summary>Show answer</summary><div>
+    <p><b>Answer: (a).</b> Ratios $0/1=0$, $5/2=2.5$ ⇒ $\theta=0$, row of $x_1$. Degenerate pivot: cost change $\theta\bar\mu_3=0$. $\det B'=u_1\det B=1\cdot\det B\ne0$. (b) ignores the smaller ratio. (c) $u_p\gt0$ guarantees nonsingularity. (d) a zero step does not prove optimality; the next basis may allow a positive step (this is where cycling/Bland matter).</p>
+  </div></details>
+</div>
+
+<div class="q mcq" data-answer="c">
+  <div class="qh">N5 <span class="src">New, in his style</span><span class="lvl">MCQ</span></div>
+  <p>Convert $\min\ x_1-2x_2$ s.t. $x_1+x_2\le4$, $2x_1-x_2\ge1$, $x_1\ge0$, $x_2$ free, with variables ordered $(x_1,x_2^+,x_2^-,s_1,s_2)$. Which $(A,c)$ is the standard form?</p>
+  <ol class="opts">
+    <li data-k="a"><b class="k">(a)</b> $A=\begin{bmatrix}1&1&-1&1&0\\2&-1&1&0&1\end{bmatrix}$, $c=(1,-2,2,0,0)$</li>
+    <li data-k="b"><b class="k">(b)</b> $A=\begin{bmatrix}1&1&-1&1&0\\2&-1&1&0&-1\end{bmatrix}$, $c=(1,-2,-2,0,0)$</li>
+    <li data-k="c"><b class="k">(c)</b> $A=\begin{bmatrix}1&1&-1&1&0\\2&-1&1&0&-1\end{bmatrix}$, $c=(1,-2,2,0,0)$</li>
+    <li data-k="d"><b class="k">(d)</b> $A=\begin{bmatrix}1&1&1&1&0\\2&-1&-1&0&-1\end{bmatrix}$, $c=(1,-2,2,0,0)$</li>
+  </ol>
+  <details class="ans"><summary>Show answer</summary><div>
+    <p><b>Answer: (c).</b> $x_2=x_2^+-x_2^-$: column of $x_2^-$ = minus column of $x_2^+$, cost $-(-2)=+2$. Row 1 ($\le$): slack $+s_1$. Row 2 ($\ge$): surplus $-s_2$. $b=(4,1)$. (a) surplus with $+1$ turns "$\ge$" into "$\le$". (b) cost of $x_2^-$ must flip sign. (d) $x_2^-$ column not negated.</p>
+  </div></details>
+</div>
+
+<div class="q">
+  <div class="qh">N6 <span class="src">New, in his style (one step, concept level)</span><span class="lvl">Descriptive</span></div>
+  <p>$\min\ -x_1-2x_2$ s.t. $x_1+x_2+x_3=4$, $x_1+3x_2+x_4=6$, $x\ge0$. Take the basis $\{x_1,x_4\}$ (in that order).</p>
+  <p>(a) Compute $\bar x_B$ and say whether it is a BFS. (b) Compute $\bar\lambda$ and $\bar\mu_N$ for $N=\{x_2,x_3\}$. Is the BFS optimal? (c) Which variable enters, what is $u$, which leaves, what is $\theta$ and the new cost? (d) Check optimality of the new basis. (e) Verify the gap identity with $x'=(1,1,2,2)$.</p>
+  <details class="hint"><summary>Hint</summary><p>$B=\begin{bmatrix}1&0\\1&1\end{bmatrix}$, $B^{-1}=\begin{bmatrix}1&0\\-1&1\end{bmatrix}$. Solve $B^T\lambda=c_B$ for $\lambda$.</p></details>
+  <details class="ans"><summary>Show answer</summary><div>
+    <ol class="steps">
+      <li>(a) $\bar x_B=B^{-1}b=(4,\,-4+6)=(4,2)\ge0$ ⇒ BFS $\bar x=(4,0,0,2)$, nondegenerate, cost $-4$.</li>
+      <li>(b) $c_B=(-1,0)$; $B^T\lambda=\begin{bmatrix}1&1\\0&1\end{bmatrix}\lambda=(-1,0)$ ⇒ $\lambda_2=0,\ \lambda_1=-1$. $\bar\mu_2=c_2-a_2^T\bar\lambda=-2-(1)(-1)-(3)(0)=-1$; $\bar\mu_3=0-(1)(-1)=1$. $\bar\mu_2\lt0$ ⇒ <b>not optimal</b>.</li>
+      <li>(c) $x_2$ enters. $u=B^{-1}a_2=B^{-1}(1,3)=(1,2)$. Ratios: $x_1$: $4/1=4$; $x_4$: $2/2=1$ ⇒ $\theta=1$, <b>$x_4$ leaves</b>. New point: $x_B=(4,2)-1\cdot(1,2)=(3,0)$, $x_2=1$ ⇒ $x'=(3,1,0,0)$. Cost change $\theta\bar\mu_2=-1$ ⇒ new cost $-5$ (check: $-3-2=-5$ ✓).</li>
+      <li>(d) New basis $\{x_1,x_2\}$: $B'=\begin{bmatrix}1&1\\1&3\end{bmatrix}$, $B'^T\lambda=(-1,-2)$ ⇒ $\lambda=(-\tfrac12,-\tfrac12)$. $\bar\mu_3=0+\tfrac12=\tfrac12$, $\bar\mu_4=0+\tfrac12=\tfrac12$, both $\ge0$ ⇒ <b>optimal</b>, $x^*=(3,1,0,0)$, cost $-5=b^T\lambda=-2-3$ ✓.</li>
+      <li>(e) $x'=(1,1,2,2)$: $Ax'=(4,6)$ ✓ feasible. $c^Tx'-c^T\bar x=-3-(-4)=1$; $\bar\mu_N^Tx'_N=(-1)(1)+(1)(2)=1$ ✓.</li>
+    </ol>
+  </div></details>
+</div>
+
+<div class="q">
+  <div class="qh">N7 <span class="src">New, in his style (Q indefinite, PD on null(A))</span><span class="lvl">Descriptive</span></div>
+  <p>$\min f(x)=\tfrac12x^TQx-c^Tx$ with $Q=\begin{bmatrix}1&2\\2&1\end{bmatrix}$, $c=\begin{bmatrix}3\\1\end{bmatrix}$, subject to $x_1-x_2=2$.</p>
+  <p>(a) Is $Q$ PD? (b) Write the KKT matrix $K$ and the KKT system. (c) Decide whether there is a unique minimiser using $Q$ on $\ker A$. (d) Solve by the null-space method with $x_p=(2,0)$ (write $\phi(z)$). (e) Check with the range-space formulas. (f) What changes if the constraint is $x_1+x_2=2$ instead?</p>
+  <details class="hint"><summary>Hint</summary><p>$\ker A$ for $A=[1\ -1]$ is spanned by $Z=(1,1)^T$. Eigenvalues of $Q$: $1\pm2$.</p></details>
+  <details class="ans"><summary>Show answer</summary><div>
+    <ol class="steps">
+      <li>(a) Eigenvalues $3$ and $-1$ ⇒ $Q$ is <b>indefinite</b>.</li>
+      <li>(b) $A=[1\ -1]$, $b=2$: $K=\begin{bmatrix}1&2&1\\2&1&-1\\1&-1&0\end{bmatrix}$, $K\begin{bmatrix}x_1\\x_2\\\lambda\end{bmatrix}=\begin{bmatrix}3\\1\\2\end{bmatrix}$ ($\det K=-6\ne0$).</li>
+      <li>(c) $Z=(1,1)^T$: $H_r=Z^TQZ=1+2+2+1=6\gt0$ ⇒ $Q$ is PD on $\ker A$ ⇒ <b>unique global minimiser</b> (and $K$ nonsingular). The indefiniteness of $Q$ is in the direction $(1,-1)$, which the constraint forbids.</li>
+      <li>(d) $f(x_p)=\tfrac12\cdot4-6=-4$; $Qx_p-c=(2,4)-(3,1)=(-1,3)$, $g_r=Z^T(-1,3)=2$. $\phi(z)=-4+2z+3z^2$ ⇒ $z^*=-\tfrac13$ ⇒ $x^*=(2,0)-\tfrac13(1,1)=(\tfrac53,-\tfrac13)$. $Qx^*-c=(1,3)-(3,1)=(-2,2)=-\lambda(1,-1)$ ⇒ $\lambda=2$. $f^*=-\tfrac{13}3$.</li>
+      <li>(e) $Q^{-1}=\tfrac13\begin{bmatrix}-1&2\\2&-1\end{bmatrix}$, $S=AQ^{-1}A^T=-2$ (nonsingular but negative: fine, uniqueness came from $H_r$), $AQ^{-1}c=-2$, $S\lambda=-2-2=-4$ ⇒ $\lambda=2$; $x=Q^{-1}(c-A^T\lambda)=Q^{-1}(1,3)=(\tfrac53,-\tfrac13)$ ✓.</li>
+      <li>(f) $A=[1\ 1]$, $Z=(1,-1)^T$: $H_r=1-4+1=-2\lt0$. $K$ is still nonsingular ($\det=2$), so the KKT point is unique: $x=(0,2)$, $\lambda=-1$. But on the line $x=(t,2-t)$, $f=-t^2$: the KKT point is a constrained <b>maximum</b>, and $f\to-\infty$, so there is <b>no minimiser</b>. Unique KKT solution ≠ unique minimiser.</li>
+    </ol>
+  </div></details>
+</div>
+
+<div class="q">
+  <div class="qh">N8 <span class="src">New, in his style (active-set steps)</span><span class="lvl">Descriptive</span></div>
+  <p>$\min\tfrac12\|x\|^2-3x_1-2x_2$ (so $Q=I$, $c=(3,2)$) subject to (1) $-x_2\le0$, (2) $x_1+x_2\le2$, (3) $-x_1\le0$. Start at $x_0=(0,0)$ with working set $W_0=\{1\}$.</p>
+  <p>(a) Which constraints are active at $x_0$? (b) Compute $g_0$, solve the direction subproblem for $p_0$, and check $g_0^Tp_0=-p_0^TQp_0$. (c) Do the ratio test, decide the step, and update $x$ and $W$. (d) At the new point, show $p_1=0$, compute the multipliers and say what to do. (e) Do the next direction and step and certify the answer.</p>
+  <details class="hint"><summary>Hint</summary><p>With $W=\{1\}$, $a_1^Tp=0$ means $p_2=0$. In the ratio test skip constraints with $a_i^Tp\le0$.</p></details>
+  <details class="ans"><summary>Show answer</summary><div>
+<svg viewBox="0 0 420 300" width="100%" style="max-width:460px;display:block;margin:6px auto" role="img" aria-label="Feasible triangle with active-set path from (0,0) to (2,0) to (1.5,0.5)">
+  <polygon points="60,260 220,260 60,100" style="fill:var(--accent-soft);stroke:var(--accent);stroke-width:2"/>
+  <line x1="40" y1="260" x2="330" y2="260" style="stroke:var(--muted)"/>
+  <line x1="60" y1="280" x2="60" y2="60" style="stroke:var(--muted)"/>
+  <line x1="220" y1="260" x2="300" y2="260" style="stroke:var(--bad);stroke-width:2;stroke-dasharray:6 4"/>
+  <line x1="60" y1="260" x2="220" y2="260" style="stroke:var(--ok);stroke-width:3"/>
+  <line x1="220" y1="260" x2="180" y2="220" style="stroke:var(--ok);stroke-width:3"/>
+  <circle cx="60" cy="260" r="5" style="fill:var(--ink)"/><text x="66" y="252" style="fill:var(--ink);font-size:13px">x₀=(0,0)</text>
+  <circle cx="220" cy="260" r="5" style="fill:var(--ink)"/><text x="206" y="282" style="fill:var(--ink);font-size:13px">x₁=(2,0)</text>
+  <circle cx="180" cy="220" r="5" style="fill:var(--ink)"/><text x="188" y="214" style="fill:var(--ink);font-size:13px">x₂=(1.5,0.5)</text>
+  <circle cx="300" cy="260" r="4" style="fill:var(--bad)"/><text x="286" y="250" style="fill:var(--bad);font-size:12px">x₀+p₀</text>
+  <circle cx="300" cy="100" r="5" style="fill:var(--ex-line)"/><text x="262" y="92" style="fill:var(--ex-line);font-size:12px">c=(3,2)</text>
+  <text x="96" y="150" style="fill:var(--accent);font-size:12px">x₁+x₂=2</text>
+  <text x="16" y="296" style="fill:var(--muted);font-size:11.5px">Key: blue = feasible set · green = accepted steps · red dashed = full step blocked · purple = unconstrained min</text>
+</svg>
+    <ol class="steps">
+      <li>(a) $\mathcal A(x_0)=\{1,3\}$. $W_0=\{1\}$ omits the active constraint 3 (allowed: $W_k\subseteq\mathcal A$).</li>
+      <li>(b) $g_0=Qx_0-c=(-3,-2)$. $p_2=0$, minimise $-3p_1+\tfrac12p_1^2$ ⇒ $p_0=(3,0)$. $g_0^Tp_0=-9=-p_0^Tp_0$ ✓.</li>
+      <li>(c) Constraints not in $W_0$: (2) $a_2^Tp_0=3\gt0$, ratio $(2-0)/3=\tfrac23$; (3) $a_3^Tp_0=-3\le0$, skip. $\alpha_0=\tfrac23\lt1$ ⇒ step $\tfrac23$: $x_1=(2,0)$, $W_1=\{1,2\}$. $f$: $0\to-4$ (formula: $-\tfrac23(1-\tfrac13)\cdot9=-4$ ✓).</li>
+      <li>(d) Two independent normals in $\mathbb R^2$ ⇒ only $p=0$ satisfies $a_1^Tp=a_2^Tp=0$, so $p_1=0$. $g_1=(-1,-2)$; $g_1+\lambda_1(0,-1)+\lambda_2(1,1)=0$ ⇒ $\lambda_2=1$, $\lambda_1=-1\lt0$ ⇒ <b>not optimal; drop constraint 1</b>: $W_2=\{2\}$, $x$ unchanged.</li>
+      <li>(e) $a_2^Tp=0$ ⇒ $p=(t,-t)$; $q=g_1^Tp+\tfrac12p^Tp=t+t^2$ ⇒ $t=-\tfrac12$, $p=(-\tfrac12,\tfrac12)$. Note $a_1^Tp=-\tfrac12\lt0$: it moves strictly inside the released constraint, as P10 predicts. Ratio: (1) skip; (3) $a_3^Tp=\tfrac12$, ratio $(0+2)/\tfrac12=4\gt1$ ⇒ <b>full step 1</b>: $x_2=(1.5,0.5)$. Then $p=0$, $g=(-1.5,-1.5)$, $\lambda_2=1.5\ge0$, $Q=I\succeq0$ ⇒ <b>global minimiser</b> $x^*=(1.5,0.5)$, $f^*=-4.25$.</li>
+    </ol>
+  </div></details>
+</div>
+
+<div class="q mcq" data-answer="b">
+  <div class="qh">N9 <span class="src">New, in his style</span><span class="lvl">MCQ</span></div>
+  <p>In the active-set method, $p_k\ne0$ and the ratio test gives $\alpha_k=3.5$ (attained by constraint 7). What is the update?</p>
+  <ol class="opts">
+    <li data-k="a"><b class="k">(a)</b> $x_{k+1}=x_k+3.5p_k$ and add 7 to $W$.</li>
+    <li data-k="b"><b class="k">(b)</b> $x_{k+1}=x_k+p_k$ and keep $W$ unchanged.</li>
+    <li data-k="c"><b class="k">(c)</b> $x_{k+1}=x_k+p_k$ and add 7 to $W$.</li>
+    <li data-k="d"><b class="k">(d)</b> $x_{k+1}=x_k$ and drop a constraint with negative multiplier.</li>
+  </ol>
+  <details class="ans"><summary>Show answer</summary><div>
+    <p><b>Answer: (b).</b> Step $=\min\{1,\alpha_k\}=1$: $\alpha_k\gt1$ only says no constraint blocks the subproblem minimiser $x_k+p_k$; going to $3.5$ would overshoot ($f$ change $-\alpha(1-\alpha/2)p^TQp\gt0$ for $\alpha\gt2$). (a) the "very important point" he stressed. (c) constraint 7 is not reached, so it is not active. (d) multipliers are tested only when $p_k=0$.</p>
+  </div></details>
+</div>
+
+<div class="q mcq" data-answer="c">
+  <div class="qh">N10 <span class="src">New, in his style</span><span class="lvl">MCQ</span></div>
+  <p>Equality QP, $\mathrm{rank}A=m$. Which statement is TRUE?</p>
+  <ol class="opts">
+    <li data-k="a"><b class="k">(a)</b> If $Q$ has a negative eigenvalue, there is no minimiser.</li>
+    <li data-k="b"><b class="k">(b)</b> If $K=\begin{bmatrix}Q&A^T\\A&0\end{bmatrix}$ is nonsingular, its solution $x$ is the unique minimiser.</li>
+    <li data-k="c"><b class="k">(c)</b> If $Z^TQZ\succ0$, $K$ is nonsingular and its solution is the unique global minimiser.</li>
+    <li data-k="d"><b class="k">(d)</b> The Schur method needs $S=AQ^{-1}A^T\succ0$ to be applied.</li>
+  </ol>
+  <details class="ans"><summary>Show answer</summary><div>
+    <p><b>Answer: (c)</b> (Thm 9.1.1 + Prop 9.1.2). (a) false: N7 has $Q$ indefinite and a unique minimiser. (b) false: N7(f), unique KKT point is a maximum. (d) the Schur elimination needs $Q$ nonsingular and $S$ nonsingular for a unique solution; $S\succ0$ is a consequence of $Q\succ0$, not a requirement (in N7, $S=-2$ and the method works).</p>
+  </div></details>
+</div>
+</section>
+
+<!-- ============ 5. SELF-TEST ============ -->
+<section id="selftest">
+<h2>5. Self-test (no looking)</h2>
+<div class="toolbar" data-auto></div>
+<div class="q"><div class="qh">S1</div><p>Write the five LP KKT conditions and the three basis formulas ($\bar x_B,\bar\lambda,\bar\mu_N$).</p>
+  <details class="ans"><summary>Show answer</summary><div><p>$A^T\lambda+\mu=c$, $Ax=b$, $x\ge0$, $\mu\ge0$, $\mu^Tx=0$. $\bar x_B=B^{-1}b$, $\bar\lambda=B^{-T}c_B$, $\bar\mu_N=c_N-N^T\bar\lambda$ (and $\bar x_N=0$, $\bar\mu_B=0$).</p></div></details></div>
+<div class="q"><div class="qh">S2</div><p>State the ratio test, the unboundedness test and the cost change of one simplex step.</p>
+  <details class="ans"><summary>Show answer</summary><div><p>$u=B^{-1}a_q$; $\theta=\min_{u_i\gt0}(\bar x_B)_i/u_i$; unbounded if $u\le0$ and $\bar\mu_q\lt0$; cost change $\theta\bar\mu_q$ (zero if degenerate $\theta=0$).</p></div></details></div>
+<div class="q"><div class="qh">S3</div><p>Two theorems linking corners and BFS (statements only), and the one-line idea behind both proofs.</p>
+  <details class="ans"><summary>Show answer</summary><div><p>Extreme point ⇔ BFS; optimum exists ⇒ optimal BFS exists (and feasible ⇒ BFS exists). Idea: dependent positive-support columns give $d\ne0$, $Ad=0$, supported on the positives, so $x\pm\varepsilon d$ are both feasible (not extreme), and sliding along $d$ (with $c^Td=0$ at an optimum) zeroes a component.</p></div></details></div>
+<div class="q"><div class="qh">S4</div><p>Why is the new basis nonsingular after a pivot? What does Bland's rule say, and why is it needed?</p>
+  <details class="ans"><summary>Show answer</summary><div><p>$B'=B[e_1\cdots u\cdots e_m]$, $\det B'=u_p\det B\ne0$ since $u_p\gt0$. Bland: enter the smallest index with negative reduced cost; among ratio ties, the smallest original index leaves. Needed because degenerate ($\theta=0$) pivots keep the cost equal, so bases could cycle.</p></div></details></div>
+<div class="q"><div class="qh">S5</div><p>Write $K$, the condition for a unique minimiser of an equality QP, and $\phi(z)$.</p>
+  <details class="ans"><summary>Show answer</summary><div><p>$K=\begin{bmatrix}Q&A^T\\A&0\end{bmatrix}$, $K\binom x\lambda=\binom cb$. Unique global min $\iff Z^TQZ\succ0$ ($Q$ PD on $\ker A$; $Q$ itself may be indefinite) ⇒ $K$ nonsingular (converse false). $\phi(z)=f(x_p)+g_r^Tz+\tfrac12z^TH_rz$, $g_r=Z^T(Qx_p-c)$, $H_r=Z^TQZ$.</p></div></details></div>
+<div class="q"><div class="qh">S6</div><p>Schur (range-space) formulas, and the projector with its key property.</p>
+  <details class="ans"><summary>Show answer</summary><div><p>$S=AQ^{-1}A^T$, $S\lambda=AQ^{-1}c-b$, $x=Q^{-1}(c-A^T\lambda)$; $Q\succ0\Rightarrow S\succ0$. $P=I-A^T(AA^T)^{-1}A$; $r=-P\nabla f$ is feasible and $\nabla f^Tr=-\|r\|^2$; $r=0\iff$ KKT. Projected CG: at most $n-m$ steps.</p></div></details></div>
+<div class="q"><div class="qh">S7</div><p>Active set: write $q_k(p)$, the identity for $g_k^Tp_k$, the ratio test, the step rule and what to do when $p_k=0$.</p>
+  <details class="ans"><summary>Show answer</summary><div><p>$q_k(p)=g_k^Tp+\tfrac12p^TQp$ on $a_i^Tp=0$ ($i\in W_k$), $g_k=Qx_k-c$. $g_k^Tp_k=-p_k^TQp_k\lt0$. $\alpha_k=\min_{i\notin W_k,\,a_i^Tp_k\gt0}(b_i-a_i^Tx_k)/a_i^Tp_k$. Step $\min\{1,\alpha_k\}$; add the blocker if $\alpha_k\le1$. $p_k=0$: solve $g_k+\sum_{W_k}\lambda_ia_i=0$; all $\ge0$ ⇒ stop (global min if $Q\succeq0$); else drop the most negative, keep $x_k$.</p></div></details></div>
+<div class="q"><div class="qh">S8</div><p>Give the simplex ↔ active-set dictionary in one line each for: entering, leaving, sign test.</p>
+  <details class="ans"><summary>Show answer</summary><div><p>Entering $x_q$ ($\bar\mu_q\lt0$) ↔ dropping constraint $j$ ($\lambda_j\lt0$). Leaving variable (ratio-test blocker) ↔ adding the blocking constraint. $\bar\mu_N\ge0$ ↔ $\lambda_{W}\ge0$ at $p_k=0$.</p></div></details></div>
+<p><label><input type="checkbox" data-key="m4-done"> I finished this module</label></p>
+</section>
+
+</main>
+</div>
+<script src="assets/fe.js"></script>
+</body>
+</html>
