@@ -6,163 +6,639 @@
 <title>M6 · Unconstrained optimality and convexity</title>
 <link rel="stylesheet" href="assets/fe.css">
 <script>
-  // MathJax: inline $...$ or \(...\), display $$...$$ or \[...\]
   window.MathJax = { tex: { inlineMath: [['$','$'],['\\(','\\)']], displayMath: [['$$','$$'],['\\[','\\]']] } };
 </script>
 <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml.js"></script>
+<style>
+  .fig{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:10px 14px;margin:14px 0}
+  .fig svg{display:block;max-width:100%;height:auto;margin:0 auto}
+  .fig .cap{font-size:14px;color:var(--muted);margin-top:6px}
+  .check{background:var(--accent-soft);border-radius:8px;padding:10px 14px;margin:14px 0}
+  .check > b:first-child{color:var(--accent)}
+  .roadmap li{margin:3px 0}
+  .kw{font-weight:700;color:var(--accent)}
+</style>
 </head>
 <body>
 <div class="layout">
 <nav class="toc">
   <a class="home" href="./">← START HERE</a>
-  <a href="#must">1. Must remember</a>
-  <a href="#concepts">2. Concepts</a>
-  <a href="#c1">&nbsp;&nbsp;2.1 FONC / SONC / SOSC</a>
-  <a href="#c2">&nbsp;&nbsp;2.2 Classifying stationary points</a>
-  <a href="#c3">&nbsp;&nbsp;2.3 Quadratics, least squares</a>
-  <a href="#c4">&nbsp;&nbsp;2.4 Convexity</a>
-  <a href="#c5">&nbsp;&nbsp;2.5 Peano, Weierstrass, little-o</a>
-  <a href="#prof">3. What he said</a>
-  <a href="#practice">4. Practice</a>
+  <a href="#why">0. Why this topic exists</a>
+  <a href="#minimum">A. What a minimum is</a>
+  <a href="#a1">&nbsp;&nbsp;A1. Local, strict, global</a>
+  <a href="#a2">&nbsp;&nbsp;A2. Does a minimum exist?</a>
+  <a href="#oned">B. One variable first</a>
+  <a href="#b1">&nbsp;&nbsp;B1. Slope and curvature</a>
+  <a href="#b2">&nbsp;&nbsp;B2. Little-o and Taylor</a>
+  <a href="#b3">&nbsp;&nbsp;B3. FONC, SONC, SOSC in 1-D</a>
+  <a href="#b4">&nbsp;&nbsp;B4. x², x⁴, x³, −x⁴</a>
+  <a href="#nd">C. Many variables</a>
+  <a href="#c1">&nbsp;&nbsp;C1. Gradient and Hessian</a>
+  <a href="#c2">&nbsp;&nbsp;C2. Look along a line</a>
+  <a href="#c3">&nbsp;&nbsp;C3. Taylor in n-D, PSD/PD</a>
+  <a href="#c4">&nbsp;&nbsp;C4. FONC, SONC, SOSC</a>
+  <a href="#c5">&nbsp;&nbsp;C5. What SONC does NOT say</a>
+  <a href="#tests">D. Testing PD / PSD</a>
+  <a href="#d1">&nbsp;&nbsp;D1. Eigenvalues</a>
+  <a href="#d2">&nbsp;&nbsp;D2. Leading minors (PD)</a>
+  <a href="#d3">&nbsp;&nbsp;D3. All minors (PSD)</a>
+  <a href="#classify">E. Classifying stationary points</a>
+  <a href="#e1">&nbsp;&nbsp;E1. Recipe</a>
+  <a href="#e2">&nbsp;&nbsp;E2. Full example by hand</a>
+  <a href="#e3">&nbsp;&nbsp;E3. When the Hessian is silent</a>
+  <a href="#e4">&nbsp;&nbsp;E4. Peano: lines are not enough</a>
+  <a href="#quad">F. Quadratics</a>
+  <a href="#ls">G. Least squares</a>
+  <a href="#convex">H. Convexity</a>
+  <a href="#h1">&nbsp;&nbsp;H1. Definition (chord)</a>
+  <a href="#h2">&nbsp;&nbsp;H2. Tangent below graph</a>
+  <a href="#h3">&nbsp;&nbsp;H3. Hessian PSD everywhere</a>
+  <a href="#h4">&nbsp;&nbsp;H4. Max, log-sum-exp</a>
+  <a href="#h5">&nbsp;&nbsp;H5. Local = global</a>
+  <a href="#h6">&nbsp;&nbsp;H6. The proof chain (Mid 1 VII)</a>
+  <a href="#recipe">I. Exam recipe</a>
+  <a href="#prof">What he said</a>
+  <a href="#practice">Practice</a>
   <a href="#pq">&nbsp;&nbsp;Quiz 1 MCQs</a>
   <a href="#pm">&nbsp;&nbsp;Midterm 1 I, IV, VII</a>
   <a href="#pn">&nbsp;&nbsp;New questions</a>
-  <a href="#selftest">5. Self-test</a>
+  <a href="#selftest">Self-test</a>
+  <a href="#must">Summary card</a>
 </nav>
 <main>
-<h1>M6 · Unconstrained optimality and convexity</h1>
-<p class="sub">Chapter 1 · about 30–40 min (cheap MCQ marks: be quick, but be exact) · Goal: state FONC/SONC/SOSC exactly and know what they do <i>not</i> say, classify stationary points from the Hessian, handle quadratics and least squares, and test or prove convexity.</p>
+<h1>M6 · Unconstrained optimality and convexity, from zero</h1>
+<p class="sub">Chapter 1 · about 90–110 min · Goal: decide whether a point is a minimum using slope (gradient) and curvature (Hessian), know exactly what each test does and does <i>not</i> say, classify stationary points by hand, solve quadratics and least squares, and prove or disprove convexity. Quiz 1 was 32 MCQs on exactly this; Midterm 1 Q I, IV and VII too.</p>
 
-<p class="small">Time plan: Must remember 5 min · Concepts 12 min · Practice 15–20 min · Self-test 3 min.</p>
-
-<!-- ============ 1. MUST REMEMBER ============ -->
-<section id="must">
-<h2>1. Must remember</h2>
-<div class="box must"><span class="tag">Memorise cold</span>
-  <ul>
-    <li><b>FONC</b> (necessary): $x^*$ local min, $f$ differentiable $\Rightarrow \nabla f(x^*) = 0$.</li>
-    <li><b>SONC</b> (necessary): $x^*$ local min, $f \in C^2$ $\Rightarrow \nabla f(x^*) = 0$ <b>and</b> $\nabla^2 f(x^*) \succeq 0$ (PSD).</li>
-    <li><b>SOSC</b> (sufficient): $\nabla f(x^*) = 0$ <b>and</b> $\nabla^2 f(x^*) \succ 0$ (PD) $\Rightarrow x^*$ is a <b>strict</b> (strong) local min.</li>
-    <li>The gaps: $x^4$ (strict min, $f''=0$: PD is <b>not necessary</b>); $x^3$ and $-x^4$ (FONC+SONC hold, not a min: PSD is <b>not sufficient</b>).</li>
-    <li><b>Quadratics</b> $f = \tfrac12 x^\top Q x - b^\top x + r$: $\nabla f = Qx - b$, $\nabla^2 f = Q$. Here "both directions" hold: $\{\nabla f = 0,\ Q\succeq 0\}$ ⇔ (global) min; $\{\nabla f = 0,\ Q \succ 0\}$ ⇔ strict (unique) min. $Q$ has a negative eigenvalue ⇒ unbounded below. $Q \succeq 0$ singular: $b\in\text{range}(Q)$ ⇒ infinitely many minimisers; $b\notin\text{range}(Q)$ ⇒ none.</li>
-    <li><b>Directional derivatives</b>: $\frac{d}{dt}f(x+td)\big|_{0} = \nabla f(x)^\top d$, $\ \frac{d^2}{dt^2}f(x+td)\big|_{0} = d^\top \nabla^2 f(x)\, d$.</li>
-    <li><b>PD / PSD tests</b> (symmetric $A$): PD ⇔ all eigenvalues $\gt 0$ ⇔ all <b>leading</b> principal minors $\gt 0$ (Sylvester). PSD ⇔ all eigenvalues $\ge 0$ ⇔ <b>all</b> principal minors $\ge 0$ (leading ones are not enough).</li>
-    <li><b>Least squares</b> $\tfrac12\|Ax-\bar b\|^2$: normal equations $A^\top A x^* = A^\top \bar b$ (always solvable, since range$(A^\top A)$ = range$(A^\top)$). Unique ⇔ $A$ has full column rank; then $x^* = (A^\top A)^{-1}A^\top \bar b$, projector $P = A(A^\top A)^{-1}A^\top$ ($P^2=P$, $P^\top=P$), projector onto null$(A^\top)$ is $I-P$.</li>
-    <li><b>Convexity</b> ($f\in C^2$ on $\mathbb R^n$): definition $f(\theta x+(1-\theta)y)\le\theta f(x)+(1-\theta)f(y)$ ⇔ $f(y)\ge f(x)+\nabla f(x)^\top(y-x)$ for all $x,y$ ⇔ $\nabla^2 f(x)\succeq 0$ <b>for every</b> $x$ ⇔ every restriction to a line is convex. Convex: local min = global min; stationary point = global min. Max of convex functions is convex.</li>
-    <li><b>Peano-type</b>: $f(y,z) = (z-py^2)(z-qy^2)$, $0\lt p\lt q$: min at 0 along every line, but $f(y,my^2)\lt 0$ for $p\lt m\lt q$ ⇒ not a local min.</li>
-    <li><b>Weierstrass</b>: $X$ nonempty closed, $f$ proper, lsc, <b>coercive</b> ($\|x\|\to\infty \Rightarrow f(x)\to+\infty$), $X\cap\text{dom} f\ne\emptyset$ ⇒ a minimiser exists. $r(h) = o(h^2)$ means $r(h)/h^2 \to 0$.</li>
-  </ul>
-</div>
-</section>
-
-<!-- ============ 2. CONCEPTS ============ -->
-<section id="concepts">
-<h2>2. Concepts</h2>
-
-<h3 id="c1">2.1 FONC, SONC, SOSC and what they do NOT say</h3>
-<p><b>In plain words:</b> At the bottom of a valley the ground is flat (gradient zero) and curves up or stays flat in every direction (Hessian PSD). Those are things a minimum <i>must</i> have (<b>necessary</b>). If the ground is flat and curves <i>strictly</i> up in every direction (Hessian PD), you are surely at a strict bottom (<b>sufficient</b>). The trouble lives in the gap: Hessian PSD but singular (some direction with zero curvature). Then the second derivative says nothing and the higher-order terms decide.</p>
-<p><b>Precisely</b> (course: Theorems 1.3.2–1.3.4). Let $f\in C^2$ near $x^*$. Taylor: $f(x^*+h) = f(x^*) + \nabla f(x^*)^\top h + \tfrac12 h^\top \nabla^2 f(x^*) h + o(\|h\|^2)$.</p>
-<div class="mathwide"><table>
-<tr><th>Condition</th><th>Statement</th><th>Type</th></tr>
-<tr><td>FONC</td><td>local min ⇒ $\nabla f(x^*)=0$</td><td>necessary</td></tr>
-<tr><td>SONC</td><td>local min ⇒ $\nabla f(x^*)=0,\ \nabla^2 f(x^*)\succeq 0$</td><td>necessary</td></tr>
-<tr><td>SOSC</td><td>$\nabla f(x^*)=0,\ \nabla^2 f(x^*)\succ 0$ ⇒ strict local min</td><td>sufficient</td></tr>
-</table></div>
-<p><b>What SONC means:</b> if the Hessian at a stationary point has even one negative eigenvalue, that point is <b>not</b> a local min (it is a saddle or a max). That is the useful, "contrapositive" use of SONC.<br>
-<b>What SONC does NOT mean:</b> "FONC + PSD ⇒ local min" is false. And "strict local min ⇒ PD" is false.</p>
-<div class="box example"><span class="tag">Worked example: the four test functions</span>
-<div class="mathwide"><table>
-<tr><th>$f$ at 0</th><th>FONC</th><th>SONC (PSD)</th><th>SOSC (PD)</th><th>What 0 really is</th><th>Lesson</th></tr>
-<tr><td>$x^4$</td><td>✓</td><td>✓ ($f''=0$)</td><td>✗</td><td>strict global min</td><td>PD is sufficient, <b>not necessary</b></td></tr>
-<tr><td>$x^3$</td><td>✓</td><td>✓</td><td>✗</td><td>not a min (inflection)</td><td>FONC+SONC are <b>not sufficient</b></td></tr>
-<tr><td>$-x^4$</td><td>✓</td><td>✓</td><td>✗</td><td>strict local <b>max</b>!</td><td>PSD Hessian does not even rule out a max</td></tr>
-<tr><td>$x_1^4 + x_2^2 + \dots + x_n^2$</td><td>✓</td><td>✓, $\nabla^2 f(0)=\text{diag}(0,2,\dots,2)$ singular</td><td>✗</td><td>strict min</td><td>$n$-D version of $x^4$</td></tr>
-<tr><td>$x_1^3 - 3x_1x_2^2$ (monkey saddle)</td><td>✓</td><td>✓ ($\nabla^2 f(0)=0$)</td><td>✗</td><td>saddle: $f(t,0)=t^3\gt 0$, $f(t,t)=-2t^3\lt 0$ for $t\gt 0$</td><td>zero Hessian: must test directions</td></tr>
-</table></div>
-</div>
-<p><b>"Group 1 / Group 2"</b> (his revision-class language): <b>G1</b> = {$\nabla f(x^*)=0$, $\nabla^2 f(x^*)\succeq 0$}, <b>G2</b> = {$\nabla f(x^*)=0$, $\nabla^2 f(x^*)\succ 0$}.</p>
+<div class="box must"><span class="tag">How this page works</span>
+<p>It's a story: each section uses only what came before. Every idea comes first in plain words, then with numbers or a picture, then in the course's exact form, then a worked example, then the trap. Small <span class="kw">Check</span> boxes let you test yourself as you go (answers hidden). The one-page summary is at the very end; use it for revision, not for learning.</p>
+<p><b>Notation used on this page</b> (each is explained again where it first appears):</p>
 <ul>
-<li>General $f$: local min ⇒ G1 (G1 necessary). G2 ⇒ strict local min (G2 sufficient). The reverse arrows fail ($x^3$, $x^4$).</li>
-<li>Quadratic $f$: <b>both arrows hold</b>: G1 ⇔ min (global); G2 ⇔ strict min (unique global). Reason: the Taylor expansion is exact (no $o(\|h\|^2)$ term), because the Hessian $Q$ is constant. It is <b>not</b> because PSD becomes PD.</li>
+<li>$x\in\mathbb R^n$: a point, i.e. a column of $n$ numbers $x_1,\dots,x_n$. $x^*$: the point we are testing ("is $x^*$ a minimum?"). In 2-variable examples the coordinates are $x_1,x_2$; some past-paper questions call them $x,y$ instead (then $x,y$ are plain numbers).</li>
+<li>$f:\mathbb R^n\to\mathbb R$: the function we want to make small (the "cost").</li>
+<li>$u^\top v=u_1v_1+\dots+u_nv_n$ (dot product; $^\top$ means transpose). $\|x\|=\sqrt{x^\top x}$ = length of $x$, so $\|x-x^*\|$ = distance from $x$ to $x^*$.</li>
+<li>$d$: a direction (any nonzero vector). $t$: a number saying how far we move along $d$. $h$: a small step, $h=x-x^*$.</li>
+<li>$f'$, $f''$: first and second derivative of a 1-variable function. $\nabla f(x)$: the <b>gradient</b> (column of first partial derivatives). $\nabla^2 f(x)$: the <b>Hessian</b> (matrix of second partial derivatives). $H$ = the Hessian at the point being tested.</li>
+<li>$C^1$ / $C^2$: "once / twice differentiable, with continuous derivatives".</li>
+<li>$S$: a symmetric matrix we are testing. $S\succeq0$: "positive semidefinite" (PSD), $S\succ0$: "positive definite" (PD), defined in C3. $\lambda$ always means an <b>eigenvalue</b>: $Sv=\lambda v$ with $v\ne0$ (then $v$ is an eigenvector).</li>
+<li>$Q$, $b$: the matrix and vector of a quadratic $\tfrac12x^\top Qx-b^\top x$. $A$, $\bar b$: the data of least squares $\tfrac12\|Ax-\bar b\|^2$. $P$: the projector of least squares.</li>
+<li>$o(\cdot)$: "little-o", a remainder that vanishes faster than what's in the brackets; $r(h)$ names such a remainder (B2). $\kappa$: the positive constant in the SOSC proof (C4).</li>
+<li>$\theta\in[0,1]$: a mixing weight in the convexity definition (Midterm 1 writes it as $t$).</li>
+<li>range$(M)=\{Mx\}$ = all vectors $M$ can produce; null$(M)=\{x: Mx=0\}$. "$\Rightarrow$" = implies; "$\Leftrightarrow$" = if and only if; "s.t." = such that.</li>
 </ul>
-<div class="box trap"><span class="tag">Trap</span> "SOSC fails ⇒ not a minimum" is wrong ($x^4$). "SONC holds ⇒ minimum" is wrong ($x^3$, $-x^4$). A local minimum (non-strict) by definition includes strict minima. Weak inequality $\succeq$ in SONC, strict $\succ$ in SOSC: Quiz 1 tested exactly this.</div>
-
-<h3 id="c2">2.2 Classifying stationary points (Hessian eigenvalues / Sylvester)</h3>
-<p><b>In plain words:</b> solve $\nabla f = 0$; at each solution look at the signs of the Hessian's eigenvalues. All $\gt 0$: strict local min. All $\lt 0$: strict local max. Both signs: saddle. Some zero and the rest one sign: the test is inconclusive (look at higher-order terms or along curves).</p>
-<p><b>Precisely:</b> for symmetric $A$, PD ⇔ $\det A_k \gt 0$ for the leading $k\times k$ blocks, $k=1..n$ (Sylvester). PSD ⇔ <b>every</b> principal minor (keep the same set of rows and columns) is $\ge 0$. Example why leading minors are not enough for PSD: $A=\begin{bmatrix}0&0\\0&-1\end{bmatrix}$ has leading minors $0, 0$ (both $\ge0$) but the principal minor $a_{22}=-1\lt 0$: not PSD. For a 2×2: $\det\lt0$ ⇒ indefinite (saddle).</p>
-<div class="box example"><span class="tag">Worked example (Tutorial 1, problem 7a)</span> $f(x,y) = (x^2-4)^2 + y^2$.
-  <ol class="steps">
-    <li>$\nabla f = \begin{bmatrix}4x(x^2-4)\\ 2y\end{bmatrix} = 0 \Rightarrow (0,0),\ (2,0),\ (-2,0)$.</li>
-    <li>$\nabla^2 f = \begin{bmatrix}12x^2-16 & 0\\ 0 & 2\end{bmatrix}$.</li>
-    <li>$(0,0)$: diag$(-16, 2)$, one negative and one positive eigenvalue ⇒ <b>saddle</b> (SONC fails, so not a min; also not a max).</li>
-    <li>$(\pm2,0)$: diag$(32, 2)\succ 0$ ⇒ SOSC ⇒ strict local min. Since $f\ge 0$ and $f(\pm 2,0)=0$, both are <b>global</b> minima.</li>
-  </ol>
 </div>
-<div class="box trap"><span class="tag">Trap</span> A strict local min need not be global ($x^3+y^3-3xy$ has a strict local min at $(1,1)$ but $f\to-\infty$). To claim "global", give a reason: $f\ge$ value, convexity, or coercive + compare all stationary values.</div>
 
-<h3 id="c3">2.3 Quadratics and least squares</h3>
-<p><b>In plain words:</b> a quadratic is a bowl, a trough, or a saddle, decided entirely by $Q$. Bowl ($Q\succ0$): one bottom at $Q^{-1}b$. Trough ($Q\succeq 0$ singular): either a flat valley floor of minimisers (if the tilt $b$ does not point along the flat direction, i.e. $b\in$ range$(Q)$) or the floor tilts downhill forever (no minimiser). Any negative eigenvalue: walk along that eigenvector and $f\to-\infty$.</p>
-<p><b>Precisely:</b> $f(x)=\tfrac12x^\top Qx-b^\top x+r$, $Q=Q^\top$: $\nabla f=Qx-b$, $\nabla^2 f=Q$ (only the symmetric part of $Q$ matters). Least squares $f(x)=\tfrac12\|Ax-\bar b\|_2^2 = \tfrac12x^\top(A^\top A)x-(A^\top\bar b)^\top x+\tfrac12\|\bar b\|^2$, so $Q=A^\top A\succeq0$ always, and $x^\top A^\top A x=\|Ax\|^2\gt0$ for $x\neq0$ exactly when $A$ has full column rank. Then SOSC holds and the solution is unique. Projection: $\hat b = A x^* = P\bar b$ with $P=A(A^\top A)^{-1}A^\top$; residual $\tilde b=\bar b-\hat b=(I-P)\bar b \perp$ range$(A)$, i.e. $A^\top\tilde b=0$.</p>
-<div class="box example"><span class="tag">Worked example: fit a line through (0,0), (1,1), (2,1)</span>
-  <ol class="steps">
-    <li>Model $c_0 + c_1 t$: $A=\begin{bmatrix}1&0\\1&1\\1&2\end{bmatrix}$, $\bar b=(0,1,1)^\top$. Columns independent ⇒ full column rank ⇒ unique solution.</li>
-    <li>$A^\top A=\begin{bmatrix}3&3\\3&5\end{bmatrix}$, $A^\top\bar b=(2,3)^\top$. Solve: $x^*=\tfrac16\begin{bmatrix}5&-3\\-3&3\end{bmatrix}\begin{bmatrix}2\\3\end{bmatrix}=(1/6,\ 1/2)^\top$.</li>
-    <li>Residual $\bar b-Ax^*=(-1/6,\ 1/3,\ -1/6)^\top$; check $A^\top(\text{residual})=(0,0)^\top$ ✓ (that is the normal equation).</li>
-  </ol>
-</div>
-<div class="box trap"><span class="tag">Trap</span> "The least-squares solution is always unique": false (only with full column rank). But the normal equations <b>always have a solution</b>, because range$(A^\top A)$ = range$(A^\top)$. The projector onto range$(A)$ is $A(A^\top A)^{-1}A^\top$, not $A^\top(AA^\top)^{-1}A$ (that one is for range$(A^\top)$ when $A$ has full <i>row</i> rank).</div>
-
-<h3 id="c4">2.4 Convexity</h3>
-<p><b>In plain words:</b> a convex function's chord always lies above the graph; equivalently its tangent plane always lies below the graph; equivalently it curves up (or is flat) in every direction <b>at every point</b>. Big payoff: no false valleys. Any local min is global, and any stationary point is a global min.</p>
-<p><b>Precisely</b> (Theorems 1.8.1–1.8.4), $C$ convex:</p>
+<!-- ================= 0. WHY ================= -->
+<section id="why">
+<h2>0. Why this topic exists</h2>
+<p>Optimisation means: find the $x$ that makes $f(x)$ as small as possible. You can't check every point (there are infinitely many). So we need <b>cheap tests</b> that look only at one point and its immediate surroundings, and tell us "this could be a minimum" or "this is certainly a minimum" or "this is certainly not one".</p>
+<p>The tests use two pieces of information at the point:</p>
+<ul>
+<li><b>Slope</b> (first derivatives, the gradient): at the bottom of a valley the ground is flat.</li>
+<li><b>Curvature</b> (second derivatives, the Hessian): at the bottom of a valley the ground bends upwards in every direction.</li>
+</ul>
+<p>Two problems make the chapter interesting, and they are exactly what the exams test:</p>
 <ol>
-<li>Definition: $f(\theta x+(1-\theta)y)\le\theta f(x)+(1-\theta)f(y)$, all $x,y\in C$, $\theta\in[0,1]$. Strict ($\lt$ for $x\ne y$, $\theta\in(0,1)$) = strictly convex.</li>
-<li>Lines: $f$ convex ⇔ $g(\alpha)=f(x+\alpha s)$ convex for every $x$, $s$.</li>
-<li>First order ($f$ differentiable): convex ⇔ $f(y)\ge f(x)+\nabla f(x)^\top(y-x)$ for all $x,y$. Consequence: $\nabla f(x^*)=0$ ⇒ global min.</li>
-<li>Second order ($f\in C^2$): convex ⇔ $\nabla^2 f(x)\succeq0$ <b>for all</b> $x$. PD everywhere ⇒ strictly convex (not ⇔: $x^4$ is strictly convex with $f''(0)=0$).</li>
-<li>Local min of convex $f$ ⇒ global min (Theorem 1.8.2).</li>
-<li>$f=\max_i f_i$ with each $f_i$ convex ⇒ $f$ convex (no Hessian needed, works when $f$ is not differentiable).</li>
+<li><b>The tests have a gap.</b> Some tests are only <i>necessary</i> (every minimum passes them, but non-minima can pass too); one is <i>sufficient</i> (passing it guarantees a minimum, but some minima fail it). Points that fall in the gap ($x^4$, $x^3$, $-x^4$, the Peano function) are the favourite exam traps. He said: <q>Focus on interpreting SONC… what SONC means, what SONC doesn't mean</q>.</li>
+<li><b>The tests are local.</b> They look through a microscope; they cannot tell whether a valley is the <i>deepest</i> one. <b>Convexity</b> is the property that removes this problem: for a convex function every local minimum is global.</li>
 </ol>
-<p><b>Contrast with SONC:</b> SONC is PSD <b>at one point</b>, a property of a candidate. Convexity is PSD <b>at every point</b>, a property of the whole function.</p>
-<p><b>How to check convexity:</b> (a) Hessian PSD everywhere (eigenvalues or all principal minors); (b) to disprove, find <b>one</b> point where the Hessian has a negative eigenvalue, or a <b>midpoint counterexample</b> $f(\tfrac{u+v}2)\gt\tfrac{f(u)+f(v)}2$, or a line along which $g''\lt0$; (c) rules: sums with nonnegative weights, max, affine composition.</p>
-<div class="box example"><span class="tag">Worked example: log-sum-exp $f(x,y)=\log(e^x+e^y)$ (Tutorial 1, problem 14)</span>
-  <ol class="steps">
-    <li>Let $p_1=e^x/(e^x+e^y)$, $p_2=e^y/(e^x+e^y)$, so $p_1+p_2=1$, $p_i\gt0$.</li>
-    <li>$\nabla^2 f=\text{diag}(p)-pp^\top=\begin{bmatrix}p_1-p_1^2&-p_1p_2\\-p_1p_2&p_2-p_2^2\end{bmatrix}=p_1p_2\begin{bmatrix}1&-1\\-1&1\end{bmatrix}$ (using $p_1-p_1^2 = p_1p_2$).</li>
-    <li>$d^\top\nabla^2 f\,d=p_1p_2(d_1-d_2)^2\ge0$ for all $d$ ⇒ PSD at every point ⇒ <b>convex</b>. In $n$-D: $\sum p_id_i^2-(\sum p_id_i)^2\ge0$ by Cauchy–Schwarz.</li>
-    <li>Not PD: $\nabla^2 f\,(1,1)^\top=0$ (along $(1,1)$, $f(x+t,y+t)=f(x,y)+t$ is a straight line). So not strictly convex.</li>
-  </ol>
-</div>
-<div class="box example"><span class="tag">Worked example: max of convex is convex (Tutorial 1, problem 20)</span> $f=\max\{x^2,y^2\}$. For each $i$: $f_i(\theta u+(1-\theta)v)\le\theta f_i(u)+(1-\theta)f_i(v)\le\theta f(u)+(1-\theta)f(v)$ (since $f_i\le f$, $\theta\ge0$). The right side does not depend on $i$, so take the max over $i$ on the left: $f(\theta u+(1-\theta)v)\le\theta f(u)+(1-\theta)f(v)$. ∎</div>
-<div class="box trap"><span class="tag">Trap</span> $f\ge0$ does not imply convex: $(x_1^2-x_2^2)^2$ is not convex (Midterm 1 Q I). Convexity needs PSD <b>everywhere</b>, so one bad point kills it; one good point proves nothing. "PD Hessian" in a quiz means strict convexity is sufficient, not necessary. Never say "concave set".</div>
-
-<h3 id="c5">2.5 Peano-type counterexample, Weierstrass, little-o</h3>
-<p><b>Peano (Tutorial 1, problem 8):</b> If $x^*$ minimises $f$ along every line through it, then $g'(0)=\nabla f(x^*)^\top d=0$ for all $d$ ⇒ $\nabla f(x^*)=0$ (part a). But $x^*$ need <b>not</b> be a local min (part b):</p>
-<div class="box example"><span class="tag">Worked example</span> $f(y,z)=(z-py^2)(z-qy^2)$, $0\lt p\lt q$.
-<ol class="steps">
-<li>Line $(y,z)=\alpha(a,b)$: $g(\alpha)=\alpha^2(b-pa^2\alpha)(b-qa^2\alpha)$. $g'(0)=0$, $g''(0)=2b^2$. If $b\ne0$: $g''(0)\gt0$, strict min at $\alpha=0$. If $b=0$: $g=pqa^4\alpha^4$, again min at 0.</li>
-<li>Along the curve $z=my^2$ with $p\lt m\lt q$: $f=(m-p)(m-q)y^4\lt0=f(0,0)$ for $y\ne0$, arbitrarily close to 0. So 0 is <b>not</b> a local min.</li>
-<li>Lesson: "min along every line" ≠ "local min". The bad points sit on a <b>curve</b> between the two parabolas, which no straight line follows. (Hessian at 0 is diag$(0,2)$: PSD, consistent with SONC.)</li>
-</ol></div>
-<p><b>Weierstrass (coercive version, Theorem 1.3.1):</b> $X$ nonempty, closed; $f$ proper, lower semicontinuous, coercive; $X\cap\text{dom}f\ne\emptyset$ ⇒ $\min_{x\in X}f$ has a solution (solution set nonempty, compact). Use: a continuous coercive $f$ on $\mathbb R^n$ has a global min, so the global min is the stationary point with the smallest value.</p>
-<p><b>Little-o:</b> $r(h)=o(h^2)$ as $h\to0$ means $r(h)/h^2\to0$. It is why the sign of $\tfrac12 f''(x^*)h^2$ decides when $f''(x^*)\ne0$, and why it cannot decide when $f''(x^*)=0$.</p>
+<p>Everything later in the course reuses this: Ch 2–4 algorithms stop when the gradient is (nearly) zero; Ch 6 repeats FONC/SONC/SOSC with constraints; Ch 7 is built on convexity.</p>
+<p class="small">Roadmap: A says what "minimum" means and when one exists. B does everything in one variable, where pictures are easy. C lifts it to $n$ variables by looking along lines. D gives the matrix tests. E classifies points by hand and shows the two famous counterexamples. F and G are quadratics and least squares, where the tests become exact. H is convexity. I is the exam recipe.</p>
 </section>
 
-<!-- ============ 3. WHAT HE SAID ============ -->
+<!-- ================= A. MINIMUM ================= -->
+<section id="minimum">
+<h2>A. What a minimum is, and whether one exists</h2>
+
+<h3 id="a1">A1. Local, strict and global minima</h3>
+<p><b>Plain words.</b> A <b>local minimum</b> beats all its <i>neighbours</i>: no point close by is lower. It doesn't care what happens far away. A <b>global minimum</b> beats <i>everybody</i>. A <b>strict</b> minimum beats its neighbours <i>strictly</i>: every nearby point (other than itself) is higher, not just "not lower".</p>
+<div class="fig">
+<svg viewBox="0 0 460 230" width="460" role="img" aria-label="Types of minima on one curve"><line x1="25" y1="205" x2="445" y2="205" stroke="currentColor" stroke-opacity=".35"/><path d="M30.0 42.6 L32.1 42.7 L34.2 43.1 L36.3 43.8 L38.4 44.6 L40.5 45.7 L42.6 47.0 L44.7 48.5 L46.8 50.2 L48.9 52.0 L51.0 54.0 L53.1 56.1 L55.2 58.3 L57.3 60.6 L59.4 63.1 L61.5 65.6 L63.6 68.1 L65.7 70.7 L67.8 73.4 L69.9 76.1 L72.1 78.7 L74.2 81.4 L76.3 84.1 L78.4 86.7 L80.5 89.2 L82.6 91.7 L84.7 94.2 L86.8 96.5 L88.9 98.7 L91.0 100.8 L93.1 102.8 L95.2 104.6 L97.3 106.3 L99.4 107.8 L101.5 109.1 L103.6 110.2 L105.7 111.0 L107.8 111.7 L109.9 112.1 L112.0 112.2 L112.0 112.2 L113.4 112.1 L114.7 111.8 L116.1 111.4 L117.5 110.8 L118.8 110.1 L120.2 109.2 L121.6 108.3 L122.9 107.1 L124.3 105.9 L125.7 104.6 L127.0 103.2 L128.4 101.7 L129.8 100.2 L131.1 98.6 L132.5 96.9 L133.9 95.2 L135.2 93.4 L136.6 91.7 L138.0 89.9 L139.3 88.1 L140.7 86.3 L142.1 84.6 L143.4 82.8 L144.8 81.1 L146.2 79.4 L147.5 77.8 L148.9 76.3 L150.3 74.8 L151.6 73.4 L153.0 72.1 L154.4 70.9 L155.7 69.7 L157.1 68.8 L158.5 67.9 L159.8 67.2 L161.2 66.6 L162.6 66.2 L163.9 65.9 L165.3 65.8 L165.3 65.8 L166.6 65.8 L167.8 66.0 L169.1 66.2 L170.3 66.5 L171.6 66.8 L172.9 67.3 L174.1 67.8 L175.4 68.3 L176.7 68.9 L177.9 69.6 L179.2 70.3 L180.4 71.0 L181.7 71.8 L183.0 72.6 L184.2 73.5 L185.5 74.3 L186.7 75.2 L188.0 76.1 L189.3 77.0 L190.5 77.8 L191.8 78.7 L193.1 79.6 L194.3 80.5 L195.6 81.3 L196.8 82.2 L198.1 83.0 L199.4 83.8 L200.6 84.5 L201.9 85.2 L203.1 85.9 L204.4 86.5 L205.7 87.0 L206.9 87.5 L208.2 88.0 L209.5 88.3 L210.7 88.6 L212.0 88.8 L213.2 89.0 L214.5 89.0 L214.5 89.0 L216.1 89.0 L217.7 89.0 L219.2 89.0 L220.8 89.0 L222.4 89.0 L224.0 89.0 L225.5 89.0 L227.1 89.0 L228.7 89.0 L230.3 89.0 L231.8 89.0 L233.4 89.0 L235.0 89.0 L236.6 89.0 L238.2 89.0 L239.7 89.0 L241.3 89.0 L242.9 89.0 L244.5 89.0 L246.0 89.0 L247.6 89.0 L249.2 89.0 L250.8 89.0 L252.3 89.0 L253.9 89.0 L255.5 89.0 L257.1 89.0 L258.7 89.0 L260.2 89.0 L261.8 89.0 L263.4 89.0 L265.0 89.0 L266.5 89.0 L268.1 89.0 L269.7 89.0 L271.3 89.0 L272.8 89.0 L274.4 89.0 L276.0 89.0 L276.0 89.0 L277.1 88.9 L278.1 88.7 L279.2 88.4 L280.2 88.0 L281.3 87.4 L282.3 86.8 L283.4 86.0 L284.4 85.2 L285.5 84.3 L286.5 83.3 L287.6 82.3 L288.6 81.1 L289.7 80.0 L290.7 78.8 L291.8 77.5 L292.8 76.2 L293.9 74.9 L294.9 73.6 L296.0 72.3 L297.0 70.9 L298.1 69.6 L299.1 68.3 L300.2 67.0 L301.2 65.7 L302.3 64.4 L303.3 63.2 L304.4 62.1 L305.4 60.9 L306.5 59.9 L307.5 58.9 L308.6 58.0 L309.6 57.2 L310.7 56.4 L311.7 55.8 L312.8 55.2 L313.8 54.8 L314.9 54.5 L315.9 54.3 L317.0 54.2 L317.0 54.2 L318.4 54.4 L319.7 55.1 L321.1 56.2 L322.5 57.6 L323.8 59.4 L325.2 61.6 L326.6 64.1 L327.9 66.8 L329.3 69.9 L330.7 73.2 L332.0 76.7 L333.4 80.4 L334.8 84.3 L336.1 88.3 L337.5 92.5 L338.9 96.8 L340.2 101.1 L341.6 105.5 L343.0 110.0 L344.3 114.4 L345.7 118.9 L347.1 123.3 L348.4 127.6 L349.8 131.9 L351.2 136.1 L352.5 140.1 L353.9 144.0 L355.3 147.7 L356.6 151.2 L358.0 154.5 L359.4 157.6 L360.7 160.3 L362.1 162.8 L363.5 165.0 L364.8 166.8 L366.2 168.2 L367.6 169.3 L368.9 170.0 L370.3 170.2 L370.3 170.2 L372.1 170.0 L373.9 169.2 L375.7 168.1 L377.4 166.4 L379.2 164.4 L381.0 162.1 L382.8 159.3 L384.6 156.3 L386.4 153.0 L388.2 149.3 L390.0 145.5 L391.7 141.4 L393.5 137.1 L395.3 132.7 L397.1 128.1 L398.9 123.4 L400.7 118.6 L402.5 113.7 L404.3 108.9 L406.0 103.9 L407.8 99.1 L409.6 94.2 L411.4 89.4 L413.2 84.7 L415.0 80.1 L416.8 75.7 L418.6 71.4 L420.3 67.3 L422.1 63.5 L423.9 59.8 L425.7 56.5 L427.5 53.5 L429.3 50.7 L431.1 48.4 L432.9 46.4 L434.6 44.7 L436.4 43.6 L438.2 42.8 L440.0 42.6" fill="none" stroke="#2457a6" stroke-width="3"/><circle cx="112" cy="112.19999999999999" r="5" fill="#6a5acd"/><text x="112" y="134" font-size="12.5" fill="#6a5acd" text-anchor="middle" >strict local min</text><line x1="214.5" y1="89.0" x2="276" y2="89.0" stroke="#1f8a44" stroke-width="6" stroke-opacity=".8"/><text x="245" y="111" font-size="12" fill="#1f8a44" text-anchor="middle" >flat piece: every point is a</text><text x="245" y="126" font-size="12" fill="#1f8a44" text-anchor="middle" >local min, none is strict</text><circle cx="370.3" cy="170.2" r="5" fill="#c8372d"/><text x="370" y="190" font-size="12.5" fill="#c8372d" text-anchor="middle" >global min (also strict)</text><circle cx="165.29999999999998" cy="65.80000000000001" r="4" fill="none" stroke="currentColor"/><text x="165" y="56" font-size="12" fill="currentColor" text-anchor="middle" >local max</text><circle cx="317" cy="54.19999999999999" r="4" fill="none" stroke="currentColor"/><text x="317" y="44" font-size="12" fill="currentColor" text-anchor="middle" >local max</text><text x="440" y="222" font-size="13" fill="currentColor" text-anchor="end" >x</text><text x="32" y="18" font-size="13" fill="currentColor" text-anchor="start" >f(x)</text></svg>
+<div class="cap">One curve, all the cases. Purple: a strict local minimum (lower than all its neighbours, but not the lowest overall). Green: on the flat piece every point is a local minimum (its neighbours are equal, not lower), but none is strict. Red: the global minimum, which here is also strict.</div>
+</div>
+<p><b>Precisely</b> (course definitions). Let $f:\mathbb R^n\to\mathbb R$.</p>
+<ul>
+<li>$x^*$ is a <b>local minimum</b> if there is some radius $\delta\gt0$ such that $f(x^*)\le f(x)$ for every $x$ with $\|x-x^*\|\lt\delta$.</li>
+<li>$x^*$ is a <b>strict</b> (also called <b>strong</b>) local minimum if, for some $\delta\gt0$, $f(x^*)\lt f(x)$ for every $x\ne x^*$ with $\|x-x^*\|\lt\delta$.</li>
+<li>$x^*$ is a <b>global minimum</b> if $f(x^*)\le f(x)$ for <b>every</b> $x\in\mathbb R^n$.</li>
+</ul>
+<p>Reading "there is some $\delta\gt0$": you may zoom in as much as you like before checking. Every global minimum is also a local minimum. Every strict local minimum is also a local minimum (a plain "local minimum" includes the strict ones). Local maximum, strict local maximum etc. are the same with the inequalities reversed.</p>
+<div class="check"><b>Check A1.</b> (a) $f(x)=5$ (constant). Is $x^*=0$ a local min? strict? global? (b) $f(x)=(x^2-1)^2$: what are $x=\pm1$?
+<details class="ans"><summary>Show answer</summary><div><p>(a) Local and global minimum (nobody is lower), but <b>not strict</b> (the neighbours are equal). In fact every point is a non-strict global minimum. (b) $f\ge0$ everywhere and $f(\pm1)=0$, and near $\pm1$ every other point has $f\gt0$: both are strict local minima and both are global minima. A global minimum need not be unique.</p></div></details></div>
+
+<h3 id="a2">A2. Does a minimum exist at all? (Weierstrass, coercive)</h3>
+<p><b>Plain words.</b> The optimality tests describe a minimum <i>if there is one</i>. Sometimes there isn't, and a minimiser can "escape" in two ways:</p>
+<ul>
+<li><b>Escape to infinity.</b> $f(x)=x$: keep going left and $f$ keeps decreasing. $f(x)=e^x$: it is always positive and gets as close to 0 as you like as $x\to-\infty$, but never reaches 0. The lowest value is approached, never <i>attained</i>.</li>
+<li><b>Escape through a missing edge or a jump.</b> $f(x)=x$ on the open interval $(0,1)$: the "best" point would be 0, which is not allowed.</li>
+</ul>
+<p><b>Coercive</b> blocks the first escape: $f$ is <b>coercive</b> if $f(x)\to+\infty$ whenever $\|x\|\to\infty$, i.e. "far away in <i>every</i> direction, the function climbs to $+\infty$". Then all the good candidates sit in a bounded region. Closedness and (lower semi)continuity block the second escape.</p>
+<div class="box must"><span class="tag">Weierstrass theorem, coercive version (Theorem 1.3.1) · skim now; you use it at E1 step 4</span>
+<p>Let $X\subseteq\mathbb R^n$ be <b>nonempty and closed</b>, and let $f:\mathbb R^n\to(-\infty,+\infty]$ be <b>proper</b>, <b>lower semicontinuous</b> and <b>coercive</b>, with $X\cap\text{dom} f\ne\emptyset$. Then $\min_{x\in X}f(x)$ has a solution, and the set of minimisers is nonempty and compact.</p>
+</div>
+<p>Reading the words: <b>closed</b> = contains its boundary points. <b>proper</b> = never $-\infty$ and finite somewhere. $\text{dom} f$ = the points where $f$ is finite. <b>lower semicontinuous</b> (lsc) = may jump <i>down</i> at a point but not <i>up</i>; every continuous function is lsc. <b>compact</b> = closed and bounded. <b>Why it works:</b> pick any allowed $\bar x$ with $f(\bar x)$ finite. Only points with $f(x)\le f(\bar x)$ can win; coercivity makes that set bounded, so it's compact, and an lsc function attains its smallest value on a compact set.</p>
+<div class="box example"><span class="tag">Examples</span>
+<ul>
+<li>$f=x_1^2+x_2^2-4x_1$: the squares win far away, so it's coercive, and a global minimum exists (at $(2,0)$).</li>
+<li>$e^x$ is <b>not</b> coercive ($x\to-\infty$ gives $e^x\to0$, not $+\infty$), consistent with having no minimum. But $e^x+e^{-x}$ is coercive: minimum at 0.</li>
+<li>$-e^{-x^2}$ tends to 0 far away (not coercive), yet it has a global minimum $-1$ at $x=0$. <b>Coercive is sufficient, not necessary.</b></li>
+</ul>
+</div>
+<p><b>How you use it in an exam:</b> if $f$ is continuous and coercive on $\mathbb R^n$, a global minimum exists; a global minimum is a local minimum, so it is among the stationary points (C4); so <b>the global minimum is the stationary point with the smallest value</b>. (Practice N1 does exactly this.)</p>
+<div class="box trap"><span class="tag">Traps</span>
+<ul>
+<li>"Bounded below ⇒ a minimum exists": false ($e^x$).</li>
+<li>"Bounded set ⇒ a minimum exists": false if the set is not closed ($x$ on $(0,1)$).</li>
+<li>"$f'(x)=0$ somewhere ⇒ a minimum exists": false ($x^3$ at 0).</li>
+</ul></div>
+<div class="check"><b>Check A2.</b> Which are coercive on $\mathbb R^2$? (a) $x_1^2+x_2^2$ (b) $(x_1-x_2)^2$ (c) $x_1^4+x_2^2-10x_1x_2$.
+<details class="ans"><summary>Show answer</summary><div><p>(a) Yes. (b) No: along the line $x_1=x_2=s$ it is 0 for every $s$, so it doesn't climb in that direction. (c) Yes: along a line through 0 the term $x_1^4$ (or $x_2^2$ when $x_1=0$) eventually beats $10x_1x_2$; precisely, $|10x_1x_2|\le \tfrac12x_2^2+50x_1^2$, so $f\ge x_1^4-50x_1^2+\tfrac12x_2^2\to\infty$.</p></div></details></div>
+</section>
+
+<!-- ================= B. ONE VARIABLE ================= -->
+<section id="oned">
+<h2>B. One variable first: slope and curvature</h2>
+
+<h3 id="b1">B1. Slope and curvature at a bottom</h3>
+<p>Think of a 1-variable graph $f(x)$. At the bottom of a smooth valley the tangent line is horizontal: $f'(x^*)=0$. A point with $f'(x^*)=0$ is called a <b>stationary point</b> (or critical point). It might be a minimum, a maximum, or neither.</p>
+<p>The second derivative $f''$ measures <b>curvature</b>: $f''\gt0$ means the graph bends up (like a cup), $f''\lt0$ means it bends down (like a cap). At the bottom of a valley we expect "flat and bending up".</p>
+<div class="box example"><span class="tag">Worked example: the mean is a minimiser</span>
+<p>$f(x)=\sum_{i=1}^n w_i(x-y_i)^2$ with weights $w_i\gt0$ and data $y_i$. Then $f'(x)=2\sum_i w_i(x-y_i)=0$ gives $x^*=\dfrac{\sum_i w_iy_i}{\sum_i w_i}$ (the weighted mean), and $f''=2\sum_i w_i\gt0$: it bends up everywhere. Numbers: data $2,3,7$ with weights $1,1,2$: $x^*=\frac{2+3+14}{4}=4.75$. (Quiz 1 Q6 is this.)</p>
+</div>
+
+<h3 id="b2">B2. The tool behind every proof: little-o and Taylor</h3>
+<p><b>Little-o in plain words.</b> We need a way to say "this leftover term is so small near 0 that it doesn't matter". Writing</p>
+$$r(h)=o(h^2)\quad(h\to0)\qquad\text{means}\qquad \frac{r(h)}{h^2}\to0 .$$
+<p>So $r(h)$ is small even <i>compared with</i> $h^2$, which is itself small. Example: $r(h)=h^3$. The ratio $h^3/h^2=h$ is $0.1$ at $h=0.1$ and $0.01$ at $h=0.01$, so $h^3=o(h^2)$. Note: $o(h^2)$ says nothing about the <b>sign</b> of $r$; it can be positive or negative. Likewise $r(h)=o(h)$ means $r(h)/h\to0$.</p>
+<p><b>Taylor's formula</b> (with a little-o remainder): if $f$ is twice differentiable at $x^*$,</p>
+$$f(x^*+h)=f(x^*)+f'(x^*)\,h+\tfrac12f''(x^*)\,h^2+o(h^2).$$
+<p>(With only one derivative: $f(x^*+h)=f(x^*)+f'(x^*)h+o(h)$.) In words: near $x^*$ the function looks like a parabola, and the error is negligible even compared with $h^2$.</p>
+<div class="box example"><span class="tag">With numbers: $f(x)=e^x$ at $x^*=0$</span>
+<p>$f(0)=f'(0)=f''(0)=1$, so the Taylor parabola is $1+h+\frac12h^2$. At $h=0.1$: $e^{0.1}=1.105171$, parabola $1.105$, remainder $0.000171$, and remainder$/h^2=0.0171$. At $h=0.01$: remainder$/h^2=0.00167$. The ratio $\to0$: that's what $o(h^2)$ means.</p>
+</div>
+<div class="fig">
+<svg viewBox="0 0 500 215" width="500" role="img" aria-label="e to the x and its second-order Taylor polynomial"><line x1="20" y1="200" x2="400" y2="200" stroke="currentColor" stroke-opacity=".35"/><line x1="210" y1="10" x2="210" y2="210" stroke="currentColor" stroke-opacity=".35"/><path d="M23.0 197.2 L26.0 197.1 L29.0 197.0 L32.0 196.9 L35.0 196.8 L38.0 196.7 L41.0 196.6 L44.0 196.5 L47.0 196.3 L50.0 196.2 L53.0 196.1 L56.0 195.9 L59.0 195.8 L62.0 195.6 L65.0 195.5 L68.0 195.3 L71.0 195.1 L74.0 195.0 L77.0 194.8 L80.0 194.6 L83.0 194.4 L86.0 194.2 L89.0 194.0 L92.0 193.8 L95.0 193.5 L98.0 193.3 L101.0 193.1 L104.0 192.8 L107.0 192.6 L110.0 192.3 L113.0 192.0 L116.0 191.7 L119.0 191.4 L122.0 191.1 L125.0 190.8 L128.0 190.5 L131.0 190.1 L134.0 189.8 L137.0 189.4 L140.0 189.0 L143.0 188.6 L146.0 188.2 L149.0 187.8 L152.0 187.4 L155.0 186.9 L158.0 186.4 L161.0 186.0 L164.0 185.4 L167.0 184.9 L170.0 184.4 L173.0 183.8 L176.0 183.2 L179.0 182.6 L182.0 182.0 L185.0 181.4 L188.0 180.7 L191.0 180.0 L194.0 179.3 L197.0 178.5 L200.0 177.8 L203.0 177.0 L206.0 176.1 L209.0 175.3 L212.0 174.4 L215.0 173.5 L218.0 172.5 L221.0 171.5 L224.0 170.5 L227.0 169.5 L230.0 168.4 L233.0 167.2 L236.0 166.1 L239.0 164.8 L242.0 163.6 L245.0 162.3 L248.0 160.9 L251.0 159.5 L254.0 158.0 L257.0 156.5 L260.0 155.0 L263.0 153.4 L266.0 151.7 L269.0 150.0 L272.0 148.2 L275.0 146.3 L278.0 144.4 L281.0 142.4 L284.0 140.3 L287.0 138.1 L290.0 135.9 L293.0 133.6 L296.0 131.2 L299.0 128.8 L302.0 126.2 L305.0 123.6 L308.0 120.8 L311.0 118.0 L314.0 115.0 L317.0 112.0 L320.0 108.8 L323.0 105.5 L326.0 102.1 L329.0 98.6 L332.0 95.0 L335.0 91.2 L338.0 87.3 L341.0 83.2 L344.0 79.1 L347.0 74.7 L350.0 70.2 L353.0 65.5 L356.0 60.7 L359.0 55.7 L362.0 50.5 L365.0 45.2 L368.0 39.6 L371.0 33.8 L374.0 27.9 L377.0 21.7 L380.0 15.3" fill="none" stroke="#2457a6" stroke-width="3"/><path d="M23.0 169.5 L26.0 170.5 L29.0 171.6 L32.0 172.5 L35.0 173.5 L38.0 174.4 L41.0 175.3 L44.0 176.1 L47.0 177.0 L50.0 177.8 L53.0 178.5 L56.0 179.3 L59.0 180.0 L62.0 180.6 L65.0 181.3 L68.0 181.9 L71.0 182.5 L74.0 183.0 L77.0 183.5 L80.0 184.0 L83.0 184.4 L86.0 184.9 L89.0 185.3 L92.0 185.6 L95.0 185.9 L98.0 186.2 L101.0 186.5 L104.0 186.7 L107.0 186.9 L110.0 187.1 L113.0 187.3 L116.0 187.4 L119.0 187.4 L122.0 187.5 L125.0 187.5 L128.0 187.5 L131.0 187.4 L134.0 187.4 L137.0 187.3 L140.0 187.1 L143.0 186.9 L146.0 186.7 L149.0 186.5 L152.0 186.2 L155.0 185.9 L158.0 185.6 L161.0 185.3 L164.0 184.9 L167.0 184.4 L170.0 184.0 L173.0 183.5 L176.0 183.0 L179.0 182.5 L182.0 181.9 L185.0 181.3 L188.0 180.6 L191.0 180.0 L194.0 179.3 L197.0 178.5 L200.0 177.8 L203.0 177.0 L206.0 176.1 L209.0 175.3 L212.0 174.4 L215.0 173.5 L218.0 172.5 L221.0 171.6 L224.0 170.5 L227.0 169.5 L230.0 168.4 L233.0 167.3 L236.0 166.2 L239.0 165.0 L242.0 163.8 L245.0 162.6 L248.0 161.3 L251.0 160.0 L254.0 158.7 L257.0 157.4 L260.0 156.0 L263.0 154.6 L266.0 153.1 L269.0 151.6 L272.0 150.1 L275.0 148.6 L278.0 147.0 L281.0 145.4 L284.0 143.8 L287.0 142.1 L290.0 140.4 L293.0 138.7 L296.0 136.9 L299.0 135.1 L302.0 133.3 L305.0 131.4 L308.0 129.6 L311.0 127.6 L314.0 125.7 L317.0 123.7 L320.0 121.7 L323.0 119.7 L326.0 117.6 L329.0 115.5 L332.0 113.4 L335.0 111.2 L338.0 109.0 L341.0 106.8 L344.0 104.5 L347.0 102.2 L350.0 99.9 L353.0 97.6 L356.0 95.2 L359.0 92.8 L362.0 90.3 L365.0 87.8 L368.0 85.3 L371.0 82.8 L374.0 80.2 L377.0 77.6 L380.0 75.0" fill="none" stroke="#c8372d" stroke-width="2.5" stroke-dasharray="7 5"/><rect x="180.25" y="160.0" width="59.49999999999999" height="25.0" fill="#1f8a44" fill-opacity=".12" stroke="#1f8a44"/><text x="387" y="25" font-size="13" fill="#2457a6" text-anchor="start" >eˣ (blue)</text><text x="387" y="77" font-size="13" fill="#c8372d" text-anchor="start" >1 + x + x²/2</text><text x="387" y="95" font-size="12" fill="#c8372d" text-anchor="start" >(red dashed)</text><text x="176" y="149" font-size="12" fill="#1f8a44" text-anchor="end" >near 0 the two curves</text><text x="176" y="162" font-size="12" fill="#1f8a44" text-anchor="end" >are indistinguishable</text><text x="398" y="196" font-size="13" fill="currentColor" text-anchor="end" >x</text></svg>
+<div class="cap">Blue: $e^x$. Red dashed: its second-order Taylor polynomial $1+x+\frac{x^2}{2}$. Far from 0 they differ; inside the green box you can't tell them apart. The tests in this chapter only ever look inside such a tiny box.</div>
+</div>
+<div class="box must"><span class="tag">The one idea in every proof</span>
+<p>For tiny $h$, the remainder is negligible compared with the first term that is <b>not zero</b>. So <b>the sign of $f(x^*+h)-f(x^*)$ is the sign of the first nonzero term</b>. If every term we know is zero, the remainder decides, and we know nothing about its sign.</p>
+</div>
+
+<h3 id="b3">B3. The three conditions in one variable, with proofs</h3>
+<p>First two words that the whole chapter depends on:</p>
+<ul>
+<li><b>Necessary</b> condition: every minimum satisfies it. So <b>failing</b> it rules a point <b>out</b>. Passing it proves nothing.</li>
+<li><b>Sufficient</b> condition: anything that satisfies it is a minimum. So <b>passing</b> it rules a point <b>in</b>. Failing it proves nothing.</li>
+</ul>
+<div class="box must"><span class="tag">1-D conditions</span>
+<ul>
+<li><b>FONC</b> (first-order necessary condition): $x^*$ local min and $f$ differentiable at $x^*$ $\Rightarrow$ $f'(x^*)=0$.</li>
+<li><b>SONC</b> (second-order necessary condition): $x^*$ local min and $f$ twice differentiable $\Rightarrow$ $f'(x^*)=0$ <b>and</b> $f''(x^*)\ge0$.</li>
+<li><b>SOSC</b> (second-order sufficient condition): $f'(x^*)=0$ <b>and</b> $f''(x^*)\gt0$ $\Rightarrow$ $x^*$ is a <b>strict</b> local min.</li>
+</ul></div>
+<div class="box example"><span class="tag">Why (each proof is the "first nonzero term" idea)</span>
+<ol class="steps">
+<li><b>FONC.</b> $f(x^*+h)-f(x^*)=f'(x^*)h+o(h)=h\big(f'(x^*)+\tfrac{o(h)}{h}\big)$. The bracket tends to $f'(x^*)$. Suppose $f'(x^*)\gt0$: for small $h$ the bracket is positive, so a small <i>negative</i> $h$ makes the difference negative: a nearby point is lower. That contradicts "local min". If $f'(x^*)\lt0$, use a small positive $h$. So $f'(x^*)=0$.</li>
+<li><b>SONC.</b> Now $f'(x^*)=0$, so $f(x^*+h)-f(x^*)=h^2\big(\tfrac12f''(x^*)+\tfrac{o(h^2)}{h^2}\big)$. If $f''(x^*)\lt0$, the bracket is negative for all small $h$, and $h^2\gt0$, so every nearby point is lower: contradiction. So $f''(x^*)\ge0$.</li>
+<li><b>SOSC.</b> Same formula with $f''(x^*)\gt0$: the bracket is positive for small $h$, and $h^2\gt0$ for $h\ne0$, so $f(x^*+h)\gt f(x^*)$: a <b>strict</b> local min. (The proof produces a strict inequality, which is why SOSC always promises a <i>strict</i> minimum.)</li>
+</ol>
+<p><b>Why SONC can't say "$\gt$":</b> the proof only reaches a contradiction when $f''(x^*)\lt0$. If $f''(x^*)=0$ the bracket is just $o(h^2)/h^2$, which can have either sign. That case is the gap, and the next section lives in it.</p>
+</div>
+
+<h3 id="b4">B4. The four test functions: $x^2$, $x^4$, $x^3$, $-x^4$ at 0</h3>
+<div class="fig">
+<svg viewBox="0 0 620 196" width="620" role="img" aria-label="x squared, x to the fourth, x cubed and minus x to the fourth near 0"><line x1="15" y1="85" x2="145" y2="85" stroke="currentColor" stroke-opacity=".35"/><line x1="80" y1="18" x2="80" y2="152" stroke="currentColor" stroke-opacity=".35"/><path d="M19.5 30.5 L20.9 33.0 L22.2 35.3 L23.6 37.6 L24.9 39.9 L26.3 42.1 L27.7 44.2 L29.0 46.3 L30.4 48.4 L31.7 50.3 L33.1 52.3 L34.5 54.1 L35.8 56.0 L37.2 57.7 L38.5 59.4 L39.9 61.1 L41.3 62.7 L42.6 64.2 L44.0 65.7 L45.3 67.1 L46.7 68.5 L48.1 69.8 L49.4 71.1 L50.8 72.3 L52.1 73.4 L53.5 74.5 L54.8 75.6 L56.2 76.6 L57.6 77.5 L58.9 78.4 L60.3 79.2 L61.6 80.0 L63.0 80.7 L64.4 81.4 L65.7 82.0 L67.1 82.5 L68.4 83.0 L69.8 83.5 L71.2 83.8 L72.5 84.2 L73.9 84.4 L75.2 84.7 L76.6 84.8 L78.0 84.9 L79.3 85.0 L80.7 85.0 L82.0 84.9 L83.4 84.8 L84.8 84.7 L86.1 84.4 L87.5 84.2 L88.8 83.8 L90.2 83.5 L91.6 83.0 L92.9 82.5 L94.3 82.0 L95.6 81.4 L97.0 80.7 L98.4 80.0 L99.7 79.2 L101.1 78.4 L102.4 77.5 L103.8 76.6 L105.2 75.6 L106.5 74.5 L107.9 73.4 L109.2 72.3 L110.6 71.1 L111.9 69.8 L113.3 68.5 L114.7 67.1 L116.0 65.7 L117.4 64.2 L118.7 62.7 L120.1 61.1 L121.5 59.4 L122.8 57.7 L124.2 56.0 L125.5 54.1 L126.9 52.3 L128.3 50.3 L129.6 48.4 L131.0 46.3 L132.3 44.2 L133.7 42.1 L135.1 39.9 L136.4 37.6 L137.8 35.3 L139.1 33.0 L140.5 30.5" fill="none" stroke="#2457a6" stroke-width="3"/><circle cx="80" cy="85" r="4.5" fill="#1f8a44"/><text x="80" y="14" font-size="14" fill="currentColor" text-anchor="middle" font-weight="700">f = x²</text><text x="80" y="172" font-size="12" fill="currentColor" text-anchor="middle" >f″(0) = 2 &gt; 0</text><text x="80" y="188" font-size="12" fill="#1f8a44" text-anchor="middle" font-weight="700">SOSC holds: strict min</text><line x1="170" y1="85" x2="300" y2="85" stroke="currentColor" stroke-opacity=".35"/><line x1="235" y1="18" x2="235" y2="152" stroke="currentColor" stroke-opacity=".35"/><path d="M174.5 19.1 L175.9 24.8 L177.2 30.2 L178.6 35.2 L179.9 39.8 L181.3 44.1 L182.7 48.1 L184.0 51.8 L185.4 55.2 L186.7 58.3 L188.1 61.2 L189.5 63.8 L190.8 66.3 L192.2 68.5 L193.5 70.5 L194.9 72.3 L196.3 73.9 L197.6 75.4 L199.0 76.7 L200.3 77.9 L201.7 78.9 L203.1 79.9 L204.4 80.7 L205.8 81.4 L207.1 82.0 L208.5 82.6 L209.8 83.0 L211.2 83.4 L212.6 83.8 L213.9 84.0 L215.3 84.3 L216.6 84.4 L218.0 84.6 L219.4 84.7 L220.7 84.8 L222.1 84.9 L223.4 84.9 L224.8 84.9 L226.2 85.0 L227.5 85.0 L228.9 85.0 L230.2 85.0 L231.6 85.0 L233.0 85.0 L234.3 85.0 L235.7 85.0 L237.0 85.0 L238.4 85.0 L239.8 85.0 L241.1 85.0 L242.5 85.0 L243.8 85.0 L245.2 84.9 L246.6 84.9 L247.9 84.9 L249.3 84.8 L250.6 84.7 L252.0 84.6 L253.4 84.4 L254.7 84.3 L256.1 84.0 L257.4 83.8 L258.8 83.4 L260.2 83.0 L261.5 82.6 L262.9 82.0 L264.2 81.4 L265.6 80.7 L266.9 79.9 L268.3 78.9 L269.7 77.9 L271.0 76.7 L272.4 75.4 L273.7 73.9 L275.1 72.3 L276.5 70.5 L277.8 68.5 L279.2 66.3 L280.5 63.8 L281.9 61.2 L283.3 58.3 L284.6 55.2 L286.0 51.8 L287.3 48.1 L288.7 44.1 L290.1 39.8 L291.4 35.2 L292.8 30.2 L294.1 24.8 L295.5 19.1" fill="none" stroke="#2457a6" stroke-width="3"/><circle cx="235" cy="85" r="4.5" fill="#1f8a44"/><text x="235" y="14" font-size="14" fill="currentColor" text-anchor="middle" font-weight="700">f = x⁴</text><text x="235" y="172" font-size="12" fill="currentColor" text-anchor="middle" >f″(0) = 0</text><text x="235" y="188" font-size="12" fill="#1f8a44" text-anchor="middle" font-weight="700">strict min anyway</text><line x1="325" y1="85" x2="455" y2="85" stroke="currentColor" stroke-opacity=".35"/><line x1="390" y1="18" x2="390" y2="152" stroke="currentColor" stroke-opacity=".35"/><path d="M329.5 144.9 L330.9 140.9 L332.2 137.2 L333.6 133.6 L334.9 130.2 L336.3 126.9 L337.7 123.8 L339.0 120.8 L340.4 118.1 L341.7 115.4 L343.1 112.9 L344.5 110.6 L345.8 108.3 L347.2 106.2 L348.5 104.3 L349.9 102.4 L351.3 100.7 L352.6 99.1 L354.0 97.6 L355.3 96.3 L356.7 95.0 L358.1 93.8 L359.4 92.7 L360.8 91.8 L362.1 90.9 L363.5 90.0 L364.8 89.3 L366.2 88.6 L367.6 88.1 L368.9 87.5 L370.3 87.1 L371.6 86.7 L373.0 86.3 L374.4 86.0 L375.7 85.8 L377.1 85.6 L378.4 85.4 L379.8 85.3 L381.2 85.2 L382.5 85.1 L383.9 85.1 L385.2 85.0 L386.6 85.0 L388.0 85.0 L389.3 85.0 L390.7 85.0 L392.0 85.0 L393.4 85.0 L394.8 85.0 L396.1 84.9 L397.5 84.9 L398.8 84.8 L400.2 84.7 L401.6 84.6 L402.9 84.4 L404.3 84.2 L405.6 84.0 L407.0 83.7 L408.4 83.3 L409.7 82.9 L411.1 82.5 L412.4 81.9 L413.8 81.4 L415.2 80.7 L416.5 80.0 L417.9 79.1 L419.2 78.2 L420.6 77.3 L421.9 76.2 L423.3 75.0 L424.7 73.7 L426.0 72.4 L427.4 70.9 L428.7 69.3 L430.1 67.6 L431.5 65.7 L432.8 63.8 L434.2 61.7 L435.5 59.4 L436.9 57.1 L438.3 54.6 L439.6 51.9 L441.0 49.2 L442.3 46.2 L443.7 43.1 L445.1 39.8 L446.4 36.4 L447.8 32.8 L449.1 29.1 L450.5 25.1" fill="none" stroke="#2457a6" stroke-width="3"/><circle cx="390" cy="85" r="4.5" fill="#c8372d"/><text x="390" y="14" font-size="14" fill="currentColor" text-anchor="middle" font-weight="700">f = x³</text><text x="390" y="172" font-size="12" fill="currentColor" text-anchor="middle" >f″(0) = 0</text><text x="390" y="188" font-size="12" fill="#c8372d" text-anchor="middle" font-weight="700">not a min, not a max</text><line x1="480" y1="85" x2="610" y2="85" stroke="currentColor" stroke-opacity=".35"/><line x1="545" y1="18" x2="545" y2="152" stroke="currentColor" stroke-opacity=".35"/><path d="M484.5 150.9 L485.9 145.2 L487.2 139.8 L488.6 134.8 L489.9 130.2 L491.3 125.9 L492.7 121.9 L494.0 118.2 L495.4 114.8 L496.7 111.7 L498.1 108.8 L499.5 106.2 L500.8 103.7 L502.2 101.5 L503.5 99.5 L504.9 97.7 L506.3 96.1 L507.6 94.6 L509.0 93.3 L510.3 92.1 L511.7 91.1 L513.1 90.1 L514.4 89.3 L515.8 88.6 L517.1 88.0 L518.5 87.4 L519.8 87.0 L521.2 86.6 L522.6 86.2 L523.9 86.0 L525.3 85.7 L526.6 85.6 L528.0 85.4 L529.4 85.3 L530.7 85.2 L532.1 85.1 L533.4 85.1 L534.8 85.1 L536.2 85.0 L537.5 85.0 L538.9 85.0 L540.2 85.0 L541.6 85.0 L543.0 85.0 L544.3 85.0 L545.7 85.0 L547.0 85.0 L548.4 85.0 L549.8 85.0 L551.1 85.0 L552.5 85.0 L553.8 85.0 L555.2 85.1 L556.6 85.1 L557.9 85.1 L559.3 85.2 L560.6 85.3 L562.0 85.4 L563.4 85.6 L564.7 85.7 L566.1 86.0 L567.4 86.2 L568.8 86.6 L570.2 87.0 L571.5 87.4 L572.9 88.0 L574.2 88.6 L575.6 89.3 L576.9 90.1 L578.3 91.1 L579.7 92.1 L581.0 93.3 L582.4 94.6 L583.7 96.1 L585.1 97.7 L586.5 99.5 L587.8 101.5 L589.2 103.7 L590.5 106.2 L591.9 108.8 L593.3 111.7 L594.6 114.8 L596.0 118.2 L597.3 121.9 L598.7 125.9 L600.1 130.2 L601.4 134.8 L602.8 139.8 L604.1 145.2 L605.5 150.9" fill="none" stroke="#2457a6" stroke-width="3"/><circle cx="545" cy="85" r="4.5" fill="#c8372d"/><text x="545" y="14" font-size="14" fill="currentColor" text-anchor="middle" font-weight="700">f = −x⁴</text><text x="545" y="172" font-size="12" fill="currentColor" text-anchor="middle" >f″(0) = 0</text><text x="545" y="188" font-size="12" fill="#c8372d" text-anchor="middle" font-weight="700">a strict local MAX</text></svg>
+<div class="cap">All four are flat at 0 ($f'(0)=0$, FONC holds). Only $x^2$ has $f''(0)\gt0$. The other three all have $f''(0)=0$, so they all pass SONC and all fail SOSC, yet they are a minimum, neither, and a maximum. The second derivative cannot tell them apart.</div>
+</div>
+<div class="mathwide"><table>
+<tr><th>$f$ at 0</th><th>$f'(0)$</th><th>$f''(0)$</th><th>FONC</th><th>SONC</th><th>SOSC</th><th>What 0 really is</th><th>Lesson</th></tr>
+<tr><td>$x^2$</td><td>0</td><td>2</td><td>✓</td><td>✓</td><td>✓</td><td>strict global min</td><td>the normal case</td></tr>
+<tr><td>$x^4$</td><td>0</td><td>0</td><td>✓</td><td>✓</td><td>✗</td><td>strict global min</td><td>SOSC is <b>not necessary</b></td></tr>
+<tr><td>$x^3$</td><td>0</td><td>0</td><td>✓</td><td>✓</td><td>✗</td><td>neither (inflection)</td><td>FONC + SONC are <b>not sufficient</b></td></tr>
+<tr><td>$-x^4$</td><td>0</td><td>0</td><td>✓</td><td>✓</td><td>✗</td><td>strict local <b>max</b></td><td>SONC doesn't even rule out a max</td></tr>
+</table></div>
+<p>How do we know the truth without the tests? Look at the function directly: $x^4\gt0$ for $x\ne0$ (min); $x^3$ is negative for $x\lt0$ and positive for $x\gt0$ (neither); $-x^4\lt0$ for $x\ne0$ (max).</p>
+<div class="box trap"><span class="tag">Traps (Quiz 1 tested every one)</span>
+<ul>
+<li>"SOSC fails ⇒ not a minimum": false ($x^4$).</li>
+<li>"FONC and SONC hold ⇒ minimum": false ($x^3$, $-x^4$).</li>
+<li>"$f''(x^*)\lt0$ at a stationary point, but the remainder might still make it a minimum": false. $o(h^2)/h^2\to0$, so a remainder can never beat a nonzero $h^2$ term. Such a point is a strict local max.</li>
+<li>SONC has the <b>weak</b> inequality $\ge$; SOSC has the <b>strict</b> one $\gt$, and concludes a <b>strict</b> minimum.</li>
+</ul></div>
+<div class="check"><b>Check B.</b> $f(x)=x^2(x-1)$ has stationary points $0$ and $\tfrac23$. Classify them using $f''$.
+<details class="ans"><summary>Show answer</summary><div><p>$f=x^3-x^2$, $f'=3x^2-2x=x(3x-2)$, $f''=6x-2$. At 0: $f''=-2\lt0$ ⇒ strict local max (by the 1-D SONC, it can't be a min; it's a max by SOSC applied to $-f$). At $\tfrac23$: $f''=2\gt0$ ⇒ SOSC ⇒ strict local min. Not global: $f\to-\infty$ as $x\to-\infty$.</p></div></details></div>
+</section>
+
+<!-- ================= C. MANY VARIABLES ================= -->
+<section id="nd">
+<h2>C. Many variables: look along every line</h2>
+<p>The big idea of the chapter: <b>an $n$-variable question becomes a 1-variable question if you walk along a straight line.</b> Then B applies.</p>
+
+<h3 id="c1">C1. Gradient and Hessian</h3>
+<p>For $f(x_1,\dots,x_n)$:</p>
+<ul>
+<li>The <b>gradient</b> $\nabla f(x)$ is the column of first partial derivatives: entry $i$ is $\partial f/\partial x_i$ (the slope when you move only $x_i$).</li>
+<li>The <b>Hessian</b> $\nabla^2 f(x)$ is the $n\times n$ matrix of second partial derivatives: entry $(i,j)$ is $\partial^2 f/\partial x_i\partial x_j$. When $f\in C^2$ it is <b>symmetric</b> (entry $(i,j)$ = entry $(j,i)$).</li>
+</ul>
+<div class="box example"><span class="tag">Example</span>
+<p>$f(x)=x_1^2+3x_1x_2$. $\partial f/\partial x_1=2x_1+3x_2$, $\partial f/\partial x_2=3x_1$, so $\nabla f(x)=\begin{bmatrix}2x_1+3x_2\\3x_1\end{bmatrix}$ and $\nabla^2f(x)=\begin{bmatrix}2&3\\3&0\end{bmatrix}$. At $x=(1,2)$: $\nabla f=(8,3)$.</p>
+</div>
+
+<h3 id="c2">C2. Restrict to a line: slope $=\nabla f^\top d$, curvature $=d^\top\nabla^2 f\,d$</h3>
+<p>Stand at $x^*$, pick a direction $d$, and walk: your position after "time" $t$ is $x^*+td$. Define the 1-variable function</p>
+$$\varphi(t)=f(x^*+td).$$
+<p>If $x^*$ is a local minimum of $f$, then $t=0$ is a local minimum of $\varphi$ (the line passes through the small ball around $x^*$). By the chain rule ($\frac{d}{dt}$ of $f(x^*+td)$ is $\sum_i\frac{\partial f}{\partial x_i}\cdot d_i$; differentiate once more for the second):</p>
+<div class="box must"><span class="tag">The formula he called "very important… we'll use it almost everywhere"</span>
+$$\varphi'(0)=\nabla f(x^*)^\top d\quad\text{(slope in direction }d),\qquad \varphi''(0)=d^\top\nabla^2 f(x^*)\,d\quad\text{(curvature in direction }d).$$
+</div>
+<div class="fig">
+<svg viewBox="0 0 520 228" width="520" role="img" aria-label="Restricting f to lines through x star"><ellipse cx="120" cy="110" rx="28" ry="16" fill="none" stroke="#2457a6" stroke-opacity="0.9"/><ellipse cx="120" cy="110" rx="56" ry="32" fill="none" stroke="#2457a6" stroke-opacity="0.7"/><ellipse cx="120" cy="110" rx="84" ry="48" fill="none" stroke="#2457a6" stroke-opacity="0.5"/><circle cx="120" cy="110" r="4.5" fill="#c8372d"/><text x="126" y="128" font-size="13" fill="#c8372d" text-anchor="start" >x*</text><line x1="15.0" y1="110.0" x2="225.0" y2="110.0" stroke="#1f8a44" stroke-width="2"/><text x="229" y="108" font-size="13" fill="#1f8a44" text-anchor="start" >d</text><line x1="67.5" y1="200.9" x2="172.5" y2="19.1" stroke="#6a5acd" stroke-width="2"/><text x="176" y="17" font-size="13" fill="#6a5acd" text-anchor="start" >d′</text><text x="10" y="16" font-size="12" fill="currentColor" text-anchor="start" >contours of f around x*</text><line x1="260" y1="190" x2="480" y2="190" stroke="currentColor" stroke-opacity=".35"/><line x1="370" y1="20" x2="370" y2="200" stroke="currentColor" stroke-opacity=".35"/><path d="M272.0 93.0 L275.3 99.4 L278.6 105.7 L282.0 111.7 L285.3 117.5 L288.6 123.1 L291.9 128.4 L295.3 133.6 L298.6 138.5 L301.9 143.1 L305.2 147.6 L308.5 151.8 L311.9 155.9 L315.2 159.6 L318.5 163.2 L321.8 166.6 L325.2 169.7 L328.5 172.6 L331.8 175.3 L335.1 177.7 L338.4 179.9 L341.8 181.9 L345.1 183.7 L348.4 185.3 L351.7 186.6 L355.1 187.7 L358.4 188.6 L361.7 189.3 L365.0 189.7 L368.3 190.0 L371.7 190.0 L375.0 189.7 L378.3 189.3 L381.6 188.6 L384.9 187.7 L388.3 186.6 L391.6 185.3 L394.9 183.7 L398.2 181.9 L401.6 179.9 L404.9 177.7 L408.2 175.3 L411.5 172.6 L414.8 169.7 L418.2 166.6 L421.5 163.2 L424.8 159.6 L428.1 155.9 L431.5 151.8 L434.8 147.6 L438.1 143.1 L441.4 138.5 L444.7 133.6 L448.1 128.4 L451.4 123.1 L454.7 117.5 L458.0 111.7 L461.4 105.7 L464.7 99.4 L468.0 93.0" fill="none" stroke="#1f8a44" stroke-width="3"/><path d="M272.0 17.5 L275.3 29.0 L278.6 40.1 L282.0 50.8 L285.3 61.1 L288.6 71.0 L291.9 80.5 L295.3 89.7 L298.6 98.4 L301.9 106.7 L305.2 114.6 L308.5 122.2 L311.9 129.3 L315.2 136.0 L318.5 142.4 L321.8 148.3 L325.2 153.9 L328.5 159.0 L331.8 163.8 L335.1 168.1 L338.4 172.1 L341.8 175.7 L345.1 178.9 L348.4 181.6 L351.7 184.0 L355.1 186.0 L358.4 187.6 L361.7 188.8 L365.0 189.6 L368.3 190.0 L371.7 190.0 L375.0 189.6 L378.3 188.8 L381.6 187.6 L384.9 186.0 L388.3 184.0 L391.6 181.6 L394.9 178.9 L398.2 175.7 L401.6 172.1 L404.9 168.1 L408.2 163.8 L411.5 159.0 L414.8 153.9 L418.2 148.3 L421.5 142.4 L424.8 136.0 L428.1 129.3 L431.5 122.2 L434.8 114.6 L438.1 106.7 L441.4 98.4 L444.7 89.7 L448.1 80.5 L451.4 71.0 L454.7 61.1 L458.0 50.8 L461.4 40.1 L464.7 29.0 L468.0 17.5" fill="none" stroke="#6a5acd" stroke-width="2.5"/><circle cx="370" cy="190" r="4.5" fill="#c8372d"/><text x="375" y="16" font-size="13" fill="currentColor" text-anchor="start" >slices φ(t) = f(x* + td)</text><text x="478" y="206" font-size="13" fill="currentColor" text-anchor="end" >t</text><text x="300" y="222" font-size="12" fill="#1f8a44" text-anchor="start" >green: along d</text><text x="400" y="222" font-size="12" fill="#6a5acd" text-anchor="start" >purple: along d′</text></svg>
+<div class="cap">Left: contours (level curves) of a function around $x^*$ and two lines through it in directions $d$ and $d'$. Right: the 1-D slices $\varphi(t)$ along those lines. Every line gives a 1-D problem, and B applies to it.</div>
+</div>
+<div class="box example"><span class="tag">Check the formula with numbers</span>
+<p>Same $f=x_1^2+3x_1x_2$, at $x^*=(1,2)$, direction $d=(1,-1)$. Walking: $x^*+td=(1+t,\,2-t)$, so</p>
+$$\varphi(t)=(1+t)^2+3(1+t)(2-t)=1+2t+t^2+3(2+t-t^2)=7+5t-2t^2.$$
+<p>For a $2\times2$ symmetric matrix $S=\begin{bmatrix}s_{11}&amp;s_{12}\\s_{12}&amp;s_{22}\end{bmatrix}$ and $d=(d_1,d_2)$, multiplying out gives $d^\top Sd=s_{11}d_1^2+2s_{12}d_1d_2+s_{22}d_2^2$ (the off-diagonal entry appears twice).</p>
+<p>Directly: $\varphi'(0)=5$, $\varphi''(0)=-4$. Formula: $\nabla f(x^*)^\top d=(8,3)\cdot(1,-1)=8-3=5$ ✓. And $d^\top\nabla^2f\,d=\begin{bmatrix}1&-1\end{bmatrix}\begin{bmatrix}2&3\\3&0\end{bmatrix}\begin{bmatrix}1\\-1\end{bmatrix}=s_{11}d_1^2+2s_{12}d_1d_2+s_{22}d_2^2=2\cdot1+2\cdot3\cdot(1)(-1)+0=-4$ ✓.</p>
+</div>
+
+<h3 id="c3">C3. Taylor in $n$ variables, and the words PSD / PD</h3>
+<p>The $n$-variable version of Taylor's formula is a theorem about $C^2$ functions (it is <b>not</b> obtained just by putting $h=td$ into the 1-D formula line by line: the remainder must be small <i>uniformly</i>, for all directions at once, depending only on $\|h\|$). For $f\in C^2$ near $x^*$:</p>
+$$f(x^*+h)=f(x^*)+\nabla f(x^*)^\top h+\tfrac12\,h^\top\nabla^2f(x^*)\,h+o(\|h\|^2),$$
+<p>where $o(\|h\|^2)$ is a remainder with $o(\|h\|^2)/\|h\|^2\to0$ as $h\to0$. The middle term is "slope times step", the next is "half the curvature times step squared". What lines <i>do</i> give us are the two formulas of C2, $\varphi'(0)=\nabla f(x^*)^\top d$ and $\varphi''(0)=d^\top\nabla^2f(x^*)d$; that is enough for FONC and SONC, but SOSC needs this uniform remainder (C4, E4).</p>
+<p>The curvature term $h^\top Sh$ (with $S$ the Hessian) is a number for each direction. We name matrices by its sign. For a symmetric matrix $S$:</p>
+<div class="box must"><span class="tag">Definitions</span>
+<ul>
+<li>$S$ is <b>positive semidefinite</b> (PSD, $S\succeq0$) if $d^\top Sd\ge0$ for all $d$: curvature never negative.</li>
+<li>$S$ is <b>positive definite</b> (PD, $S\succ0$) if $d^\top Sd\gt0$ for all $d\ne0$: curvature strictly positive in every direction.</li>
+<li>$S$ is <b>indefinite</b> if $d^\top Sd$ is positive for some $d$ and negative for others. (Negative semidefinite / definite: same with $\le$ / $\lt$, i.e. $-S$ is PSD / PD.)</li>
+</ul></div>
+<p>Example: $\begin{bmatrix}2&3\\3&0\end{bmatrix}$ from C2 is indefinite: $d=(1,0)$ gives $2\gt0$, $d=(1,-1)$ gave $-4\lt0$. (Section D gives fast tests.)</p>
+
+<h3 id="c4">C4. FONC, SONC, SOSC in $n$ variables</h3>
+<div class="box must"><span class="tag">Theorems 1.3.2–1.3.4</span>
+<ul>
+<li><b>FONC</b>: $x^*$ local min, $f$ differentiable at $x^*$ $\Rightarrow$ $\nabla f(x^*)=0$.</li>
+<li><b>SONC</b>: $x^*$ local min, $f\in C^2$ near $x^*$ $\Rightarrow$ $\nabla f(x^*)=0$ <b>and</b> $\nabla^2f(x^*)\succeq0$ (PSD).</li>
+<li><b>SOSC</b>: $f\in C^2$, $\nabla f(x^*)=0$ <b>and</b> $\nabla^2f(x^*)\succ0$ (PD) $\Rightarrow$ $x^*$ is a <b>strict</b> local min.</li>
+</ul></div>
+<p>A point with $\nabla f(x^*)=0$ is a <b>stationary point</b>.</p>
+<div class="box example"><span class="tag">Why (lines do almost all the work)</span>
+<ol class="steps">
+<li><b>FONC.</b> For every direction $d$, $\varphi(t)=f(x^*+td)$ has a local min at 0, so by 1-D FONC $0=\varphi'(0)=\nabla f(x^*)^\top d$. This holds for <i>every</i> $d$; take $d=\nabla f(x^*)$: $\|\nabla f(x^*)\|^2=0$, so $\nabla f(x^*)=0$.</li>
+<li><b>SONC.</b> By 1-D SONC, $0\le\varphi''(0)=d^\top\nabla^2f(x^*)d$ for every $d$. That is the definition of PSD.</li>
+<li><b>SOSC.</b> Here lines are <b>not</b> enough: we need one bound that works for all directions at once. Since $H=\nabla^2f(x^*)\succ0$ there is a constant $\kappa\gt0$ ("kappa") with $h^\top Hh\ge \kappa\|h\|^2$ for all $h$ ($\kappa$ = smallest eigenvalue of $H$; see D1). Then Taylor gives $f(x^*+h)-f(x^*)\ge\|h\|^2\big(\tfrac \kappa2+\tfrac{o(\|h\|^2)}{\|h\|^2}\big)\gt0$ for small $h\ne0$.</li>
+</ol>
+<p>Section E4 (Peano) shows that "a minimum along every line" really is weaker than "a minimum", which is why SOSC needed that uniform $\kappa$.</p>
+</div>
+
+<h3 id="c5">C5. What SONC means, what it does NOT mean, and "Group N / Group S"</h3>
+<p><b>What SONC means (the useful direction).</b> Read it backwards (the contrapositive): if at a stationary point the Hessian is <b>not</b> PSD (some direction with negative curvature, i.e. a negative eigenvalue), then the point is <b>not</b> a local minimum. That's how you rule out saddles and maxima.</p>
+<p><b>What SONC does NOT mean.</b></p>
+<ul>
+<li>"$\nabla f=0$ and Hessian PSD ⇒ local min": <b>false</b> ($x^3$, $-x^4$; in 2-D the monkey saddle and Peano, section E).</li>
+<li>"Strict local min ⇒ Hessian PD": <b>false</b> ($x^4$; $x_1^4+x_2^2$ has Hessian diag$(0,2)$ at 0).</li>
+<li>"Hessian PSD and singular (some zero curvature) ⇒ non-strict minimum": <b>false</b>. Singular just means the second-order test is silent.</li>
+</ul>
+<p>His revision-class language: call the two sets of conditions</p>
+<ul>
+<li><b>Group N</b> ("necessary"; he calls it group one) = $\{\nabla f(x^*)=0,\ \nabla^2f(x^*)\succeq0\}$ (= SONC),</li>
+<li><b>Group S</b> ("sufficient"; his group two) = $\{\nabla f(x^*)=0,\ \nabla^2f(x^*)\succ0\}$ (= SOSC's hypotheses).</li>
+</ul>
+<div class="mathwide"><table>
+<tr><th></th><th>General $f\in C^2$</th><th>Quadratic $f=\frac12x^\top Qx-b^\top x$</th></tr>
+<tr><td>local min ⇒ Group N?</td><td>✓ (necessary)</td><td>✓</td></tr>
+<tr><td>Group N ⇒ local min?</td><td>✗ ($x^3$, $-x^4$)</td><td>✓ (and the min is global)</td></tr>
+<tr><td>Group S ⇒ strict local min?</td><td>✓ (sufficient)</td><td>✓ (and it's the unique global min)</td></tr>
+<tr><td>strict local min ⇒ Group S?</td><td>✗ ($x^4$)</td><td>✓</td></tr>
+</table></div>
+<p><b>Why quadratics are different:</b> for a quadratic, Taylor is <b>exact</b> (the Hessian is the constant $Q$, so there's no $o(\|h\|^2)$ remainder to spoil things). It is <b>not</b> because PSD somehow becomes PD. Proof in F2. He said: <q>for quadratic function, both way both directional implications are true</q>.</p>
+<div class="box trap"><span class="tag">Trap</span> When a question says "which <b>must</b> hold at a local min" the answer is a necessary condition (FONC/SONC/Group N). When it says "which <b>guarantees</b> a min" the answer is a sufficient one (SOSC/Group S, or convexity + stationary). Watch $\succeq$ vs $\succ$, and "local" vs "strict" vs "global".</div>
+<div class="check"><b>Check C.</b> At a stationary point $x^*$ of a $C^2$ function the Hessian is $\begin{bmatrix}2&0\\0&-1\end{bmatrix}$. What can you conclude? And if it were $\begin{bmatrix}2&0\\0&0\end{bmatrix}$?
+<details class="ans"><summary>Show answer</summary><div><p>First: $d=(0,1)$ gives curvature $-1\lt0$, so the Hessian is not PSD: SONC fails, so $x^*$ is <b>not a local min</b>. ($d=(1,0)$ gives $+2$, so it's not a max either: a saddle.) Second: PSD but singular: SONC holds, SOSC fails, so <b>no conclusion</b> from second order. It could be $x_1^2+x_2^4$ (min), $x_1^2+x_2^3$ (not a min) or $x_1^2-x_2^4$ (not a min).</p></div></details></div>
+</section>
+
+<!-- ================= D. TESTS ================= -->
+<section id="tests">
+<h2>D. Testing whether a matrix is PD or PSD</h2>
+<p>The definition "$d^\top Sd\ge0$ for <i>all</i> $d$" can't be checked direction by direction. Two practical tests: eigenvalues, and determinants of sub-matrices (minors).</p>
+
+<h3 id="d1">D1. Eigenvalue test</h3>
+<p><b>Idea.</b> The <b>spectral theorem</b> says: a real symmetric matrix $S$ has real eigenvalues and an orthonormal basis of eigenvectors. In matrix form, $S$ can be rotated into a diagonal matrix: $S=V\Lambda V^\top$ with $V$ orthogonal (a rotation, its columns are orthonormal eigenvectors) and $\Lambda=$ diag$(\lambda_1,\dots,\lambda_n)$ the eigenvalues. Put $y=V^\top d$ (the same direction in rotated coordinates; $y=0$ only if $d=0$). Then</p>
+$$d^\top Sd=y^\top\Lambda y=\lambda_1y_1^2+\dots+\lambda_ny_n^2 .$$
+<p>A sum $\sum\lambda_iy_i^2$ is $\ge0$ for every $y$ exactly when every $\lambda_i\ge0$ (try $y$ = one unit vector at a time), and $\gt0$ for every $y\ne0$ exactly when every $\lambda_i\gt0$.</p>
+<div class="box must"><span class="tag">Eigenvalue test (symmetric $S$)</span>
+<p>PSD ⇔ all $\lambda_i\ge0$ · PD ⇔ all $\lambda_i\gt0$ · indefinite ⇔ some $\lambda_i\gt0$ and some $\lambda_j\lt0$. The smallest eigenvalue $\lambda_{\min}$ satisfies $d^\top Sd\ge\lambda_{\min}\|d\|^2$ (the constant $\kappa$ used in the SOSC proof).</p>
+</div>
+<p><b>2×2 shortcut.</b> For a 2×2 matrix, $\lambda_1+\lambda_2=$ trace (sum of diagonal) and $\lambda_1\lambda_2=\det$. So: $\det\lt0$ ⇒ opposite signs ⇒ <b>indefinite</b>. $\det\gt0$ and trace $\gt0$ ⇒ both positive ⇒ PD. $\det\gt0$ and trace $\lt0$ ⇒ both negative ⇒ <b>negative definite</b>. $\det=0$ ⇒ one eigenvalue is 0 (the other equals the trace).</p>
+<div class="box example"><span class="tag">Examples</span>
+<ul>
+<li>$\begin{bmatrix}2&-1\\-1&2\end{bmatrix}$: trace 4, det 3, eigenvalues 1 and 3 ⇒ PD.</li>
+<li>$\begin{bmatrix}1&2\\2&1\end{bmatrix}$: det $=-3\lt0$ ⇒ indefinite (eigenvalues $-1$, 3). Direction $d=(1,-1)$: $d^\top Sd=1-4+1=-2\lt0$.</li>
+<li>$\begin{bmatrix}1&1\\1&1\end{bmatrix}$: det 0, trace 2 ⇒ eigenvalues 0 and 2 ⇒ PSD, not PD.</li>
+</ul></div>
+
+<h3 id="d2">D2. Minors and Sylvester's criterion for PD</h3>
+<p>A <b>principal submatrix</b> keeps the <b>same</b> set of rows and columns (e.g. rows and columns $\{1,3\}$). Its determinant is a <b>principal minor</b>. A <b>leading</b> principal minor $\Delta_k$ keeps the <b>first</b> $k$ rows and columns. An $n\times n$ matrix has $n$ leading minors but $2^n-1$ principal minors. For $S=\begin{bmatrix}s_{11}&amp;s_{12}&amp;s_{13}\\s_{12}&amp;s_{22}&amp;s_{23}\\s_{13}&amp;s_{23}&amp;s_{33}\end{bmatrix}$: the 1×1 principal minors are $s_{11},s_{22},s_{33}$; the 2×2 ones are $s_{11}s_{22}-s_{12}^2$ (rows/columns $\{1,2\}$), $s_{11}s_{33}-s_{13}^2$ ($\{1,3\}$), $s_{22}s_{33}-s_{23}^2$ ($\{2,3\}$); the 3×3 one is $\det S$. The leading ones are $s_{11}$, $s_{11}s_{22}-s_{12}^2$, $\det S$.</p>
+<div class="box must"><span class="tag">Sylvester's criterion</span>
+<p>$S\succ0$ (PD) ⇔ <b>leading</b> principal minors $\Delta_1\gt0,\ \Delta_2\gt0,\dots,\Delta_n\gt0$.<br>
+(Negative definite ⇔ $-S$ is PD ⇔ the signs alternate: $\Delta_1\lt0,\ \Delta_2\gt0,\ \Delta_3\lt0,\dots$)</p>
+</div>
+<p>Example: $\begin{bmatrix}2&-1\\-1&2\end{bmatrix}$: $\Delta_1=2\gt0$, $\Delta_2=4-1=3\gt0$ ⇒ PD ✓ (agrees with D1).</p>
+
+<h3 id="d3">D3. PSD needs <b>all</b> principal minors (leading ones are not enough)</h3>
+<p>The tempting guess "PSD ⇔ leading minors $\ge0$" is <b>false</b>. A zero leading minor can hide a negative entry further down.</p>
+<div class="box trap"><span class="tag">Counterexample (memorise)</span>
+<p>$S=\begin{bmatrix}0&0\\0&-1\end{bmatrix}$. Leading minors: $\Delta_1=0\ge0$, $\Delta_2=0\ge0$. Looks fine. But the <b>other</b> 1×1 principal minor is $-1\lt0$, and indeed $d=(0,1)$ gives $d^\top Sd=-1$. Eigenvalues $0,-1$: <b>not PSD</b>.</p>
+<p>3×3 version: $\begin{bmatrix}1&2&0\\2&4&0\\0&0&-1\end{bmatrix}$ has leading minors $1,0,0$ (all $\ge0$) but the principal minor in position $(3,3)$ is $-1$. Eigenvalues $-1,0,5$: not PSD.</p>
+</div>
+<div class="box must"><span class="tag">PSD test by minors</span>
+<p>$S\succeq0$ ⇔ <b>every</b> principal minor $\ge0$. He said: <q>looking at the leading principal minors alone is not enough. You have to look at all principal minors</q>. Quick kill: any negative <b>diagonal</b> entry already means "not PSD".</p>
+</div>
+<div class="check"><b>Check D.</b> Classify (PD / PSD only / indefinite): (a) $\begin{bmatrix}4&2\\2&1\end{bmatrix}$ (b) $\begin{bmatrix}3&1\\1&-2\end{bmatrix}$ (c) $\begin{bmatrix}1&1&1\\1&1&1\\1&1&1\end{bmatrix}$.
+<details class="ans"><summary>Show answer</summary><div><p>(a) det $=4-4=0$, trace 5 ⇒ eigenvalues 0, 5 ⇒ PSD, not PD (principal minors 4, 1, 0 all $\ge0$). (b) det $=-6-1=-7\lt0$ ⇒ indefinite. (c) 1×1 minors 1,1,1; 2×2 minors all $1-1=0$; det 0 ⇒ all $\ge0$ ⇒ PSD; leading minors $1,0,0$ are not all $\gt0$ ⇒ not PD (eigenvalues 0, 0, 3).</p></div></details></div>
+</section>
+
+<!-- ================= E. CLASSIFY ================= -->
+<section id="classify">
+<h2>E. Classifying stationary points</h2>
+
+<h3 id="e1">E1. The recipe</h3>
+<p>A <b>saddle point</b> is a stationary point that is neither a local min nor a local max: arbitrarily close to it there are points both higher and lower.</p>
+<div class="box must"><span class="tag">Recipe: "find and classify all stationary points"</span>
+<ol class="steps">
+<li>Compute $\nabla f$ and solve $\nabla f=0$. Find <b>all</b> real solutions (factor; don't divide by something that might be 0).</li>
+<li>Compute the Hessian $\nabla^2f$ as a function of $x$.</li>
+<li>At each stationary point, decide the type of the Hessian (D):
+<ul><li>PD ⇒ <b>strict local min</b> (SOSC).</li>
+<li>Negative definite ⇒ <b>strict local max</b> (SOSC for $-f$).</li>
+<li>Indefinite ⇒ <b>saddle</b> (SONC fails for $f$ and for $-f$). Give the two directions.</li>
+<li>Semidefinite and singular ⇒ <b>test inconclusive</b>: look at $f$ itself along lines and curves (E3).</li></ul></li>
+<li>Global question: is there a global min? Use $f\ge$ some value, convexity (H), or coercive + compare stationary values (Weierstrass, A2; worked in E2, third example), or show a direction where $f\to-\infty$.</li>
+</ol></div>
+
+<h3 id="e2">E2. A full example by hand: $f(x_1,x_2)=x_1^3+x_2^3-3x_1x_2$</h3>
+<div class="box example"><span class="tag">Every step</span>
+<ol class="steps">
+<li><b>Gradient.</b> $\nabla f=\begin{bmatrix}3x_1^2-3x_2\\3x_2^2-3x_1\end{bmatrix}$. Setting it to 0: $x_2=x_1^2$ and $x_1=x_2^2$.</li>
+<li><b>Solve.</b> Substitute the first into the second: $x_1=(x_1^2)^2=x_1^4$, so $x_1^4-x_1=x_1(x_1^3-1)=0$. Real solutions: $x_1=0$ or $x_1=1$. Then $x_2=x_1^2$ gives the points $(0,0)$ and $(1,1)$.</li>
+<li><b>Hessian.</b> $\nabla^2f=\begin{bmatrix}6x_1&-3\\-3&6x_2\end{bmatrix}$.</li>
+<li><b>At $(0,0)$:</b> $\begin{bmatrix}0&-3\\-3&0\end{bmatrix}$, det $=0-9=-9\lt0$ ⇒ indefinite (eigenvalues $\pm3$) ⇒ <b>saddle</b>. Confirm with lines: along $d=(1,1)$, $f(t,t)=2t^3-3t^2\lt0$ for small $t\ne0$ (lower); along $d=(1,-1)$, $f(t,-t)=t^3-t^3+3t^2=3t^2\gt0$ (higher).</li>
+<li><b>At $(1,1)$:</b> $\begin{bmatrix}6&-3\\-3&6\end{bmatrix}$, $\Delta_1=6\gt0$, $\Delta_2=36-9=27\gt0$ ⇒ PD (eigenvalues 3 and 9) ⇒ SOSC ⇒ <b>strict local min</b>, value $f(1,1)=1+1-3=-1$.</li>
+<li><b>Global?</b> Along the $x_1$-axis, $f(t,0)=t^3\to-\infty$ as $t\to-\infty$. So there is <b>no global min</b>: $(1,1)$ is only a local one. (He likes this trap: "strict local min" ≠ "global min".)</li>
+</ol></div>
+<div class="box example"><span class="tag">Second example (Tutorial 1, problem 7a): $f=(x_1^2-4)^2+x_2^2$</span>
+<ol class="steps">
+<li>$\nabla f=\begin{bmatrix}4x_1(x_1^2-4)\\2x_2\end{bmatrix}=0$ ⇒ $x_2=0$ and $x_1\in\{0,2,-2\}$: points $(0,0),(2,0),(-2,0)$.</li>
+<li>$\nabla^2f=\begin{bmatrix}12x_1^2-16&0\\0&2\end{bmatrix}$.</li>
+<li>$(0,0)$: diag$(-16,2)$, one negative and one positive eigenvalue ⇒ <b>saddle</b> (SONC fails, so not a min; not a max either).</li>
+<li>$(\pm2,0)$: diag$(32,2)\succ0$ ⇒ SOSC ⇒ strict local min. Since $f\ge0$ everywhere and $f(\pm2,0)=0$, both are <b>global</b> minima.</li>
+</ol></div>
+<div class="box example"><span class="tag">Third example: global minimum via coercivity, $f=x_1^4+x_2^2-2x_1x_2$</span>
+<p>Here $f$ is not $\ge$ an obvious value, and (as we'll see) not convex, so we use A2: <b>coercive ⇒ a global min exists ⇒ it is a stationary point ⇒ it is the stationary point with the smallest value.</b></p>
+<ol class="steps">
+<li><b>Stationary points.</b> $\nabla f=\begin{bmatrix}4x_1^3-2x_2\\2x_2-2x_1\end{bmatrix}=0$. The second entry gives $x_2=x_1$; then $4x_1^3-2x_1=2x_1(2x_1^2-1)=0$, so $x_1\in\{0,\ \tfrac1{\sqrt2},\ -\tfrac1{\sqrt2}\}$. Points: $(0,0)$, $\big(\tfrac1{\sqrt2},\tfrac1{\sqrt2}\big)$, $\big(-\tfrac1{\sqrt2},-\tfrac1{\sqrt2}\big)$.</li>
+<li><b>Hessian.</b> $\nabla^2f=\begin{bmatrix}12x_1^2&amp;-2\\-2&amp;2\end{bmatrix}$. At $(0,0)$: $\begin{bmatrix}0&amp;-2\\-2&amp;2\end{bmatrix}$, det $=-4\lt0$ ⇒ <b>saddle</b> (so $f$ is not convex). At $\pm\big(\tfrac1{\sqrt2},\tfrac1{\sqrt2}\big)$: $12x_1^2=6$, so $\begin{bmatrix}6&amp;-2\\-2&amp;2\end{bmatrix}$, $\Delta_1=6\gt0$, $\Delta_2=12-4=8\gt0$ ⇒ PD ⇒ strict local minima, value $\tfrac14+\tfrac12-1=-\tfrac14$.</li>
+<li><b>Coercive.</b> The cross term $-2x_1x_2$ can be negative, so bound it by squares. For any numbers $a,b$: $2|ab|\le a^2+b^2$ (because $(|a|-|b|)^2\ge0$). With $a=\sqrt2\,x_1$, $b=x_2/\sqrt2$: $2|x_1x_2|=2|ab|\le 2x_1^2+\tfrac12x_2^2$. Hence
+$$f\ \ge\ x_1^4+x_2^2-2x_1^2-\tfrac12x_2^2=\underbrace{(x_1^4-2x_1^2)}_{\ge-1}+\underbrace{\tfrac12x_2^2}_{\ge0}.$$
+If $\|x\|\to\infty$ then $|x_1|\to\infty$ or $|x_2|\to\infty$ (or both); either way one bracket $\to\infty$ while the other stays $\ge-1$, so $f\to\infty$: <b>coercive</b>.</li>
+<li><b>Conclude.</b> $f$ is continuous and coercive, so by Weierstrass (A2) a global minimum exists. A global min is a local min, so by FONC it is one of the three stationary points. Their values are $0,\ -\tfrac14,\ -\tfrac14$. So both $\pm\big(\tfrac1{\sqrt2},\tfrac1{\sqrt2}\big)$ are <b>global</b> minima, with $f_{\min}=-\tfrac14$. (Practice N1 is the same pattern with $x^4+y^4-4xy$ and the bound $4|xy|\le2(x^2+y^2)$.)</li>
+</ol></div>
+
+<h3 id="e3">E3. When the Hessian is silent (PSD, singular): test directions</h3>
+<p>If the Hessian at a stationary point is PSD but singular, SONC holds and SOSC fails, so you must look at $f$ itself.</p>
+<ul>
+<li>$f=x_1^4+x_2^2+\dots+x_n^2$ at 0: Hessian diag$(0,2,\dots,2)$, singular. But $f(x)\gt0$ for every $x\ne0$: <b>strict</b> min. (The $n$-D version of $x^4$; Quiz 1 Q13.)</li>
+<li><b>Monkey saddle</b> $f=x_1^3-3x_1x_2^2$ at 0: $\nabla f(0)=0$ and $\nabla^2f(0)=0$ (the zero matrix: PSD, so SONC passes trivially). Along $d=(1,0)$: $f(t,0)=t^3$. Along $d=(1,1)$: $f(t,t)=t^3-3t^3=-2t^3$. For $t\gt0$ these have <b>opposite signs</b>, so 0 is neither a min nor a max: a saddle. (Quiz 1 Q14.)</li>
+</ul>
+<div class="fig">
+<svg viewBox="0 0 400 230" width="400" role="img" aria-label="Sign pattern of the monkey saddle"><path d="M130 115 L207.9 160.0 A90 90 0 0 0 207.9 70.0 Z" fill="#1f8a44" fill-opacity=".22" stroke="#1f8a44" stroke-opacity=".5"/><text x="186" y="121" font-size="20" fill="#1f8a44" text-anchor="middle" font-weight="700">+</text><path d="M130 115 L207.9 70.0 A90 90 0 0 0 130.0 25.0 Z" fill="#c8372d" fill-opacity=".22" stroke="#c8372d" stroke-opacity=".5"/><text x="158" y="73" font-size="20" fill="#c8372d" text-anchor="middle" font-weight="700">−</text><path d="M130 115 L130.0 25.0 A90 90 0 0 0 52.1 70.0 Z" fill="#1f8a44" fill-opacity=".22" stroke="#1f8a44" stroke-opacity=".5"/><text x="102" y="73" font-size="20" fill="#1f8a44" text-anchor="middle" font-weight="700">+</text><path d="M130 115 L52.1 70.0 A90 90 0 0 0 52.1 160.0 Z" fill="#c8372d" fill-opacity=".22" stroke="#c8372d" stroke-opacity=".5"/><text x="74" y="121" font-size="20" fill="#c8372d" text-anchor="middle" font-weight="700">−</text><path d="M130 115 L52.1 160.0 A90 90 0 0 0 130.0 205.0 Z" fill="#1f8a44" fill-opacity=".22" stroke="#1f8a44" stroke-opacity=".5"/><text x="102" y="169" font-size="20" fill="#1f8a44" text-anchor="middle" font-weight="700">+</text><path d="M130 115 L130.0 205.0 A90 90 0 0 0 207.9 160.0 Z" fill="#c8372d" fill-opacity=".22" stroke="#c8372d" stroke-opacity=".5"/><text x="158" y="169" font-size="20" fill="#c8372d" text-anchor="middle" font-weight="700">−</text><line x1="130" y1="115" x2="245" y2="115" stroke="currentColor" stroke-width="1.5"/><text x="248" y="119" font-size="12" fill="currentColor" text-anchor="start" >d = (1,0): f = t³</text><line x1="130" y1="115" x2="211.3" y2="33.7" stroke="currentColor" stroke-width="1.5"/><text x="213" y="32" font-size="12" fill="currentColor" text-anchor="start" >d = (1,1): f = −2t³</text><circle cx="130" cy="115" r="4" fill="currentColor"/></svg>
+<div class="cap">Sign of the monkey saddle $x_1^3-3x_1x_2^2$ around 0 (in polar form it is $r^3\cos3\theta$): six sectors, alternately positive (green) and negative (red). A monkey sitting at 0 has room for two legs and a tail going down. Since the Hessian is zero, only looking along directions reveals this.</div>
+</div>
+
+<h3 id="e4">E4. Minimum along every line, but not a minimum (Peano; Tutorial 1, problem 8)</h3>
+<p><b>Question.</b> If $x^*$ is a minimum along <i>every</i> straight line through it, must it be a local minimum? (a) It must at least be stationary: each line gives $\varphi'(0)=\nabla f(x^*)^\top d=0$ for all $d$, so $\nabla f(x^*)=0$ (as in the FONC proof). (b) But it need <b>not</b> be a local minimum. He said: <q>the part B is important</q>.</p>
+<div class="box example"><span class="tag">The counterexample, step by step</span>
+<p>$f(x_1,x_2)=(x_2-p\,x_1^2)(x_2-q\,x_1^2)$ with constants $0\lt p\lt q$. (The tutorial calls the variables $(y,z)$.) Take $p=1$, $q=2$ for numbers.</p>
+<ol class="steps">
+<li><b>Where is $f$ negative?</b> A product is negative when the two factors have opposite signs: $x_2\gt px_1^2$ but $x_2\lt qx_1^2$. That is the thin region <b>between the two parabolas</b> $x_2=px_1^2$ and $x_2=qx_1^2$. Everywhere else $f\ge0$, and $f(0,0)=0$.</li>
+<li><b>Every line through 0 has a min at 0.</b> Line $(x_1,x_2)=t\,d$ with $d=(d_1,d_2)$: $\varphi(t)=(d_2t-pd_1^2t^2)(d_2t-qd_1^2t^2)=t^2(d_2-pd_1^2t)(d_2-qd_1^2t)$.
+<ul><li>If $d_2\ne0$: $\varphi(t)=d_2^2t^2+(\text{terms in }t^3,t^4)$, so $\varphi'(0)=0$, $\varphi''(0)=2d_2^2\gt0$: strict min at $t=0$ (1-D SOSC).</li>
+<li>If $d_2=0$ (the horizontal line): $\varphi(t)=pq\,d_1^4t^4\ge0$: min at 0.</li></ul>
+Numbers ($p=1,q=2$): along $d=(1,1)$, $\varphi=t^2-3t^3+2t^4$, which is $\gt0$ for small $t\ne0$.</li>
+<li><b>But 0 is not a local min.</b> Walk along the <b>curve</b> $x_2=mx_1^2$ with $p\lt m\lt q$ (between the parabolas): $f=(m-p)(m-q)x_1^4\lt0=f(0,0)$ for every $x_1\ne0$, however close to 0. Numbers: $m=1.5$ gives $f=(0.5)(-0.5)x_1^4=-\tfrac14x_1^4$.</li>
+<li><b>Why the lines miss it.</b> A line $x_2=mx_1$ near 0 has $|x_2|=|m||x_1|$, much bigger than $qx_1^2$ when $x_1$ is tiny, so near 0 the line is outside the thin region (it only crosses the region further out, for $x_1$ between $m/q$ and $m/p$). A straight line can't follow a parabola into the origin.</li>
+<li><b>Consistency check with SONC:</b> $\nabla^2f(0)=$ diag$(0,2)$: PSD and singular. So Group N holds (no contradiction: Group N is only <i>necessary</i>, and here it holds at a non-minimum, just like $x^3$), and SOSC fails, as it must, since 0 is not a min. This is exactly the "silent" case.</li>
+</ol></div>
+<div class="fig">
+<svg viewBox="0 0 500 236" width="500" role="img" aria-label="Peano counterexample: the region between two parabolas"><line x1="5" y1="180" x2="400" y2="180" stroke="currentColor" stroke-opacity=".35"/><line x1="200" y1="5" x2="200" y2="235" stroke="currentColor" stroke-opacity=".35"/><path d="M11.5 20.2 L14.2 24.8 L16.9 29.3 L19.6 33.7 L22.3 38.1 L25.1 42.4 L27.8 46.6 L30.5 50.8 L33.2 54.9 L35.9 58.9 L38.6 62.9 L41.3 66.8 L44.0 70.6 L46.8 74.4 L49.5 78.1 L52.2 81.7 L54.9 85.3 L57.6 88.8 L60.3 92.3 L63.0 95.6 L65.7 98.9 L68.5 102.2 L71.2 105.4 L73.9 108.5 L76.6 111.5 L79.3 114.5 L82.0 117.4 L84.7 120.2 L87.4 123.0 L90.2 125.7 L92.9 128.4 L95.6 131.0 L98.3 133.5 L101.0 135.9 L103.7 138.3 L106.4 140.6 L109.1 142.9 L111.9 145.1 L114.6 147.2 L117.3 149.2 L120.0 151.2 L122.7 153.1 L125.4 155.0 L128.1 156.8 L130.8 158.5 L133.6 160.1 L136.3 161.7 L139.0 163.3 L141.7 164.7 L144.4 166.1 L147.1 167.4 L149.8 168.7 L152.5 169.9 L155.2 171.0 L158.0 172.1 L160.7 173.0 L163.4 174.0 L166.1 174.8 L168.8 175.6 L171.5 176.4 L174.2 177.0 L176.9 177.6 L179.7 178.1 L182.4 178.6 L185.1 179.0 L187.8 179.3 L190.5 179.6 L193.2 179.8 L195.9 179.9 L198.6 180.0 L201.4 180.0 L204.1 179.9 L206.8 179.8 L209.5 179.6 L212.2 179.3 L214.9 179.0 L217.6 178.6 L220.3 178.1 L223.1 177.6 L225.8 177.0 L228.5 176.4 L231.2 175.6 L233.9 174.8 L236.6 174.0 L239.3 173.0 L242.0 172.1 L244.8 171.0 L247.5 169.9 L250.2 168.7 L252.9 167.4 L255.6 166.1 L258.3 164.7 L261.0 163.3 L263.7 161.7 L266.4 160.1 L269.2 158.5 L271.9 156.8 L274.6 155.0 L277.3 153.1 L280.0 151.2 L282.7 149.2 L285.4 147.2 L288.1 145.1 L290.9 142.9 L293.6 140.6 L296.3 138.3 L299.0 135.9 L301.7 133.5 L304.4 131.0 L307.1 128.4 L309.8 125.7 L312.6 123.0 L315.3 120.2 L318.0 117.4 L320.7 114.5 L323.4 111.5 L326.1 108.5 L328.8 105.4 L331.5 102.2 L334.3 98.9 L337.0 95.6 L339.7 92.3 L342.4 88.8 L345.1 85.3 L347.8 81.7 L350.5 78.1 L353.2 74.4 L356.0 70.6 L358.7 66.8 L361.4 62.9 L364.1 58.9 L366.8 54.9 L369.5 50.8 L372.2 46.6 L374.9 42.4 L377.7 38.1 L380.4 33.7 L383.1 29.3 L385.8 24.8 L388.5 20.2 L388.5 100.1 L385.8 102.4 L383.1 104.6 L380.4 106.9 L377.7 109.0 L374.9 111.2 L372.2 113.3 L369.5 115.4 L366.8 117.4 L364.1 119.5 L361.4 121.4 L358.7 123.4 L356.0 125.3 L353.2 127.2 L350.5 129.1 L347.8 130.9 L345.1 132.7 L342.4 134.4 L339.7 136.1 L337.0 137.8 L334.3 139.5 L331.5 141.1 L328.8 142.7 L326.1 144.2 L323.4 145.8 L320.7 147.2 L318.0 148.7 L315.3 150.1 L312.6 151.5 L309.8 152.9 L307.1 154.2 L304.4 155.5 L301.7 156.7 L299.0 158.0 L296.3 159.2 L293.6 160.3 L290.9 161.4 L288.1 162.5 L285.4 163.6 L282.7 164.6 L280.0 165.6 L277.3 166.6 L274.6 167.5 L271.9 168.4 L269.2 169.2 L266.4 170.1 L263.7 170.9 L261.0 171.6 L258.3 172.4 L255.6 173.0 L252.9 173.7 L250.2 174.3 L247.5 174.9 L244.8 175.5 L242.0 176.0 L239.3 176.5 L236.6 177.0 L233.9 177.4 L231.2 177.8 L228.5 178.2 L225.8 178.5 L223.1 178.8 L220.3 179.1 L217.6 179.3 L214.9 179.5 L212.2 179.7 L209.5 179.8 L206.8 179.9 L204.1 180.0 L201.4 180.0 L198.6 180.0 L195.9 180.0 L193.2 179.9 L190.5 179.8 L187.8 179.7 L185.1 179.5 L182.4 179.3 L179.7 179.1 L176.9 178.8 L174.2 178.5 L171.5 178.2 L168.8 177.8 L166.1 177.4 L163.4 177.0 L160.7 176.5 L158.0 176.0 L155.2 175.5 L152.5 174.9 L149.8 174.3 L147.1 173.7 L144.4 173.0 L141.7 172.4 L139.0 171.6 L136.3 170.9 L133.6 170.1 L130.8 169.2 L128.1 168.4 L125.4 167.5 L122.7 166.6 L120.0 165.6 L117.3 164.6 L114.6 163.6 L111.9 162.5 L109.1 161.4 L106.4 160.3 L103.7 159.2 L101.0 158.0 L98.3 156.7 L95.6 155.5 L92.9 154.2 L90.2 152.9 L87.4 151.5 L84.7 150.1 L82.0 148.7 L79.3 147.2 L76.6 145.8 L73.9 144.2 L71.2 142.7 L68.5 141.1 L65.7 139.5 L63.0 137.8 L60.3 136.1 L57.6 134.4 L54.9 132.7 L52.2 130.9 L49.5 129.1 L46.8 127.2 L44.0 125.3 L41.3 123.4 L38.6 121.4 L35.9 119.5 L33.2 117.4 L30.5 115.4 L27.8 113.3 L25.1 111.2 L22.3 109.0 L19.6 106.9 L16.9 104.6 L14.2 102.4 L11.5 100.1 Z" fill="#c8372d" fill-opacity=".22"/><path d="M11.5 20.2 L14.2 24.8 L16.9 29.3 L19.6 33.7 L22.3 38.1 L25.1 42.4 L27.8 46.6 L30.5 50.8 L33.2 54.9 L35.9 58.9 L38.6 62.9 L41.3 66.8 L44.0 70.6 L46.8 74.4 L49.5 78.1 L52.2 81.7 L54.9 85.3 L57.6 88.8 L60.3 92.3 L63.0 95.6 L65.7 98.9 L68.5 102.2 L71.2 105.4 L73.9 108.5 L76.6 111.5 L79.3 114.5 L82.0 117.4 L84.7 120.2 L87.4 123.0 L90.2 125.7 L92.9 128.4 L95.6 131.0 L98.3 133.5 L101.0 135.9 L103.7 138.3 L106.4 140.6 L109.1 142.9 L111.9 145.1 L114.6 147.2 L117.3 149.2 L120.0 151.2 L122.7 153.1 L125.4 155.0 L128.1 156.8 L130.8 158.5 L133.6 160.1 L136.3 161.7 L139.0 163.3 L141.7 164.7 L144.4 166.1 L147.1 167.4 L149.8 168.7 L152.5 169.9 L155.2 171.0 L158.0 172.1 L160.7 173.0 L163.4 174.0 L166.1 174.8 L168.8 175.6 L171.5 176.4 L174.2 177.0 L176.9 177.6 L179.7 178.1 L182.4 178.6 L185.1 179.0 L187.8 179.3 L190.5 179.6 L193.2 179.8 L195.9 179.9 L198.6 180.0 L201.4 180.0 L204.1 179.9 L206.8 179.8 L209.5 179.6 L212.2 179.3 L214.9 179.0 L217.6 178.6 L220.3 178.1 L223.1 177.6 L225.8 177.0 L228.5 176.4 L231.2 175.6 L233.9 174.8 L236.6 174.0 L239.3 173.0 L242.0 172.1 L244.8 171.0 L247.5 169.9 L250.2 168.7 L252.9 167.4 L255.6 166.1 L258.3 164.7 L261.0 163.3 L263.7 161.7 L266.4 160.1 L269.2 158.5 L271.9 156.8 L274.6 155.0 L277.3 153.1 L280.0 151.2 L282.7 149.2 L285.4 147.2 L288.1 145.1 L290.9 142.9 L293.6 140.6 L296.3 138.3 L299.0 135.9 L301.7 133.5 L304.4 131.0 L307.1 128.4 L309.8 125.7 L312.6 123.0 L315.3 120.2 L318.0 117.4 L320.7 114.5 L323.4 111.5 L326.1 108.5 L328.8 105.4 L331.5 102.2 L334.3 98.9 L337.0 95.6 L339.7 92.3 L342.4 88.8 L345.1 85.3 L347.8 81.7 L350.5 78.1 L353.2 74.4 L356.0 70.6 L358.7 66.8 L361.4 62.9 L364.1 58.9 L366.8 54.9 L369.5 50.8 L372.2 46.6 L374.9 42.4 L377.7 38.1 L380.4 33.7 L383.1 29.3 L385.8 24.8 L388.5 20.2" fill="none" stroke="#c8372d" stroke-width="2"/><path d="M11.5 100.1 L14.2 102.4 L16.9 104.6 L19.6 106.9 L22.3 109.0 L25.1 111.2 L27.8 113.3 L30.5 115.4 L33.2 117.4 L35.9 119.5 L38.6 121.4 L41.3 123.4 L44.0 125.3 L46.8 127.2 L49.5 129.1 L52.2 130.9 L54.9 132.7 L57.6 134.4 L60.3 136.1 L63.0 137.8 L65.7 139.5 L68.5 141.1 L71.2 142.7 L73.9 144.2 L76.6 145.8 L79.3 147.2 L82.0 148.7 L84.7 150.1 L87.4 151.5 L90.2 152.9 L92.9 154.2 L95.6 155.5 L98.3 156.7 L101.0 158.0 L103.7 159.2 L106.4 160.3 L109.1 161.4 L111.9 162.5 L114.6 163.6 L117.3 164.6 L120.0 165.6 L122.7 166.6 L125.4 167.5 L128.1 168.4 L130.8 169.2 L133.6 170.1 L136.3 170.9 L139.0 171.6 L141.7 172.4 L144.4 173.0 L147.1 173.7 L149.8 174.3 L152.5 174.9 L155.2 175.5 L158.0 176.0 L160.7 176.5 L163.4 177.0 L166.1 177.4 L168.8 177.8 L171.5 178.2 L174.2 178.5 L176.9 178.8 L179.7 179.1 L182.4 179.3 L185.1 179.5 L187.8 179.7 L190.5 179.8 L193.2 179.9 L195.9 180.0 L198.6 180.0 L201.4 180.0 L204.1 180.0 L206.8 179.9 L209.5 179.8 L212.2 179.7 L214.9 179.5 L217.6 179.3 L220.3 179.1 L223.1 178.8 L225.8 178.5 L228.5 178.2 L231.2 177.8 L233.9 177.4 L236.6 177.0 L239.3 176.5 L242.0 176.0 L244.8 175.5 L247.5 174.9 L250.2 174.3 L252.9 173.7 L255.6 173.0 L258.3 172.4 L261.0 171.6 L263.7 170.9 L266.4 170.1 L269.2 169.2 L271.9 168.4 L274.6 167.5 L277.3 166.6 L280.0 165.6 L282.7 164.6 L285.4 163.6 L288.1 162.5 L290.9 161.4 L293.6 160.3 L296.3 159.2 L299.0 158.0 L301.7 156.7 L304.4 155.5 L307.1 154.2 L309.8 152.9 L312.6 151.5 L315.3 150.1 L318.0 148.7 L320.7 147.2 L323.4 145.8 L326.1 144.2 L328.8 142.7 L331.5 141.1 L334.3 139.5 L337.0 137.8 L339.7 136.1 L342.4 134.4 L345.1 132.7 L347.8 130.9 L350.5 129.1 L353.2 127.2 L356.0 125.3 L358.7 123.4 L361.4 121.4 L364.1 119.5 L366.8 117.4 L369.5 115.4 L372.2 113.3 L374.9 111.2 L377.7 109.0 L380.4 106.9 L383.1 104.6 L385.8 102.4 L388.5 100.1" fill="none" stroke="#c8372d" stroke-width="2"/><path d="M11.5 60.2 L14.2 63.6 L16.9 67.0 L19.6 70.3 L22.3 73.6 L25.1 76.8 L27.8 80.0 L30.5 83.1 L33.2 86.2 L35.9 89.2 L38.6 92.2 L41.3 95.1 L44.0 98.0 L46.8 100.8 L49.5 103.6 L52.2 106.3 L54.9 109.0 L57.6 111.6 L60.3 114.2 L63.0 116.7 L65.7 119.2 L68.5 121.6 L71.2 124.0 L73.9 126.4 L76.6 128.6 L79.3 130.9 L82.0 133.1 L84.7 135.2 L87.4 137.3 L90.2 139.3 L92.9 141.3 L95.6 143.2 L98.3 145.1 L101.0 146.9 L103.7 148.7 L106.4 150.5 L109.1 152.2 L111.9 153.8 L114.6 155.4 L117.3 156.9 L120.0 158.4 L122.7 159.8 L125.4 161.2 L128.1 162.6 L130.8 163.9 L133.6 165.1 L136.3 166.3 L139.0 167.4 L141.7 168.5 L144.4 169.6 L147.1 170.6 L149.8 171.5 L152.5 172.4 L155.2 173.2 L158.0 174.0 L160.7 174.8 L163.4 175.5 L166.1 176.1 L168.8 176.7 L171.5 177.3 L174.2 177.8 L176.9 178.2 L179.7 178.6 L182.4 179.0 L185.1 179.2 L187.8 179.5 L190.5 179.7 L193.2 179.8 L195.9 179.9 L198.6 180.0 L201.4 180.0 L204.1 179.9 L206.8 179.8 L209.5 179.7 L212.2 179.5 L214.9 179.2 L217.6 179.0 L220.3 178.6 L223.1 178.2 L225.8 177.8 L228.5 177.3 L231.2 176.7 L233.9 176.1 L236.6 175.5 L239.3 174.8 L242.0 174.0 L244.8 173.2 L247.5 172.4 L250.2 171.5 L252.9 170.6 L255.6 169.6 L258.3 168.5 L261.0 167.4 L263.7 166.3 L266.4 165.1 L269.2 163.9 L271.9 162.6 L274.6 161.2 L277.3 159.8 L280.0 158.4 L282.7 156.9 L285.4 155.4 L288.1 153.8 L290.9 152.2 L293.6 150.5 L296.3 148.7 L299.0 146.9 L301.7 145.1 L304.4 143.2 L307.1 141.3 L309.8 139.3 L312.6 137.3 L315.3 135.2 L318.0 133.1 L320.7 130.9 L323.4 128.6 L326.1 126.4 L328.8 124.0 L331.5 121.6 L334.3 119.2 L337.0 116.7 L339.7 114.2 L342.4 111.6 L345.1 109.0 L347.8 106.3 L350.5 103.6 L353.2 100.8 L356.0 98.0 L358.7 95.1 L361.4 92.2 L364.1 89.2 L366.8 86.2 L369.5 83.1 L372.2 80.0 L374.9 76.8 L377.7 73.6 L380.4 70.3 L383.1 67.0 L385.8 63.6 L388.5 60.2" fill="none" stroke="#6a5acd" stroke-width="2.5" stroke-dasharray="6 4"/><path d="M11.5 207.6 L388.5 152.4" fill="none" stroke="#1f8a44" stroke-width="2"/><path d="M11.5 113.9 L330.0 225.6" fill="none" stroke="#1f8a44" stroke-width="2"/><line x1="200" y1="229.4" x2="200" y2="12.799999999999983" stroke="#1f8a44" stroke-width="2"/><circle cx="200" cy="180" r="4.5" fill="currentColor"/><text x="394" y="21" font-size="12" fill="#c8372d" text-anchor="start" >x₂ = 2x₁²</text><text x="394" y="104" font-size="12" fill="#c8372d" text-anchor="start" >x₂ = x₁²</text><text x="394" y="157" font-size="12" fill="#1f8a44" text-anchor="start" >line x₂ = 0.5x₁</text><text x="334" y="232" font-size="12" fill="#1f8a44" text-anchor="start" >line x₂ = −1.2x₁</text><text x="205" y="226" font-size="12" fill="#1f8a44" text-anchor="start" >line x₁ = 0</text><text x="208" y="28" font-size="12.5" fill="#c8372d" text-anchor="start" font-weight="700">shaded: f &lt; 0</text><text x="208" y="45" font-size="12" fill="#6a5acd" text-anchor="start" >dashed: x₂ = 1.5x₁²</text><text x="208" y="58" font-size="12" fill="#6a5acd" text-anchor="start" >(f &lt; 0 all along it)</text><text x="398" y="176" font-size="13" fill="currentColor" text-anchor="end" >x₁</text></svg>
+<div class="cap">$f=(x_2-x_1^2)(x_2-2x_1^2)$. Red shading: where $f\lt0$, the thin region between the two parabolas, which reaches all the way into the origin. Green: straight lines through 0. Near 0 each line is outside the shaded region, so along each line 0 is a minimum. Purple dashed: the curve $x_2=1.5x_1^2$ stays inside the region, with $f\lt0$ arbitrarily close to 0. So 0 is not a local minimum.</div>
+</div>
+<div class="box trap"><span class="tag">Lesson</span> "Min along every line through $x^*$" ⇒ $\nabla f(x^*)=0$ (and $\nabla^2f(x^*)\succeq0$), but ⇏ local min. The convexity-proofs lecture: if $x^*$ is a minimum, all line restrictions have a minimum, <q>but other way around is not true</q>.</div>
+<div class="check"><b>Check E.</b> Classify the stationary points of $f=x_1^2+x_1x_2+x_2^2-3x_1$.
+<details class="ans"><summary>Show answer</summary><div><p>$\nabla f=(2x_1+x_2-3,\ x_1+2x_2)=0$ ⇒ $x_1=-2x_2$, then $-4x_2+x_2=3$ ⇒ $x_2=-1$, $x_1=2$. Hessian $\begin{bmatrix}2&1\\1&2\end{bmatrix}$: $\Delta_1=2$, $\Delta_2=3$ ⇒ PD ⇒ strict local min, $f(2,-1)=4-2+1-6=-3$. It's a quadratic with PD Hessian, so by F2 this is the unique <b>global</b> min.</p></div></details></div>
+</section>
+
+<!-- ================= F. QUADRATICS ================= -->
+<section id="quad">
+<h2>F. Quadratic functions: the tests become exact</h2>
+<h3 id="f1">F1. Form, gradient, Hessian</h3>
+<p>A quadratic function is</p>
+$$f(x)=\tfrac12x^\top Qx-b^\top x\ (+\text{ a constant}),$$
+<p>with $Q$ an $n\times n$ matrix and $b\in\mathbb R^n$. (Quiz 1 questions P11–P12 add a constant to $f$, which they call $r$; on this page $r$ is reserved for the remainder $r(h)$, and a constant never changes <i>where</i> the minimum is.) Only the symmetric part of $Q$ matters, because for the skew part $K=\frac{Q-Q^\top}{2}$ we get $x^\top Kx=0$; so from now on $Q=Q^\top$. Then</p>
+$$\nabla f(x)=Qx-b,\qquad \nabla^2f(x)=Q\ \ (\text{the same at every }x).$$
+<p>The $\tfrac12$ is there precisely so the gradient is $Qx-b$, not $2Qx-b$. Check by a line: $f(x+td)=f(x)+t\,d^\top(Qx-b)+\tfrac12t^2\,d^\top Qd$, <b>exactly</b>, so $\varphi'(0)=\nabla f(x)^\top d$ with $\nabla f=Qx-b$, and $\varphi''(0)=d^\top Qd$.</p>
+
+<h3 id="f2">F2. Why the conditions become "if and only if"</h3>
+<p>Let $x^*$ be stationary: $Qx^*=b$. Put $x=x^*+h$ in the exact expansion:</p>
+$$f(x^*+h)=f(x^*)+\underbrace{(Qx^*-b)^\top h}_{=0}+\tfrac12h^\top Qh=f(x^*)+\tfrac12h^\top Qh\quad\text{for EVERY }h\text{ (not just small ones)}.$$
+<ul>
+<li>$Q\succeq0$ ⇒ $\tfrac12h^\top Qh\ge0$ for every $h$ ⇒ $x^*$ is a <b>global</b> min. Conversely if $Q$ is not PSD, some $h$ has $h^\top Qh\lt0$ and $f(x^*+th)\lt f(x^*)$ for all $t\ne0$: not even a local min. So <b>Group N ⇔ min</b>.</li>
+<li>$Q\succ0$ ⇒ $f(x^*+h)\gt f(x^*)$ for every $h\ne0$ ⇒ <b>unique</b> global min. Conversely if $Q$ is PSD but some $h\ne0$ has $h^\top Qh=0$, then $f(x^*+th)=f(x^*)$ for all $t$: not strict. So <b>Group S ⇔ strict min</b>.</li>
+</ul>
+
+<h3 id="f3">F3. The four cases</h3>
+<div class="fig">
+<svg viewBox="0 0 632 205" width="632" role="img" aria-label="Contours of the four kinds of quadratic"><rect x="8" y="25" width="144" height="140" rx="6" fill="none" stroke="currentColor" stroke-opacity=".2"/><text x="80" y="182" font-size="12" fill="currentColor" text-anchor="middle" font-weight="700">(i) Q ≻ 0: bowl</text><text x="80" y="197" font-size="12" fill="currentColor" text-anchor="middle" >one bottom: x* = Q⁻¹b</text><ellipse cx="80" cy="95" rx="20" ry="12" fill="none" stroke="#2457a6"/><ellipse cx="80" cy="95" rx="40" ry="24" fill="none" stroke="#2457a6"/><ellipse cx="80" cy="95" rx="60" ry="36" fill="none" stroke="#2457a6"/><circle cx="80" cy="95" r="4" fill="#c8372d"/><rect x="164" y="25" width="144" height="140" rx="6" fill="none" stroke="currentColor" stroke-opacity=".2"/><text x="236" y="182" font-size="12" fill="currentColor" text-anchor="middle" font-weight="700">(ii) Q ⪰ 0 singular,</text><text x="236" y="197" font-size="12" fill="currentColor" text-anchor="middle" >b ∈ range Q: a flat floor</text><line x1="176" y1="47" x2="296" y2="47" stroke="#2457a6" stroke-opacity=".6"/><line x1="176" y1="65" x2="296" y2="65" stroke="#2457a6" stroke-opacity=".6"/><line x1="176" y1="81" x2="296" y2="81" stroke="#2457a6" stroke-opacity=".6"/><line x1="176" y1="109" x2="296" y2="109" stroke="#2457a6" stroke-opacity=".6"/><line x1="176" y1="125" x2="296" y2="125" stroke="#2457a6" stroke-opacity=".6"/><line x1="176" y1="143" x2="296" y2="143" stroke="#2457a6" stroke-opacity=".6"/><line x1="176" y1="95" x2="296" y2="95" stroke="#c8372d" stroke-width="4"/><text x="236" y="91" font-size="11" fill="#c8372d" text-anchor="middle" >all minimisers</text><rect x="320" y="25" width="144" height="140" rx="6" fill="none" stroke="currentColor" stroke-opacity=".2"/><text x="392" y="182" font-size="12" fill="currentColor" text-anchor="middle" font-weight="700">(iii) Q ⪰ 0 singular,</text><text x="392" y="197" font-size="12" fill="currentColor" text-anchor="middle" >b ∉ range Q: floor tilts</text><line x1="332" y1="95" x2="452" y2="95" stroke="currentColor" stroke-dasharray="4 3"/><path d="M417.3 33.0 L405.8 36.2 L394.9 39.4 L384.6 42.5 L374.9 45.7 L365.8 48.9 L357.3 52.1 L349.4 55.3 L342.1 58.4 L335.4 61.6 L329.4 64.8 L329.4 125.2 L335.4 128.4 L342.1 131.6 L349.4 134.7 L357.3 137.9 L365.8 141.1 L374.9 144.3 L384.6 147.5 L394.9 150.6 L405.8 153.8 L417.3 157.0" fill="none" stroke="#2457a6" stroke-opacity=".6"/><path d="M447.3 33.0 L435.8 36.2 L424.9 39.4 L414.6 42.5 L404.9 45.7 L395.8 48.9 L387.3 52.1 L379.4 55.3 L372.1 58.4 L365.4 61.6 L359.4 64.8 L353.9 68.0 L349.1 71.2 L344.8 74.3 L341.2 77.5 L338.1 80.7 L335.7 83.9 L333.9 87.1 L332.7 90.2 L332.1 93.4 L332.1 96.6 L332.7 99.8 L333.9 102.9 L335.7 106.1 L338.1 109.3 L341.2 112.5 L344.8 115.7 L349.1 118.8 L353.9 122.0 L359.4 125.2 L365.4 128.4 L372.1 131.6 L379.4 134.7 L387.3 137.9 L395.8 141.1 L404.9 144.3 L414.6 147.5 L424.9 150.6 L435.8 153.8 L447.3 157.0" fill="none" stroke="#2457a6" stroke-opacity=".6"/><path d="M454.9 39.4 L444.6 42.5 L434.9 45.7 L425.8 48.9 L417.3 52.1 L409.4 55.3 L402.1 58.4 L395.4 61.6 L389.4 64.8 L383.9 68.0 L379.1 71.2 L374.8 74.3 L371.2 77.5 L368.1 80.7 L365.7 83.9 L363.9 87.1 L362.7 90.2 L362.1 93.4 L362.1 96.6 L362.7 99.8 L363.9 102.9 L365.7 106.1 L368.1 109.3 L371.2 112.5 L374.8 115.7 L379.1 118.8 L383.9 122.0 L389.4 125.2 L395.4 128.4 L402.1 131.6 L409.4 134.7 L417.3 137.9 L425.8 141.1 L434.9 144.3 L444.6 147.5 L454.9 150.6" fill="none" stroke="#2457a6" stroke-opacity=".6"/><path d="M455.8 48.9 L447.3 52.1 L439.4 55.3 L432.1 58.4 L425.4 61.6 L419.4 64.8 L413.9 68.0 L409.1 71.2 L404.8 74.3 L401.2 77.5 L398.1 80.7 L395.7 83.9 L393.9 87.1 L392.7 90.2 L392.1 93.4 L392.1 96.6 L392.7 99.8 L393.9 102.9 L395.7 106.1 L398.1 109.3 L401.2 112.5 L404.8 115.7 L409.1 118.8 L413.9 122.0 L419.4 125.2 L425.4 128.4 L432.1 131.6 L439.4 134.7 L447.3 137.9 L455.8 141.1" fill="none" stroke="#2457a6" stroke-opacity=".6"/><path d="M455.4 61.6 L449.4 64.8 L443.9 68.0 L439.1 71.2 L434.8 74.3 L431.2 77.5 L428.1 80.7 L425.7 83.9 L423.9 87.1 L422.7 90.2 L422.1 93.4 L422.1 96.6 L422.7 99.8 L423.9 102.9 L425.7 106.1 L428.1 109.3 L431.2 112.5 L434.8 115.7 L439.1 118.8 L443.9 122.0 L449.4 125.2 L455.4 128.4" fill="none" stroke="#2457a6" stroke-opacity=".6"/><path d="M352 90 L442 90" stroke="#c8372d" stroke-width="2.5"/><path d="M442 85 L452 90 L442 95" fill="#c8372d"/><text x="392" y="109" font-size="11" fill="#c8372d" text-anchor="middle" >f → −∞ this way</text><rect x="476" y="25" width="144" height="140" rx="6" fill="none" stroke="currentColor" stroke-opacity=".2"/><text x="548" y="182" font-size="12" fill="currentColor" text-anchor="middle" font-weight="700">(iv) a negative</text><text x="548" y="197" font-size="12" fill="currentColor" text-anchor="middle" >eigenvalue: saddle</text><path d="M590.7 134.4 L587.6 131.0 L584.8 127.8 L582.2 124.9 L579.9 122.2 L577.7 119.7 L575.8 117.3 L574.1 115.1 L572.5 113.1 L571.1 111.1 L569.9 109.3 L568.8 107.5 L567.8 105.8 L567.0 104.3 L566.3 102.7 L565.7 101.3 L565.3 99.8 L564.9 98.4 L564.7 97.0 L564.6 95.7 L564.6 94.3 L564.7 93.0 L564.9 91.6 L565.3 90.2 L565.7 88.7 L566.3 87.3 L567.0 85.7 L567.8 84.2 L568.8 82.5 L569.9 80.7 L571.1 78.9 L572.5 76.9 L574.1 74.9 L575.8 72.7 L577.7 70.3 L579.9 67.8 L582.2 65.1 L584.8 62.2 L587.6 59.0 L590.7 55.6" fill="none" stroke="#2457a6" stroke-opacity=".7"/><path d="M508.6 52.3 L512.0 55.4 L515.2 58.2 L518.1 60.8 L520.8 63.1 L523.3 65.3 L525.7 67.2 L527.9 68.9 L529.9 70.5 L531.9 71.9 L533.7 73.1 L535.5 74.2 L537.2 75.2 L538.7 76.0 L540.3 76.7 L541.7 77.3 L543.2 77.7 L544.6 78.1 L546.0 78.3 L547.3 78.4 L548.7 78.4 L550.0 78.3 L551.4 78.1 L552.8 77.7 L554.3 77.3 L555.7 76.7 L557.3 76.0 L558.8 75.2 L560.5 74.2 L562.3 73.1 L564.1 71.9 L566.1 70.5 L568.1 68.9 L570.3 67.2 L572.7 65.3 L575.2 63.1 L577.9 60.8 L580.8 58.2 L584.0 55.4 L587.4 52.3" fill="none" stroke="#6a5acd" stroke-opacity=".7"/><path d="M505.3 134.4 L508.4 131.0 L511.2 127.8 L513.8 124.9 L516.1 122.2 L518.3 119.7 L520.2 117.3 L521.9 115.1 L523.5 113.1 L524.9 111.1 L526.1 109.3 L527.2 107.5 L528.2 105.8 L529.0 104.3 L529.7 102.7 L530.3 101.3 L530.7 99.8 L531.1 98.4 L531.3 97.0 L531.4 95.7 L531.4 94.3 L531.3 93.0 L531.1 91.6 L530.7 90.2 L530.3 88.7 L529.7 87.3 L529.0 85.7 L528.2 84.2 L527.2 82.5 L526.1 80.7 L524.9 78.9 L523.5 76.9 L521.9 74.9 L520.2 72.7 L518.3 70.3 L516.1 67.8 L513.8 65.1 L511.2 62.2 L508.4 59.0 L505.3 55.6" fill="none" stroke="#2457a6" stroke-opacity=".7"/><path d="M508.6 137.7 L512.0 134.6 L515.2 131.8 L518.1 129.2 L520.8 126.9 L523.3 124.7 L525.7 122.8 L527.9 121.1 L529.9 119.5 L531.9 118.1 L533.7 116.9 L535.5 115.8 L537.2 114.8 L538.7 114.0 L540.3 113.3 L541.7 112.7 L543.2 112.3 L544.6 111.9 L546.0 111.7 L547.3 111.6 L548.7 111.6 L550.0 111.7 L551.4 111.9 L552.8 112.3 L554.3 112.7 L555.7 113.3 L557.3 114.0 L558.8 114.8 L560.5 115.8 L562.3 116.9 L564.1 118.1 L566.1 119.5 L568.1 121.1 L570.3 122.8 L572.7 124.7 L575.2 126.9 L577.9 129.2 L580.8 131.8 L584.0 134.6 L587.4 137.7" fill="none" stroke="#6a5acd" stroke-opacity=".7"/><path d="M612.5 154.5 L607.9 149.4 L603.6 144.7 L599.7 140.3 L596.2 136.2 L593.0 132.3 L590.0 128.8 L587.4 125.4 L585.0 122.3 L582.9 119.3 L581.0 116.6 L579.4 113.9 L577.9 111.4 L576.7 109.0 L575.6 106.7 L574.8 104.5 L574.1 102.3 L573.6 100.2 L573.2 98.1 L573.1 96.0 L573.1 94.0 L573.2 91.9 L573.6 89.8 L574.1 87.7 L574.8 85.5 L575.6 83.3 L576.7 81.0 L577.9 78.6 L579.4 76.1 L581.0 73.4 L582.9 70.7 L585.0 67.7 L587.4 64.6 L590.0 61.2 L593.0 57.7 L596.2 53.8 L599.7 49.7 L603.6 45.3 L607.9 40.6 L612.5 35.5" fill="none" stroke="#2457a6" stroke-opacity=".7"/><path d="M488.5 30.5 L493.6 35.1 L498.3 39.4 L502.7 43.3 L506.8 46.8 L510.7 50.0 L514.2 53.0 L517.6 55.6 L520.7 58.0 L523.7 60.1 L526.4 62.0 L529.1 63.6 L531.6 65.1 L534.0 66.3 L536.3 67.4 L538.5 68.2 L540.7 68.9 L542.8 69.4 L544.9 69.8 L547.0 69.9 L549.0 69.9 L551.1 69.8 L553.2 69.4 L555.3 68.9 L557.5 68.2 L559.7 67.4 L562.0 66.3 L564.4 65.1 L566.9 63.6 L569.6 62.0 L572.3 60.1 L575.3 58.0 L578.4 55.6 L581.8 53.0 L585.3 50.0 L589.2 46.8 L593.3 43.3 L597.7 39.4 L602.4 35.1 L607.5 30.5" fill="none" stroke="#6a5acd" stroke-opacity=".7"/><path d="M483.5 154.5 L488.1 149.4 L492.4 144.7 L496.3 140.3 L499.8 136.2 L503.0 132.3 L506.0 128.8 L508.6 125.4 L511.0 122.3 L513.1 119.3 L515.0 116.6 L516.6 113.9 L518.1 111.4 L519.3 109.0 L520.4 106.7 L521.2 104.5 L521.9 102.3 L522.4 100.2 L522.8 98.1 L522.9 96.0 L522.9 94.0 L522.8 91.9 L522.4 89.8 L521.9 87.7 L521.2 85.5 L520.4 83.3 L519.3 81.0 L518.1 78.6 L516.6 76.1 L515.0 73.4 L513.1 70.7 L511.0 67.7 L508.6 64.6 L506.0 61.2 L503.0 57.7 L499.8 53.8 L496.3 49.7 L492.4 45.3 L488.1 40.6 L483.5 35.5" fill="none" stroke="#2457a6" stroke-opacity=".7"/><path d="M488.5 159.5 L493.6 154.9 L498.3 150.6 L502.7 146.7 L506.8 143.2 L510.7 140.0 L514.2 137.0 L517.6 134.4 L520.7 132.0 L523.7 129.9 L526.4 128.0 L529.1 126.4 L531.6 124.9 L534.0 123.7 L536.3 122.6 L538.5 121.8 L540.7 121.1 L542.8 120.6 L544.9 120.2 L547.0 120.1 L549.0 120.1 L551.1 120.2 L553.2 120.6 L555.3 121.1 L557.5 121.8 L559.7 122.6 L562.0 123.7 L564.4 124.9 L566.9 126.4 L569.6 128.0 L572.3 129.9 L575.3 132.0 L578.4 134.4 L581.8 137.0 L585.3 140.0 L589.2 143.2 L593.3 146.7 L597.7 150.6 L602.4 154.9 L607.5 159.5" fill="none" stroke="#6a5acd" stroke-opacity=".7"/><path d="M611.7 149.4 L607.5 144.4 L603.6 139.7 L600.1 135.3 L597.0 131.1 L594.2 127.2 L591.7 123.5 L589.5 120.0 L587.6 116.7 L586.0 113.5 L584.6 110.5 L583.4 107.5 L582.5 104.6 L581.8 101.8 L581.4 99.1 L581.2 96.4 L581.2 93.6 L581.4 90.9 L581.8 88.2 L582.5 85.4 L583.4 82.5 L584.6 79.5 L586.0 76.5 L587.6 73.3 L589.5 70.0 L591.7 66.5 L594.2 62.8 L597.0 58.9 L600.1 54.7 L603.6 50.3 L607.5 45.6 L611.7 40.6" fill="none" stroke="#2457a6" stroke-opacity=".7"/><path d="M493.6 31.3 L498.6 35.5 L503.3 39.4 L507.7 42.9 L511.9 46.0 L515.8 48.8 L519.5 51.3 L523.0 53.5 L526.3 55.4 L529.5 57.0 L532.5 58.4 L535.5 59.6 L538.4 60.5 L541.2 61.2 L543.9 61.6 L546.6 61.8 L549.4 61.8 L552.1 61.6 L554.8 61.2 L557.6 60.5 L560.5 59.6 L563.5 58.4 L566.5 57.0 L569.7 55.4 L573.0 53.5 L576.5 51.3 L580.2 48.8 L584.1 46.0 L588.3 42.9 L592.7 39.4 L597.4 35.5 L602.4 31.3" fill="none" stroke="#6a5acd" stroke-opacity=".7"/><path d="M484.3 149.4 L488.5 144.4 L492.4 139.7 L495.9 135.3 L499.0 131.1 L501.8 127.2 L504.3 123.5 L506.5 120.0 L508.4 116.7 L510.0 113.5 L511.4 110.5 L512.6 107.5 L513.5 104.6 L514.2 101.8 L514.6 99.1 L514.8 96.4 L514.8 93.6 L514.6 90.9 L514.2 88.2 L513.5 85.4 L512.6 82.5 L511.4 79.5 L510.0 76.5 L508.4 73.3 L506.5 70.0 L504.3 66.5 L501.8 62.8 L499.0 58.9 L495.9 54.7 L492.4 50.3 L488.5 45.6 L484.3 40.6" fill="none" stroke="#2457a6" stroke-opacity=".7"/><path d="M493.6 158.7 L498.6 154.5 L503.3 150.6 L507.7 147.1 L511.9 144.0 L515.8 141.2 L519.5 138.7 L523.0 136.5 L526.3 134.6 L529.5 133.0 L532.5 131.6 L535.5 130.4 L538.4 129.5 L541.2 128.8 L543.9 128.4 L546.6 128.2 L549.4 128.2 L552.1 128.4 L554.8 128.8 L557.6 129.5 L560.5 130.4 L563.5 131.6 L566.5 133.0 L569.7 134.6 L573.0 136.5 L576.5 138.7 L580.2 141.2 L584.1 144.0 L588.3 147.1 L592.7 150.6 L597.4 154.5 L602.4 158.7" fill="none" stroke="#6a5acd" stroke-opacity=".7"/><circle cx="548" cy="95" r="4" fill="#c8372d"/><rect x="477" y="26" width="142" height="138" fill="none"/></svg>
+<div class="cap">Contour pictures of $\tfrac12x^\top Qx-b^\top x$ in 2-D. (i) PD: ellipses around one bottom. (ii) PSD singular with $b$ in range$(Q)$: a valley whose whole floor (red line) is minimisers. (iii) PSD singular with $b$ not in range$(Q)$: the contours become parabolas because the valley floor tilts, so $f$ decreases forever along it. (iv) a negative eigenvalue: a saddle; $f\to-\infty$ along that eigenvector.</div>
+</div>
+<div class="box must"><span class="tag">Minimising $f=\frac12x^\top Qx-b^\top x$, $Q=Q^\top$</span>
+<ol style="list-style:none;padding-left:0.5em">
+<li>(i) $Q\succ0$: unique global minimiser $x^*=Q^{-1}b$.</li>
+<li>(ii) $Q\succeq0$, singular, $b\in$ range$(Q)$: <b>infinitely many</b> global minimisers (all solutions of $Qx=b$: one solution plus anything in null$(Q)$).</li>
+<li>(iii) $Q\succeq0$, singular, $b\notin$ range$(Q)$: <b>no</b> stationary point; $f$ is unbounded below.</li>
+<li>(iv) $Q$ has a negative eigenvalue: unbounded below; no minimiser (any stationary point is a saddle).</li>
+</ol></div>
+<div class="box example"><span class="tag">Each case with numbers</span>
+<ol class="steps">
+<li><b>(i) PD.</b> $Q=\begin{bmatrix}3&1\\1&3\end{bmatrix}$ (eigenvalues 2, 4), $b=(5,-1)$. Solve $Qx=b$: $3x_1+x_2=5$, $x_1+3x_2=-1$ ⇒ $x^*=(2,-1)$. Value $f(x^*)=\tfrac12x^{*\top}Qx^*-b^\top x^*=-\tfrac12b^\top x^*=-\tfrac12(10+1)=-\tfrac{11}{2}$ (shortcut valid because $Qx^*=b$).</li>
+<li><b>(ii) PSD singular, $b$ in range.</b> $f=\tfrac12(x_1+x_2)^2-2x_1-2x_2$: $Q=\begin{bmatrix}1&1\\1&1\end{bmatrix}$, $b=(2,2)=2\cdot(1,1)$, a multiple of a column of $Q$, so $b\in$ range$(Q)$. $Qx=b$ ⇔ $x_1+x_2=2$: the whole line is minimisers, value $\tfrac12\cdot4-4=-2$.</li>
+<li><b>(iii) PSD singular, $b$ not in range.</b> $f=\tfrac12(x_1+x_2)^2-x_1$: same $Q$, $b=(1,0)$, not a multiple of $(1,1)$. $\nabla f=(x_1+x_2-1,\ x_1+x_2)$ can never be 0 (the two entries differ by 1). Along $(t,-t)$: $f=0-t\to-\infty$.</li>
+<li><b>(iv) Negative eigenvalue.</b> $f=\tfrac12(x_1^2-x_2^2)$: along $(0,t)$, $f=-\tfrac12t^2\to-\infty$.</li>
+</ol></div>
+<p><b>Why (iii) and (iv) go to $-\infty$ in general.</b> (iv): if $Qv=\lambda v$ with $\lambda\lt0$, then $f(tv)=\tfrac12\lambda t^2\|v\|^2-t\,b^\top v\to-\infty$ (the $t^2$ term wins). (iii): for symmetric $Q$, range$(Q)$ and null$(Q)$ are perpendicular and together fill $\mathbb R^n$. So split $b=b_R+b_N$ with $b_R\in$ range$(Q)$, $b_N\in$ null$(Q)$; $b\notin$ range means $b_N\ne0$. Then $Qb_N=0$ and $b^\top b_N=\|b_N\|^2$, so $f(tb_N)=-t\|b_N\|^2\to-\infty$.</p>
+<div class="box trap"><span class="tag">Traps</span>
+<ul><li>"$Q$ singular ⇒ not convex": false. $Q\succeq0$ is convex (H3) even if singular.</li>
+<li>"$Q\succeq0$ ⇒ a minimum exists": false (case iii).</li>
+<li>The iff holds because Taylor is exact for quadratics, <b>not</b> because PSD turns into PD.</li></ul></div>
+<div class="check"><b>Check F.</b> $f=\tfrac12x^\top Qx-b^\top x$ with $Q=\begin{bmatrix}2&0\\0&0\end{bmatrix}$. For which $b$ do minimisers exist, and what are they for $b=(4,0)$?
+<details class="ans"><summary>Show answer</summary><div><p>range$(Q)$ = multiples of $(1,0)$. Minimisers exist iff $b_2=0$. For $b=(4,0)$: $Qx=b$ ⇔ $2x_1=4$ ⇔ $x_1=2$, any $x_2$: the whole line $x_1=2$.</p></div></details></div>
+</section>
+
+<!-- ================= G. LEAST SQUARES ================= -->
+<section id="ls">
+<h2>G. Least squares</h2>
+<h3 id="g1">G1. The problem and the normal equations, derived</h3>
+<p><b>Plain words.</b> You have more equations than unknowns, $Ax=\bar b$ with $A$ an $m\times n$ matrix, $m\gt n$ (e.g. fit a line through many points). Usually no $x$ solves all equations, so find the $x$ that makes the misfit $Ax-\bar b$ as short as possible:</p>
+$$\min_x\ f(x)=\tfrac12\|Ax-\bar b\|^2 .$$
+<p><b>It's a quadratic.</b> Expand $\|Ax-\bar b\|^2=(Ax-\bar b)^\top(Ax-\bar b)=x^\top A^\top Ax-2(A^\top\bar b)^\top x+\|\bar b\|^2$. So</p>
+$$f(x)=\tfrac12x^\top\underbrace{(A^\top A)}_{Q}x-\underbrace{(A^\top\bar b)}_{b}{}^\top x+\tfrac12\|\bar b\|^2,\qquad \nabla f(x)=A^\top(Ax-\bar b).$$
+<p>Setting the gradient to zero gives the <b>normal equations</b>:</p>
+$$\boxed{A^\top A\,x^*=A^\top\bar b}$$
+<p><b>Always a global min, never case (iii) or (iv).</b> $Q=A^\top A$ is PSD, because $d^\top A^\top Ad=\|Ad\|^2\ge0$. So by F2 every solution of the normal equations is a global minimiser. And a solution always exists, because</p>
+$$\text{range}(A^\top A)=\text{range}(A^\top)\quad(\text{Quiz 1 Q28}),$$
+<p>so $b=A^\top\bar b\in$ range$(Q)$. (Why the identity: we use the linear-algebra fact range$(M^\top)$ = null$(M)^\perp$ for any matrix $M$, i.e. the vectors $M^\top y$ are exactly the vectors perpendicular to every solution of $Mx=0$. Now if $A^\top Ax=0$ then $\|Ax\|^2=x^\top A^\top Ax=0$, so $Ax=0$; hence null$(A^\top A)$ = null$(A)$, and taking perpendicular complements with the fact (once with $M=A^\top A$, which is symmetric, once with $M=A$) gives range$(A^\top A)$ = null$(A^\top A)^\perp$ = null$(A)^\perp$ = range$(A^\top)$.)</p>
+<h3 id="g2">G2. When is it unique? Full column rank</h3>
+<p>$A$ has <b>full column rank</b> when its columns are linearly independent, i.e. $Ad\ne0$ for every $d\ne0$. Then $d^\top A^\top Ad=\|Ad\|^2\gt0$: $A^\top A\succ0$ (case i), so</p>
+$$x^*=(A^\top A)^{-1}A^\top\bar b\quad\text{is the unique minimiser.}$$
+<p>If the columns are dependent, $A^\top A$ is singular and we're in case (ii): infinitely many minimisers, all giving the same fit $Ax^*$. He said: <q>least square solution is always unique. Need not be unique</q> (i.e. the claim is false). (Pseudo-inverse formulas for that case: he said not asked.)</p>
+<div class="box example"><span class="tag">Worked example: fit a line $c_0+c_1s$ through the points $(s,\text{value})=(0,0),(1,1),(2,1)$</span>
+<ol class="steps">
+<li>Unknowns $x=(c_0,c_1)$. Each point gives one equation $c_0+c_1s_i=$ value$_i$: $A=\begin{bmatrix}1&0\\1&1\\1&2\end{bmatrix}$, $\bar b=(0,1,1)^\top$. The columns are independent ⇒ full column rank ⇒ unique solution.</li>
+<li>$A^\top A=\begin{bmatrix}3&3\\3&5\end{bmatrix}$, $A^\top\bar b=(0+1+1,\ 0+1+2)=(2,3)^\top$.</li>
+<li>$\det(A^\top A)=15-9=6$, so $(A^\top A)^{-1}=\tfrac16\begin{bmatrix}5&-3\\-3&3\end{bmatrix}$ and $x^*=\tfrac16(10-9,\ -6+9)=(1/6,\ 1/2)^\top$. Best line: $\frac16+\frac12s$.</li>
+<li>Residual $\bar b-Ax^*=(0,1,1)-(1/6,\,2/3,\,7/6)=(-1/6,\ 1/3,\ -1/6)^\top$. Check $A^\top(\text{residual})=(-\frac16+\frac13-\frac16,\ \frac13-\frac13)=(0,0)$ ✓. The normal equation <i>says</i> exactly this: the residual is perpendicular to every column of $A$.</li>
+</ol></div>
+<h3 id="g3">G3. The projection picture</h3>
+<div class="fig">
+<svg viewBox="0 0 420 215" width="420" role="img" aria-label="Least squares as projection onto the range of A"><path d="M40 170 L260 200 L400 140 L180 110 Z" fill="#2457a6" fill-opacity=".10" stroke="#2457a6"/><text x="330" y="190" font-size="12.5" fill="#2457a6" text-anchor="start" >range(A) = all vectors Ax</text><circle cx="150" cy="160" r="3.5" fill="currentColor"/><text x="136" y="176" font-size="12" fill="currentColor" text-anchor="start" >0</text><line x1="150" y1="160" x2="250" y2="35" stroke="currentColor" stroke-width="2.5"/><text x="256" y="35" font-size="13" fill="currentColor" text-anchor="start" >b̄ (data)</text><line x1="150" y1="160" x2="250" y2="145" stroke="#1f8a44" stroke-width="3"/><text x="258" y="161" font-size="13" fill="#1f8a44" text-anchor="start" >Ax* = Pb̄ (fit)</text><line x1="250" y1="145" x2="250" y2="35" stroke="#c8372d" stroke-width="2.5" stroke-dasharray="6 4"/><text x="258" y="95" font-size="13" fill="#c8372d" text-anchor="start" >residual b̄ − Ax*</text><path d="M250 131 L262 129 L262 143" fill="none" stroke="#c8372d"/><text x="262" y="112" font-size="12" fill="#c8372d" text-anchor="start" >⟂ to the plane</text></svg>
+<div class="cap">All possible fits $Ax$ form a flat subspace, range$(A)$ (blue). The best fit $Ax^*$ is the point of that subspace nearest to $\bar b$, i.e. the foot of the perpendicular. The residual (red) is perpendicular to the subspace: $A^\top(\bar b-Ax^*)=0$, which is the normal equation.</div>
+</div>
+<p>With full column rank, the fit is $\hat b=Ax^*=A(A^\top A)^{-1}A^\top\bar b=P\bar b$, where</p>
+$$P=A(A^\top A)^{-1}A^\top\quad\text{(orthogonal projector onto range}(A)).$$
+<p>Properties: $P^2=P$ (projecting twice changes nothing), $P^\top=P$; $I-P$ projects onto null$(A^\top)$ (the perpendicular directions), and the residual is $(I-P)\bar b$. In the example, $P=\tfrac16\begin{bmatrix}5&2&-1\\2&2&2\\-1&2&5\end{bmatrix}$ and $P^2=P$ ✓. He said: <q>The projection expression and the expression for a projection onto the null space. These things you will be using</q>.</p>
+<div class="box trap"><span class="tag">Traps</span>
+<ul><li>"The least-squares solution is always unique": false (only with full column rank). But "the normal equations always have a solution": true.</li>
+<li>The projector onto range$(A)$ is $A(A^\top A)^{-1}A^\top$, <b>not</b> $A^\top(AA^\top)^{-1}A$ (when $m\gt n$, $AA^\top$ is $m\times m$ with rank $n\lt m$: singular).</li></ul></div>
+<div class="check"><b>Check G.</b> For $A=\begin{bmatrix}1\\1\end{bmatrix}$ (one column) and $\bar b=(1,3)$, find $x^*$, $P$ and the residual.
+<details class="ans"><summary>Show answer</summary><div><p>$A^\top A=2$, $A^\top\bar b=4$, $x^*=2$ (the mean). $P=\tfrac12\begin{bmatrix}1&1\\1&1\end{bmatrix}$, fit $(2,2)$, residual $(-1,1)$, and $A^\top(-1,1)=0$ ✓.</p></div></details></div>
+</section>
+
+<!-- ================= H. CONVEXITY ================= -->
+<section id="convex">
+<h2>H. Convexity: when local means global</h2>
+<p>Everything so far is local. Convexity is the property that makes the local tests give <b>global</b> answers.</p>
+
+<h3 id="h1">H1. The definition: chord above the graph</h3>
+<p>A <b>convex set</b> $C$: the straight segment between any two of its points stays inside $C$ (a disc is convex; a crescent is not). Points on the segment from $x$ to $y$ are $\theta x+(1-\theta)y$ with $\theta\in[0,1]$ ($\theta=1$ gives $x$, $\theta=0$ gives $y$).</p>
+<p><b>Plain words.</b> A function is convex if, whenever you join two points of its graph by a straight string (a <b>chord</b>), the graph never rises above the string.</p>
+<div class="fig">
+<svg viewBox="0 0 500 200" width="500" role="img" aria-label="Convex function: chord above, tangent below"><line x1="10" y1="175" x2="240" y2="175" stroke="currentColor" stroke-opacity=".35"/><path d="M16.1 74.4 L18.9 78.7 L21.6 82.9 L24.4 87.0 L27.1 90.9 L29.9 94.8 L32.6 98.6 L35.4 102.2 L38.2 105.7 L40.9 109.2 L43.7 112.5 L46.4 115.7 L49.2 118.8 L51.9 121.8 L54.7 124.7 L57.5 127.4 L60.2 130.1 L63.0 132.6 L65.7 135.0 L68.5 137.4 L71.2 139.6 L74.0 141.7 L76.8 143.7 L79.5 145.6 L82.3 147.3 L85.0 149.0 L87.8 150.5 L90.5 152.0 L93.3 153.3 L96.1 154.5 L98.8 155.6 L101.6 156.6 L104.3 157.5 L107.1 158.3 L109.8 158.9 L112.6 159.5 L115.4 159.9 L118.1 160.3 L120.9 160.5 L123.6 160.6 L126.4 160.6 L129.1 160.5 L131.9 160.3 L134.6 159.9 L137.4 159.5 L140.2 158.9 L142.9 158.3 L145.7 157.5 L148.4 156.6 L151.2 155.6 L153.9 154.5 L156.7 153.3 L159.5 152.0 L162.2 150.5 L165.0 149.0 L167.7 147.3 L170.5 145.6 L173.2 143.7 L176.0 141.7 L178.8 139.6 L181.5 137.4 L184.3 135.0 L187.0 132.6 L189.8 130.1 L192.5 127.4 L195.3 124.7 L198.1 121.8 L200.8 118.8 L203.6 115.7 L206.3 112.5 L209.1 109.2 L211.8 105.7 L214.6 102.2 L217.4 98.6 L220.1 94.8 L222.9 90.9 L225.6 87.0 L228.4 82.9 L231.1 78.7 L233.9 74.4" fill="none" stroke="#2457a6" stroke-width="3"/><line x1="39.2" y1="107.1" x2="197.6" y2="122.3" stroke="#c8372d" stroke-width="2.5"/><circle cx="39.2" cy="107.1" r="4" fill="#c8372d"/><circle cx="197.6" cy="122.3" r="4" fill="#c8372d"/><text x="39" y="191" font-size="13" fill="currentColor" text-anchor="middle" >x</text><text x="198" y="191" font-size="13" fill="currentColor" text-anchor="middle" >y</text><line x1="134.2" y1="175" x2="134.2" y2="116.2" stroke="currentColor" stroke-dasharray="3 3"/><circle cx="134.2" cy="160.0" r="4" fill="#2457a6"/><text x="134" y="191" font-size="12" fill="currentColor" text-anchor="middle" >θx + (1−θ)y</text><text x="125" y="18" font-size="13" fill="#c8372d" text-anchor="middle" font-weight="700">chord lies ABOVE the graph</text><line x1="260" y1="175" x2="490" y2="175" stroke="currentColor" stroke-opacity=".35"/><path d="M266.1 74.4 L268.9 78.7 L271.6 82.9 L274.4 87.0 L277.1 90.9 L279.9 94.8 L282.6 98.6 L285.4 102.2 L288.2 105.7 L290.9 109.2 L293.7 112.5 L296.4 115.7 L299.2 118.8 L301.9 121.8 L304.7 124.7 L307.5 127.4 L310.2 130.1 L313.0 132.6 L315.7 135.0 L318.5 137.4 L321.2 139.6 L324.0 141.7 L326.8 143.7 L329.5 145.6 L332.3 147.3 L335.0 149.0 L337.8 150.5 L340.5 152.0 L343.3 153.3 L346.1 154.5 L348.8 155.6 L351.6 156.6 L354.3 157.5 L357.1 158.3 L359.8 158.9 L362.6 159.5 L365.4 159.9 L368.1 160.3 L370.9 160.5 L373.6 160.6 L376.4 160.6 L379.1 160.5 L381.9 160.3 L384.6 159.9 L387.4 159.5 L390.2 158.9 L392.9 158.3 L395.7 157.5 L398.4 156.6 L401.2 155.6 L403.9 154.5 L406.7 153.3 L409.5 152.0 L412.2 150.5 L415.0 149.0 L417.7 147.3 L420.5 145.6 L423.2 143.7 L426.0 141.7 L428.8 139.6 L431.5 137.4 L434.3 135.0 L437.0 132.6 L439.8 130.1 L442.5 127.4 L445.3 124.7 L448.1 121.8 L450.8 118.8 L453.6 115.7 L456.3 112.5 L459.1 109.2 L461.8 105.7 L464.6 102.2 L467.4 98.6 L470.1 94.8 L472.9 90.9 L475.6 87.0 L478.4 82.9 L481.1 78.7 L483.9 74.4" fill="none" stroke="#2457a6" stroke-width="3"/><path d="M266.1 100.0 L483.9 256.8" fill="none" stroke="#1f8a44" stroke-width="2.5"/><circle cx="325.5" cy="142.8" r="4" fill="#1f8a44"/><text x="326" y="191" font-size="13" fill="currentColor" text-anchor="middle" >x</text><line x1="454.2" y1="235.4" x2="454.2" y2="115.0" stroke="currentColor" stroke-dasharray="3 3"/><circle cx="454.2" cy="115.0" r="4" fill="#2457a6"/><text x="454" y="191" font-size="13" fill="currentColor" text-anchor="middle" >y</text><text x="375" y="18" font-size="13" fill="#1f8a44" text-anchor="middle" font-weight="700">tangent lies BELOW the graph</text></svg>
+<div class="cap">Left: the definition. At any mixing point $\theta x+(1-\theta)y$, the graph (blue dot) is at or below the chord (red). Right: the equivalent first-order picture (H2). The tangent line (green) at any point $x$ stays at or below the graph everywhere, e.g. at $y$.</div>
+</div>
+<div class="box must"><span class="tag">Definition</span>
+<p>$f:C\to\mathbb R$ ($C$ convex) is <b>convex</b> if for all $x,y\in C$ and $\theta\in[0,1]$:
+$$f(\theta x+(1-\theta)y)\le\theta f(x)+(1-\theta)f(y).$$
+<b>Strictly convex</b>: "$\lt$" whenever $x\ne y$ and $0\lt\theta\lt1$. <b>Concave</b>: $-f$ is convex. (Never say "concave set".) Midterm 1 writes the same thing as $f((1-t)x+ty)\le(1-t)f(x)+tf(y)$, $t\in[0,1]$.</p></div>
+<p>Numbers: $f=x^2$, points $-1$ and $3$, $\theta=\tfrac12$: midpoint $1$, $f(1)=1$; chord value $\tfrac12(1)+\tfrac12(9)=5\ge1$ ✓.</p>
+<p><b>Restriction to a line</b> (the same trick as C2): $f$ is convex ⇔ for every point $x$ and direction $d$, the 1-variable function $g(t)=f(x+td)$ is convex. So a single line along which $g$ is not convex (e.g. $g''(t)\lt0$ somewhere) proves $f$ is not convex.</p>
+
+<h3 id="h2">H2. First-order test: the tangent lies below the graph</h3>
+<div class="box must"><span class="tag">First-order characterisation ($f$ differentiable)</span>
+<p>$f$ convex ⇔ $\ f(y)\ge f(x)+\nabla f(x)^\top(y-x)\ $ for all $x,y$.</p></div>
+<p>Plain words: the right side is the tangent plane at $x$, evaluated at $y$. Convex means every tangent plane is an under-estimator. Numbers: tangent to $x^2$ at $x=1$ is $1+2(y-1)$; at $y=3$ it gives $5\le9=f(3)$ ✓. (Proof of ⇒ is H6, which is Midterm 1 Q VII.)</p>
+<div class="box example"><span class="tag">The huge consequence</span>
+<p>If $f$ is convex and $\nabla f(x^*)=0$, the inequality reads $f(y)\ge f(x^*)+0$ for <b>every</b> $y$. So <b>for a convex function a stationary point is a global minimum</b>: FONC alone is sufficient. No Hessian needed.</p></div>
+
+<h3 id="h3">H3. Second-order test: Hessian PSD <b>everywhere</b></h3>
+<div class="box must"><span class="tag">Second-order characterisation ($f\in C^2$ on $\mathbb R^n$)</span>
+<p>$f$ convex ⇔ $\nabla^2f(x)\succeq0$ <b>for every</b> $x$.<br>
+$\nabla^2f(x)\succ0$ for every $x$ ⇒ strictly convex. Not conversely: $x^4$ is strictly convex but $f''(0)=0$.</p></div>
+<p><b>Contrast with SONC</b> (the classic confusion):</p>
+<div class="mathwide"><table>
+<tr><th></th><th>SONC</th><th>Convexity</th></tr>
+<tr><td>Hessian PSD where?</td><td>at <b>one</b> point $x^*$</td><td>at <b>every</b> point</td></tr>
+<tr><td>It's a property of…</td><td>a candidate point</td><td>the whole function</td></tr>
+<tr><td>What it buys</td><td>nothing on its own (necessary only)</td><td>stationary ⇒ global min</td></tr>
+</table></div>
+<p><b>How to show "not convex":</b> one bad point is enough. Find $x$ where the Hessian has a negative eigenvalue; or a line along which $g''\lt0$; or a <b>midpoint counterexample</b> $f\big(\tfrac{u+v}2\big)\gt\tfrac{f(u)+f(v)}{2}$. Showing "convex" needs <b>all</b> points.</p>
+<div class="box example"><span class="tag">Examples</span>
+<ul>
+<li>$e^{x_1}+x_2^2$: Hessian diag$(e^{x_1},2)\succ0$ everywhere ⇒ convex (strictly).</li>
+<li>$x_1^2+4x_1x_2+x_2^2$: Hessian $\begin{bmatrix}2&4\\4&2\end{bmatrix}$, det $=-12\lt0$ ⇒ indefinite ⇒ not convex. Along $(t,-t)$: $t^2-4t^2+t^2=-2t^2$.</li>
+<li>$(x_1^2-x_2^2)^2$ is $\ge0$ but not convex: $u=(1,1)$, $v=(1,-1)$ give $f=0$, midpoint $(1,0)$ gives $1\gt0$. "Nonnegative" has nothing to do with "convex".</li>
+</ul></div>
+
+<h3 id="h4">H4. Building convex functions without a Hessian: max, and log-sum-exp</h3>
+<p><b>Rules that keep convexity:</b> nonnegative weighted sums $\sum\alpha_if_i$ ($\alpha_i\ge0$); adding an affine (linear + constant) term; composing with an affine map, $f(Mx+\text{fixed vector})$; and the <b>pointwise maximum</b> $\max_if_i$. Not kept: products, minimum ($\min\{x^2,(x-2)^2\}$ is $0,1,0$ at $x=0,1,2$: midpoint value 1 exceeds the average 0).</p>
+<div class="box example"><span class="tag">Max of convex functions is convex (Tutorial 1, problem 20): proof without any Hessian</span>
+<p>Let $f=\max_if_i$, each $f_i$ convex, and fix $u,v$, $\theta\in[0,1]$. For each $i$:
+$$f_i(\theta u+(1-\theta)v)\le\theta f_i(u)+(1-\theta)f_i(v)\le\theta f(u)+(1-\theta)f(v),$$
+the second step because $f_i\le f$ and $\theta,1-\theta\ge0$. The right side doesn't depend on $i$, so take the max over $i$ on the left: $f(\theta u+(1-\theta)v)\le\theta f(u)+(1-\theta)f(v)$. ∎<br>
+Example: $\max\{x_1^2,x_2^2\}$ is convex though not differentiable where $x_1^2=x_2^2$. He said: <q>this is important. So it talks about an important concept</q>.</p></div>
+<div class="box example"><span class="tag">Log-sum-exp $f(x_1,x_2)=\log(e^{x_1}+e^{x_2})$ (Tutorial 1, problem 14)</span>
+<ol class="steps">
+<li>Let $\sigma_1=\dfrac{e^{x_1}}{e^{x_1}+e^{x_2}}$, $\sigma_2=\dfrac{e^{x_2}}{e^{x_1}+e^{x_2}}$ (positive weights with $\sigma_1+\sigma_2=1$). Then $\nabla f=(\sigma_1,\sigma_2)$.</li>
+<li>Differentiate again: $\partial\sigma_1/\partial x_1=\sigma_1-\sigma_1^2=\sigma_1\sigma_2$ and $\partial\sigma_1/\partial x_2=-\sigma_1\sigma_2$. So
+$$\nabla^2f=\begin{bmatrix}\sigma_1\sigma_2&-\sigma_1\sigma_2\\-\sigma_1\sigma_2&\sigma_1\sigma_2\end{bmatrix}=\sigma_1\sigma_2\begin{bmatrix}1&-1\\-1&1\end{bmatrix}.$$ At $(0,0)$: $\sigma=(\tfrac12,\tfrac12)$ and $\nabla^2f=\tfrac14\begin{bmatrix}1&-1\\-1&1\end{bmatrix}$.</li>
+<li>$d^\top\nabla^2f\,d=\sigma_1\sigma_2(d_1-d_2)^2\ge0$ for every $d$, at every point ⇒ PSD everywhere ⇒ <b>convex</b>. (In $n$-D: $d^\top\nabla^2f\,d=\sum\sigma_id_i^2-(\sum\sigma_id_i)^2\ge0$ by Cauchy–Schwarz.)</li>
+<li>Not PD: direction $(1,1)$ has zero curvature, and indeed $f(x_1+t,x_2+t)=f(x_1,x_2)+t$ is a straight line. So convex but <b>not strictly</b> convex.</li>
+</ol></div>
+
+<h3 id="h5">H5. The payoff: every local minimum is global</h3>
+<div class="box example"><span class="tag">Theorem 1.8.2 and its proof</span>
+<p>Suppose $f$ is convex, $x^*$ is a local min, but some $y$ has $f(y)\lt f(x^*)$. Points on the segment, $z_\theta=\theta y+(1-\theta)x^*$, satisfy
+$$f(z_\theta)\le\theta f(y)+(1-\theta)f(x^*)\lt f(x^*)\quad\text{for every }\theta\in(0,1].$$
+As $\theta\to0$, $z_\theta\to x^*$: lower points arbitrarily close to $x^*$. That contradicts "local min". ∎</p></div>
+<div class="box trap"><span class="tag">What convexity does NOT give</span>
+<ul><li><b>Existence:</b> $e^x$ is convex with no minimum.</li>
+<li><b>Uniqueness:</b> $(x_1+x_2)^2$ is convex with a whole line of minima. Strict convexity gives uniqueness <i>if</i> a minimiser exists.</li>
+<li>Convexity from one point: "PD Hessian at one point" proves nothing about convexity ($x^3$ has $f''(1)=6\gt0$).</li></ul></div>
+
+<h3 id="h6">H6. The proof chain: convex ⇒ tangent below ⇒ monotone gradient (Midterm 1 Q VII)</h3>
+<p>Midterm 1 asked this as MCQ steps (Practice M3–M7). Learn the chain as a story. Assume $f$ is convex (the definition with $t\in[0,1]$) <b>and differentiable</b> (needed in Step 2). Fix $x,y$ and let $d=y-x$.</p>
+<ol class="steps">
+<li><b>Step 1 (use the definition).</b> $x+td=(1-t)x+ty$, so convexity gives $f(x+td)\le(1-t)f(x)+tf(y)=f(x)+t[f(y)-f(x)]$. Subtract $f(x)$ and divide by $t\gt0$ (direction unchanged):
+$$R(t)=\frac{f(x+td)-f(x)}{t}\le f(y)-f(x).$$</li>
+<li><b>Step 2 (let $t\downarrow0$).</b> $R(t)$ is the slope of the chord from $x$ along $d$; as $t\downarrow0$ it becomes the slope in direction $d$: because $f$ is differentiable, $f(x+td)-f(x)=t\nabla f(x)^\top d+o(t)$, so $\lim R(t)=\nabla f(x)^\top d$.</li>
+<li><b>Step 3 (first-order inequality).</b> So $\nabla f(x)^\top d\le f(y)-f(x)$, i.e. $f(y)\ge f(x)+\nabla f(x)^\top(y-x)$: tangent below the graph.</li>
+<li><b>Step 4 (swap $x$ and $y$).</b> $f(x)\ge f(y)+\nabla f(y)^\top(x-y)=f(y)-\nabla f(y)^\top d$, i.e. $f(y)-f(x)\le\nabla f(y)^\top d$. (Careful: going from $y$ to $x$ the direction is $-d$.)</li>
+<li><b>Step 5 (sandwich).</b> $\nabla f(x)^\top d\le f(y)-f(x)\le\nabla f(y)^\top d$, so
+$$\big(\nabla f(y)-\nabla f(x)\big)^\top(y-x)\ge0\qquad(\textbf{monotone gradient}).$$</li>
+</ol>
+<p><b>Meaning:</b> in 1-D it says $(f'(y)-f'(x))(y-x)\ge0$: if $y\gt x$ then $f'(y)\ge f'(x)$, the slope never decreases, which is exactly "curves upward". Example $f=x^2$: $(2y-2x)(y-x)=2(y-x)^2\ge0$. It is "$\ge$", not "$\gt$": for a linear $f$ it is exactly 0; strict needs strict convexity.</p>
+<div class="check"><b>Check H.</b> (a) Is $f=x_1^2+x_2^2+x_1x_2+e^{x_1}$ convex? (b) A convex $C^1$ function has $\nabla f(3,1)=0$. What do you know about $(3,1)$?
+<details class="ans"><summary>Show answer</summary><div><p>(a) Hessian $\begin{bmatrix}2+e^{x_1}&1\\1&2\end{bmatrix}$: $\Delta_1=2+e^{x_1}\gt0$, $\Delta_2=4+2e^{x_1}-1\gt0$ at every point ⇒ PD everywhere ⇒ convex (strictly). (b) It's a global minimiser (H2), by the first-order inequality with $\nabla f=0$.</p></div></details></div>
+</section>
+
+<!-- ================= I. RECIPE ================= -->
+<section id="recipe">
+<h2>I. Exam recipe</h2>
+<div class="box must"><span class="tag">What to do with each question type</span>
+<ol class="steps">
+<li><b>MCQ about a statement</b> (most of Quiz 1). Read every word: necessary or sufficient? local, strict or global? $\succeq$ or $\succ$? "at one point" or "for all $x$"? leading or all minors? Then test it against the counterexample bank: $x^4$, $x^3$, $-x^4$, $x_1^4+x_2^2$, monkey saddle, Peano, $e^x$, diag$(0,-1)$, $(x_1^2-x_2^2)^2$.</li>
+<li><b>"Find and classify the stationary points"</b> (Midterm 1 Q IV, Tutorial 7). Recipe E1: solve $\nabla f=0$ completely → Hessian → PD / ND / indefinite / silent → global question (bounded below? coercive? convex? a direction to $-\infty$?).</li>
+<li><b>"Convex or not?"</b> (Midterm 1 Q I). Recognise building blocks (sums, max, affine composition) → Hessian PSD at <b>every</b> point (2×2: diagonal $\ge0$ and det $\ge0$ everywhere) → to disprove, one point with a negative eigenvalue, or a line with $g''\lt0$, or a midpoint counterexample.</li>
+<li><b>Quadratic $\frac12x^\top Qx-b^\top x$</b>: eigenvalues of $Q$ → which of the four cases (F3) → if $Q\succeq0$ singular, check whether $b\in$ range$(Q)$.</li>
+<li><b>Least squares</b>: normal equations $A^\top Ax=A^\top\bar b$ → unique iff full column rank → projector $A(A^\top A)^{-1}A^\top$; check the residual is perpendicular to the columns.</li>
+<li><b>Proof steps</b> (Midterm 1 Q VII): definition → chord slope $R(t)\le f(y)-f(x)$ → limit → tangent inequality → swap → monotone gradient.</li>
+</ol></div>
+</section>
+
+<!-- ================= WHAT HE SAID ================= -->
 <section id="prof">
-<h2>3. What the professor said about this</h2>
+<h2>What the professor said about this</h2>
 <p class="small">Quotes are from the speech-to-text transcripts of the Chapter 1 lecture recordings (wording is rough). "Ch 1 lec 3 (2025)" = <code>chapter1_2025_for_lec3</code>; "rev" = <code>chapter_rev</code>.</p>
 <div class="box prof"><span class="tag">In class</span>
   <ul>
-    <li><q>Focus on interpreting SONC… what SONC means, what SONC doesn't mean</q> <span class="ts">Ch 1 lec 2 [1:18:00]</span> → expect the $x^3$ / $x^4$ / $-x^4$ style traps.</li>
+    <li><q>Focus on interpreting SONC… what SONC means, what SONC doesn't mean</q> <span class="ts">Ch 1 lec 2 [1:18:00]</span> → expect the $x^3$ / $x^4$ / $-x^4$ style traps (B4, C5).</li>
     <li><q>purely checking concepts… There'll be no problem solving</q>; <q>Interpretation of theorem and taking concepts</q> <span class="ts">Ch 1 rev [32:00]–[32:30]</span> → (about the revision quiz) Ch 1 MCQs test exact statements.</li>
-    <li><q>let's say you call it group one, group two</q> … <q>for quadratic function, both way both directional implications are true</q> <span class="ts">Ch 1 rev [37:30]–[38:00]</span> → G1 necessary, G2 sufficient; both "iff" for quadratics.</li>
-    <li><q>very important formula that you should remember. We'll use it almost everywhere</q> <span class="ts">Ch 1 lec 1 [1:15:00]</span> → $\frac{d}{dt}f(x^*+td)|_0=\nabla f(x^*)^\top d$.</li>
-    <li><q>looking at the leading principal minors alone is not enough. You have to look at all principal minors</q> <span class="ts">Ch 1 lec 3 (2025) [28:00]</span> → PSD test.</li>
-    <li><q>least square solution is always unique. Need not be unique</q> <span class="ts">Ch 1 lec 3 (2025) [42:00]</span>; <q>The projection expression and the expression for a projection onto the null space. These things you will be using</q> <span class="ts">[51:30]</span>.</li>
-    <li><q>the part B is important</q> <span class="ts">Ch 1 tutorial [22:30]</span> → the Peano counterexample.</li>
-    <li><q>this is important. So it talks about an important concept</q> <span class="ts">Ch 1 tutorial [55:30]</span> → max of convex functions is convex (proof without Hessian).</li>
-    <li>The convexity proofs lecture: if $x^*$ is a minimum all line restrictions have a minimum, <q>but other way around is not true</q> <span class="ts">convexity-proofs lecture [1:09:30]</span>.</li>
+    <li><q>let's say you call it group one, group two</q> … <q>for quadratic function, both way both directional implications are true</q> <span class="ts">Ch 1 rev [37:30]–[38:00]</span> → Group N necessary, Group S sufficient; both "iff" for quadratics (C5, F2).</li>
+    <li><q>very important formula that you should remember. We'll use it almost everywhere</q> <span class="ts">Ch 1 lec 1 [1:15:00]</span> → $\frac{d}{dt}f(x^*+td)|_{t=0}=\nabla f(x^*)^\top d$ (C2).</li>
+    <li><q>looking at the leading principal minors alone is not enough. You have to look at all principal minors</q> <span class="ts">Ch 1 lec 3 (2025) [28:00]</span> → PSD test (D3).</li>
+    <li><q>least square solution is always unique. Need not be unique</q> <span class="ts">Ch 1 lec 3 (2025) [42:00]</span>; <q>The projection expression and the expression for a projection onto the null space. These things you will be using</q> <span class="ts">[51:30]</span> (G).</li>
+    <li><q>the part B is important</q> <span class="ts">Ch 1 tutorial [22:30]</span> → the Peano counterexample (E4).</li>
+    <li><q>this is important. So it talks about an important concept</q> <span class="ts">Ch 1 tutorial [55:30]</span> → max of convex functions is convex (proof without Hessian, H4).</li>
+    <li>The convexity proofs lecture: if $x^*$ is a minimum all line restrictions have a minimum, <q>but other way around is not true</q> <span class="ts">convexity-proofs lecture [1:09:30]</span> (E4).</li>
   </ul>
 </div>
 <div class="box prof"><span class="tag">Exam signals (from the end-term guide)</span>
@@ -173,13 +649,13 @@
   </ul>
 </div>
 </section>
-
-<!-- ============ 4. PRACTICE ============ -->
+<!-- ================= PRACTICE ================= -->
 <section id="practice">
-<h2>4. Practice (try first, then open the answer)</h2>
+<h2>Practice (try first, then open the answer)</h2>
+<p class="small">31 questions: 15 Quiz 1 MCQs and 7 Midterm 1 parts (past papers), then 9 new ones in his style. Each answer explains why every wrong option is wrong. Do M2 (Midterm 1 Q IV) and N1 fully on paper.</p>
 <div class="toolbar" data-auto></div>
 
-<h3 id="pq">4.1 Quiz 1 (past paper, Ch 1): 15 selected MCQs</h3>
+<h3 id="pq">Quiz 1 (past paper, Ch 1): 15 selected MCQs</h3>
 
 <div class="q mcq" data-answer="d">
   <div class="qh">P1 <span class="src">Quiz 1 Q3 (past paper)</span><span class="lvl">MCQ</span></div>
@@ -391,9 +867,9 @@
   </div></details>
 </div>
 
-<p class="small">Other Quiz 1 items (Q1, 2, 5, 9, 11, 12, 15, 17–19, 21, 22, 25, 26, 29–31) are direct statements already in Section 1. Answer key: 1C 2A 3D 4C 5B 6C 7B 8B 9A 10B 11B 12A 13C 14B 15B 16B 17A 18B 19B 20B 21A 22B 23B 24C 25B 26A 27B 28B 29A 30B 31B 32B.</p>
+<p class="small">Other Quiz 1 items (Q1, 2, 5, 9, 11, 12, 15, 17–19, 21, 22, 25, 26, 29–31) are direct statements covered in sections B–H and the Summary card. Answer key: 1C 2A 3D 4C 5B 6C 7B 8B 9A 10B 11B 12A 13C 14B 15B 16B 17A 18B 19B 20B 21A 22B 23B 24C 25B 26A 27B 28B 29A 30B 31B 32B.</p>
 
-<h3 id="pm">4.2 Midterm 1 (past paper): Q I, Q IV, Q VII</h3>
+<h3 id="pm">Midterm 1 (past paper): Q I, Q IV, Q VII</h3>
 
 <div class="q">
   <div class="qh">M1 <span class="src">Midterm 1 Q I (20 marks)</span><span class="lvl">Descriptive</span></div>
@@ -496,7 +972,7 @@
   </div></details>
 </div>
 
-<h3 id="pn">4.3 New questions in his style</h3>
+<h3 id="pn">New questions in his style</h3>
 
 <div class="q">
   <div class="qh">N1 <span class="src">New, in his style (Midterm 1 IV / Tutorial 7 type)</span><span class="lvl">Descriptive</span></div>
@@ -521,7 +997,7 @@
     <ol class="steps">
       <li>(a) $\nabla^2g_1=e^{x+y}\begin{bmatrix}1&1\\1&1\end{bmatrix}+\begin{bmatrix}2&-1\\-1&2\end{bmatrix}$. Leading minors: $e^{x+y}+2\gt0$, det $=(e^{x+y}+2)^2-(e^{x+y}-1)^2=6e^{x+y}+3\gt0$ ⇒ PD at every point ⇒ <b>convex</b> (strictly).</li>
       <li>(b) Restriction to the line $y=1$: $h(t)=g_2(t,1)=t^4-t^2+1$, $h''(0)=-2\lt0$ ⇒ a line restriction is not convex ⇒ <b>not convex</b>. Midpoint check: $u=(\tfrac1{\sqrt2},1)$, $v=(-\tfrac1{\sqrt2},1)$: $g_2(u)=g_2(v)=\tfrac14-\tfrac12+1=\tfrac34$, midpoint $(0,1)$: $g_2=1\gt\tfrac34$. Hessian route: $\nabla^2g_2(0,1)=\text{diag}(-2,12)$, indefinite. ($g_2\ge0$ everywhere is irrelevant.)</li>
-      <li>(c) $x+y$ (affine), $x^2+y^2$ (Hessian $2I$), $e^x$ (Hessian diag$(e^x,0)\succeq0$) are convex; the pointwise max of convex functions is <b>convex</b> (proof as in 2.4). Not differentiable everywhere, so the Hessian test cannot be used directly.</li>
+      <li>(c) $x+y$ (affine), $x^2+y^2$ (Hessian $2I$), $e^x$ (Hessian diag$(e^x,0)\succeq0$) are convex; the pointwise max of convex functions is <b>convex</b> (proof in H4). Not differentiable everywhere, so the Hessian test cannot be used directly.</li>
     </ol>
   </div></details>
 </div>
@@ -565,7 +1041,7 @@
     <li data-k="d"><b class="k">(d)</b> $f$ is convex near $x^*$</li>
   </ol>
   <details class="ans"><summary>Show answer</summary><div>
-    <p><b>Answer: (b)</b>: a strict local min is a local min, so SONC applies. (a), (c): $x_1^4+x_2^2$ has a strict min at 0 with Hessian diag$(0,2)$ (singular, not PD). (d): $f=x^4+y^4-\tfrac32x^2y^2=(x^2-y^2)^2+\tfrac12x^2y^2$ is $\gt0$ for $(x,y)\ne0$ (strict min at 0), but $\nabla^2f(t,0)=\text{diag}(12t^2,-3t^2)$ is indefinite for every $t\ne0$, so $f$ is not convex on any neighbourhood of 0. Strictness is about values; convexity is about curvature everywhere. If $f$ were quadratic, (a) would also be necessary (G2 ⇔ strict min).</p>
+    <p><b>Answer: (b)</b>: a strict local min is a local min, so SONC applies. (a), (c): $x_1^4+x_2^2$ has a strict min at 0 with Hessian diag$(0,2)$ (singular, not PD). (d): $f=x^4+y^4-\tfrac32x^2y^2=(x^2-y^2)^2+\tfrac12x^2y^2$ is $\gt0$ for $(x,y)\ne0$ (strict min at 0), but $\nabla^2f(t,0)=\text{diag}(12t^2,-3t^2)$ is indefinite for every $t\ne0$, so $f$ is not convex on any neighbourhood of 0. Strictness is about values; convexity is about curvature everywhere. If $f$ were quadratic, (a) would also be necessary (Group S ⇔ strict min).</p>
   </div></details>
 </div>
 
@@ -582,16 +1058,58 @@
     <p><b>Answer: (d).</b> $f=x_1^2-2x_1-x_2$. $\nabla f=(2x_1-2,\ -1)\ne0$ always: $b\notin$ range$(Q)$ = span$\{e_1\}$. Along $x_2\to+\infty$, $f\to-\infty$. $Q\succeq0$ ⇒ convex (c ✗: singular ≠ not convex). (b) would be right for $b=(2,0)$: then $f=x_1^2-2x_1$ and the whole line $x_1=1$ minimises. (a) needs $Q\succ0$.</p>
   </div></details>
 </div>
+
+<div class="q mcq" data-answer="c">
+  <div class="qh">N7 <span class="src">New, in his style (PSD by minors)</span><span class="lvl">MCQ</span></div>
+  <p>$S=\begin{bmatrix}1&amp;2&amp;0\\2&amp;4&amp;0\\0&amp;0&amp;-1\end{bmatrix}$. Which is correct?</p>
+  <ol class="opts">
+    <li data-k="a"><b class="k">(a)</b> $S\succeq0$, because its leading principal minors $1,0,0$ are all $\ge0$.</li>
+    <li data-k="b"><b class="k">(b)</b> $S\succ0$, because $\Delta_1=1\gt0$.</li>
+    <li data-k="c"><b class="k">(c)</b> $S$ is not PSD, because the principal minor in position $(3,3)$ equals $-1$.</li>
+    <li data-k="d"><b class="k">(d)</b> $S\succeq0$, because $\det S=0$.</li>
+  </ol>
+  <details class="ans"><summary>Show answer</summary><div>
+    <p><b>Answer: (c).</b> PSD needs <b>all</b> principal minors $\ge0$; the $1\times1$ minor $s_{33}=-1$ fails, and $d=(0,0,1)$ gives $d^\top Sd=-1$. Eigenvalues are $-1,0,5$ (indefinite). (a) is the leading-minor trap (D3). (b) PD needs all leading minors $\gt0$, and $\Delta_2=0$. (d) a zero determinant says nothing about the signs of the other eigenvalues.</p>
+  </div></details>
+</div>
+
+<div class="q mcq" data-answer="b">
+  <div class="qh">N8 <span class="src">New, in his style (existence, Weierstrass)</span><span class="lvl">MCQ</span></div>
+  <p>Which function on $\mathbb R^2$ is coercive (so a global minimum is guaranteed by Weierstrass)?</p>
+  <ol class="opts">
+    <li data-k="a"><b class="k">(a)</b> $e^{x_1}+x_2^2$</li>
+    <li data-k="b"><b class="k">(b)</b> $x_1^2+x_2^2-4x_1$</li>
+    <li data-k="c"><b class="k">(c)</b> $(x_1-x_2)^2$</li>
+    <li data-k="d"><b class="k">(d)</b> $x_1^3+x_2^2$</li>
+  </ol>
+  <details class="ans"><summary>Show answer</summary><div>
+    <p><b>Answer: (b).</b> $x_1^2+x_2^2-4x_1=(x_1-2)^2+x_2^2-4\to\infty$ as $\|x\|\to\infty$; minimum $-4$ at $(2,0)$. (a) along $x_2=0$, $x_1\to-\infty$ the value tends to 0, not $\infty$ (and no minimum exists). (c) it stays 0 along the whole line $x_1=x_2$ (it does have minima: coercive is sufficient, not necessary). (d) $x_1\to-\infty$ gives $-\infty$.</p>
+  </div></details>
+</div>
+
+<div class="q mcq" data-answer="a">
+  <div class="qh">N9 <span class="src">New, in his style (local vs global)</span><span class="lvl">MCQ</span></div>
+  <p>$f(x_1,x_2)=x_1^3+x_2^3-3x_1x_2$ (section E2). Which is correct?</p>
+  <ol class="opts">
+    <li data-k="a"><b class="k">(a)</b> $(1,1)$ is a strict local minimum but $f$ has no global minimum.</li>
+    <li data-k="b"><b class="k">(b)</b> $(1,1)$ is the global minimum, since it is the only point where SOSC holds.</li>
+    <li data-k="c"><b class="k">(c)</b> $(0,0)$ is a local minimum because $\nabla f(0,0)=0$.</li>
+    <li data-k="d"><b class="k">(d)</b> $f$ is convex, so its stationary points are global minima.</li>
+  </ol>
+  <details class="ans"><summary>Show answer</summary><div>
+    <p><b>Answer: (a).</b> At $(1,1)$ the Hessian $\begin{bmatrix}6&amp;-3\\-3&amp;6\end{bmatrix}\succ0$ (SOSC), but $f(t,0)=t^3\to-\infty$ as $t\to-\infty$. (b) "only SOSC point" does not make it global. (c) $\nabla f=0$ is only necessary; the Hessian there has det $-9\lt0$: saddle. (d) the Hessian at $(0,0)$ is indefinite, so $f$ is not convex.</p>
+  </div></details>
+</div>
 </section>
 
-<!-- ============ 5. SELF-TEST ============ -->
+<!-- ================= SELF-TEST ================= -->
 <section id="selftest">
-<h2>5. Self-test (no looking)</h2>
+<h2>Self-test (no looking)</h2>
 <div class="toolbar" data-auto></div>
 <div class="q"><div class="qh">S1</div><p>State FONC, SONC and SOSC exactly (hypotheses on $f$, which are necessary, which sufficient, what kind of minimum).</p>
   <details class="ans"><summary>Show answer</summary><div><p>FONC: $f$ differentiable, $x^*$ local min ⇒ $\nabla f(x^*)=0$. SONC: $f\in C^2$, local min ⇒ $\nabla f(x^*)=0$, $\nabla^2f(x^*)\succeq0$. SOSC: $f\in C^2$, $\nabla f(x^*)=0$, $\nabla^2f(x^*)\succ0$ ⇒ strict local min. First two necessary, third sufficient.</p></div></details></div>
-<div class="q"><div class="qh">S2</div><p>What does each of $x^4$, $x^3$, $-x^4$ at 0 show? For which class of functions are G1 and G2 "if and only if", and why?</p>
-  <details class="ans"><summary>Show answer</summary><div><p>$x^4$: strict min without SOSC (PD not necessary). $x^3$: FONC+SONC, not a min. $-x^4$: FONC+SONC, strict max. Quadratics: Taylor is exact (constant Hessian, no $o(\|h\|^2)$ remainder), so G1 ⇔ min, G2 ⇔ strict min.</p></div></details></div>
+<div class="q"><div class="qh">S2</div><p>What does each of $x^4$, $x^3$, $-x^4$ at 0 show? For which class of functions are Group N and Group S "if and only if", and why?</p>
+  <details class="ans"><summary>Show answer</summary><div><p>$x^4$: strict min without SOSC (PD not necessary). $x^3$: FONC+SONC, not a min. $-x^4$: FONC+SONC, strict max. Quadratics: Taylor is exact (constant Hessian, no $o(\|h\|^2)$ remainder), so Group N ⇔ min, Group S ⇔ strict min.</p></div></details></div>
 <div class="q"><div class="qh">S3</div><p>PD test by minors vs PSD test by minors. Give a matrix showing the difference.</p>
   <details class="ans"><summary>Show answer</summary><div><p>PD ⇔ leading principal minors all $\gt0$. PSD ⇔ <b>all</b> principal minors $\ge0$. diag$(0,-1)$: leading minors 0, 0 but not PSD.</p></div></details></div>
 <div class="q"><div class="qh">S4</div><p>Least squares: normal equations, when unique, $x^*$, projector, and why a solution always exists.</p>
@@ -599,8 +1117,34 @@
 <div class="q"><div class="qh">S5</div><p>Three equivalent characterisations of convexity for $C^2$ $f$ on $\mathbb R^n$; how does the Hessian one differ from SONC? Write the 4-step chain from the definition to monotone gradient.</p>
   <details class="ans"><summary>Show answer</summary><div><p>Definition (chord above); $f(y)\ge f(x)+\nabla f(x)^\top(y-x)$; $\nabla^2f(x)\succeq0$ for <b>every</b> $x$ (SONC: at one point). Chain: $R(t)\le f(y)-f(x)$ → limit $\nabla f(x)^\top d\le f(y)-f(x)$ → swap: $f(y)-f(x)\le\nabla f(y)^\top d$ → $(\nabla f(y)-\nabla f(x))^\top(y-x)\ge0$.</p></div></details></div>
 <div class="q"><div class="qh">S6</div><p>Write the Peano function and the curve that shows 0 is not a local min. State the coercive Weierstrass theorem.</p>
-  <details class="ans"><summary>Show answer</summary><div><p>$f(y,z)=(z-py^2)(z-qy^2)$, $0\lt p\lt q$; along $z=my^2$, $p\lt m\lt q$: $f=(m-p)(m-q)y^4\lt0$. Every line through 0 has a min at 0 ($g''(0)=2b^2$, or $pqa^4\alpha^4$). Weierstrass: $X$ nonempty closed, $f$ proper, lsc, coercive, $X\cap\text{dom}f\ne\emptyset$ ⇒ minimiser exists (set nonempty, compact).</p></div></details></div>
+  <details class="ans"><summary>Show answer</summary><div><p>$f=(x_2-px_1^2)(x_2-qx_1^2)$, $0\lt p\lt q$ (the tutorial writes $(z-py^2)(z-qy^2)$); along the curve $x_2=mx_1^2$, $p\lt m\lt q$: $f=(m-p)(m-q)x_1^4\lt0$. Every line $t(d_1,d_2)$ through 0 has a min at 0 ($\varphi''(0)=2d_2^2\gt0$ if $d_2\ne0$, or $\varphi=pqd_1^4t^4$ if $d_2=0$). Weierstrass: $X$ nonempty closed, $f$ proper, lsc, coercive, $X\cap\text{dom}f\ne\emptyset$ ⇒ minimiser exists (set nonempty, compact).</p></div></details></div>
+<div class="q"><div class="qh">S7</div><p>$f=\tfrac12x^\top Qx-b^\top x$: list the four cases for $Q$ and $b$ and what happens in each.</p>
+  <details class="ans"><summary>Show answer</summary><div><p>$Q\succ0$: unique global min $Q^{-1}b$. $Q\succeq0$ singular, $b\in$ range$(Q)$: infinitely many global minima (the solutions of $Qx=b$). $Q\succeq0$ singular, $b\notin$ range$(Q)$: no stationary point, unbounded below. $Q$ with a negative eigenvalue: unbounded below.</p></div></details></div>
 <p><label><input type="checkbox" data-key="m6-done"> I finished this module</label></p>
+</section>
+
+<!-- ================= SUMMARY ================= -->
+<section id="must">
+<h2>Summary card (for revision; the formula sheet copies this)</h2>
+<div class="box must"><span class="tag">Memorise cold</span>
+<p class="small">Symbols: $f:\mathbb R^n\to\mathbb R$ the cost; $x^*$ the point tested; $d$ a direction, $t$ a number; $\nabla f$ gradient (first partials), $\nabla^2 f$ Hessian (second partials); $S$ a symmetric matrix, $\lambda$ its eigenvalues; $\succeq0$ PSD ($d^\top Sd\ge0$ all $d$), $\succ0$ PD ($d^\top Sd\gt0$ all $d\ne0$); $Q,b$ data of a quadratic; $A,\bar b$ data of least squares; $P$ projector; $\theta\in[0,1]$ mixing weight; $r(h)=o(h^2)$ means $r(h)/h^2\to0$.</p>
+<ul>
+<li><b>Minima:</b> local = beats all points within some radius $\delta\gt0$; strict = beats them strictly; global = beats all points.</li>
+<li><b>Weierstrass (coercive):</b> $X$ nonempty closed; $f$ proper, lsc, <b>coercive</b> ($\|x\|\to\infty\Rightarrow f(x)\to+\infty$); $X\cap\text{dom}f\ne\emptyset$ ⇒ a minimiser exists (set nonempty, compact). Sufficient, not necessary.</li>
+<li><b>Line formulas:</b> $\varphi(t)=f(x^*+td)$: $\varphi'(0)=\nabla f(x^*)^\top d$, $\ \varphi''(0)=d^\top\nabla^2f(x^*)\,d$. Taylor: $f(x^*+h)=f(x^*)+\nabla f(x^*)^\top h+\frac12h^\top\nabla^2f(x^*)h+o(\|h\|^2)$.</li>
+<li><b>FONC</b> (necessary): local min, $f$ differentiable ⇒ $\nabla f(x^*)=0$.<br><b>SONC</b> (necessary): local min, $f\in C^2$ ⇒ $\nabla f(x^*)=0$ and $\nabla^2f(x^*)\succeq0$.<br><b>SOSC</b> (sufficient): $\nabla f(x^*)=0$ and $\nabla^2f(x^*)\succ0$ ⇒ <b>strict</b> local min.</li>
+<li><b>The gaps:</b> $x^4$ (strict min, $f''(0)=0$: SOSC not necessary); $x^3$ and $-x^4$ (FONC + SONC hold, not a min: not sufficient); $x_1^4+x_2^2$ (strict min, Hessian diag$(0,2)$); monkey saddle $x_1^3-3x_1x_2^2$ (Hessian 0; $t^3$ vs $-2t^3$).</li>
+<li><b>Group N</b> $=\{\nabla f=0,\nabla^2f\succeq0\}$ necessary; <b>Group S</b> $=\{\nabla f=0,\nabla^2f\succ0\}$ sufficient. For quadratics both are "iff" (Group N ⇔ global min, Group S ⇔ unique min) because Taylor is exact.</li>
+<li><b>PD/PSD tests</b> (symmetric $S$): PD ⇔ all $\lambda\gt0$ ⇔ all <b>leading</b> minors $\gt0$ (Sylvester). PSD ⇔ all $\lambda\ge0$ ⇔ <b>all</b> principal minors $\ge0$ (diag$(0,-1)$: leading minors $0,0$, not PSD). 2×2: det $\lt0$ ⇒ indefinite.</li>
+<li><b>Classify:</b> Hessian PD → strict local min; ND → strict local max; indefinite → saddle; singular semidefinite → inconclusive. Then the global question separately.</li>
+<li><b>Peano:</b> $f=(x_2-px_1^2)(x_2-qx_1^2)$, $0\lt p\lt q$: min at 0 along every line, but $f=(m-p)(m-q)x_1^4\lt0$ on $x_2=mx_1^2$, $p\lt m\lt q$ ⇒ not a local min.</li>
+<li><b>Quadratic</b> $f=\frac12x^\top Qx-b^\top x$ ($Q=Q^\top$): $\nabla f=Qx-b$, $\nabla^2f=Q$. $Q\succ0$: unique min $Q^{-1}b$. $Q\succeq0$ singular: $b\in$ range$(Q)$ ⇒ infinitely many minima; $b\notin$ range$(Q)$ ⇒ none (unbounded below). Negative eigenvalue ⇒ unbounded below.</li>
+<li><b>Least squares</b> $\frac12\|Ax-\bar b\|^2$: normal equations $A^\top Ax^*=A^\top\bar b$, always solvable (range$(A^\top A)$ = range$(A^\top)$). Unique ⇔ full column rank; then $x^*=(A^\top A)^{-1}A^\top\bar b$, $P=A(A^\top A)^{-1}A^\top$ ($P^2=P=P^\top$) projects onto range$(A)$, $I-P$ onto null$(A^\top)$; residual ⟂ columns.</li>
+<li><b>Convexity</b> ($f\in C^2$ on $\mathbb R^n$): $f(\theta x+(1-\theta)y)\le\theta f(x)+(1-\theta)f(y)$ ⇔ $f(y)\ge f(x)+\nabla f(x)^\top(y-x)$ for all $x,y$ ⇔ $\nabla^2f(x)\succeq0$ <b>for every</b> $x$ ⇔ every restriction $f(x+td)$ is convex. SONC = PSD at one point; convexity = PSD everywhere.</li>
+<li><b>Convex payoffs:</b> stationary ⇒ global min; local min ⇒ global min. Not given: existence ($e^x$), uniqueness ($(x_1+x_2)^2$). Max of convex is convex; log-sum-exp is convex (Hessian $\sigma_1\sigma_2\begin{bmatrix}1&amp;-1\\-1&amp;1\end{bmatrix}$, $\sigma_i=e^{x_i}/\sum e^{x_j}$), not strictly.</li>
+<li><b>Proof chain:</b> $\frac{f(x+td)-f(x)}{t}\le f(y)-f(x)$ → ($t\downarrow0$) $\nabla f(x)^\top d\le f(y)-f(x)$ → swap: $f(y)-f(x)\le\nabla f(y)^\top d$ → $(\nabla f(y)-\nabla f(x))^\top(y-x)\ge0$ (with $d=y-x$).</li>
+</ul>
+</div>
 </section>
 
 </main>

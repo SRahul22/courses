@@ -3,259 +3,839 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>M5 · Unconstrained algorithms: line search, GD, Newton, CG</title>
+<title>M5 · Unconstrained algorithms</title>
 <link rel="stylesheet" href="assets/fe.css">
 <script>
-  // MathJax: inline $...$ or \(...\), display $$...$$ or \[...\]
   window.MathJax = { tex: { inlineMath: [['$','$'],['\\(','\\)']], displayMath: [['$$','$$'],['\\[','\\]']] } };
 </script>
 <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml.js"></script>
+<style>
+  .fig{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:10px 14px;margin:14px 0}
+  .fig svg{display:block;max-width:100%;height:auto;margin:0 auto}
+  .fig .cap{font-size:14px;color:var(--muted);margin-top:6px}
+  .check{background:var(--accent-soft);border-radius:8px;padding:10px 14px;margin:14px 0}
+  .check > b:first-child{color:var(--accent)}
+  .roadmap li{margin:3px 0}
+  .kw{font-weight:700;color:var(--accent)}
+  /* SVG colour classes: follow the light/dark theme */
+  .fig svg text{fill:var(--ink);font-size:13px}
+  .fig svg text.mu{fill:var(--muted)}
+  .fig svg text.ta{fill:var(--accent)} .fig svg text.tr{fill:var(--trap-line)}
+  .fig svg text.tg{fill:var(--ok)} .fig svg text.tp{fill:var(--ex-line)} .fig svg text.ty{fill:var(--must-line)}
+  .sx{stroke:var(--muted);fill:none} .sa{stroke:var(--accent);fill:none} .sr{stroke:var(--trap-line);fill:none}
+  .sg{stroke:var(--ok);fill:none} .sp{stroke:var(--ex-line);fill:none} .sy{stroke:var(--must-line);fill:none}
+  .fa{fill:var(--accent)} .fr{fill:var(--trap-line)} .fg{fill:var(--ok)} .fp{fill:var(--ex-line)} .fk{fill:var(--ink)} .fy{fill:var(--must-line)}
+</style>
 </head>
 <body>
 <div class="layout">
 <nav class="toc">
   <a class="home" href="./">← START HERE</a>
-  <a href="#must">1. Must remember</a>
-  <a href="#concepts">2. Concepts</a>
-  <a href="#c-ls">&nbsp;&nbsp;2.1 Line search (Ch 2)</a>
-  <a href="#c-gd">&nbsp;&nbsp;2.2 Fixed-step GD</a>
-  <a href="#c-sd">&nbsp;&nbsp;2.3 Exact line search SD</a>
-  <a href="#c-lip">&nbsp;&nbsp;2.4 The ‖x‖ᵖ/p family</a>
-  <a href="#c-newton">&nbsp;&nbsp;2.5 Newton</a>
-  <a href="#c-conj">&nbsp;&nbsp;2.6 Affine min + conjugacy</a>
-  <a href="#c-cg">&nbsp;&nbsp;2.7 CG algorithm</a>
-  <a href="#c-pcg">&nbsp;&nbsp;2.8 PCG</a>
-  <a href="#c-nq">&nbsp;&nbsp;2.9 Non-quadratic CG</a>
-  <a href="#prof">3. What he said</a>
-  <a href="#practice">4. Practice</a>
+  <a href="#why">0. Why this topic exists</a>
+  <a href="#template">A. The descent template</a>
+  <a href="#a1">&nbsp;&nbsp;A1. Downhill directions</a>
+  <a href="#a2">&nbsp;&nbsp;A2. The 1-D function φ(α)</a>
+  <a href="#step">B. Choosing the step α</a>
+  <a href="#b1">&nbsp;&nbsp;B1. Exact line search</a>
+  <a href="#b2">&nbsp;&nbsp;B2. Armijo (not too long)</a>
+  <a href="#b3">&nbsp;&nbsp;B3. Wolfe, strong Wolfe, Goldstein</a>
+  <a href="#b4">&nbsp;&nbsp;B4. Backtracking</a>
+  <a href="#b5">&nbsp;&nbsp;B5. Golden section</a>
+  <a href="#b6">&nbsp;&nbsp;B6. Zoutendijk</a>
+  <a href="#quad">C. Quadratics: the test case</a>
+  <a href="#gd">D. Fixed-step gradient descent</a>
+  <a href="#sd">E. Exact line search (steepest descent)</a>
+  <a href="#pfam">F. The ‖x‖ᵖ/p family</a>
+  <a href="#newton">G. Newton's method</a>
+  <a href="#cg">H. Conjugate gradient from zero</a>
+  <a href="#g1">&nbsp;&nbsp;H1. Why zigzag; the idea</a>
+  <a href="#g2">&nbsp;&nbsp;H2. Q-conjugacy</a>
+  <a href="#g3">&nbsp;&nbsp;H3. Best point of a flat sheet</a>
+  <a href="#g4">&nbsp;&nbsp;H4. Expanding subspace</a>
+  <a href="#g5">&nbsp;&nbsp;H5. The CG algorithm</a>
+  <a href="#g6">&nbsp;&nbsp;H6. Two CG steps by hand</a>
+  <a href="#g7">&nbsp;&nbsp;H7. CG facts, step count</a>
+  <a href="#g8">&nbsp;&nbsp;H8. Preconditioned CG</a>
+  <a href="#g9">&nbsp;&nbsp;H9. CG on non-quadratics</a>
+  <a href="#recipe">I. Exam recipe</a>
+  <a href="#prof">What he said</a>
+  <a href="#practice">Practice</a>
   <a href="#p-mid">&nbsp;&nbsp;Midterm 1 II, III, V, VI</a>
   <a href="#p-quiz">&nbsp;&nbsp;Quiz 2 (12 MCQs)</a>
   <a href="#p-new">&nbsp;&nbsp;New questions</a>
-  <a href="#selftest">5. Self-test</a>
+  <a href="#selftest">Self-test</a>
+  <a href="#must">Summary card</a>
 </nav>
 <main>
-<h1>M5 · Unconstrained algorithms: line search, GD, Newton, CG</h1>
-<p class="sub">Chapters 2–4 · about 60 min (15 read sections 1–2, 35 practice, 10 self-test) · Goal: given a quadratic, you can find the gradient-descent step range and rate, do an exact-line-search step and two CG steps by hand, count CG steps from eigenvalues, check Armijo/Wolfe for a given α, do one Newton step, and fill in the expanding-subspace proof steps.</p>
+<h1>M5 · Unconstrained algorithms, from zero: line search, gradient descent, Newton, CG</h1>
+<p class="sub">Chapters 2, 3, 4 · about 2 hours to learn, 45 min of practice · Goal: given a quadratic, find the gradient-descent step range and rate, do an exact-line-search step and two CG steps by hand, count CG steps from eigenvalues, check Armijo/Wolfe for a given α, do one Newton step, and write the expanding-subspace proof steps.</p>
 
-<p class="small">Notation used everywhere (same as Quiz 2 and Midterm 1): $f(x)=\tfrac12 x^TQx-b^Tx$, $Q=Q^T\succ0$, $g_k=\nabla f(x_k)=Qx_k-b$, $x^*=Q^{-1}b$, error $e_k=x_k-x^*$ so $g_k=Qe_k$. Eigenvalues $0\lt\lambda_1\le\dots\le\lambda_n$, condition number $\kappa=\lambda_n/\lambda_1$. Careful: Quiz 2 uses $E(x)=\|x-x^*\|_Q^2$ (no ½), the Ch 3 notes use $E(x)=\tfrac12\|x-x^*\|_Q^2=f(x)-f(x^*)$. Read which one a question uses.</p>
+<div class="box must"><span class="tag">How this page works</span>
+<p>It's a story: each section uses only what came before. Every formula appears <i>after</i> the idea it expresses, and then a worked example with numbers. Small <span class="kw">Check</span> boxes let you test yourself as you go (answers hidden). The one-page summary is at the very end; use it for revision, not for learning.</p>
+<p><b>Notation used (one letter = one meaning on this page):</b></p>
+<ul>
+<li>$x\in\mathbb R^n$ = the point (a column vector); $x_k$ = the point after $k$ steps; $x^*$ = the minimiser; $f^*=f(x^*)$ = the smallest value.</li>
+<li>$\nabla f(x)$ = the gradient (vector of partial derivatives); <b>$g_k=\nabla f(x_k)$</b>, the gradient at step $k$. ($g$ always means a gradient here.)</li>
+<li>$d_k$ = the direction we walk in at step $k$; $\alpha_k\gt 0$ = the step length (how far we walk along $d_k$).</li>
+<li>$\phi(\alpha)=f(x_k+\alpha d_k)$ = "$f$ along the line" (a function of one number $\alpha$); $\phi'$ = its derivative. (His Ch 2 notes call this $g(\alpha)$; we use $\phi$ because $g$ is the gradient.)</li>
+<li>$u^Tv=u_1v_1+\dots+u_nv_n$ (dot product); $\|v\|=\sqrt{v^Tv}$ (length); $\|v\|_Q=\sqrt{v^TQv}$ ("Q-length").</li>
+<li>$Q$ = a symmetric matrix with all eigenvalues $\gt0$ ("symmetric positive definite", SPD, written $Q\succ0$); $f(x)=\tfrac12x^TQx-b^Tx$ is "the quadratic"; $e_k=x_k-x^*$ = the error.</li>
+<li>$\lambda_1\le\dots\le\lambda_n$ = eigenvalues of $Q$, also written $\lambda_{\min}=\lambda_1$, $\lambda_{\max}=\lambda_n$; $q_i$ = the matching unit eigenvectors ($Qq_i=\lambda_iq_i$); $\kappa=\lambda_{\max}/\lambda_{\min}$ = condition number.</li>
+<li>$H_k=\nabla^2f(x_k)$ = Hessian (matrix of second derivatives); $p_k$ = the Newton step. In H9 the course writes $F(x_k)$ for the Hessian.</li>
+<li>$\beta_k$ = the CG mixing number (section H); $B$ = the preconditioner (H8); $c_1,c_2,c$ = line-search constants; $s$ = backtracking factor; $\rho$ = golden-section fraction; $\theta_k$ = angle between $d_k$ and $-g_k$.</li>
+<li><b>Letters the past papers reuse (read them by section):</b> $c_1,c_2,c$ are line-search constants, but $c_i=d_i^Tg_0$ and $h_i=d_i^TQd_i$ are numbers in H4 and P4 (Midterm 1 VI's notation), and $h(z)$ in H3 and Quiz 2 Q1 is a function (not $h_i$) · $\varepsilon_i$ = the component of the error along $q_i$ (C2, D1) · $\mu$, $\mu_j$ = particular eigenvalues singled out (E4, H7); P2 (Midterm 1 III) calls its two outlier eigenvalues $\lambda_1,\lambda_2$, and there they are the two <i>largest</i>, not the smallest · $\eta$ = a fixed step length, the same role as a fixed $\alpha$ (E4, P2) · $\nabla f_k=\nabla f(x_k)=g_k$ (N8) · $r_k=\|x_k\|$ (a radius) in F and P3, but $r_k=g_k^Td_k/\|g_k\|^2$ in Quiz 2 Q12, and $r(t)$ = the CG polynomial in Quiz 2 Q8–Q9 (H7 calls it $R_k$) · $\rho$ = golden-section fraction in B5, but $\rho(\alpha)$ = worst-case factor in P1 · $s$ = backtracking factor (B4); the unknown in H2 is called $w$ (Quiz 2 Q3 calls it $s$) · $p_k$ = Newton step (G), $p$ = the exponent (F), $P(t)$ = a polynomial (E4).</li>
+<li>$E(x)$ = an "error energy". <b>Careful:</b> Quiz 2 uses $E(x)=\|x-x^*\|_Q^2$ (no ½); the Ch 3 notes use $E(x)=\tfrac12\|x-x^*\|_Q^2=f(x)-f^*$. Read which one a question uses.</li>
+</ul>
+</div>
 
-<!-- ============ 1. MUST REMEMBER ============ -->
-<section id="must">
-<h2>1. Must remember</h2>
-<div class="box must"><span class="tag">Memorise cold: line search (Ch 2)</span>
-  <ul>
-    <li><b>Descent direction:</b> $\nabla f(x_k)^Td_k\lt0$. Exact step on a quadratic along any $d_k$: $\alpha_k=-\dfrac{g_k^Td_k}{d_k^TQd_k}$; for steepest descent $d_k=-g_k$: $\alpha_k=\dfrac{g_k^Tg_k}{g_k^TQg_k}$.</li>
-    <li>Write $\phi(\alpha)=f(x_k+\alpha d_k)$, so $\phi'(0)=\nabla f(x_k)^Td_k\lt0$. With $0\lt c_1\lt c_2\lt1$:
-      <br><b>Armijo</b> (sufficient decrease): $\phi(\alpha)\le\phi(0)+c_1\alpha\phi'(0)$.
-      <br><b>Wolfe</b> = Armijo + curvature $\phi'(\alpha)\ge c_2\phi'(0)$.
-      <br><b>Strong Wolfe</b> = Armijo + $|\phi'(\alpha)|\le c_2|\phi'(0)|$.
-      <br><b>Goldstein</b> ($0\lt c\lt\tfrac12$): $\phi(0)+(1-c)\alpha\phi'(0)\le\phi(\alpha)\le\phi(0)+c\,\alpha\phi'(0)$.
-      <br><b>Backtracking:</b> try $\alpha=1,s,s^2,\dots$ ($0\lt s\lt1$), accept the first that passes Armijo.</li>
-    <li><b>Golden section:</b> interior points at fraction $\rho=\frac{3-\sqrt5}{2}\approx0.382$ from each end; the interval shrinks by $1-\rho=\frac{\sqrt5-1}{2}\approx0.618$ per new evaluation (one old point is reused).</li>
-    <li><b>1-D Newton:</b> $x_{k+1}=x_k-f'(x_k)/f''(x_k)$. Needs $f''\gt0$, and can still fail far away.</li>
-    <li><b>Zoutendijk:</b> strong Wolfe + $f$ bounded below + $\nabla f$ Lipschitz ⇒ $\sum_k\cos^2\theta_k\|\nabla f(x_k)\|^2\lt\infty$, $\cos\theta_k=\frac{-\nabla f_k^Td_k}{\|\nabla f_k\|\|d_k\|}$. If $\cos\theta_k\ge\delta\gt0$ then $\|\nabla f(x_k)\|\to0$. $d_k=-D_k\nabla f_k$ with eig$(D_k)\in[m,M]$ gives $\cos\theta_k\ge m/M$.</li>
-  </ul>
+<!-- ================= 0. WHY ================= -->
+<section id="why">
+<h2>0. Why this topic exists</h2>
+<p>We want the lowest point of a function $f(x)$, with no constraints on $x$. Chapter 1 told you how to <i>recognise</i> a minimiser: $\nabla f(x^*)=0$ and the Hessian is positive semidefinite. But "solve $\nabla f(x)=0$" is a system of $n$ nonlinear equations. For real problems you can't solve it by hand, and $n$ may be in the thousands.</p>
+<p>So instead we <b>walk downhill</b>. Start anywhere, look at the slope, take a step that goes down, and repeat until the slope is (nearly) zero. Every method in this module is a version of that walk. They differ in only two choices:</p>
+<ul class="roadmap">
+<li><b>Which way to step</b> (the direction $d_k$): straight down the slope (steepest descent), a curvature-corrected direction (Newton), or a direction that doesn't undo earlier progress (conjugate gradient, CG).</li>
+<li><b>How far to step</b> (the step length $\alpha_k$): the best possible along the line (exact line search), a fixed number, or anything "good enough" (Armijo, Wolfe).</li>
+</ul>
+<p><b>Why quadratics get so much attention.</b> Near a minimiser, every smooth function looks like a quadratic (that's Taylor's theorem). So how fast a method finishes is decided by how it behaves on $f=\tfrac12x^TQx-b^Tx$. On a quadratic everything can be computed exactly, which is why the exam questions are on quadratics.</p>
+<p class="small">Roadmap: A = the walk-downhill template. B = choosing the step length (Ch 2). C = the quadratic test case. D, E = gradient descent with fixed and with exact steps (Ch 3). F = a fixed-step counterexample family from Midterm 1. G = Newton (Ch 2 in 1-D, Ch 3 in n-D). H = conjugate gradient (Ch 4). I = the exam recipe. Past papers: Midterm 1 Q II, III, V, VI and all of Quiz 2 come from here. Ch 2 and Ch 3 Newton have never been examined, so expect cheap MCQs on them.</p>
+</section>
+
+<!-- ================= A. TEMPLATE ================= -->
+<section id="template">
+<h2>A. The descent template</h2>
+
+<h3 id="a1">A1. Which directions go downhill?</h3>
+<p><b>Plain words.</b> Stand at a point $x$. If you take a tiny step $t$ in direction $d$, the height changes by about "slope along $d$" × $t$. The slope along $d$ is the dot product $\nabla f(x)^Td$. That comes from first-order Taylor:</p>
+$$f(x+td)\approx f(x)+t\,\nabla f(x)^Td\qquad(t\text{ small}).$$
+<p>So if $\nabla f(x)^Td\lt0$, small steps along $d$ go down.</p>
+
+<div class="box example"><span class="tag">With numbers (this function is used all through A and B)</span>
+<p>$f(x)=x_1^2+4x_2^2$ at $x=(2,1)$. Then $f(x)=4+4=8$ and $\nabla f=(2x_1,\,8x_2)=(4,8)$.</p>
+<table>
+<tr><th>direction $d$</th><th>slope $\nabla f^Td$</th><th>verdict</th></tr>
+<tr><td>$(-1,0)$</td><td>$-4$</td><td>downhill (descent direction)</td></tr>
+<tr><td>$(1,-1)$</td><td>$4-8=-4$</td><td>downhill, even though it increases $x_1$</td></tr>
+<tr><td>$(2,-1)$</td><td>$8-8=0$</td><td>along the level curve: <b>not</b> a descent direction</td></tr>
+<tr><td>$(1,0)$</td><td>$+4$</td><td>uphill</td></tr>
+<tr><td>$-\nabla f=(-4,-8)$</td><td>$-16-64=-80$</td><td>steepest downhill</td></tr>
+</table>
+<p>Sanity check with a real step: $f(1.99,\,1)=3.9601+4=7.9601\approx 8+0.01\times(-4)$ ✓.</p>
 </div>
-<div class="box must"><span class="tag">Memorise cold: gradient descent and Newton (Ch 3)</span>
-  <ul>
-    <li><b>Fixed step:</b> $e_{k+1}=(I-\alpha Q)e_k$; eigen-mode $i$ is multiplied by $(1-\alpha\lambda_i)$ each step.</li>
-    <li>Converges from every $x_0$ ⇔ $|1-\alpha\lambda_i|\lt1\ \forall i$ ⇔ $\boxed{0\lt\alpha\lt 2/\lambda_{\max}}$. Best $\alpha=\dfrac{2}{\lambda_{\min}+\lambda_{\max}}$, worst-case factor $\dfrac{\kappa-1}{\kappa+1}$ on $\|e_k\|$.</li>
-    <li>Multiplier $=-1$ ⇒ that mode flips sign forever (2-cycle). $|{\cdot}|\gt1$ ⇒ diverges, <i>unless</i> $e_0$ has zero component in that eigen-direction (then converges along the other eigen-lines only).</li>
-    <li><b>Exact line search SD:</b> $f(x_{k+1})-f^*\le\left(\dfrac{\kappa-1}{\kappa+1}\right)^2(f(x_k)-f^*)$ (Kantorovich). Consecutive gradients are orthogonal ⇒ zigzag. If $g_0$ lives only in some eigen-directions, use the <b>effective</b> $\kappa=\lambda_{\max}/\lambda_{\min}$ over those directions only.</li>
-    <li>A gradient step with $\eta=1/\lambda$ kills the $\lambda$-component exactly ($1-\lambda/\lambda=0$).</li>
-    <li><b>Newton:</b> $H_kp_k=-g_k$, $x_{k+1}=x_k+p_k$. One step on a quadratic with $Q\succ0$ lands on $x^*$. Quadratic convergence $\|e_{k+1}\|\le C\|e_k\|^2$ only for $x_0$ <i>sufficiently close</i>. Descent iff $H_k\succ0$ ($g_k^Tp_k=-p_k^TH_kp_k$). Damped Newton + Armijo ($c_1\lt\frac12$, start at $\alpha=1$) eventually accepts $\alpha=1$.</li>
-  </ul>
+
+<div class="box must"><span class="tag">Definition: descent direction</span>
+<p>$d_k$ is a <b>descent direction</b> at $x_k$ if $\ \nabla f(x_k)^Td_k\lt0$. Then $f(x_k+\alpha d_k)\lt f(x_k)$ for all small enough $\alpha\gt0$.</p>
+<p>Write $\theta_k$ for the angle between $d_k$ and $-g_k$: $\ \cos\theta_k=\dfrac{-g_k^Td_k}{\|g_k\|\,\|d_k\|}$. Descent ⇔ $\cos\theta_k\gt0$ ⇔ $d_k$ is less than 90° away from $-g_k$.</p>
 </div>
-<div class="box must"><span class="tag">Memorise cold: conjugate directions / CG (Ch 4)</span>
-  <ul>
-    <li><b>Affine-space minimum</b> ($f$ convex): $x_S$ minimises $f$ on $\bar x+\mathrm{range}(D)$ ⇔ $D^T\nabla f(x_S)=0$. The gradient of $h(z)=f(\bar x+Dz)$ is zero; the gradient of $f$ is only <b>orthogonal to every $d_i$</b>, not zero.</li>
-    <li><b>Q-conjugate:</b> $d_i^TQd_j=0$ ($i\ne j$). Nonzero Q-conjugate vectors are linearly independent (so at most $n$). Eigenvectors of $Q$ are both orthogonal and Q-conjugate.</li>
-    <li><b>Key formula:</b> $g_i=g_0+\sum_{j\lt i}\alpha_jQd_j$. With conjugate directions: $d_i^Tg_i=d_i^Tg_0$, and $g_k\perp d_0,\dots,d_{k-1}$.</li>
-    <li><b>CG:</b> $d_0=-g_0$; $\ \alpha_k=\dfrac{\|g_k\|^2}{d_k^TQd_k}$; $\ x_{k+1}=x_k+\alpha_kd_k$; $\ g_{k+1}=g_k+\alpha_kQd_k$; $\ \beta_k=\dfrac{\|g_{k+1}\|^2}{\|g_k\|^2}$; $\ d_{k+1}=-g_{k+1}+\beta_kd_k$.</li>
-    <li>$g_k^Td_k=-\|g_k\|^2$. <b>Gradients orthogonal</b> ($g_i^Tg_j=0$), <b>directions Q-conjugate</b> ($d_i^TQd_j=0$). Never swap.</li>
-    <li>$x_k$ minimises $f$ over $x_0+\mathrm{span}\{g_0,Qg_0,\dots,Q^{k-1}g_0\}$ (highest power $k-1$).</li>
-    <li>CG steps to reach $x^*$ = number of <b>distinct eigenvalues whose eigenspaces $e_0$ actually touches</b> ($\le n$).</li>
-    <li>Decrease per step: $f(x_k)-f(x_{k+1})=\dfrac{\|g_k\|^4}{2\,d_k^TQd_k}$ (the ½ is on $f$; for $E=\|x-x^*\|_Q^2$ the decrease is twice that).</li>
-    <li><b>PCG</b> ($B\approx Q^{-1}$, SPD): $d_0=-Bg_0$, $\alpha_k=\dfrac{g_k^TBg_k}{d_k^TQd_k}$, $\beta_k=\dfrac{g_{k+1}^TBg_{k+1}}{g_k^TBg_k}$, $d_{k+1}=-Bg_{k+1}+\beta_kd_k$. Then $g_i^TBg_j=0$, $d_i^TQd_j=0$, $g_k^Td_k=-g_k^TBg_k$. Replacing $B$ by $cB$ changes nothing in $x_k$. Speed depends on eig$(B^{1/2}QB^{1/2})$.</li>
-    <li><b>Non-quadratic CG, four changes:</b> (1) $\beta$ back to the original formula with $Q\to F(x_k)=\nabla^2f(x_k)$; (2) set $\beta_k=0$ if $d_k^TF(x_k)d_k\le0$; (3) $\alpha_k$ by a line search (no closed form); (4) check $g_k^Td_k\lt0$, else reset $d_k=-g_k$. FR + strong Wolfe ($c_2\lt\frac12$): $-\frac{1}{1-c_2}\le\frac{g_k^Td_k}{\|g_k\|^2}\le\frac{2c_2-1}{1-c_2}\lt0$.</li>
-  </ul>
+
+<div class="fig">
+<svg viewBox="0 0 440 250" width="440" role="img" aria-label="Level curves of x1^2+4x2^2, gradient arrow and the half-plane of descent directions">
+  <defs>
+    <marker id="a1a" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" class="fa"/></marker>
+    <marker id="a1r" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" class="fr"/></marker>
+    <marker id="a1g" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" class="fg"/></marker>
+  </defs>
+  <polygon points="190.6,50.3 369.4,139.7 315.8,247 137,157.6" class="fg" fill-opacity=".12"/>
+  <ellipse cx="200" cy="135" rx="56.6" ry="28.3" class="sx"/>
+  <ellipse cx="200" cy="135" rx="113.1" ry="56.6" class="sx" stroke-width="2"/>
+  <ellipse cx="200" cy="135" rx="169.7" ry="84.9" class="sx"/>
+  <circle cx="200" cy="135" r="3" class="fk"/><text x="186" y="152">x*</text>
+  <line x1="190.6" y1="50.3" x2="369.4" y2="139.7" class="sx" stroke-dasharray="5 4"/>
+  <line x1="280" y1="95" x2="306.8" y2="41.4" class="sr" stroke-width="2.5" marker-end="url(#a1r)"/>
+  <line x1="280" y1="95" x2="320" y2="95" class="sr" stroke-width="2" marker-end="url(#a1r)"/>
+  <line x1="280" y1="95" x2="253.2" y2="148.6" class="sa" stroke-width="2.5" marker-end="url(#a1a)"/>
+  <line x1="280" y1="95" x2="240" y2="95" class="sg" stroke-width="2" marker-end="url(#a1g)"/>
+  <circle cx="280" cy="95" r="4" class="fk"/>
+  <text x="312" y="40" class="tr">∇f = (4,8): uphill</text>
+  <text x="324" y="99" class="tr">(1,0): slope +4</text>
+  <text x="182" y="88" class="tg">(−1,0): slope −4</text>
+  <text x="196" y="170" class="ta">−∇f: steepest down</text>
+  <text x="290" y="118">x = (2,1)</text>
+  <text x="20" y="38" class="mu">dashed: level-curve tangent (slope 0)</text>
+  <text x="250" y="238" class="tg">shaded: every descent direction</text>
+  <text x="20" y="20" class="mu">level curves f = 2, 8, 18</text>
+</svg>
+<div class="cap">Level curves of $f=x_1^2+4x_2^2$ (ellipses). At $x=(2,1)$ the gradient (red) points uphill, perpendicular to the level curve. Every direction pointing into the green half-plane (the side of the dashed tangent line away from $\nabla f$) is a descent direction. $-\nabla f$ (blue) is the steepest one.</div>
+</div>
+
+<p><b>Why $-\nabla f$ is "steepest".</b> For a unit-length $d$, $\nabla f^Td=\|\nabla f\|\cos(\text{angle between them})$. That is most negative when the angle is 180°, i.e. $d=-\nabla f/\|\nabla f\|$.</p>
+
+<div class="box must"><span class="tag">The template every method in this module follows</span>
+<p>$$x_{k+1}=x_k+\alpha_k\,d_k,\qquad\text{with }d_k\text{ a descent direction and }\alpha_k\gt0.$$</p>
+<p>Repeat until $\|\nabla f(x_k)\|$ is tiny. The methods differ only in how they choose $d_k$ (sections D–H) and $\alpha_k$ (section B).</p>
+</div>
+
+<div class="check"><b>Check A1.</b> For $f=x_1^2+4x_2^2$ at $(2,1)$: is $d=(0,-1)$ a descent direction? What about $d=(-2,1)$?
+<details class="ans"><summary>Show answer</summary><div><p>$(4,8)\cdot(0,-1)=-8\lt0$: yes. $(4,8)\cdot(-2,1)=-8+8=0$: no (it's tangent to the level curve; "descent" needs strictly negative).</p></div></details></div>
+
+<h3 id="a2">A2. Turning the step-length choice into a 1-D problem: $\phi(\alpha)$</h3>
+<p>Once $x_k$ and $d_k$ are fixed, the only unknown is the number $\alpha$. So look at $f$ along the line:</p>
+$$\phi(\alpha)=f(x_k+\alpha d_k),\qquad \phi'(\alpha)=\nabla f(x_k+\alpha d_k)^Td_k\ \ \text{(chain rule)},\qquad\phi'(0)=g_k^Td_k\lt0.$$
+<p>$\phi(0)=f(x_k)$ is where we stand. $\phi'(0)$ is the starting slope, negative because $d_k$ is a descent direction.</p>
+<div class="box example"><span class="tag">With numbers</span>
+<p>Same $f$, $x_k=(2,1)$, $d_k=-\nabla f=(-4,-8)$. Then $x_k+\alpha d_k=(2-4\alpha,\ 1-8\alpha)$ and</p>
+$$\phi(\alpha)=(2-4\alpha)^2+4(1-8\alpha)^2=(4-16\alpha+16\alpha^2)+(4-64\alpha+256\alpha^2)=8-80\alpha+272\alpha^2.$$
+<p>$\phi'(\alpha)=-80+544\alpha$, so $\phi'(0)=-80$, the same as $g_k^Td_k=-80$ from the table ✓. <b>We use this $\phi$ for every rule in section B.</b></p>
 </div>
 </section>
 
-<!-- ============ 2. CONCEPTS ============ -->
-<section id="concepts">
-<h2>2. Concepts</h2>
+<!-- ================= B. STEP LENGTH ================= -->
+<section id="step">
+<h2>B. Choosing the step length $\alpha$ (Chapter 2)</h2>
 
-<h3 id="c-ls">2.1 Line search: descent direction, step-size rules, golden section, Zoutendijk (Ch 2, never examined yet)</h3>
-<p><b>In plain words:</b> every method in this module has the same shape: stand at $x_k$, pick a direction $d_k$ that goes downhill, then pick how far to walk ($\alpha_k$). "Downhill" means the slope along $d_k$ is negative. For the distance, you either minimise exactly along the line (possible in closed form only for quadratics) or accept any $\alpha$ that is "good enough": not too long (Armijo: you really decreased $f$) and not too short (curvature / Goldstein lower bound).</p>
-<p><b>Precisely:</b> $x_{k+1}=x_k+\alpha_kd_k$, $\phi(\alpha)=f(x_k+\alpha d_k)$, $\phi'(0)=\nabla f(x_k)^Td_k\lt0$. The rules are in the Must-remember box. Picture: the line $L_1(\alpha)=\phi(0)+c_1\alpha\phi'(0)$ is a "less steep" copy of the tangent; Armijo asks $\phi$ to be below it (caps $\alpha$ from above). Wolfe curvature asks the slope at $\alpha$ to have flattened to at least $c_2$ times the initial slope (excludes tiny $\alpha$). Strong Wolfe also forbids a large <i>positive</i> slope (excludes overshooting far past the minimiser). Goldstein uses a second line $\phi(0)+(1-c)\alpha\phi'(0)$ as a lower fence instead of a slope test.</p>
+<h3 id="b1">B1. Exact line search: the best $\alpha$ along the line</h3>
+<p><b>Idea.</b> Pick the $\alpha$ that makes $\phi$ smallest: $\alpha_k=\arg\min_{\alpha\gt0}\phi(\alpha)$. In our example $\phi'(\alpha)=-80+544\alpha=0$ gives $\alpha^*=\frac{80}{544}=\frac{5}{34}\approx0.147$, with $\phi(\alpha^*)=\frac{36}{17}\approx2.12$ (down from 8).</p>
+<p><b>For any quadratic</b> $f=\tfrac12x^TQx-b^Tx$ (here $Q$ is a fixed symmetric matrix with all eigenvalues positive and $b$ a fixed vector; its gradient is $g=Qx-b$; section C studies these properly) there is a formula. Expand: $\phi(\alpha)=f(x_k)+\alpha\,g_k^Td_k+\tfrac12\alpha^2\,d_k^TQd_k$. Set $\phi'(\alpha)=g_k^Td_k+\alpha\,d_k^TQd_k=0$:</p>
+$$\boxed{\alpha_k=-\frac{g_k^Td_k}{d_k^TQd_k}}\qquad\text{and for }d_k=-g_k:\quad\boxed{\alpha_k=\frac{g_k^Tg_k}{g_k^TQg_k}}.$$
+<p>Check: $x_1^2+4x_2^2=\tfrac12x^T\begin{pmatrix}2&amp;0\\0&amp;8\end{pmatrix}x$, so $d^TQd=2\cdot16+8\cdot64=544$ and $-g^Td=80$: $\alpha=80/544=5/34$ ✓.</p>
+<p><b>Why not always do this?</b> For a non-quadratic $f$ there's no formula. Finding the exact minimiser of $\phi$ takes many evaluations of $f$, and the next iteration throws the line away anyway. So in practice we accept any step that is "good enough". The rest of B says what "good enough" means.</p>
 
-<div class="box example"><span class="tag">Worked example (his Exercise 2.3): intervals for a quadratic $\phi$</span>
-  <p>$\phi(\alpha)=\phi(0)-p\alpha+\tfrac q2\alpha^2$, $p,q\gt0$. So $\phi'(0)=-p$, $\phi'(\alpha)=-p+q\alpha$.</p>
-  <ol class="steps">
-    <li>Exact minimiser: $\phi'(\alpha)=0\Rightarrow\alpha^*=p/q$.</li>
-    <li>Armijo: $-p\alpha+\tfrac q2\alpha^2\le-c_1p\alpha\iff\alpha\le\dfrac{2(1-c_1)p}{q}$. So $\alpha\in(0,\,2(1-c_1)\alpha^*]$.</li>
-    <li>Wolfe curvature: $-p+q\alpha\ge-c_2p\iff\alpha\ge(1-c_2)\alpha^*$. Wolfe interval: $[(1-c_2)\alpha^*,\ 2(1-c_1)\alpha^*]$.</li>
-    <li>Strong Wolfe adds $-p+q\alpha\le c_2p\iff\alpha\le(1+c_2)\alpha^*$. Interval: $[(1-c_2)\alpha^*,\ \min\{(1+c_2),\,2(1-c_1)\}\alpha^*]$.</li>
-    <li>Goldstein: $\alpha\in[2c\,\alpha^*,\ 2(1-c)\alpha^*]$. Since $c\lt\frac12$, it always contains $\alpha^*$.</li>
-    <li>Lesson: ordinary Wolfe can accept steps up to almost $2\alpha^*$ (big overshoot); strong Wolfe limits the overshoot to $(1+c_2)\alpha^*$.</li>
-  </ol>
-  <p class="small">All five formulas checked with sympy.</p>
-</div>
-
-<div class="box trap"><span class="tag">Trap</span> The Wolfe curvature condition is $\phi'(\alpha)\ge c_2\phi'(0)$ (a negative number on the right): it is a <i>lower</i> bound on the slope. Students write $\le$. Also: $0\lt c_1\lt c_2\lt1$ (strict), Goldstein needs $c\lt\frac12$, and for the FR theorem the notes need $c_2\lt\frac12$. He said you cannot drop either Wolfe condition in general (Section 3).</div>
-
-<p><b>Golden section (1-D, no derivatives):</b> keep a bracket $[a,b]$ with two interior points at $a+\rho L$ and $b-\rho L$. Compare $f$ at them, throw away the outer piece beyond the worse one. Requiring that the surviving interior point can be reused gives $\rho=(1-\rho)^2$, i.e. $\rho^2-3\rho+1=0$, $\rho=\frac{3-\sqrt5}{2}\approx0.382$. Each new evaluation multiplies the length by $0.618$. Example: on $[0,10]$ the first points are $3.82$ and $6.18$; if $f(3.82)\le f(6.18)$ the new bracket is $[0,6.18]$ and $3.82=0.618\times6.18$ is the reused right interior point.</p>
-
-<p><b>Zoutendijk, in plain words:</b> with strong Wolfe steps, the "useful progress" terms $\cos^2\theta_k\|\nabla f_k\|^2$ must be summable, so if your directions never become nearly perpendicular to the gradient, the gradient must go to zero. Why $d_k=-D_k\nabla f_k$ with eigenvalues of $D_k$ in $[m,M]$ is safe: $-\nabla f^Td=\nabla f^TD\nabla f\ge m\|\nabla f\|^2$ and $\|d\|\le M\|\nabla f\|$, so $\cos\theta\ge m/M\gt0$.</p>
-
-<p><b>1-D Newton and how it fails:</b> minimise the local quadratic model $q(x)=f(x_k)+f'(x_k)(x-x_k)+\tfrac12f''(x_k)(x-x_k)^2$: $x_{k+1}=x_k-f'(x_k)/f''(x_k)$ (same as Newton root-finding on $f'$). If $f''(x_k)\lt0$ the model is concave and the step goes towards a maximum. Even with $f''\gt0$ everywhere it can fail:</p>
-<div class="box example"><span class="tag">Worked example (his Exercise 2.6): $f(x)=\sqrt{1+x^2}$</span>
-  <ol class="steps">
-    <li>$f'(x)=\dfrac{x}{\sqrt{1+x^2}}$, $f''(x)=(1+x^2)^{-3/2}\gt0$: strictly convex, minimiser $x^*=0$.</li>
-    <li>Newton: $x_{k+1}=x_k-\dfrac{x_k(1+x^2_k)^{-1/2}}{(1+x_k^2)^{-3/2}}=x_k-x_k(1+x_k^2)=-x_k^3$.</li>
-    <li>$|x_0|\lt1$: converges to 0 extremely fast ($0.5\to-0.125\to0.00195\to\dots$). $|x_0|=1$: cycles $1,-1,1,\dots$. $|x_0|\gt1$: diverges ($1.5\to-3.375\to38.4\to\dots$).</li>
-    <li>For $|x|\gt1$ the Newton direction is still downhill (sign of $-f'$), but the full step overshoots and increases $f$. A line search (damping) fixes this.</li>
-  </ol>
-</div>
-
-<h3 id="c-gd">2.2 Fixed-step gradient descent on a quadratic (Midterm 1 Q II)</h3>
-<p><b>In plain words:</b> on a quadratic the error splits into independent pieces, one per eigenvector of $Q$. Each step multiplies the piece along eigenvalue $\lambda_i$ by the number $1-\alpha\lambda_i$. Everything (convergence, cycling, divergence, best step) is read off from these numbers.</p>
-<p><b>Precisely:</b> $x_{k+1}=x_k-\alpha g_k$ and $g_k=Qe_k$ give $e_{k+1}=(I-\alpha Q)e_k$ (also $g_{k+1}=(I-\alpha Q)g_k$). Write $e_0=\sum_ic_iq_i$; then $e_k=\sum_i(1-\alpha\lambda_i)^kc_iq_i$ and $\|e_{k+1}\|\le\max_i|1-\alpha\lambda_i|\,\|e_k\|$.</p>
+<h3 id="b2">B2. "Just make $f$ go down" is not enough. Armijo: not too long</h3>
+<p><b>Two ways to fail while $f$ decreases every step</b> (take $f(x)=x^2$, minimiser 0):</p>
 <ul>
-  <li>All modes shrink for every start ⇔ $-1\lt1-\alpha\lambda_i\lt1$ for all $i$ ⇔ $0\lt\alpha\lt2/\lambda_{\max}$. Endpoints: at $\alpha=0$ nothing moves; at $\alpha=2/\lambda_{\max}$ the top mode has multiplier $-1$ and oscillates.</li>
-  <li>The worst factor $\max\{|1-\alpha\lambda_1|,|1-\alpha\lambda_n|\}$ is smallest when $1-\alpha\lambda_1=-(1-\alpha\lambda_n)$: $\alpha_{\rm opt}=\frac{2}{\lambda_1+\lambda_n}$, factor $\frac{\lambda_n-\lambda_1}{\lambda_n+\lambda_1}=\frac{\kappa-1}{\kappa+1}$ (on $\|e\|$; square it for $f-f^*$).</li>
-  <li>For $\alpha\gt2/\lambda_{\max}$: diverges from a general start, but converges from starts with $e_0$ inside the span of the eigenvectors whose multipliers have $|{\cdot}|\lt1$ (an "eigen-line" in 2-D).</li>
-  <li>Adding $b^Tx$ (shifting the minimiser) changes nothing: the Hessian, hence the range, is the same.</li>
+<li><b>Steps too short:</b> $x_k=1+2^{-k}$: $2,\ 1.5,\ 1.25,\dots$ Every step lowers $f$, but the steps shrink so fast that you stop at 1, not 0.</li>
+<li><b>Steps too long:</b> $x_k=(-1)^k(1+2^{-k})$: $2,\ -1.5,\ 1.25,\dots$ Every step lowers $f$, but you bounce across the valley and end up oscillating between $\pm1$.</li>
 </ul>
-
-<div class="box example"><span class="tag">Worked example (his Ch 3 Exercise 1)</span>
-  <p>$f(x)=3(x_1^2+x_2^2)+4x_1x_2+5x_1+6x_2+7$. Find the largest $\alpha$ range for global convergence of $x_{k+1}=x_k-\alpha\nabla f(x_k)$.</p>
-  <ol class="steps">
-    <li>Hessian $Q=\begin{pmatrix}6&4\\4&6\end{pmatrix}$ (the $4x_1x_2$ term gives off-diagonal 4, not 2: $\partial^2/\partial x_1\partial x_2$ of $4x_1x_2$ is 4).</li>
-    <li>Eigenvalues: $6\pm4$, i.e. $\lambda=2$ (eigvec $(1,-1)$), $\lambda=10$ (eigvec $(1,1)$).</li>
-    <li>Range: $0\lt\alpha\lt2/10=\boxed{1/5}$.</li>
-    <li>Best step $\alpha=2/(2+10)=1/6$; multipliers $1-2/6=2/3$ and $1-10/6=-2/3$; factor $2/3=(\kappa-1)/(\kappa+1)$ with $\kappa=5$.</li>
-  </ol>
-  <svg viewBox="0 0 520 300" width="100%" style="max-width:520px" role="img" aria-label="Multipliers |1-2α| and |1-10α| against α">
-    <line x1="60" y1="260" x2="480" y2="260" stroke="var(--muted)"/>
-    <line x1="60" y1="260" x2="60" y2="15" stroke="var(--muted)"/>
-    <line x1="60" y1="100" x2="470" y2="100" stroke="var(--muted)" stroke-dasharray="5 4"/>
-    <text x="474" y="104" font-size="12" fill="var(--muted)">1</text>
-    <polyline points="60,100 326.7,153.3 460,20" fill="none" stroke="var(--must-line)" stroke-width="10" stroke-opacity="0.45"/>
-    <polyline points="60,100 460,180" fill="none" stroke="var(--accent)" stroke-width="3"/>
-    <polyline points="60,100 220,260 460,20" fill="none" stroke="var(--trap-line)" stroke-width="3"/>
-    <circle cx="326.7" cy="153.3" r="6" fill="var(--ink)"/>
-    <line x1="380" y1="100" x2="380" y2="260" stroke="var(--muted)" stroke-dasharray="2 3"/>
-    <text x="368" y="276" font-size="12" fill="var(--ink)">0.2</text>
-    <text x="312" y="276" font-size="12" fill="var(--ink)">1/6</text>
-    <text x="212" y="276" font-size="12" fill="var(--ink)">0.1</text>
-    <text x="54" y="276" font-size="12" fill="var(--ink)">0</text>
-    <text x="440" y="292" font-size="13" fill="var(--ink)">step α</text>
-    <text x="8" y="30" font-size="13" fill="var(--ink)">factor</text>
-    <text x="40" y="264" font-size="12" fill="var(--ink)">0</text>
-    <text x="334" y="150" font-size="12" fill="var(--ink)">2/3</text>
-    <rect x="80" y="20" width="14" height="4" fill="var(--accent)"/><text x="100" y="26" font-size="12" fill="var(--ink)">|1−2α| (λ=2 mode)</text>
-    <rect x="80" y="38" width="14" height="4" fill="var(--trap-line)"/><text x="100" y="44" font-size="12" fill="var(--ink)">|1−10α| (λ=10 mode)</text>
-    <rect x="80" y="54" width="14" height="8" fill="var(--must-line)" fill-opacity="0.45"/><text x="100" y="62" font-size="12" fill="var(--ink)">worst case (max of the two); dot = best α = 1/6</text>
-  </svg>
-  <p class="small">Colour key: blue = slow mode λ=2, red = fast mode λ=10, wide gold band = worst-case envelope (it follows blue up to α = 1/6, then red). Dashed horizontal line = factor 1; to the right of α = 0.2 the red mode exceeds 1 and the iteration diverges.</p>
-</div>
-<div class="box trap"><span class="tag">Trap</span> The bound is set by the <b>largest</b> eigenvalue ($2/\lambda_{\max}$), the rate by the <b>ratio</b>. And: objective values converging (e.g. constant $f=4$ in a 2-cycle) does <b>not</b> mean the iterates converge (Midterm 1 II(3)).</div>
-
-<h3 id="c-sd">2.3 Steepest descent with exact line search, effective κ, reciprocal steps (Midterm 1 Q III)</h3>
-<p><b>In plain words:</b> instead of a fixed $\alpha$, pick the best $\alpha$ along $-g_k$ each time. You land where the line touches a level ellipse, so the new gradient is perpendicular to the old one: the path zigzags. The guaranteed reduction in $f-f^*$ per step is $((\kappa-1)/(\kappa+1))^2$, so it is slow when $\kappa$ is large.</p>
-<p><b>Precisely:</b> $\alpha_k=\frac{g_k^Tg_k}{g_k^TQg_k}$, $g_{k+1}^Tg_k=0$, and with $E_k=f(x_k)-f^*=\frac12e_k^TQe_k$:
-$$E_{k+1}=\Big[1-\frac{(g_k^Tg_k)^2}{(g_k^TQg_k)(g_k^TQ^{-1}g_k)}\Big]E_k\le\Big(\frac{\kappa-1}{\kappa+1}\Big)^2E_k .$$
-<b>Effective condition number:</b> if $g_k$ lies in an invariant subspace spanned by some eigenvectors (index set $J$), then every later $g$ stays there ($g_{k+1}=(I-\alpha_kQ)g_k$ and $I-\alpha Q$ has the same eigenvectors), so replace $\lambda_1,\lambda_n$ by the min and max eigenvalue over $J$.
-<b>Reciprocal steps:</b> a gradient step with $\eta=1/\mu$ multiplies the $\mu$-component by $1-\mu/\mu=0$. Two such steps with $\eta_0=1/\lambda_1$, $\eta_1=1/\lambda_2$ (either order) remove two known outlier eigenvalues; the product polynomial $p(t)=(1-\eta_0t)(1-\eta_1t)$ has roots $\lambda_1,\lambda_2$. No eigenvectors needed.</p>
-<div class="box example"><span class="tag">Worked example: the worst case is attained</span>
-  <p>$Q=\mathrm{diag}(1,4)$, $b=0$ (so $x^*=0$, $f^*=0$), $x_0=(4,1)$.</p>
-  <ol class="steps">
-    <li>$g_0=Qx_0=(4,4)$, $g_0^Tg_0=32$, $g_0^TQg_0=16+64=80$, $\alpha_0=32/80=2/5$.</li>
-    <li>$x_1=(4,1)-\tfrac25(4,4)=(12/5,\,-3/5)$; $g_1=(12/5,-12/5)$, and $g_1^Tg_0=0$ ✓ (zigzag).</li>
-    <li>$f(x_0)=\frac12(16+4)=10$, $f(x_1)=\frac12(5.76+1.44)=3.6$. Ratio $3.6/10=9/25$.</li>
-    <li>Kantorovich bound with $\kappa=4$: $(3/5)^2=9/25$. Equal: this start is a worst case. Next step: $x_2=(36/25,9/25)=\frac{9}{25}x_0$, so the zigzag repeats with ratio $9/25$ forever.</li>
-  </ol>
-</div>
-<div class="box trap"><span class="tag">Trap</span> SD exact line search reaches $x^*$ in one step iff $g_0$ is an eigenvector of $Q$ (his Ch 3 Ex 2). The Kantorovich factor is for $f-f^*$ (or $\|e\|_Q^2$); for $\|e\|_Q$ take the square root.</div>
-
-<h3 id="c-lip">2.4 The $\|x\|^p/p$ family: when the gradient is not Lipschitz (Midterm 1 Q V, "modification of exercise 7")</h3>
-<p><b>In plain words:</b> for $1\lt p\lt2$, $f_p(x)=\frac1p\|x\|^p$ has a V-ish bottom: differentiable at 0 with gradient 0, but the gradient changes infinitely fast there. So a fixed step is always "too long" near the minimiser and pushes you away. Exercise 7 in his Ch 3 set is $p=3/2$.</p>
-<p><b>Precisely:</b> $\nabla f_p(x)=\|x\|^{p-2}x$ for $x\ne0$, $\nabla f_p(0)=0$; $\|\nabla f_p(x)\|/\|x\|=\|x\|^{p-2}\to\infty$ as $x\to0$, so no Lipschitz $L$ near 0. Fixed step: $x_{k+1}=(1-\alpha r_k^{p-2})x_k$ with $r_k=\|x_k\|$, so $r_{k+1}=r_k|1-\alpha r_k^{p-2}|$.</p>
-<ul>
-  <li>$f$ increases ⇔ $\alpha r_k^{p-2}\gt2$ ⇔ $0\lt r_k\lt(\alpha/2)^{1/(2-p)}$ (too close to 0 ⇒ thrown out).</li>
-  <li>$r_0=(\alpha/2)^{1/(2-p)}$: multiplier $-1$, iterates $x_0,-x_0,x_0,\dots$.</li>
-  <li>$r_0=\alpha^{1/(2-p)}$: multiplier 0, lands on 0 in one step. Convergence to 0 can only happen by hitting 0 exactly (finite termination) or not at all.</li>
-  <li>Exact line search along $-\nabla f_p$: $\alpha_k=r_k^{2-p}$, lands exactly on 0.</li>
-</ul>
-<p class="small">Numerical check ($p=1.5$, $\alpha=0.3$): $r_c=0.0225$ gives the ±2-cycle; $r=0.09$ hits 0 in one step; starting at $r=0.001$ the norm climbs to 0.0225 and sticks in the cycle.</p>
-
-<h3 id="c-newton">2.5 Newton's method (n-D, never examined yet)</h3>
-<p><b>In plain words:</b> replace $f$ by its second-order Taylor model at $x_k$ and jump to the model's minimiser. On a quadratic the model is exact, so one step is enough. On a general function this is superb near a minimiser with PD Hessian (the number of correct digits roughly doubles each step) and unreliable far away.</p>
-<p><b>Precisely:</b> $m_k(p)=f(x_k)+g_k^Tp+\frac12p^TH_kp$, $H_kp_k=-g_k$, $x_{k+1}=x_k+p_k$ (solve the system, do not form $H^{-1}$). Quadratic $f$, $Q\succ0$: $x_1=x_0-Q^{-1}(Qx_0-b)=Q^{-1}b=x^*$. Theorem: if $\nabla f(x^*)=0$, $\nabla^2f(x^*)$ nonsingular and the Hessian is Lipschitz near $x^*$, then for $x_0$ sufficiently close $\|x_{k+1}-x^*\|\le C\|x_k-x^*\|^2$. Descent: $g_k^Tp_k=-p_k^TH_kp_k\lt0$ when $H_k\succ0$; if $H_k$ is indefinite the Newton direction may point uphill and no amount of damping fixes a non-descent direction. <b>Damped Newton:</b> $x_{k+1}=x_k+\alpha_kp_k$ with Armijo backtracking from $\alpha=1$; near a minimiser with $\nabla^2f(x^*)\succ0$ (and $c_1\lt\frac12$) the full step $\alpha=1$ is eventually accepted, so the fast local rate comes back. Damped Newton = steepest descent in coordinates scaled by $H_k^{-1/2}$.</p>
-<div class="box example"><span class="tag">Worked example: Newton on a quadratic</span>
-  <p>$f(x)=x_1^2+x_1x_2+x_2^2-3x_1$: $Q=\begin{pmatrix}2&1\\1&2\end{pmatrix}$, $b=(3,0)$. From any $x_0$, e.g. $x_0=(0,0)$: $g_0=(-3,0)$, solve $Qp=(3,0)$: $p=(2,-1)$. $x_1=(2,-1)$, and $\nabla f(x_1)=(4-1-3,\,2-2)=(0,0)$ ✓. One step, as promised.</p>
+<p>So we need a rule that demands a <b>real</b> decrease (stops long, bouncing steps) and a rule that forbids <b>tiny</b> steps.</p>
+<p><b>Armijo (sufficient decrease).</b> The tangent line at $\alpha=0$ "promises" a decrease of $\alpha|\phi'(0)|$. Demand that you get at least a fraction $c_1$ of that promise:</p>
+$$\boxed{\phi(\alpha)\le\phi(0)+c_1\,\alpha\,\phi'(0)},\qquad 0\lt c_1\lt1\ \text{(typically small, e.g. }0.1\text{ or }10^{-4}).$$
+<p>Picture: the right side is a straight line starting at $\phi(0)$, less steep than the tangent. Armijo asks the curve to lie <b>below</b> this line.</p>
+<div class="box example"><span class="tag">With numbers ($c_1=0.1$)</span>
+<p>Armijo line: $8+0.1\cdot\alpha\cdot(-80)=8-8\alpha$. Condition: $8-80\alpha+272\alpha^2\le8-8\alpha\iff272\alpha^2\le72\alpha\iff\alpha\le\frac{72}{272}=\frac{9}{34}\approx0.265$.</p>
+<p>So Armijo accepts every $\alpha\in(0,\,9/34]$. It caps the step from above. But it also accepts $\alpha=0.0001$, which barely moves: Armijo alone does not stop too-short steps.</p>
 </div>
 
-<h3 id="c-conj">2.6 Affine-space minimum, Q-conjugacy, expanding subspace (Midterm 1 Q VI)</h3>
-<p><b>In plain words:</b> if you may only move inside a flat sheet $\bar x+\mathrm{span}\{d_1,\dots,d_L\}$, you are at the best point of the sheet when no direction <i>inside the sheet</i> goes downhill, i.e. the gradient is perpendicular to the sheet. Conjugate directions are the special directions for which "minimise along $d_0$, then along $d_1$, …" gives the same answer as minimising over the whole sheet at once, because the later line searches never spoil the earlier ones.</p>
-<p><b>Precisely:</b> $h(z)=f(\bar x+Dz)$, $\nabla h(z)=D^T\nabla f(\bar x+Dz)$, $\nabla^2h=D^T\nabla^2fD$. For convex $f$: minimiser ⇔ $D^T\nabla f(x_S)=0$. For the quadratic: $(D^TQD)z_S=-D^T\nabla f(\bar x)$ (an $m\times m$ PD system). After one exact line search along $d$: $d^Tg_{k+1}=0$.</p>
-<p><b>Expanding-subspace chain</b> (memorise the order; Midterm 1 VI asked exactly these steps): with $c_i=d_i^Tg_0$, $h_i=d_i^TQd_i$,</p>
+<div class="fig">
+<svg viewBox="0 0 480 275" width="480" role="img" aria-label="Armijo condition: curve phi, tangent line and Armijo line">
+  <line x1="60" y1="230" x2="470" y2="230" class="sx"/>
+  <line x1="60" y1="230" x2="60" y2="15" class="sx"/>
+  <line x1="60" y1="230" x2="390.9" y2="230" class="sg" stroke-width="7" stroke-opacity=".55"/>
+  <polyline points="60.0,70.0 70.1,82.6 80.2,94.4 90.3,105.6 100.4,116.0 110.5,125.7 120.6,134.8 130.7,143.1 140.8,150.7 150.9,157.6 161.0,163.7 171.1,169.2 181.2,174.0 191.2,178.0 201.3,181.4 211.4,184.0 221.5,185.9 231.6,187.1 241.7,187.6 251.8,187.4 261.9,186.5 272.0,184.9 282.1,182.5 292.2,179.5 302.3,175.7 312.4,171.3 322.5,166.1 332.6,160.2 342.7,153.6 352.8,146.3 362.9,138.3 373.0,129.6 383.1,120.1 393.2,110.0 403.3,99.1 413.4,87.6 423.5,75.3 433.6,62.3 443.7,48.6 453.8,34.2" class="sa" stroke-width="3"/>
+  <line x1="60" y1="70" x2="185" y2="230" class="sr" stroke-width="2" stroke-dasharray="6 4"/>
+  <line x1="60" y1="70" x2="460" y2="121.2" class="sp" stroke-width="2.5"/>
+  <circle cx="390.9" cy="112.4" r="4.5" class="fp"/>
+  <circle cx="243.8" cy="187.6" r="4" class="fk"/>
+  <line x1="243.8" y1="187.6" x2="243.8" y2="208" class="sx" stroke-dasharray="2 3"/>
+  <text x="66" y="62">φ(0) = 8</text>
+  <text x="192" y="225" class="tr">tangent, slope φ′(0) = −80</text>
+  <text x="270" y="96" class="tp">Armijo line 8 − 8α (slope c₁φ′(0))</text>
+  <text x="410" y="40" class="ta">φ(α)</text>
+  <text x="232" y="244" class="mu">α*</text>
+  <text x="120" y="266" class="tg">Armijo accepts 0 &lt; α ≤ 9/34 ≈ 0.265</text>
+  <text x="456" y="245" class="mu">α</text>
+  <text x="180" y="244" class="mu">0.1</text><text x="305" y="244" class="mu">0.2</text><text x="430" y="244" class="mu">0.3</text>
+</svg>
+<div class="cap">$\phi(\alpha)=8-80\alpha+272\alpha^2$ (blue). Red dashed: the tangent at 0, i.e. what a linear model promises. Purple: the Armijo line, a flatter copy. Armijo accepts $\alpha$ where blue is below purple: the green stretch $(0,\,9/34]$. Past the purple dot the curve rises above the line (too long).</div>
+</div>
+
+<h3 id="b3">B3. Not too short: Wolfe's curvature condition, strong Wolfe, Goldstein</h3>
+<p><b>Idea.</b> If at your chosen $\alpha$ the curve is still going down steeply, you stopped too early: going further would clearly help. So demand that the slope has <b>flattened</b> enough:</p>
+$$\textbf{Wolfe curvature:}\quad\boxed{\phi'(\alpha)\ge c_2\,\phi'(0)},\qquad 0\lt c_1\lt c_2\lt1.$$
+<p>Both sides are slopes; the right side is a negative number. "≥" means the slope at $\alpha$ is less negative than $c_2$ times the starting slope. Near $\alpha=0$ the slope is still about $\phi'(0)$, which is below $c_2\phi'(0)$, so tiny steps fail. <b>Wolfe conditions = Armijo + curvature.</b> ($c_1\lt c_2$ guarantees that some $\alpha$ passes both, for any $f$ that is bounded below along the line.)</p>
+<p><b>Strong Wolfe</b> replaces the curvature condition by $\ |\phi'(\alpha)|\le c_2|\phi'(0)|$. This also forbids landing where the slope is steeply <i>positive</i>, i.e. far past the bottom of the dip.</p>
+<p><b>Goldstein</b> uses two straight lines and no derivative at $\alpha$ (needs $0\lt c\lt\tfrac12$):</p>
+$$\phi(0)+(1-c)\,\alpha\,\phi'(0)\ \le\ \phi(\alpha)\ \le\ \phi(0)+c\,\alpha\,\phi'(0).$$
+<p>The right inequality is Armijo with $c_1=c$. The left one is a lower fence: near $\alpha=0$ the curve hugs its tangent, which lies below the steeper fence line, so tiny steps fail. (Drawback: on a non-quadratic $\phi$ the fence can cut off the true minimiser of $\phi$.)</p>
+
+<div class="box example"><span class="tag">With numbers: all four rules on $\phi(\alpha)=8-80\alpha+272\alpha^2$</span>
+<p>Take $c_1=0.1$, $c_2=0.5$, Goldstein $c=0.25$. Recall $\phi'(\alpha)=-80+544\alpha$, $\phi'(0)=-80$.</p>
 <ol class="steps">
-  <li>$\Phi(\beta)=f(x_0+\sum\beta_id_i)=f(x_0)+\sum_i\big(c_i\beta_i+\tfrac12h_i\beta_i^2\big)$ (cross terms die by conjugacy).</li>
-  <li>Each $h_i\gt0$ ($Q\succ0$, $d_i\ne0$), so each scalar piece has a unique minimiser $\beta_i^*=-c_i/h_i$.</li>
-  <li>Key formula $g_i=g_0+\sum_{j\lt i}\alpha_jQd_j$ ⇒ $d_i^Tg_i=c_i$ (earlier steps do not change the slope along $d_i$).</li>
-  <li>Line search: $\alpha_i=-d_i^Tg_i/h_i=-c_i/h_i=\beta_i^*$.</li>
-  <li>Hence $x_K=x_0+\sum\beta_i^*d_i$ = the minimiser over $x_0+\mathcal S_K$, and $g_K\perp\mathcal S_K$. The order of the directions does not matter. For $K=n$ this is $x^*$.</li>
+<li><b>Armijo</b> (B2): $\alpha\le9/34\approx0.265$.</li>
+<li><b>Curvature:</b> $-80+544\alpha\ge0.5\cdot(-80)=-40\iff\alpha\ge\frac{40}{544}=\frac{5}{68}\approx0.074$. Wolfe interval: $[5/68,\ 9/34]$.</li>
+<li><b>Strong Wolfe:</b> $-40\le-80+544\alpha\le40\iff\frac{5}{68}\le\alpha\le\frac{120}{544}=\frac{15}{68}\approx0.221$.</li>
+<li><b>Goldstein:</b> upper: $8-80\alpha+272\alpha^2\le8-20\alpha\iff\alpha\le\frac{60}{272}=\frac{15}{68}$; lower: $8-80\alpha+272\alpha^2\ge8-60\alpha\iff\alpha\ge\frac{20}{272}=\frac{5}{68}$. Interval $[5/68,\,15/68]$ (equal to strong Wolfe here only because of these constants).</li>
 </ol>
-<div class="box example"><span class="tag">Worked example: making a direction conjugate (Quiz 2 Q3)</span>
-  <p>$Q=\begin{pmatrix}3&1\\1&2\end{pmatrix}$, $d_0=(1,0)$, $d_1=(s,1)$. $d_0^TQd_1=(3,1)\cdot(s,1)=3s+1=0\Rightarrow s=-\frac13$. Note $d_0^Td_1=-\frac13\ne0$: conjugate but not orthogonal.</p>
 </div>
-<div class="box trap"><span class="tag">Trap (his warning)</span> At the affine minimiser, $\nabla h=0$ but $\nabla f\ne0$ in general. Writing "$\nabla f(x_S)=0$" is the mistake he warned about. Also: Q-conjugate ⇒ linearly independent, but Q-conjugate directions are generally <i>not</i> orthogonal; eigenvectors of $Q$ are both.</div>
 
-<h3 id="c-cg">2.7 The CG algorithm, its identities, and how many steps it needs</h3>
-<p><b>In plain words:</b> CG builds the conjugate directions on the fly: take the new steepest-descent direction and add just enough of the previous direction to make it conjugate. Because of conjugacy, step $k$ gives the best point in a growing space; on an $n$-D quadratic it finishes in at most $n$ steps, and fewer if the starting error only involves a few distinct eigenvalues.</p>
-<p><b>Precisely:</b> the algorithm is in the Must-remember box. Original forms: $\alpha_k=-\frac{d_k^Tg_k}{d_k^TQd_k}$ and $\beta_k=\frac{g_{k+1}^TQd_k}{d_k^TQd_k}$ (from $d_{k+1}^TQd_k=0$); with exact line search they become $\frac{\|g_k\|^2}{d_k^TQd_k}$ and $\frac{\|g_{k+1}\|^2}{\|g_k\|^2}$ because $g_k^Td_k=-\|g_k\|^2$ and $g_{k+1}^Tg_k=0$. CG theorem: $\mathrm{span}\{g_0..g_k\}=\mathrm{span}\{d_0..d_k\}=\mathrm{span}\{g_0,Qg_0,..,Q^kg_0\}$, $d_k^TQd_i=0$ ($i\lt k$).</p>
-<p><b>Polynomial view:</b> $x_k-x^*=r_k(Q)e_0$ with $r_k$ a degree-$k$ polynomial, $r_k(0)=1$, and CG picks the one minimising $E=\sum_\ell y_\ell^2\lambda_\ell r(\lambda_\ell)^2$. Consequences: (i) if $e_0$ touches exactly $r$ distinct eigenvalues, $r(t)=\prod(1-t/\mu_j)$ kills them, so CG stops in exactly $r$ steps; (ii) <b>partial CG bound</b>: if $m$ outlier eigenvalues lie above an interval $[a,b]$, after $m+1$ steps $E_{\rm after}\le\big(\frac{b-a}{b+a}\big)^2E_{\rm before}$ (use $r(t)=(1-\frac{2t}{a+b})\prod(1-t/\mu_j)$ and bound the outlier factors by 1 on $[a,b]$).</p>
-<div class="box example"><span class="tag">Worked example (his Ch 4 Problem 3): full CG on 2×2</span>
-  <p>$Q=\begin{pmatrix}4&1\\1&3\end{pmatrix}$, $b=(1,2)$, $x_0=0$.</p>
-  <ol class="steps">
-    <li>$g_0=-b=(-1,-2)$, $d_0=(1,2)$, $\|g_0\|^2=5$, $Qd_0=(6,7)$, $d_0^TQd_0=20$, $\alpha_0=5/20=1/4$.</li>
-    <li>$x_1=(1/4,1/2)$, $g_1=g_0+\frac14(6,7)=(1/2,-1/4)$. Check $g_1^Tg_0=-\frac12+\frac12=0$ ✓.</li>
-    <li>$\beta_0=\|g_1\|^2/\|g_0\|^2=(5/16)/5=1/16$; $d_1=-g_1+\frac1{16}d_0=(-7/16,\,3/8)$. Check $d_1^TQd_0=(-7/16)(6)+(3/8)(7)=0$ ✓.</li>
-    <li>$Qd_1=(-11/8,\,11/16)$, $d_1^TQd_1=55/64$, $\alpha_1=(5/16)/(55/64)=4/11$.</li>
-    <li>$x_2=(1/4,1/2)+\frac4{11}(-7/16,3/8)=(1/11,\,7/11)$, $g_2=0$. Indeed $Q^{-1}b=(1/11,7/11)$ ✓. Two steps for a 2×2.</li>
-    <li>Energy check: $f$ drops $0\to-5/8\to-15/22$; first drop $=\|g_0\|^4/(2d_0^TQd_0)=25/40=5/8$ ✓.</li>
-  </ol>
+<div class="fig">
+<svg viewBox="0 0 480 200" width="480" role="img" aria-label="Acceptable step intervals for each rule">
+  <line x1="60" y1="170" x2="470" y2="170" class="sx"/>
+  <line x1="243.8" y1="20" x2="243.8" y2="170" class="sx" stroke-dasharray="3 3"/>
+  <line x1="60" y1="35" x2="390.9" y2="35" class="sp" stroke-width="9"/>
+  <line x1="151.9" y1="70" x2="390.9" y2="70" class="sa" stroke-width="9"/>
+  <line x1="151.9" y1="105" x2="335.7" y2="105" class="sg" stroke-width="9"/>
+  <line x1="151.9" y1="140" x2="335.7" y2="140" class="sy" stroke-width="9"/>
+  <text x="400" y="39" class="tp">Armijo</text>
+  <text x="400" y="74" class="ta">Wolfe</text>
+  <text x="345" y="109" class="tg">strong Wolfe</text>
+  <text x="345" y="144" class="ty">Goldstein</text>
+  <text x="250" y="28">α* = 5/34</text>
+  <text x="56" y="188" class="mu">0</text>
+  <text x="135" y="188" class="mu">5/68</text>
+  <text x="320" y="188" class="mu">15/68</text>
+  <text x="378" y="188" class="mu">9/34</text>
+</svg>
+<div class="cap">Which $\alpha$ each rule accepts for our $\phi$ ($c_1=0.1$, $c_2=0.5$, $c=0.25$). Armijo alone allows steps near 0. The curvature condition removes them. Plain Wolfe still allows big overshoots past $\alpha^*$ (up to $9/34$, where the slope is $+64$); strong Wolfe cuts those off.</div>
 </div>
-<div class="box example"><span class="tag">Worked example (his Ch 4 Problem 6b): count steps without iterating</span>
-  <p>$Q=\mathrm{diag}(2,2,5,5,11)$, $e_0=(1,-1,0,0,3)$. Components are nonzero only in the eigenspaces of 2 and 11 (the 5-eigenspace gets 0). Two distinct eigenvalues ⇒ exactly <b>2</b> CG steps (checked numerically). Even though $n=5$ and $Q$ has 3 distinct eigenvalues.</p>
-</div>
-<div class="box trap"><span class="tag">Trap</span> (1) Krylov space after $k$ steps goes up to $Q^{k-1}g_0$, shifted by $x_0$. (2) Count distinct eigenvalues <i>present in $e_0$</i>, not the size $n$ nor all distinct eigenvalues of $Q$. (3) $\|g_k\|$ can increase in CG (Quiz 2 Q10) while $f$ and $\|e\|_Q$ always decrease.</div>
 
-<h3 id="c-pcg">2.8 Preconditioned CG</h3>
-<p><b>In plain words:</b> change variables $x=B^{1/2}y$ so the problem looks rounder (Hessian $\hat Q=B^{1/2}QB^{1/2}$ closer to a multiple of $I$), run ordinary CG on $y$, then translate the formulas back to $x$. Every "$g$" in a CG inner product becomes "$Bg$".</p>
-<p><b>Precisely:</b> $\hat g=B^{1/2}g$, so $\hat g_i^T\hat g_j=g_i^TBg_j=0$ (Euclidean $g_i^Tg_j$ is <i>not</i> preserved). Formulas in the Must-remember box. Scaling $B\to cB$: $\tilde d_k=cd_k$, $\tilde\alpha_k=\alpha_k/c$, $\tilde\beta_k=\beta_k$, same $x_k$; so "eigenvalues of $\hat Q$ close to 1" is not by itself the criterion, the <i>spread</i> (clustering) is. $B=cQ^{-1}$ ⇒ one step. Practical $B$: inverse of the diagonal of $Q$.</p>
-<div class="box trap"><span class="tag">Trap (and a disagreement)</span> In class he said that with PCG the original $f(x_k)$ "may not reduce monotonically" (Ch 4 lec 4 [19:30]). Mathematically, $f(x_k)=h(y_k)$ exactly (same point, $x=B^{1/2}y$), and each PCG step is an exact line search for $f$ along $d_k$, so $f(x_k)$ does decrease. What really need not decrease is the Euclidean gradient norm $\|g_k\|$. If it is asked, write this reasoning.</div>
+<p><b>Why you need both Wolfe conditions</b> (he stressed this, see "What he said"). Armijo alone accepts tiny steps. Curvature alone accepts huge ones: $\alpha=0.3$ has $\phi'(0.3)=83.2\ge-40$, so it passes curvature, yet $\phi(0.3)=8.48\gt8$, so $f$ went <i>up</i>.</p>
 
-<h3 id="c-nq">2.9 CG on non-quadratic functions (FR, PR)</h3>
-<p><b>In plain words:</b> on a non-quadratic $f$ there is no single $Q$, so conjugacy and the $n$-step finish are lost; CG becomes a heuristic that is often faster than steepest descent. You must add safety checks.</p>
-<p><b>Precisely (Hessian-based "modified original CG"):</b> $\delta_k=d_k^TF(x_k)d_k$; trial step $\hat\alpha_k=-g_k^Td_k/\delta_k$ (minimiser of the quadratic model along $d_k$, not of $f$: the full step can increase $f$, so safeguard by Armijo); $\beta_k=\frac{g_{k+1}^TF(x_k)d_k}{\delta_k}$ if $\delta_k\gt0$, else $\beta_k=0$; reset $d_k=-g_k$ whenever $g_k^Td_k\ge0$. <b>FR / PR</b> (gradient-only): $\beta^{FR}_k=\frac{\|g_{k+1}\|^2}{\|g_k\|^2}$, $\beta^{PR}_k=\frac{g_{k+1}^T(g_{k+1}-g_k)}{\|g_k\|^2}$. With exact line search, any finite $\beta$ gives $g_{k+1}^Td_{k+1}=-\|g_{k+1}\|^2\lt0$ (descent, not convergence). FR + strong Wolfe with $0\lt c_1\lt c_2\lt\frac12$: $-\frac1{1-c_2}\le\frac{g_k^Td_k}{\|g_k\|^2}\le\frac{2c_2-1}{1-c_2}\lt0$.</p>
-<div class="box example"><span class="tag">Worked example: plug into the FR bound</span>
-  <p>$c_2=\frac14$: lower $-\frac{1}{3/4}=-\frac43$, upper $\frac{-1/2}{3/4}=-\frac23$. Both negative ⇒ every FR direction is a descent direction (Quiz 2 Q19).</p>
+<div class="box example"><span class="tag">His Exercise 2.3: the general intervals for a quadratic $\phi$</span>
+<p>$\phi(\alpha)=\phi(0)-\sigma\alpha+\tfrac{\omega}{2}\alpha^2$ with $\sigma,\omega\gt0$ (so $\phi'(0)=-\sigma$ and $\phi'(\alpha)=-\sigma+\omega\alpha$). Our example is $\sigma=80$, $\omega=544$.</p>
+<ol class="steps">
+<li>Exact minimiser: $\phi'(\alpha)=0\Rightarrow\alpha^*=\sigma/\omega$.</li>
+<li>Armijo: $-\sigma\alpha+\tfrac{\omega}{2}\alpha^2\le-c_1\sigma\alpha\iff\alpha\le\dfrac{2(1-c_1)\sigma}{\omega}$. So $\alpha\in(0,\,2(1-c_1)\alpha^*]$.</li>
+<li>Curvature: $-\sigma+\omega\alpha\ge-c_2\sigma\iff\alpha\ge(1-c_2)\alpha^*$. Wolfe interval: $[(1-c_2)\alpha^*,\ 2(1-c_1)\alpha^*]$.</li>
+<li>Strong Wolfe adds $-\sigma+\omega\alpha\le c_2\sigma\iff\alpha\le(1+c_2)\alpha^*$. Interval: $[(1-c_2)\alpha^*,\ \min\{1+c_2,\,2(1-c_1)\}\alpha^*]$.</li>
+<li>Goldstein: $\alpha\in[2c\,\alpha^*,\ 2(1-c)\alpha^*]$. Since $c\lt\frac12$, it always contains $\alpha^*$.</li>
+<li>Lesson: ordinary Wolfe can accept steps up to almost $2\alpha^*$ (a big overshoot); strong Wolfe limits the overshoot to $(1+c_2)\alpha^*$.</li>
+</ol>
+<p class="small">All five formulas checked with sympy; with $\sigma=80,\omega=544,c_1=0.1,c_2=0.5,c=0.25$ they give the numbers above.</p>
 </div>
+
+<h3 id="b4">B4. Backtracking: the practical Armijo rule</h3>
+<p>Try $\alpha=1$. If Armijo fails, multiply by a fixed $s\in(0,1)$ and try again: $\alpha=1,\,s,\,s^2,\dots$ Accept the <b>first</b> $\alpha$ that passes Armijo.</p>
+<p>Why no curvature check is needed: you start big and shrink by a fixed factor, so you can't end up absurdly small. The accepted step is at least $s$ times a step that failed. Starting at $\alpha=1$ matters for Newton's method (section G), where $\alpha=1$ is the natural full step.</p>
+<div class="box example"><span class="tag">With numbers ($c_1=0.1$, $s=\tfrac12$)</span>
+<p>$\alpha=1$: $\phi(1)=200\gt8-8=0$ ✗. $\alpha=\tfrac12$: $\phi=36\gt4$ ✗. $\alpha=\tfrac14$: $\phi=8-20+17=5\le6$ ✓. <b>Accept $\alpha=0.25$.</b> Note that it overshoots $\alpha^*\approx0.147$ and fails strong Wolfe ($\phi'(0.25)=+56$): Armijo only caps the step.</p>
+</div>
+
+<div class="box trap"><span class="tag">Traps in B</span>
+<ul>
+<li>The curvature condition is $\phi'(\alpha)\ge c_2\phi'(0)$, a <b>lower</b> bound on the slope (the right side is negative). Students write $\le$.</li>
+<li>$0\lt c_1\lt c_2\lt1$ (strict). Goldstein needs $c\lt\frac12$. The FR theorem (H9) needs $c_2\lt\frac12$.</li>
+<li>Armijo bounds $\alpha$ from above only; curvature/Goldstein-left bound it from below. You cannot drop either Wolfe condition in general.</li>
+</ul></div>
+
+<div class="check"><b>Check B.</b> For $\phi(\alpha)=8-80\alpha+272\alpha^2$ with $c_1=0.1$, $c_2=0.5$: does $\alpha=0.02$ pass Armijo? Wolfe? Does $\alpha=0.25$ pass strong Wolfe?
+<details class="ans"><summary>Show answer</summary><div><p>$\alpha=0.02$: $\phi=6.509\le7.84$, Armijo ✓; $\phi'(0.02)=-69.1\lt-40$, curvature ✗ (too short), so not Wolfe. $\alpha=0.25$: $|\phi'|=56\gt40$, strong Wolfe ✗ (too far past the bottom).</p></div></details></div>
+
+<h3 id="b5">B5. Golden section: a 1-D search with no derivatives</h3>
+<p><b>Setting.</b> $\phi$ is <i>unimodal</i> on a bracket $[a,b]$: it goes down, then up, with one dip. You can only evaluate $\phi$.</p>
+<p><b>Idea.</b> Put two interior points in the bracket and compare $\phi$ there. The dip can't be beyond the worse point (unimodality), so throw that outer piece away. To save work, place the points so that the surviving interior point can be <b>reused</b> in the next round: one new evaluation per round.</p>
+<div class="box example"><span class="tag">Deriving the golden fraction</span>
+<ol class="steps">
+<li>Bracket $[0,1]$, points at $\rho$ and $1-\rho$ (symmetric, $\rho\lt\tfrac12$).</li>
+<li>Say $\phi(\rho)\le\phi(1-\rho)$. Keep $[0,\,1-\rho]$ (length $1-\rho$). Its right interior point should sit at fraction $1-\rho$ of the new length: $(1-\rho)^2$.</li>
+<li>Reuse means that point is the old $\rho$: $(1-\rho)^2=\rho\iff\rho^2-3\rho+1=0\iff\rho=\dfrac{3-\sqrt5}{2}\approx0.382$.</li>
+<li>Each round multiplies the bracket length by $1-\rho=\frac{\sqrt5-1}{2}\approx0.618$, with one new evaluation.</li>
+</ol>
+<p><b>Numbers.</b> On $[0,10]$: points $3.82$ and $6.18$. If $\phi(3.82)\le\phi(6.18)$, the new bracket is $[0,6.18]$, whose points are $0.382\times6.18=2.36$ (new) and $0.618\times6.18=3.82$ (old, reused). After 4 rounds the length is $10\times0.618^4\approx1.46$.</p>
+</div>
+<div class="fig">
+<svg viewBox="0 0 480 120" width="480" role="img" aria-label="Golden section: one round on [0,10]">
+  <line x1="40" y1="35" x2="440" y2="35" class="sx" stroke-width="3"/>
+  <line x1="40" y1="85" x2="287.2" y2="85" class="sa" stroke-width="3"/>
+  <line x1="287.2" y1="85" x2="440" y2="85" class="sx" stroke-dasharray="4 4"/>
+  <circle cx="192.8" cy="35" r="5" class="fg"/><circle cx="287.2" cy="35" r="5" class="fr"/>
+  <circle cx="134.4" cy="85" r="5" class="fa"/><circle cx="192.8" cy="85" r="5" class="fg"/>
+  <text x="34" y="25">0</text><text x="430" y="25">10</text>
+  <text x="178" y="25" class="tg">3.82</text><text x="272" y="25" class="tr">6.18</text>
+  <text x="120" y="108" class="ta">2.36 (new)</text><text x="185" y="108" class="tg">3.82 (reused)</text>
+  <text x="300" y="80" class="mu">discarded: (6.18, 10]</text>
+  <text x="34" y="78">0</text>
+</svg>
+<div class="cap">Top: first bracket with its two points. If $\phi(3.82)\le\phi(6.18)$, keep $[0,6.18]$ (bottom, blue). Its two points are $2.36$ (one new evaluation) and $3.82$ (reused).</div>
+</div>
+
+<h3 id="b6">B6. Zoutendijk's theorem in plain words</h3>
+<p><b>Question.</b> If we only use "good enough" steps, do we still reach a point where $\nabla f=0$? <b>Answer:</b> yes, provided the directions don't become nearly perpendicular to the gradient.</p>
+<div class="box must"><span class="tag">Zoutendijk</span>
+<p>If $f$ is bounded below, $\nabla f$ is Lipschitz (it can't change arbitrarily fast), the $d_k$ are descent directions and every $\alpha_k$ satisfies the Wolfe conditions (B3; strong Wolfe also works, since it implies Wolfe), then
+$$\sum_k\cos^2\theta_k\,\|\nabla f(x_k)\|^2\lt\infty.$$
+So if $\cos\theta_k\ge\delta\gt0$ for all $k$ (the angle stays bounded away from 90°), then $\|\nabla f(x_k)\|\to0$.</p>
+</div>
+<p class="small">The Ch 2 notes state the theorem with strong Wolfe steps. The standard theorem needs only the ordinary Wolfe conditions (Armijo + curvature); strong Wolfe is a special case. So if an MCQ asks what is needed: Wolfe steps (not exact line search).</p>
+<p><b>Reading it:</b> each step makes "useful progress" of about $\cos^2\theta_k\|g_k\|^2$. The total progress is finite (because $f$ is bounded below), so these terms must shrink to 0. If the cosine can't shrink, the gradient must.</p>
+<div class="box example"><span class="tag">The standard way to guarantee the angle</span>
+<p>Use $d_k=-D_kg_k$ where $D_k$ is symmetric with eigenvalues in $[m,M]$, $m\gt0$. Then</p>
+<ul>
+<li>$-\nabla f^Td=\nabla f^TD\nabla f\ge m\|\nabla f\|^2$ (smallest eigenvalue), so $d$ is a descent direction;</li>
+<li>$\|d\|=\|D\nabla f\|\le M\|\nabla f\|$ (largest eigenvalue);</li>
+<li>so $\cos\theta=\dfrac{-\nabla f^Td}{\|\nabla f\|\|d\|}\ge\dfrac{m\|\nabla f\|^2}{\|\nabla f\|\cdot M\|\nabla f\|}=\dfrac{m}{M}\gt0$.</li>
+</ul>
+<p>Steepest descent is $D=I$: $\cos\theta=1$. Newton with a PD Hessian whose eigenvalues stay in $[m,M]$ is $D=H^{-1}$: also covered.</p>
+</div>
+<div class="check"><b>Check B5–B6.</b> (1) Golden section on $[0,20]$: first two points? (2) $D_k$ has eigenvalues in $[2,5]$. Lower bound on $\cos\theta_k$?
+<details class="ans"><summary>Show answer</summary><div><p>(1) $0.382\times20=7.64$ and $0.618\times20=12.36$. (2) $m/M=2/5$.</p></div></details></div>
 </section>
 
-<!-- ============ 3. WHAT HE SAID ============ -->
+<!-- ================= C. QUADRATICS ================= -->
+<section id="quad">
+<h2>C. Quadratics: the test case for every method</h2>
+
+<h3>C1. The quadratic, its gradient, its minimiser, its error</h3>
+<p>$$f(x)=\tfrac12x^TQx-b^Tx,\qquad Q=Q^T\succ0.$$</p>
+<p><b>$Q\succ0$ (positive definite)</b> means $v^TQv\gt0$ for every $v\ne0$; equivalently, every eigenvalue of $Q$ is positive. It makes $f$ a bowl with exactly one bottom.</p>
+<div class="box example"><span class="tag">Gradient by hand on a 2×2, so you trust the formula</span>
+<p>$Q=\begin{pmatrix}3&amp;1\\1&amp;2\end{pmatrix}$: $\ \tfrac12x^TQx=\tfrac12(3x_1^2+2x_1x_2+2x_2^2)$, so $f=\tfrac32x_1^2+x_1x_2+x_2^2-b_1x_1-b_2x_2$.</p>
+<p>$\partial f/\partial x_1=3x_1+x_2-b_1$, $\ \partial f/\partial x_2=x_1+2x_2-b_2$. That's exactly the vector $Qx-b$.</p>
+</div>
+<div class="box must"><span class="tag">Facts about the quadratic (used everywhere below)</span>
+<ul>
+<li>Gradient $g(x)=Qx-b$; Hessian $=Q$ (constant).</li>
+<li>Minimiser: $Qx^*=b$, so $x^*=Q^{-1}b$ (unique since $Q\succ0$).</li>
+<li>Error $e=x-x^*$. Then $g=Qx-b=Qx-Qx^*=\boxed{Qe}$: the gradient is $Q$ times the error.</li>
+<li>$f(x)-f^*=\tfrac12e^TQe=\tfrac12\|e\|_Q^2$. (Expand $f(x^*+e)=f^*+(Qx^*-b)^Te+\tfrac12e^TQe$ and use $Qx^*=b$.)</li>
+</ul>
+</div>
+<div class="box trap"><span class="tag">Reading $Q$ off a polynomial</span>
+<p>$f=3(x_1^2+x_2^2)+4x_1x_2+\dots$: the Hessian is $\begin{pmatrix}6&amp;4\\4&amp;6\end{pmatrix}$. The diagonal is <b>twice</b> the coefficient of $x_i^2$ (because of the ½), and the off-diagonal is the <b>whole</b> coefficient of $x_1x_2$ (here 4, not 2): $\partial^2(4x_1x_2)/\partial x_1\partial x_2=4$. Safest: take the second derivatives directly.</p>
+</div>
+
+<h3>C2. Eigen-directions: the natural axes of the bowl</h3>
+<p>$Q$ symmetric has $n$ perpendicular unit eigenvectors $q_1,\dots,q_n$ with $Qq_i=\lambda_iq_i$. Write any error as $e=\sum_i\varepsilon_iq_i$ (its components along the eigenvectors). Then:</p>
+<ul>
+<li>$Qe=\sum_i\lambda_i\varepsilon_iq_i$: <b>$Q$ just multiplies the $i$-th component by $\lambda_i$.</b> No mixing between components.</li>
+<li>$f-f^*=\tfrac12e^TQe=\tfrac12\sum_i\lambda_i\varepsilon_i^2$. A level set is an ellipse (ellipsoid) with axes along the $q_i$. Along $q_i$ its half-width is proportional to $1/\sqrt{\lambda_i}$: <b>large eigenvalue = steep, narrow direction; small eigenvalue = flat, long direction</b>.</li>
+<li>$\kappa=\lambda_{\max}/\lambda_{\min}$ measures how stretched the ellipses are. $\kappa=1$: circles.</li>
+</ul>
+<div class="fig">
+<svg viewBox="0 0 440 250" width="440" role="img" aria-label="Rotated ellipses with eigenvector axes">
+  <defs><marker id="c2a" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" class="fa"/></marker>
+  <marker id="c2r" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" class="fr"/></marker></defs>
+  <ellipse cx="220" cy="125" rx="100" ry="44.7" transform="rotate(45 220 125)" class="sx" stroke-width="2"/>
+  <ellipse cx="220" cy="125" rx="50" ry="22.4" transform="rotate(45 220 125)" class="sx"/>
+  <line x1="220" y1="125" x2="290.7" y2="195.7" class="sa" stroke-width="2.5" marker-end="url(#c2a)"/>
+  <line x1="220" y1="125" x2="251.6" y2="93.4" class="sr" stroke-width="2.5" marker-end="url(#c2r)"/>
+  <circle cx="220" cy="125" r="3.5" class="fk"/><text x="196" y="122">x*</text>
+  <text x="200" y="232" class="ta">q₁ ∝ (1,−1), λ = 2: long, flat axis</text>
+  <text x="236" y="80" class="tr">q₂ ∝ (1,1), λ = 10: short, steep axis</text>
+  <text x="20" y="30" class="mu">Q = [6 4; 4 6], κ = 10/2 = 5</text>
+  <text x="20" y="48" class="mu">axis ratio √κ = √5 ≈ 2.24</text>
+</svg>
+<div class="cap">Level sets of a quadratic with $Q=\begin{pmatrix}6&amp;4\\4&amp;6\end{pmatrix}$ (eigenvalues 2 and 10). The ellipses are long along the small-eigenvalue direction and narrow along the large one; the length ratio is $\sqrt{\kappa}$.</div>
+</div>
+<div class="check"><b>Check C.</b> $Q=\begin{pmatrix}6&amp;4\\4&amp;6\end{pmatrix}$: verify that $(1,-1)$ and $(1,1)$ are eigenvectors and find their eigenvalues. What is $\kappa$?
+<details class="ans"><summary>Show answer</summary><div><p>$Q(1,-1)=(2,-2)=2(1,-1)$; $Q(1,1)=(10,10)=10(1,1)$. $\kappa=10/2=5$.</p></div></details></div>
+</section>
+
+<!-- ================= D. FIXED-STEP GD ================= -->
+<section id="gd">
+<h2>D. Fixed-step gradient descent on a quadratic (Midterm 1 Q II)</h2>
+<p><b>The method:</b> $d_k=-g_k$ and the same $\alpha$ every step: $x_{k+1}=x_k-\alpha g_k$.</p>
+
+<h3>D1. Deriving the error recursion</h3>
+<ol class="steps">
+<li>Subtract $x^*$ from both sides: $e_{k+1}=e_k-\alpha g_k$.</li>
+<li>Use $g_k=Qe_k$ (C1): $\ \boxed{e_{k+1}=(I-\alpha Q)e_k}$. (Multiplying by $Q$ gives the same recursion for gradients: $g_{k+1}=(I-\alpha Q)g_k$.)</li>
+<li>Apply it to one eigenvector: $(I-\alpha Q)q_i=q_i-\alpha\lambda_iq_i=(1-\alpha\lambda_i)q_i$.</li>
+<li>So if $e_k=\sum_i\varepsilon_i^{(k)}q_i$ ($\varepsilon_i^{(k)}$ = the component of the error along $q_i$ after $k$ steps), then $\varepsilon_i^{(k+1)}=(1-\alpha\lambda_i)\,\varepsilon_i^{(k)}$, and after $k$ steps $\ \boxed{\varepsilon_i^{(k)}=(1-\alpha\lambda_i)^k\,\varepsilon_i^{(0)}}$.</li>
+</ol>
+<p><b>In words:</b> the error splits into independent pieces, one per eigen-direction. Each step multiplies piece $i$ by the fixed number $1-\alpha\lambda_i$, its <b>multiplier</b>. Everything (convergence, cycling, divergence, best step, rate) is read off from these multipliers.</p>
+
+<div class="box example"><span class="tag">By hand: his Ch 3 Exercise 1 function, two steps</span>
+<p>$f(x)=3(x_1^2+x_2^2)+4x_1x_2+5x_1+6x_2+7$. Here $Q=\begin{pmatrix}6&amp;4\\4&amp;6\end{pmatrix}$ and the linear term is $+5x_1+6x_2$, so $\nabla f=Qx+(5,6)$.</p>
+<ol class="steps">
+<li>Minimiser: $Qx^*=-(5,6)$. $Q^{-1}=\frac1{20}\begin{pmatrix}6&amp;-4\\-4&amp;6\end{pmatrix}$, so $x^*=-\frac1{20}(30-24,\,-20+36)=(-0.3,\,-0.8)$.</li>
+<li>Start $x_0=(0,0)$: $e_0=(0.3,\,0.8)$. Split along the eigenvectors: $e_0=u(1,-1)+v(1,1)$ with $u=\frac{0.3-0.8}{2}=-0.25$ (λ = 2 piece) and $v=\frac{0.3+0.8}{2}=0.55$ (λ = 10 piece).</li>
+<li>Take $\alpha=0.1$. Multipliers: $1-0.1\cdot2=0.8$ and $1-0.1\cdot10=0$.</li>
+<li>Step directly: $g_0=Q\cdot0+(5,6)=(5,6)$, $x_1=(0,0)-0.1(5,6)=(-0.5,-0.6)$, $e_1=x_1-x^*=(-0.2,\,0.2)$.</li>
+<li>Step via multipliers: $e_1=0.8\cdot(-0.25)(1,-1)+0\cdot0.55(1,1)=(-0.2,\,0.2)$ ✓. The λ = 10 piece is gone in one step because $\alpha=1/10$ (more on this in E4).</li>
+<li>Step 2: $e_2=0.8\,e_1=(-0.16,\,0.16)$, i.e. $x_2=(-0.46,-0.64)$. From now on the error shrinks by 0.8 per step.</li>
+</ol>
+</div>
+
+<h3>D2. The multipliers for different step sizes (same $Q$, eigenvalues 2 and 10)</h3>
+<p>Start with both pieces equal to 1. The table shows piece λ = 2 / piece λ = 10 after $k$ steps, i.e. $(1-2\alpha)^k$ / $(1-10\alpha)^k$:</p>
+<table>
+<tr><th>$\alpha$</th><th>multipliers</th><th>$k=1$</th><th>$k=2$</th><th>$k=3$</th><th>$k=4$</th><th>what happens</th></tr>
+<tr><td>0.05</td><td>0.9, 0.5</td><td>0.9 / 0.5</td><td>0.81 / 0.25</td><td>0.729 / 0.125</td><td>0.656 / 0.0625</td><td>converges; slow piece is λ = 2</td></tr>
+<tr><td>0.1</td><td>0.8, 0</td><td>0.8 / 0</td><td>0.64 / 0</td><td>0.512 / 0</td><td>0.410 / 0</td><td>λ = 10 piece killed at once</td></tr>
+<tr><td>1/6</td><td>2/3, −2/3</td><td>0.667 / −0.667</td><td>0.444 / 0.444</td><td>0.296 / −0.296</td><td>0.198 / 0.198</td><td><b>best worst case</b>: both shrink by 2/3</td></tr>
+<tr><td>0.2</td><td>0.6, −1</td><td>0.6 / −1</td><td>0.36 / 1</td><td>0.216 / −1</td><td>0.130 / 1</td><td>λ = 10 piece flips sign forever: 2-cycle</td></tr>
+<tr><td>0.25</td><td>0.5, −1.5</td><td>0.5 / −1.5</td><td>0.25 / 2.25</td><td>0.125 / −3.375</td><td>0.0625 / 5.06</td><td>λ = 10 piece blows up: divergence</td></tr>
+</table>
+
+<h3>D3. Convergence range, best step, rate</h3>
+<ul>
+<li><b>Converges from every start</b> ⇔ every multiplier has $|1-\alpha\lambda_i|\lt1$ ⇔ $0\lt\alpha\lambda_i\lt2$ for all $i$ ⇔ $\boxed{0\lt\alpha\lt2/\lambda_{\max}}$. The largest eigenvalue sets the limit. Endpoints: at $\alpha=0$ nothing moves; at $\alpha=2/\lambda_{\max}$ the top multiplier is exactly $-1$ (oscillation).</li>
+<li><b>Worst-case factor</b> per step on $\|e_k\|$: $\max_i|1-\alpha\lambda_i|=\max\{|1-\alpha\lambda_{\min}|,\,|1-\alpha\lambda_{\max}|\}$ (the extremes matter, since $1-\alpha\lambda$ is a straight line in $\lambda$).</li>
+<li><b>Best $\alpha$:</b> as $\alpha$ grows, the first term falls and the second rises; the max is smallest where they balance: $1-\alpha\lambda_{\min}=-(1-\alpha\lambda_{\max})$, so $\ \boxed{\alpha_{\rm opt}=\dfrac{2}{\lambda_{\min}+\lambda_{\max}}}$, with factor $\ \boxed{\dfrac{\lambda_{\max}-\lambda_{\min}}{\lambda_{\max}+\lambda_{\min}}=\dfrac{\kappa-1}{\kappa+1}}$ on $\|e\|$ (square it for $f-f^*$).</li>
+</ul>
+<div class="fig">
+<svg viewBox="0 0 520 300" width="520" role="img" aria-label="Multipliers |1-2α| and |1-10α| against α">
+  <line x1="60" y1="260" x2="480" y2="260" class="sx"/>
+  <line x1="60" y1="260" x2="60" y2="15" class="sx"/>
+  <line x1="60" y1="100" x2="470" y2="100" class="sx" stroke-dasharray="5 4"/>
+  <text x="474" y="104" class="mu">1</text>
+  <polyline points="60,100 326.7,153.3 460,20" class="sy" stroke-width="10" stroke-opacity="0.45"/>
+  <polyline points="60,100 460,180" class="sa" stroke-width="3"/>
+  <polyline points="60,100 220,260 460,20" class="sr" stroke-width="3"/>
+  <circle cx="326.7" cy="153.3" r="6" class="fk"/>
+  <line x1="380" y1="100" x2="380" y2="260" class="sx" stroke-dasharray="2 3"/>
+  <text x="368" y="276">0.2</text><text x="312" y="276">1/6</text><text x="212" y="276">0.1</text><text x="54" y="276">0</text>
+  <text x="440" y="292">step α</text><text x="8" y="30">factor</text><text x="40" y="264">0</text>
+  <text x="334" y="150">2/3</text>
+  <rect x="80" y="20" width="14" height="4" class="fa"/><text x="100" y="26">|1−2α| (λ = 2 piece)</text>
+  <rect x="80" y="38" width="14" height="4" class="fr"/><text x="100" y="44">|1−10α| (λ = 10 piece)</text>
+  <rect x="80" y="54" width="14" height="8" class="fy" fill-opacity="0.45"/><text x="100" y="62">worst case (max of the two); dot = best α = 1/6</text>
+</svg>
+<div class="cap">Blue = slow piece λ = 2, red = fast piece λ = 10, wide gold band = worst case (it follows blue up to α = 1/6, then red). Dashed line = factor 1. Right of α = 0.2 the red piece exceeds 1 and the iteration diverges.</div>
+</div>
+
+<h3>D4. Cycling, divergence and special starts</h3>
+<ul>
+<li><b>Multiplier exactly $-1$:</b> that piece flips sign forever: the iterates jump between two points (a 2-cycle). $f(x_k)$ stays constant, but the iterates don't converge (Midterm 1 II(3): <b>objective values converging doesn't mean iterates converge</b>).</li>
+<li><b>Multiplier with $|\cdot|\gt1$:</b> that piece grows: divergence <i>unless the start has zero component along that eigenvector</i>. A zero stays zero forever, so from such starts (in 2-D: a line through $x^*$, the "eigen-line") the iteration still converges.</li>
+<li><b>Adding a linear term</b> $b^Tx$ moves $x^*$ but not the Hessian, so the range $0\lt\alpha\lt2/\lambda_{\max}$ doesn't change.</li>
+</ul>
+
+<div class="box example"><span class="tag">His Ch 3 Exercise 1, the way the exam asks it</span>
+<p>Same $f=3(x_1^2+x_2^2)+4x_1x_2+5x_1+6x_2+7$. Find the largest $\alpha$ range for global convergence of $x_{k+1}=x_k-\alpha\nabla f(x_k)$.</p>
+<ol class="steps">
+<li>Hessian $Q=\begin{pmatrix}6&amp;4\\4&amp;6\end{pmatrix}$ (off-diagonal 4, not 2).</li>
+<li>Eigenvalues: $6\pm4$, i.e. $\lambda=2$ (eigenvector $(1,-1)$), $\lambda=10$ (eigenvector $(1,1)$).</li>
+<li>Range: $0\lt\alpha\lt2/10=\boxed{1/5}$.</li>
+<li>Best step $\alpha=2/(2+10)=1/6$; multipliers $1-2/6=2/3$ and $1-10/6=-2/3$; factor $2/3=(\kappa-1)/(\kappa+1)$ with $\kappa=5$.</li>
+</ol>
+</div>
+<div class="box trap"><span class="tag">Traps in D</span>
+<ul><li>The limit is set by the <b>largest</b> eigenvalue ($2/\lambda_{\max}$); the rate by the <b>ratio</b> $\kappa$.</li>
+<li>The endpoint $\alpha=2/\lambda_{\max}$ is <b>excluded</b> (multiplier $-1$).</li>
+<li>Constant $f(x_k)$ in a 2-cycle is not convergence.</li></ul></div>
+<div class="check"><b>Check D.</b> $Q$ has eigenvalues 1, 4, 9. (1) Range of $\alpha$? (2) Best $\alpha$ and factor? (3) At $\alpha=0.25$, which piece misbehaves?
+<details class="ans"><summary>Show answer</summary><div><p>(1) $0\lt\alpha\lt2/9$. (2) $\alpha=2/10=0.2$, factor $(9-1)/(9+1)=0.8$. (3) Multipliers $0.75,\ 0,\ 1-2.25=-1.25$: the λ = 9 piece grows (diverges unless its starting component is 0).</p></div></details></div>
+</section>
+
+<!-- ================= E. EXACT LINE SEARCH ================= -->
+<section id="sd">
+<h2>E. Steepest descent with exact line search (Midterm 1 Q III)</h2>
+<p><b>The method:</b> $d_k=-g_k$, and $\alpha_k$ = the best step along that line (B1), recomputed every iteration. You no longer need to know the eigenvalues to pick $\alpha$.</p>
+
+<h3>E1. The step, and why the path zigzags</h3>
+<ol class="steps">
+<li>$\phi(\alpha)=f(x_k-\alpha g_k)$. The gradient at the new point is $g_k-\alpha Qg_k$, so $\phi'(\alpha)=-(g_k-\alpha Qg_k)^Tg_k=-g_k^Tg_k+\alpha\,g_k^TQg_k$.</li>
+<li>$\phi'(\alpha)=0$: $\ \boxed{\alpha_k=\dfrac{g_k^Tg_k}{g_k^TQg_k}}$.</li>
+<li>At that $\alpha_k$, $\phi'(\alpha_k)=-g_{k+1}^Tg_k=0$. So $\boxed{g_{k+1}^Tg_k=0}$: <b>each new gradient is perpendicular to the previous one</b>. Geometrically: you walk until the line just touches a level ellipse; there the new gradient (perpendicular to the ellipse) is perpendicular to the line you walked. Consecutive steps are at right angles: a zigzag.</li>
+</ol>
+
+<div class="box example"><span class="tag">By hand: $Q=\mathrm{diag}(1,4)$, $b=0$, $x_0=(4,1)$ (so $x^*=0$, $f^*=0$)</span>
+<ol class="steps">
+<li>$g_0=Qx_0=(4,4)$. $g_0^Tg_0=32$, $Qg_0=(4,16)$, $g_0^TQg_0=16+64=80$, $\alpha_0=32/80=2/5$.</li>
+<li>$x_1=(4,1)-\tfrac25(4,4)=(2.4,\,-0.6)$. $g_1=(2.4,\,-2.4)$, and $g_1^Tg_0=9.6-9.6=0$ ✓.</li>
+<li>$f(x_0)=\tfrac12(16+4)=10$, $f(x_1)=\tfrac12(5.76+1.44)=3.6$. Ratio $3.6/10=9/25$.</li>
+<li>Next: $\alpha_1=2/5$ again, $x_2=(1.44,\,0.36)=\tfrac{9}{25}x_0$. The pattern repeats: $x_3=(0.864,-0.216)$, $x_4=(0.518,0.130)$, … with $f$ shrinking by $9/25$ every step, forever.</li>
+</ol>
+</div>
+<div class="fig">
+<svg viewBox="0 0 460 235" width="460" role="img" aria-label="Steepest descent zigzag versus CG on diag(1,4)">
+  <ellipse cx="230" cy="120" rx="178.9" ry="89.4" class="sx"/>
+  <ellipse cx="230" cy="120" rx="107.3" ry="53.7" class="sx"/>
+  <ellipse cx="230" cy="120" rx="64.4" ry="32.2" class="sx"/>
+  <ellipse cx="230" cy="120" rx="38.6" ry="19.3" class="sx"/>
+  <polyline points="390,80 326,144 287.6,105.6 264.6,128.6 250.7,114.8 242.4,123.1 237.4,118.1" class="sa" stroke-width="2.5"/>
+  <line x1="326" y1="144" x2="230" y2="120" class="sg" stroke-width="2.5" stroke-dasharray="7 4"/>
+  <circle cx="390" cy="80" r="4" class="fk"/><circle cx="326" cy="144" r="4" class="fk"/><circle cx="287.6" cy="105.6" r="3.5" class="fa"/>
+  <circle cx="230" cy="120" r="4" class="fg"/>
+  <text x="396" y="76">x₀ = (4,1)</text><text x="332" y="160">x₁ = (2.4, −0.6)</text>
+  <text x="290" y="98" class="ta">x₂</text>
+  <text x="170" y="116" class="tg">x*</text>
+  <text x="14" y="222" class="ta">blue: steepest descent, exact steps (right-angle turns, never arrives)</text>
+  <text x="14" y="20" class="tg">green dashed: CG's 2nd step goes straight to x* (section H)</text>
+</svg>
+<div class="cap">Level ellipses of $\tfrac12(x_1^2+4x_2^2)$ through $x_0,\dots,x_3$. Steepest descent with exact line search (blue) turns 90° each time and only creeps towards $x^*$. CG (green) takes the same first step and then lands exactly on $x^*$; section H explains how.</div>
+</div>
+
+<h3>E2. How fast: the Kantorovich bound, in words</h3>
+<p>Each exact step reduces $f-f^*$ by at least a fixed fraction, and that fraction is worst when the ellipses are very stretched:</p>
+$$f(x_{k+1})-f^*\ \le\ \Big(\frac{\kappa-1}{\kappa+1}\Big)^2\big(f(x_k)-f^*\big).$$
+<p>The exact one-step formula (from the Ch 3 notes, with $E_k=f(x_k)-f^*=\tfrac12e_k^TQe_k$) is $E_{k+1}=\Big[1-\dfrac{(g_k^Tg_k)^2}{(g_k^TQg_k)(g_k^TQ^{-1}g_k)}\Big]E_k$; Kantorovich's inequality bounds the bracket by $\big(\frac{\kappa-1}{\kappa+1}\big)^2$.</p>
+<p>In the example above $\kappa=4$: bound $(3/5)^2=9/25$, and the actual ratio was exactly $9/25$. So that start is a <b>worst case</b>: the bound is attained. Same factor as fixed-step GD with the best $\alpha$, but without needing to know the eigenvalues.</p>
+
+<h3>E3. The effective condition number</h3>
+<p>Suppose $g_0$ has components only along some of the eigenvectors (index set $J$). Then every later gradient also stays there, because $g_{k+1}=(I-\alpha_kQ)g_k$ and $I-\alpha_kQ$ multiplies each eigen-component by a number: a component that is zero stays zero. So the method never "sees" the other eigenvalues. Replace $\lambda_{\min},\lambda_{\max}$ by the smallest and largest eigenvalue <b>within $J$</b>: the <b>effective</b> $\kappa$.</p>
+<p>Example: $Q=\mathrm{diag}(1,2,10,50)$, $x_0=(0,1,1,0)$, $b=0$: $g_0=(0,2,10,0)$ involves only λ = 2 and 10. Effective $\kappa=5$, bound $(4/6)^2=4/9$ instead of $(49/51)^2$ (Practice N7).</p>
+
+<h3>E4. Killing a known eigenvalue with one fixed step (Midterm 1 Q III)</h3>
+<p>Write $\eta$ for a fixed step length (the same role as a fixed $\alpha$; Midterm 1 III uses $\eta$). A gradient step with $\eta=1/\mu$, where $\mu$ is an eigenvalue of $Q$, multiplies the $\mu$-component of the error by $1-\mu/\mu=0$ (D1 did this with $\alpha=1/10$). Two such steps with $\eta_0=1/\mu_1$ and $\eta_1=1/\mu_2$ (either order) remove two known outlier eigenvalues $\mu_1,\mu_2$, without knowing the eigenvectors: after both steps the error has been multiplied by $P(Q)$ with $P(t)=(1-\eta_0t)(1-\eta_1t)$, which is zero at $t=\mu_1$ and $t=\mu_2$. (Midterm 1 III, Practice P2, calls the two outliers $\lambda_1,\lambda_2$.)</p>
+<div class="box trap"><span class="tag">Traps in E</span>
+<ul><li>Exact line search reaches $x^*$ in one step <b>iff $g_0$ is an eigenvector of $Q$</b> (his Ch 3 Ex 2): then $-g_0$ points straight at $x^*$.</li>
+<li>The Kantorovich factor is for $f-f^*$ (or $\|e\|_Q^2$). For $\|e\|_Q$ take the square root.</li>
+<li>"Consecutive gradients orthogonal" is for steepest descent; in CG <i>all</i> gradients are mutually orthogonal (H7).</li></ul></div>
+<div class="check"><b>Check E.</b> $Q=\mathrm{diag}(1,4)$, $b=0$, $x_0=(1,0)$. What does one exact step do, and why?
+<details class="ans"><summary>Show answer</summary><div><p>$g_0=(1,0)$ is an eigenvector. $\alpha_0=1/1=1$, $x_1=(1,0)-(1,0)=0=x^*$. One step.</p></div></details></div>
+</section>
+
+<!-- ================= F. P FAMILY ================= -->
+<section id="pfam">
+<h2>F. The $\|x\|^p/p$ family: when the gradient isn't Lipschitz (Midterm 1 Q V)</h2>
+<p>Everything in D assumed a quadratic: the gradient changes at a bounded rate (it's "Lipschitz"). This family breaks that, and shows what goes wrong. His Ch 3 Exercise 7 is the case $p=3/2$; Midterm 1 Q V was "a modification of exercise 7".</p>
+<p><b>The function:</b> $f_p(x)=\frac1p\|x\|^p$ with $1\lt p\lt2$, minimiser $0$.</p>
+<ol class="steps">
+<li><b>Gradient.</b> $f_p=\frac1p(x^Tx)^{p/2}$, so $\nabla f_p(x)=\frac1p\cdot\frac p2(x^Tx)^{p/2-1}\cdot2x=\|x\|^{p-2}x$ for $x\ne0$, and $\nabla f_p(0)=0$ (since $|f_p(h)-f_p(0)|/\|h\|=\frac1p\|h\|^{p-1}\to0$).</li>
+<li><b>Why it's not Lipschitz.</b> $\|\nabla f_p(x)-\nabla f_p(0)\|/\|x\|=\|x\|^{p-2}\to\infty$ as $x\to0$ (the power $p-2$ is negative). 1-D picture for $p=1.5$: the slope is $\sqrt{|x|}$, so near 0 the slope changes infinitely fast. The bottom is a "sharpened" bowl.</li>
+<li><b>Fixed step.</b> $x_{k+1}=x_k-\alpha r_k^{p-2}x_k=(1-\alpha r_k^{p-2})x_k$ with $r_k=\|x_k\|$. So $\boxed{r_{k+1}=r_k\,|1-\alpha r_k^{p-2}|}$: the multiplier now <b>depends on where you are</b>, and blows up as $r_k\to0$.</li>
+</ol>
+<ul>
+<li>$f$ increases ⇔ $|1-\alpha r_k^{p-2}|\gt1$ ⇔ $\alpha r_k^{p-2}\gt2$ ⇔ $0\lt r_k\lt(\alpha/2)^{1/(2-p)}$. <b>Too close to 0 ⇒ thrown out.</b> (Raising to the negative power $1/(p-2)$ flips the inequality.)</li>
+<li>$r_0=(\alpha/2)^{1/(2-p)}$: multiplier $-1$, iterates $x_0,-x_0,x_0,\dots$</li>
+<li>$r_0=\alpha^{1/(2-p)}$: multiplier 0, lands on 0 in one step. Convergence to 0 can only happen by hitting 0 exactly, or not at all.</li>
+<li>Exact line search along $-\nabla f_p$: $\alpha_k=r_k^{2-p}$, lands exactly on 0.</li>
+</ul>
+<div class="box example"><span class="tag">Numbers: $p=1.5$, $\alpha=0.3$</span>
+<p>Critical radius $(\alpha/2)^{1/(2-p)}=0.15^2=0.0225$; one-step radius $\alpha^{2}=0.09$.</p>
+<table>
+<tr><th>start $r_0$</th><th>$r_1$</th><th>$r_2$</th><th>$r_3$</th><th>$r_4$</th><th>$r_5$</th><th>behaviour</th></tr>
+<tr><td>0.5</td><td>0.288</td><td>0.127</td><td>0.0200</td><td>0.0224</td><td>0.0225</td><td>shrinks, overshoots below 0.0225, gets pushed back up, sticks in the ± cycle</td></tr>
+<tr><td>0.001</td><td>0.0085</td><td>0.0192</td><td>0.0224</td><td>0.0225</td><td>0.0225</td><td>too close: thrown out to the cycle</td></tr>
+<tr><td>0.09</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>exact hit: done in one step</td></tr>
+<tr><td>0.0225</td><td>0.0225</td><td>0.0225</td><td>0.0225</td><td>0.0225</td><td>0.0225</td><td>$x_0,-x_0,x_0,\dots$ (2-cycle)</td></tr>
+</table>
+</div>
+<div class="check"><b>Check F.</b> $p=1.5$, $\alpha=0.2$. For which $r_k$ does one step increase $f$? Which start lands on 0 in one step?
+<details class="ans"><summary>Show answer</summary><div><p>$f$ increases for $0\lt r_k\lt(0.1)^2=0.01$. One-step hit: $r_0=0.2^2=0.04$.</p></div></details></div>
+</section>
+
+<!-- ================= G. NEWTON ================= -->
+<section id="newton">
+<h2>G. Newton's method (Ch 2 in 1-D, Ch 3 in n-D)</h2>
+<p><b>Idea.</b> Steepest descent uses only the slope. Newton also uses the curvature: replace $f$ near $x_k$ by its second-order Taylor model (a parabola / quadratic bowl) and jump straight to the bottom of the model.</p>
+
+<h3>G1. One dimension</h3>
+<ol class="steps">
+<li>Model: $q(x)=f(x_k)+f'(x_k)(x-x_k)+\tfrac12f''(x_k)(x-x_k)^2$.</li>
+<li>Bottom of the model: $q'(x)=f'(x_k)+f''(x_k)(x-x_k)=0$, so $\ \boxed{x_{k+1}=x_k-\dfrac{f'(x_k)}{f''(x_k)}}$. (This is Newton root-finding applied to $f'$.)</li>
+<li>This is the bottom only if $f''(x_k)\gt0$. If $f''(x_k)\lt0$ the model is an upside-down parabola and the formula jumps to its <b>top</b>.</li>
+</ol>
+<div class="box example"><span class="tag">Failure 1: negative curvature sends you uphill</span>
+<p>$f(x)=\tfrac14x^4-\tfrac12x^2$ at $x_0=0.5$: $f'=x^3-x=-\tfrac38$ (downhill is to the right), $f''=3x^2-1=-\tfrac14\lt0$.</p>
+<p>Newton step $p=-f'/f''=-\dfrac{-3/8}{-1/4}=-\tfrac32$: to the <b>left</b> (the full step would jump to $x_1=-1$). Slope along it: $f'\cdot p=(-\tfrac38)(-\tfrac32)=+\tfrac{9}{16}\gt0$: an <b>ascent</b> direction. A small step $0.1p$ goes to $x=0.35$, where $f=-0.0575\gt f(0.5)=-0.109$: $f$ went up.</p>
+</div>
+<div class="box example"><span class="tag">Failure 2 (his Exercise 2.6): convex, yet Newton fails. $f(x)=\sqrt{1+x^2}$</span>
+<ol class="steps">
+<li>$f'(x)=\dfrac{x}{\sqrt{1+x^2}}$, $f''(x)=(1+x^2)^{-3/2}\gt0$: strictly convex, minimiser $x^*=0$.</li>
+<li>Newton: $x_{k+1}=x_k-\dfrac{x_k(1+x_k^2)^{-1/2}}{(1+x_k^2)^{-3/2}}=x_k-x_k(1+x_k^2)=\boxed{-x_k^3}$.</li>
+<li>$|x_0|\lt1$: converges to 0 extremely fast ($0.5\to-0.125\to0.00195\to-7.5\times10^{-9}$). $|x_0|=1$: cycles $1,-1,1,\dots$ $|x_0|\gt1$: diverges ($1.5\to-3.375\to38.4\to\dots$).</li>
+<li>For $|x|\gt1$ the Newton direction is still downhill (it has the sign of $-f'$), but the full step overshoots and increases $f$. A line search (damping, G2) fixes this.</li>
+</ol>
+</div>
+<div class="fig">
+<svg viewBox="0 0 480 240" width="480" role="img" aria-label="Newton model of sqrt(1+x^2) at x=1.5 is too flat">
+  <defs><marker id="f1a" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" class="fr"/></marker></defs>
+  <line x1="30" y1="210" x2="470" y2="210" class="sx"/>
+  <line x1="296" y1="20" x2="296" y2="230" class="sx" stroke-dasharray="2 3"/>
+  <polyline points="40.0,45.1 50.7,51.5 61.3,58.0 72.0,64.4 82.7,70.8 93.3,77.2 104.0,83.5 114.7,89.8 125.3,96.1 136.0,102.3 146.7,108.5 157.3,114.5 168.0,120.6 178.7,126.5 189.3,132.3 200.0,137.9 210.7,143.3 221.3,148.5 232.0,153.4 242.7,157.9 253.3,161.9 264.0,165.3 274.7,167.8 285.3,169.4 296.0,170.0 306.7,169.4 317.3,167.8 328.0,165.3 338.7,161.9 349.3,157.9 360.0,153.4 370.7,148.5 381.3,143.3 392.0,137.9 402.7,132.3 413.3,126.5 424.0,120.6 434.7,114.5 445.3,108.5 456.0,102.3" class="sa" stroke-width="3"/>
+  <polyline points="40.0,217.7 50.7,218.3 61.3,218.7 72.0,219.0 82.7,219.0 93.3,218.9 104.0,218.5 114.7,218.0 125.3,217.3 136.0,216.4 146.7,215.3 157.3,214.0 168.0,212.6 178.7,210.9 189.3,209.1 200.0,207.0 210.7,204.8 221.3,202.4 232.0,199.8 242.7,197.0 253.3,194.0 264.0,190.8 274.7,187.4 285.3,183.9 296.0,180.1 306.7,176.2 317.3,172.1 328.0,167.8 338.7,163.3 349.3,158.6 360.0,153.7 370.7,148.6 381.3,143.3 392.0,137.9 402.7,132.2 413.3,126.4 424.0,120.4 434.7,114.2 445.3,107.8 456.0,101.2" class="sp" stroke-width="2.5" stroke-dasharray="7 4"/>
+  <circle cx="392" cy="137.9" r="5" class="fk"/><circle cx="80" cy="69.2" r="5" class="fr"/>
+  <line x1="392" y1="125" x2="88" y2="62" class="sr" stroke-width="1.5" marker-end="url(#f1a)"/>
+  <text x="396" y="130">x₀ = 1.5</text>
+  <text x="86" y="60" class="tr">x₁ = −3.375, f = 3.52</text>
+  <text x="300" y="34" class="mu">x* = 0</text>
+  <text x="300" y="196" class="ta">f = √(1+x²)</text>
+  <text x="40" y="234" class="tp">model q (dashed): too flat, its bottom is at −3.375</text>
+</svg>
+<div class="cap">At $x_0=1.5$ the curvature $f''=0.17$ is small, so the Newton model (purple dashed) is a very flat parabola whose bottom is far to the left. The step lands at $x_1=-3.375$, higher on the curve ($f=3.52$ vs $1.80$).</div>
+</div>
+
+<h3>G2. Many dimensions</h3>
+<p>Model: $m_k(p)=f(x_k)+g_k^Tp+\tfrac12p^TH_kp$, with $H_k=\nabla^2f(x_k)$. Gradient of the model $=g_k+H_kp=0$:</p>
+$$\boxed{H_k\,p_k=-g_k,\qquad x_{k+1}=x_k+p_k}.$$
+<p>Solve the linear system; don't form $H_k^{-1}$.</p>
+<ul>
+<li><b>One step solves a quadratic.</b> If $f=\tfrac12x^TQx-b^Tx$ with $Q\succ0$, the model <i>is</i> $f$: $x_1=x_0-Q^{-1}(Qx_0-b)=Q^{-1}b=x^*$ from any $x_0$.</li>
+<li><b>Descent needs a PD Hessian.</b> $g_k^Tp_k=-p_k^TH_kp_k$ (substitute $g_k=-H_kp_k$). If $H_k\succ0$ this is negative: descent. If $H_k$ is indefinite the Newton direction can point uphill (as in G1), and no amount of damping fixes a non-descent direction.</li>
+<li><b>Quadratic convergence, but only nearby.</b> If $\nabla f(x^*)=0$, $\nabla^2f(x^*)$ is nonsingular and the Hessian is Lipschitz near $x^*$, then for $x_0$ <b>sufficiently close</b> to $x^*$: $\|x_{k+1}-x^*\|\le C\|x_k-x^*\|^2$. In words: once close, the number of correct digits roughly doubles each step. Far away there's no guarantee ($\sqrt{1+x^2}$).</li>
+<li><b>Damped Newton:</b> $x_{k+1}=x_k+\alpha_kp_k$ with Armijo backtracking starting at $\alpha=1$ (B4). Far away it takes shorter safe steps; near a minimiser with $\nabla^2f(x^*)\succ0$ (and $c_1\lt\tfrac12$) the full step $\alpha=1$ is eventually accepted, so the fast local rate comes back. (Why Newton counts as a "scaled steepest descent": in coordinates $y=H_k^{1/2}x$ the model's Hessian becomes $I$, i.e. the bowl looks round, as in H1. The steepest-descent step there, mapped back to $x$, is exactly $p_k=-H_k^{-1}g_k$.)</li>
+</ul>
+<div class="box example"><span class="tag">By hand: Newton on a quadratic</span>
+<p>$f(x)=x_1^2+x_1x_2+x_2^2-3x_1$: $Q=\begin{pmatrix}2&amp;1\\1&amp;2\end{pmatrix}$, $b=(3,0)$. From $x_0=(0,0)$: $g_0=Qx_0-b=(-3,0)$. Solve $Qp=(3,0)$: $2p_1+p_2=3$, $p_1+2p_2=0$ ⇒ $p=(2,-1)$. $x_1=(2,-1)$, and $\nabla f(x_1)=(2\cdot2-1-3,\ 2-2)=(0,0)$ ✓. One step.</p>
+</div>
+<div class="box example"><span class="tag">Watching quadratic convergence (Practice N6 function)</span>
+<p>$f(x)=x_1^4+x_1^2+x_1x_2+x_2^2$ from $x_0=(1,0)$, pure Newton. Distance to $x^*=0$ after each step: $0.66,\ 0.33,\ 0.088,\ 0.0028,\ 9\times10^{-8},\ 3\times10^{-21}$. At first it only halves. Once close, the number of correct digits <b>at least doubles</b> each step (that is what quadratic convergence guarantees). Here it even roughly <b>triples</b> ($10^{-1.06}\to10^{-2.56}\to10^{-7.05}\to10^{-20.5}$), because all third derivatives of this $f$ vanish at $x^*=0$ (no cubic term), which makes Newton faster than the guarantee there.</p>
+</div>
+<div class="box trap"><span class="tag">Traps in G</span>
+<ul><li>"Strictly convex ⇒ Newton converges from anywhere" is false ($\sqrt{1+x^2}$, $|x_0|\gt1$).</li>
+<li>Quadratic convergence is a <b>local</b> statement ("sufficiently close").</li>
+<li>Indefinite Hessian: the Newton direction may be an ascent direction; damping can't fix that.</li></ul></div>
+<div class="check"><b>Check G.</b> (1) 1-D Newton on $f(x)=x^2-2x$ from $x_0=7$? (2) For $f=\sqrt{1+x^2}$, what happens from $x_0=-0.5$?
+<details class="ans"><summary>Show answer</summary><div><p>(1) $f'=2x-2=12$, $f''=2$: $x_1=7-6=1$, the exact minimiser (a quadratic: one step). (2) $x_1=-(-0.5)^3=0.125$, then $-0.00195$, …: converges to 0.</p></div></details></div>
+</section>
+
+<!-- ================= H. CG ================= -->
+<section id="cg">
+<h2>H. Conjugate gradient (CG), built from zero (Chapter 4)</h2>
+<p>Throughout H: $f=\tfrac12x^TQx-b^Tx$, $Q\succ0$, $g_k=Qx_k-b$, and every step uses exact line search along its direction.</p>
+
+<h3 id="g1">H1. Why steepest descent zigzags, and the idea that fixes it</h3>
+<p><b>The problem.</b> In the zigzag of E1, each line search makes the slope along the <i>current</i> direction zero. But the next step spoils the earlier ones. In the example: after two steps, $x_2=(1.44,0.36)$, $g_2=(1.44,1.44)$, and the slope along the first direction $d_0=-g_0=(-4,-4)$ is $g_2^Td_0=-11.52\ne0$. We'd want to go along $d_0$ again: the work of step 0 was undone. That's why it never finishes.</p>
+<p><b>When does it work?</b> If the level sets were <b>circles</b> ($Q=I$, $f=\tfrac12\|x-x^*\|^2$), a line search along a coordinate axis sets that coordinate exactly right and leaves the others alone. So $n$ line searches along any $n$ perpendicular directions finish exactly. Nothing gets undone.</p>
+<p><b>The trick: make the ellipses round.</b> Change variables $y=Q^{1/2}x$ (where $Q^{1/2}$ is the symmetric matrix with $Q^{1/2}Q^{1/2}=Q$). Then $\tfrac12x^TQx=\tfrac12\|y\|^2$: in $y$-coordinates the level sets are circles. A direction $d$ in $x$ becomes $Q^{1/2}d$ in $y$, and two directions are perpendicular in $y$ exactly when</p>
+$$(Q^{1/2}d_i)^T(Q^{1/2}d_j)=d_i^TQd_j=0.$$
+<p>So: <b>choose directions that are perpendicular after rounding the bowl.</b> Back in $x$ they don't look perpendicular; they're called <b>Q-conjugate</b>. Line searches along Q-conjugate directions never undo each other, and $n$ of them finish exactly.</p>
+<div class="fig">
+<svg viewBox="0 0 470 252" width="470" role="img" aria-label="Q-conjugate steps in x coordinates versus perpendicular steps in rounded y coordinates">
+  <defs><marker id="g1a" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" class="fa"/></marker>
+  <marker id="g1g" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" class="fg"/></marker></defs>
+  <ellipse cx="115" cy="110" rx="98.4" ry="49.2" class="sx"/>
+  <ellipse cx="115" cy="110" rx="59" ry="29.5" class="sx"/>
+  <line x1="203" y1="88" x2="169.5" y2="121.5" class="sa" stroke-width="2.5" marker-end="url(#g1a)"/>
+  <line x1="167.8" y1="123.2" x2="118" y2="110.8" class="sg" stroke-width="2.5" marker-end="url(#g1g)"/>
+  <circle cx="203" cy="88" r="4" class="fk"/><circle cx="167.8" cy="123.2" r="3.5" class="fk"/><circle cx="115" cy="110" r="3.5" class="fk"/>
+  <text x="200" y="80">x₀</text><text x="160" y="142">x₁</text><text x="100" y="104">x*</text>
+  <text x="10" y="190" class="mu">x-coordinates (stretched)</text>
+  <text x="10" y="208" class="mu">d₀ᵀd₁ ≠ 0, but d₀ᵀQd₁ = 0</text>
+  <circle cx="345" cy="110" r="98.4" class="sx"/>
+  <circle cx="345" cy="110" r="59" class="sx"/>
+  <line x1="433" y1="66" x2="399.4" y2="133.2" class="sa" stroke-width="2.5" marker-end="url(#g1a)"/>
+  <line x1="397.8" y1="136.4" x2="348" y2="111.5" class="sg" stroke-width="2.5" marker-end="url(#g1g)"/>
+  <polyline points="401.4,129.2 394.2,125.6 390.6,132.8" class="sx"/>
+  <circle cx="433" cy="66" r="4" class="fk"/><circle cx="397.8" cy="136.4" r="3.5" class="fk"/><circle cx="345" cy="110" r="3.5" class="fk"/>
+  <text x="436" y="60">y₀</text><text x="402" y="154">y₁</text><text x="330" y="104">y*</text>
+  <text x="250" y="228" class="mu">y = Q^½ x (rounded): circles,</text>
+  <text x="250" y="246" class="mu">the two steps are perpendicular</text>
+</svg>
+<div class="cap">$Q=\mathrm{diag}(1,4)$, the CG path from $x_0=(4,1)$ (same start as the zigzag in E1). Left: in $x$ the second step (green) is not perpendicular to the first (blue), but $d_0^TQd_1=0$. Right: the same path in rounded coordinates $y=(x_1,2x_2)$: circles, and the two steps meet at a right angle, so the second line search lands on the centre.</div>
+</div>
+
+<h3 id="g2">H2. Q-conjugacy</h3>
+<div class="box must"><span class="tag">Definition</span>
+<p>Nonzero vectors $d_0,\dots,d_{k}$ are <b>Q-conjugate</b> if $d_i^TQd_j=0$ for all $i\ne j$.</p></div>
+<ul>
+<li><b>They're linearly independent</b> (so at most $n$ of them). If $\sum_ia_id_i=0$, multiply by $d_j^TQ$: every term dies except $a_jd_j^TQd_j$, and $d_j^TQd_j\gt0$, so $a_j=0$.</li>
+<li><b>Eigenvectors of $Q$ are both</b> orthogonal and Q-conjugate ($q_i^TQq_j=\lambda_jq_i^Tq_j=0$). In general, conjugate directions are <b>not</b> orthogonal.</li>
+</ul>
+<div class="box example"><span class="tag">By hand: making a direction conjugate (Quiz 2 Q3)</span>
+<p>$Q=\begin{pmatrix}3&amp;1\\1&amp;2\end{pmatrix}$, $d_0=(1,0)$, $d_1=(w,1)$ (Quiz 2 calls the unknown $s$). $Qd_1=(3w+1,\ w+2)$, so $d_0^TQd_1=3w+1=0\Rightarrow w=-\tfrac13$. Then $d_0^Td_1=-\tfrac13\ne0$: conjugate but not orthogonal.</p></div>
+
+<h3 id="g3">H3. The best point of a flat sheet: the gradient is perpendicular to the sheet, not zero</h3>
+<p>We'll need this: what does it mean to be the minimiser over $\bar x+\mathrm{span}\{d_1,\dots,d_m\}$ (a line, plane, … through $\bar x$)? Put the directions as columns of a matrix $D$. Points of the sheet are $\bar x+Dz$, so define $h(z)=f(\bar x+Dz)$.</p>
+<ul>
+<li>Chain rule: $\nabla h(z)=D^T\nabla f(\bar x+Dz)$.</li>
+<li>For convex $f$, $h$ is convex, so the minimiser is where $\nabla h=0$: $\ \boxed{D^T\nabla f(x_S)=0}$, i.e. $\nabla f(x_S)$ is perpendicular to every $d_i$.</li>
+<li><b>Not</b> $\nabla f(x_S)=0$: the sheet may simply not contain the true minimiser. No direction <i>inside the sheet</i> goes downhill, but directions out of it might.</li>
+<li>For the quadratic this is an $m\times m$ system: $(D^TQD)z_S=-D^T\nabla f(\bar x)$.</li>
+</ul>
+<div class="box example"><span class="tag">With numbers</span>
+<p>Minimise $f=x_1^2+4x_2^2$ on the line $x=(2,1)+t(-1,0)$: $h(t)=(2-t)^2+4$, $h'(t)=-2(2-t)=0\Rightarrow t=2$, $x_S=(0,1)$. There $\nabla f=(0,8)\ne0$, but $(−1,0)\cdot(0,8)=0$ ✓: perpendicular to the line.</p></div>
+<div class="box trap"><span class="tag">His warning</span><p>At the sheet's minimiser $\nabla h=0$ but $\nabla f\ne0$ in general. Writing "$\nabla f(x_S)=0$" is the mistake he said memorisers make.</p></div>
+
+<h3 id="g4">H4. The expanding subspace theorem (Midterm 1 Q VI asked its steps)</h3>
+<p><b>The key formula</b> ("you have to remember"). One step changes the gradient by $\alpha_jQd_j$: $\ g_{j+1}=Qx_{j+1}-b=Q(x_j+\alpha_jd_j)-b=g_j+\alpha_jQd_j$. Adding these up:</p>
+$$\boxed{g_i=g_0+\sum_{j\lt i}\alpha_jQd_j}.$$
+<p><b>The theorem in plain words.</b> Take any Q-conjugate $d_0,\dots,d_{K-1}$ and do exact line searches along them one after another. Then after $K$ steps, $x_K$ is the best point of the whole sheet $x_0+\mathrm{span}\{d_0,\dots,d_{K-1}\}$, not just of the last line. Each line search does its own job and never spoils the earlier ones. Consequently $g_K$ is perpendicular to every $d_i$ used so far (H3), and for $K=n$ the sheet is all of $\mathbb R^n$, so $x_n=x^*$.</p>
+<div class="box example"><span class="tag">The proof as a chain of steps (memorise the order; with $c_i=d_i^Tg_0$, $h_i=d_i^TQd_i$)</span>
+<ol class="steps">
+<li><b>The sheet objective separates.</b> $\Phi(\beta)=f(x_0+\sum_i\beta_id_i)=f(x_0)+\sum_i\big(c_i\beta_i+\tfrac12h_i\beta_i^2\big)$. (Expand $f(x_0+v)=f(x_0)+g_0^Tv+\tfrac12v^TQv$; the cross terms $\beta_i\beta_jd_i^TQd_j$ die by conjugacy.) Here the $\beta_i$ are just coefficients, not CG's $\beta_k$.</li>
+<li><b>Each piece has one minimiser.</b> $h_i\gt0$ ($Q\succ0$, $d_i\ne0$), so $\beta_i^*=-c_i/h_i$.</li>
+<li><b>Earlier steps don't change the slope along $d_i$.</b> By the key formula, $d_i^Tg_i=d_i^Tg_0+\sum_{j\lt i}\alpha_jd_i^TQd_j=c_i$.</li>
+<li><b>So the line search finds exactly that minimiser.</b> $\alpha_i=-d_i^Tg_i/h_i=-c_i/h_i=\beta_i^*$.</li>
+<li><b>Conclusion.</b> $x_K=x_0+\sum\beta_i^*d_i$ is the minimiser over $x_0+\mathcal S_K$ ($\mathcal S_K=\mathrm{span}\{d_0..d_{K-1}\}$), and $g_K\perp\mathcal S_K$. The order of the directions doesn't matter.</li>
+</ol></div>
+<div class="check"><b>Check H1–H4.</b> (1) Why is $d_i^Tg_i=d_i^Tg_0$ for conjugate directions? (2) After the line search along $d_i$, what is $d_i^Tg_{i+1}$?
+<details class="ans"><summary>Show answer</summary><div><p>(1) $g_i-g_0=\sum_{j\lt i}\alpha_jQd_j$ and $d_i^TQd_j=0$ for $j\ne i$. (2) 0: the exact line search makes the slope along $d_i$ zero at the new point.</p></div></details></div>
+
+<h3 id="g5">H5. The CG algorithm: conjugate directions built on the fly</h3>
+<p>We need Q-conjugate directions without computing eigenvectors. CG builds them one at a time from the gradients.</p>
+<ol class="steps">
+<li><b>Start</b> with steepest descent: $d_0=-g_0$.</li>
+<li><b>Step length</b> by exact line search (B1): $\alpha_k=-\dfrac{g_k^Td_k}{d_k^TQd_k}$; then $x_{k+1}=x_k+\alpha_kd_k$ and $g_{k+1}=g_k+\alpha_kQd_k$.</li>
+<li><b>Next direction:</b> the new steepest-descent direction plus a bit of the old direction, $d_{k+1}=-g_{k+1}+\beta_kd_k$, with $\beta_k$ chosen to make $d_{k+1}^TQd_k=0$: $\ -g_{k+1}^TQd_k+\beta_kd_k^TQd_k=0\Rightarrow\beta_k=\dfrac{g_{k+1}^TQd_k}{d_k^TQd_k}$.</li>
+<li><b>The surprise</b> (CG theorem; proof not examinable): making $d_{k+1}$ conjugate to $d_k$ alone automatically makes it conjugate to <i>all</i> earlier directions. So H4 applies, and CG finishes in at most $n$ steps.</li>
+</ol>
+<p><b>Simplifying $\alpha$ and $\beta$</b> (the efficient forms used in exams):</p>
+<ul>
+<li>$g_k^Td_k=g_k^T(-g_k+\beta_{k-1}d_{k-1})=-\|g_k\|^2$, because $g_k^Td_{k-1}=0$ (the previous line search). So $\alpha_k=\dfrac{\|g_k\|^2}{d_k^TQd_k}$.</li>
+<li>Gradients are mutually orthogonal: $g_{k+1}\perp d_0,\dots,d_k$ (H4), and each $g_j$ is a combination of $d_j$ and $d_{j-1}$ (since $d_j=-g_j+\beta_{j-1}d_{j-1}$ gives $g_j=-d_j+\beta_{j-1}d_{j-1}$; for $j=0$, $g_0=-d_0$), so $g_{k+1}^Tg_j=0$ for $j\le k$.</li>
+<li>From $Qd_k=(g_{k+1}-g_k)/\alpha_k$: $g_{k+1}^TQd_k=\|g_{k+1}\|^2/\alpha_k$ and $d_k^TQd_k=\|g_k\|^2/\alpha_k$. Dividing: $\beta_k=\dfrac{\|g_{k+1}\|^2}{\|g_k\|^2}$.</li>
+</ul>
+<div class="box must"><span class="tag">CG (Fletcher–Reeves form)</span>
+$$\begin{aligned}
+&amp;d_0=-g_0;\qquad \alpha_k=\frac{\|g_k\|^2}{d_k^TQd_k};\qquad x_{k+1}=x_k+\alpha_kd_k;\qquad g_{k+1}=g_k+\alpha_kQd_k;\\
+&amp;\beta_k=\frac{\|g_{k+1}\|^2}{\|g_k\|^2};\qquad d_{k+1}=-g_{k+1}+\beta_kd_k.\qquad\text{Stop when }g_{k+1}=0.
+\end{aligned}$$
+</div>
+
+<h3 id="g6">H6. Two full CG steps by hand (his Ch 4 Problem 3)</h3>
+<div class="box example"><span class="tag">$Q=\begin{pmatrix}4&amp;1\\1&amp;3\end{pmatrix}$, $b=(1,2)$, $x_0=(0,0)$</span>
+<ol class="steps">
+<li><b>Start.</b> $g_0=Qx_0-b=(-1,-2)$, $d_0=-g_0=(1,2)$, $\|g_0\|^2=1+4=5$.</li>
+<li><b>Step 0 length.</b> $Qd_0=(4+2,\ 1+6)=(6,7)$, $d_0^TQd_0=6+14=20$, $\alpha_0=5/20=\tfrac14$.</li>
+<li><b>Move.</b> $x_1=(0,0)+\tfrac14(1,2)=(\tfrac14,\tfrac12)$. $g_1=g_0+\tfrac14(6,7)=(-1+\tfrac32,\ -2+\tfrac74)=(\tfrac12,-\tfrac14)$. Check $g_1^Tg_0=-\tfrac12+\tfrac12=0$ ✓.</li>
+<li><b>New direction.</b> $\|g_1\|^2=\tfrac14+\tfrac1{16}=\tfrac5{16}$, $\beta_0=\frac{5/16}{5}=\tfrac1{16}$. $d_1=-g_1+\tfrac1{16}d_0=(-\tfrac12+\tfrac1{16},\ \tfrac14+\tfrac18)=(-\tfrac7{16},\tfrac38)$. Check $d_1^TQd_0=(-\tfrac7{16})(6)+(\tfrac38)(7)=-\tfrac{42}{16}+\tfrac{42}{16}=0$ ✓.</li>
+<li><b>Step 1 length.</b> $Qd_1=(-\tfrac{28}{16}+\tfrac38,\ -\tfrac7{16}+\tfrac98)=(-\tfrac{11}8,\tfrac{11}{16})$, $d_1^TQd_1=\tfrac{77}{128}+\tfrac{33}{128}=\tfrac{55}{64}$, $\alpha_1=\frac{5/16}{55/64}=\tfrac4{11}$.</li>
+<li><b>Move.</b> $x_2=(\tfrac14,\tfrac12)+\tfrac4{11}(-\tfrac7{16},\tfrac38)=(\tfrac14-\tfrac7{44},\ \tfrac12+\tfrac3{22})=(\tfrac1{11},\tfrac7{11})$; $g_2=g_1+\tfrac4{11}(-\tfrac{11}8,\tfrac{11}{16})=(0,0)$. Indeed $Q^{-1}b=(\tfrac1{11},\tfrac7{11})$ ✓. Two steps for a 2×2.</li>
+<li><b>Energy check.</b> $f$: $0\to-\tfrac58\to-\tfrac{15}{22}$. First drop $=\|g_0\|^4/(2d_0^TQd_0)=25/40=\tfrac58$ ✓; second $=(\tfrac5{16})^2/(2\cdot\tfrac{55}{64})=\tfrac5{88}$ ✓.</li>
+</ol>
+<table>
+<tr><th>$k$</th><th>$x_k$</th><th>$g_k$</th><th>$d_k$</th><th>$\alpha_k$</th><th>$\beta_k$</th><th>$f(x_k)$</th></tr>
+<tr><td>0</td><td>$(0,0)$</td><td>$(-1,-2)$</td><td>$(1,2)$</td><td>$1/4$</td><td>$1/16$</td><td>$0$</td></tr>
+<tr><td>1</td><td>$(1/4,1/2)$</td><td>$(1/2,-1/4)$</td><td>$(-7/16,3/8)$</td><td>$4/11$</td><td>–</td><td>$-5/8$</td></tr>
+<tr><td>2</td><td>$(1/11,7/11)$</td><td>$(0,0)$</td><td colspan="3">stop: $x_2=x^*$</td><td>$-15/22$</td></tr>
+</table>
+<p>Note $d_0^Td_1=-\tfrac7{16}+\tfrac34=\tfrac5{16}\ne0$: the directions are conjugate, not orthogonal. The gradients $g_0,g_1$ <i>are</i> orthogonal.</p>
+</div>
+<div class="check"><b>Check H5–H6.</b> Run one CG step on $Q=\mathrm{diag}(1,4)$, $b=(1,1)$, $x_0=0$: find $\alpha_0$, $g_1$, $\beta_0$.
+<details class="ans"><summary>Show answer</summary><div><p>$g_0=(-1,-1)$, $d_0=(1,1)$, $d_0^TQd_0=5$, $\alpha_0=2/5$; $g_1=(-1,-1)+\tfrac25(1,4)=(-\tfrac35,\tfrac35)$; $\beta_0=\frac{18/25}{2}=\tfrac9{25}$. (This is Quiz 2 Q6.)</p></div></details></div>
+<div class="check"><b>Check H6 (full run).</b> Run CG to the end on $Q=\begin{pmatrix}3&amp;1\\1&amp;2\end{pmatrix}$ (the matrix of C1 and H2), $b=(1,1)$, $x_0=(0,0)$. Find $\alpha_0,x_1,g_1,\beta_0,d_1,\alpha_1,x_2$ and check $x_2=Q^{-1}b$.
+<details class="ans"><summary>Show answer</summary><div><ol class="steps">
+<li>$g_0=-b=(-1,-1)$, $d_0=(1,1)$, $\|g_0\|^2=2$, $Qd_0=(4,3)$, $d_0^TQd_0=7$, $\alpha_0=\tfrac27$.</li>
+<li>$x_1=(\tfrac27,\tfrac27)$, $g_1=(-1,-1)+\tfrac27(4,3)=(\tfrac17,-\tfrac17)$. Check $g_1^Tg_0=-\tfrac17+\tfrac17=0$ ✓.</li>
+<li>$\|g_1\|^2=\tfrac2{49}$, $\beta_0=\frac{2/49}{2}=\tfrac1{49}$, $d_1=(-\tfrac17,\tfrac17)+\tfrac1{49}(1,1)=(-\tfrac6{49},\tfrac8{49})$. Check $d_1^TQd_0=(-\tfrac6{49})(4)+(\tfrac8{49})(3)=0$ ✓.</li>
+<li>$Qd_1=(-\tfrac{10}{49},\tfrac{10}{49})$, $d_1^TQd_1=\tfrac{60+80}{2401}=\tfrac{20}{343}$, $\alpha_1=\frac{2/49}{20/343}=\tfrac7{10}$.</li>
+<li>$x_2=(\tfrac27,\tfrac27)+\tfrac7{10}(-\tfrac6{49},\tfrac8{49})=(\tfrac27-\tfrac3{35},\ \tfrac27+\tfrac4{35})=(\tfrac15,\tfrac25)$. $Q^{-1}b=\tfrac15\begin{pmatrix}2&amp;-1\\-1&amp;3\end{pmatrix}(1,1)=(\tfrac15,\tfrac25)$ ✓, and $g_2=0$.</li>
+</ol></div></details></div>
+
+<h3 id="g7">H7. What CG guarantees, and how many steps it needs</h3>
+<ul>
+<li><b>Gradients orthogonal</b> ($g_i^Tg_j=0$), <b>directions Q-conjugate</b> ($d_i^TQd_j=0$). Never swap these.</li>
+<li>$g_k^Td_k=-\|g_k\|^2$ and $g_k^Td_i=0$ for $i\lt k$.</li>
+<li><b>Krylov space.</b> Recall $g_0=Qe_0$ (C1), so $Q^jg_0=Q^{j+1}e_0$. Each new gradient is the old one plus $\alpha Q\times$(a direction), so one more power of $Q$ enters each step: $\mathrm{span}\{d_0,\dots,d_{k-1}\}=\mathrm{span}\{g_0,Qg_0,\dots,Q^{k-1}g_0\}$. After $k$ steps, $x_k$ minimises $f$ over $x_0+\mathrm{span}\{g_0,Qg_0,\dots,Q^{k-1}g_0\}$ ($k$ vectors, highest power $k-1$, shifted by $x_0$).</li>
+<li><b>Decrease per step:</b> $f(x_k)-f(x_{k+1})=\dfrac{\|g_k\|^4}{2\,d_k^TQd_k}$ (put $\alpha_k$ into $\phi(\alpha)=f(x_k)+\alpha g_k^Td_k+\tfrac12\alpha^2d_k^TQd_k$). For Quiz 2's $E=\|x-x^*\|_Q^2=2(f-f^*)$ the decrease is twice that.</li>
+<li><b>$f$ always decreases, but $\|g_k\|$ can increase</b> (Quiz 2 Q10: $\|g_0\|=1$, $\|g_1\|=\tfrac32$).</li>
+</ul>
+<p><b>How many steps: count distinct eigenvalues.</b> By the Krylov fact, $x_k-x_0$ is a combination of $g_0,\dots,Q^{k-1}g_0$, i.e. of $Qe_0,\dots,Q^ke_0$. Subtract $x^*$: $x_k-x^*=e_0+(\text{combination of }Qe_0,\dots,Q^ke_0)=R_k(Q)e_0$, where $R_k$ is a polynomial of degree $k$ with $R_k(0)=1$. Conversely, every such polynomial gives a point of the sheet $x_0+\mathrm{span}\{g_0,\dots,Q^{k-1}g_0\}$. By the expanding-subspace result (H4), $x_k$ is the best point of that sheet, so CG automatically picks the <b>best</b> such polynomial (smallest $f$, i.e. smallest error energy). On each eigen-component, $R_k(Q)$ multiplies by $R_k(\lambda_i)$. So:</p>
+<ul>
+<li>If $e_0$ has nonzero components only on eigenvalues $\mu_1,\dots,\mu_r$ (distinct), the degree-$r$ polynomial $R(t)=\prod_j(1-t/\mu_j)$ has $R(0)=1$ and kills all of them: <b>CG finishes in exactly $r$ steps</b>. Fewer is impossible: a polynomial of degree less than $r$ with value 1 at 0 can't vanish at $r$ distinct points.</li>
+<li>So: steps = number of <b>distinct eigenvalues whose eigenspaces $e_0$ actually touches</b> (at most $n$).</li>
+<li><b>Partial bound:</b> if $m$ outlier eigenvalues lie above an interval $[a,b]$ holding the rest, after $m+1$ steps $E_{\rm after}\le\big(\frac{b-a}{b+a}\big)^2E_{\rm before}$ (use $R(t)=(1-\frac{2t}{a+b})\prod_j(1-t/\mu_j)$ and bound the outlier factors by 1 on $[a,b]$).</li>
+</ul>
+<div class="box example"><span class="tag">His Ch 4 Problem 6b: count steps without iterating</span>
+<p>$Q=\mathrm{diag}(2,2,5,5,11)$, $e_0=(1,-1,0,0,3)$. Components: coordinates 1–2 (eigenvalue 2) nonzero, 3–4 (eigenvalue 5) zero, 5 (eigenvalue 11) nonzero. Two distinct eigenvalues touched ⇒ exactly <b>2</b> CG steps (checked numerically), even though $n=5$ and $Q$ has 3 distinct eigenvalues.</p>
+</div>
+<div class="box trap"><span class="tag">Traps in H7</span>
+<ul><li>Krylov space after $k$ steps goes up to $Q^{k-1}g_0$, and is shifted by $x_0$.</li>
+<li>Count distinct eigenvalues <i>present in $e_0$</i>, not $n$, nor all distinct eigenvalues of $Q$.</li>
+<li>$\|g_k\|$ can increase; $f$ and $\|e\|_Q$ always decrease.</li></ul></div>
+<div class="check"><b>Check H7.</b> $Q=\mathrm{diag}(3,3,8)$, $e_0=(1,2,0)$. How many CG steps? Why does one step suffice here?
+<details class="ans"><summary>Show answer</summary><div><p>One: $e_0$ lies entirely in the eigenspace of 3, so $g_0=Qe_0=3e_0$ is an eigenvector, and $R(t)=1-t/3$ kills it.</p></div></details></div>
+
+<h3 id="g8">H8. Preconditioned CG (PCG)</h3>
+<p><b>Idea.</b> CG is fast when the eigenvalues are few or clustered. If they're spread out, change variables to make the problem rounder first. Pick an SPD matrix $B\approx Q^{-1}$ (cheap to apply, e.g. $B$ = inverse of the diagonal of $Q$). With $x=B^{1/2}y$ the Hessian in $y$ is $\hat Q=B^{1/2}QB^{1/2}$, close to $I$ if $B\approx Q^{-1}$. Run plain CG on $y$ and translate back to $x$: every "$g$" inside an inner product becomes "$Bg$".</p>
+<div class="box must"><span class="tag">PCG</span>
+<p>$d_0=-Bg_0$, $\ \alpha_k=\dfrac{g_k^TBg_k}{d_k^TQd_k}$, $\ x_{k+1}=x_k+\alpha_kd_k$, $\ g_{k+1}=g_k+\alpha_kQd_k$, $\ \beta_k=\dfrac{g_{k+1}^TBg_{k+1}}{g_k^TBg_k}$, $\ d_{k+1}=-Bg_{k+1}+\beta_kd_k$.</p>
+<p>Guarantees: $g_i^TBg_j=0$ (not $g_i^Tg_j$), $d_i^TQd_j=0$, $g_k^Td_k=-g_k^TBg_k$. Speed depends on the eigenvalues of $B^{1/2}QB^{1/2}$. $B=Q^{-1}$ (or $cQ^{-1}$): one step.</p></div>
+<p><b>Scaling $B$ changes nothing.</b> With $\tilde B=cB$: $\tilde d_k=cd_k$, $\tilde\alpha_k=\alpha_k/c$, $\tilde\beta_k=\beta_k$, so $\tilde\alpha_k\tilde d_k=\alpha_kd_k$ and the iterates are identical. So "eigenvalues of $\hat Q$ near 1" isn't the real criterion: their <b>spread</b> (clustering) is.</p>
+<div class="box trap"><span class="tag">Trap (and a disagreement)</span> In class he said that with PCG the original $f(x_k)$ "may not reduce monotonically" (Ch 4 lec 4 [19:30]). Mathematically, $f(x_k)=h(y_k)$ exactly (same point, $x=B^{1/2}y$), and each PCG step is an exact line search for $f$ along $d_k$, so <b>$f(x_k)$ does decrease</b>. What really need not decrease is the Euclidean gradient norm $\|g_k\|$. This is consistent with Quiz 2's key. If it is asked, write this reasoning.</div>
+
+<h3 id="g9">H9. CG on non-quadratic functions (FR, PR)</h3>
+<p>On a non-quadratic $f$ there is no single $Q$: conjugacy and the $n$-step finish are lost. CG becomes a heuristic that is often faster than steepest descent, but it needs safety checks. <b>His "four things that are different"</b> (write $F(x_k)=\nabla^2f(x_k)$, the Hessian, in place of $Q$):</p>
+<ol class="steps">
+<li>$\beta_k$ goes back to the <b>original</b> formula with $Q\to F(x_k)$: $\beta_k=\dfrac{g_{k+1}^TF(x_k)d_k}{d_k^TF(x_k)d_k}$.</li>
+<li>If $d_k^TF(x_k)d_k\le0$ (no positive curvature along $d_k$), set $\beta_k=0$ (restart with steepest descent).</li>
+<li>$\alpha_k$ from a <b>line search</b> (Armijo/Wolfe); there's no closed form. The quadratic-model step $\hat\alpha_k=-g_k^Td_k/d_k^TF(x_k)d_k$ is only a trial value; it can increase $f$.</li>
+<li><b>Descent check:</b> if $g_k^Td_k\ge0$, reset $d_k=-g_k$.</li>
+</ol>
+<p><b>Gradient-only versions:</b> $\beta^{FR}_k=\dfrac{\|g_{k+1}\|^2}{\|g_k\|^2}$ (Fletcher–Reeves), $\beta^{PR}_k=\dfrac{g_{k+1}^T(g_{k+1}-g_k)}{\|g_k\|^2}$ (Polak–Ribière). With exact line search any finite $\beta$ gives $g_{k+1}^Td_{k+1}=-\|g_{k+1}\|^2\lt0$ (descent, not convergence). <b>FR + strong Wolfe</b> with $0\lt c_1\lt c_2\lt\tfrac12$:</p>
+$$-\frac1{1-c_2}\le\frac{g_k^Td_k}{\|g_k\|^2}\le\frac{2c_2-1}{1-c_2}\lt0.$$
+<div class="box example"><span class="tag">Plug in (Quiz 2 Q19)</span><p>$c_2=\tfrac14$: lower $-\frac1{3/4}=-\tfrac43$, upper $\frac{-1/2}{3/4}=-\tfrac23$. Both negative ⇒ every FR direction is a descent direction.</p></div>
+</section>
+
+<!-- ================= I. RECIPE ================= -->
+<section id="recipe">
+<h2>I. Exam recipe</h2>
+<div class="box must"><span class="tag">Question type → what to write</span>
+<ol class="steps">
+<li><b>"Range of α for fixed-step GD"</b>: Hessian $Q$ (second derivatives directly) → eigenvalues → $0\lt\alpha\lt2/\lambda_{\max}$; justify each endpoint (0: no move; $2/\lambda_{\max}$: multiplier $-1$).</li>
+<li><b>"Describe the iterates for this α and $x_0$"</b>: $x^*$; $e_0$ split along eigenvectors; multipliers $1-\alpha\lambda_i$; $e_k=\sum(1-\alpha\lambda_i)^k\varepsilon_iq_i$. Multiplier $-1$ → 2-cycle; $|\cdot|\gt1$ → diverges unless that component is 0.</li>
+<li><b>"Best α / rate"</b>: $2/(\lambda_{\min}+\lambda_{\max})$, factor $(\kappa-1)/(\kappa+1)$ on $\|e\|$, squared for $f-f^*$.</li>
+<li><b>"One exact line-search step"</b>: $g_0=Qx_0-b$, $\alpha_0=g_0^Tg_0/g_0^TQg_0$, $x_1$, check $g_1^Tg_0=0$, compare the ratio with $((\kappa-1)/(\kappa+1))^2$ (effective $\kappa$ if $g_0$ misses some eigen-directions).</li>
+<li><b>"Run CG"</b>: the table of H6 ($g,d,Qd,d^TQd,\alpha,x,g_{\rm new},\beta$); check $g_{k+1}^Tg_k=0$, $d_{k+1}^TQd_k=0$; final $x$ = $Q^{-1}b$.</li>
+<li><b>"How many CG steps"</b>: eigen-components of $e_0$ (or $g_0$); count distinct eigenvalues with nonzero component.</li>
+<li><b>"Does α satisfy Armijo/Wolfe"</b>: write $\phi(\alpha)$ and $\phi'(\alpha)$ explicitly; plug in; state each inequality.</li>
+<li><b>"Newton step"</b>: gradient, Hessian at $x_k$; solve $H_kp=-g_k$; check $H_k\succ0$ (descent); on a quadratic say "one step, exact".</li>
+<li><b>Theory steps</b> (expanding subspace): the 5-step chain in H4, in order.</li>
+</ol></div>
+</section>
+<!-- ================= WHAT HE SAID ================= -->
 <section id="prof">
-<h2>3. What the professor said about this</h2>
+<h2>What the professor said about this</h2>
 <div class="box prof"><span class="tag">In class (speech-to-text, wording rough)</span>
   <ul>
     <li><b>Format:</b> <q>There'll be more short answers, not MCQs. Mix.</q> <span class="ts">Ch 4 lec 4 [30:00]</span> → practise writing 2–3-line answers (Midterm 1 V(2), V(6), VI(2), VI(6) style), not only clicking options.</li>
-    <li><q>I will never ask full proof. That steps you may need for solving problems.</q> <span class="ts">Ch 3 lec 3 [1:11:00]</span>, and for CG: <q>the whole proof can never be asked in exams, but the steps…</q> <span class="ts">Ch 4 lec 2 [47:00]</span> → learn the expanding-subspace chain (2.6) as steps.</li>
+    <li><q>I will never ask full proof. That steps you may need for solving problems.</q> <span class="ts">Ch 3 lec 3 [1:11:00]</span>, and for CG: <q>the whole proof can never be asked in exams, but the steps…</q> <span class="ts">Ch 4 lec 2 [47:00]</span> → learn the expanding-subspace chain (H4) as steps.</li>
     <li><q>modification of something, some difficult problem already solved, I might ask</q>, then <q>seven I solved</q> <span class="ts">Ch 2–3 tutorial [1:35:00]</span> → Midterm 1 V was exercise 7 modified. Expect modified versions of Ch 3 Ex 1, 2, 4, 5, 7 and Ch 4 Problems 3, 4, 6.</li>
-    <li>Ch 2 exercises: exercise one is <q>direct, straightforward</q>; the guide's reading of [1:35:30]–[1:40:30] is "only up to 2.6", skip 8–11 <span class="ts">Ch 2–3 tutorial</span> → Ex 2.3 (intervals) and 2.6 ($\sqrt{1+x^2}$) are in section 2 above.</li>
+    <li>Ch 2 exercises: exercise one is <q>direct, straightforward</q>; the guide's reading of [1:35:30]–[1:40:30] is "only up to 2.6", skip 8–11 <span class="ts">Ch 2–3 tutorial</span> → Ex 2.3 (intervals) and 2.6 ($\sqrt{1+x^2}$) are worked in B3 and G1 above.</li>
     <li>Fixed-step GD slide: <q>important… used repeatedly in Chapter Four</q> <span class="ts">Ch 3 lec 1 [18:00]</span> → the eigen-mode recursion $(1-\alpha\lambda_i)$ is the core skill.</li>
     <li>Effective condition number: <q>condition number, you replace by effective condition number</q> <span class="ts">Ch 3 lec 2 [1:00:00]</span>; invariance of the eigen-subspace under $I-\alpha Q$ is <q>very important point</q> <span class="ts">[54:30]</span>.</li>
     <li>Descent direction in the line-search template: <q>That's very important.</q> <span class="ts">Ch 2 lec 1 [24:00]</span></li>
@@ -265,7 +845,7 @@ $$E_{k+1}=\Big[1-\frac{(g_k^Tg_k)^2}{(g_k^TQg_k)(g_k^TQ^{-1}g_k)}\Big]E_k\le\Big
     <li>Affine minimum: gradient of the new function is zero, gradient of the original is orthogonal to the basis; <q>If we just memorize, you may make that mistake.</q> <span class="ts">Ch 4 lec 1 [31:30]–[32:00]</span></li>
     <li>$g_i=g_0+\sum\alpha_jQd_j$: <q>This is key formula you have to remember.</q> <span class="ts">Ch 4 lec 1 [1:15:00]</span>; $\beta=\|g_{k+1}\|^2/\|g_k\|^2$: <q>This one is more important.</q> <span class="ts">[1:28:30]</span></li>
     <li>Non-quadratic CG: <q>Four things that are different</q> (original β with Hessian, β = 0 if denominator ≤ 0, line search for α, descent check/reset) <span class="ts">Ch 4 lec 4 [39:30]–[41:00]</span>.</li>
-    <li>PCG: <q>The function value may not reduce monotonically.</q> <span class="ts">Ch 4 lec 4 [19:30]</span> → see the disagreement box in 2.8.</li>
+    <li>PCG: <q>The function value may not reduce monotonically.</q> <span class="ts">Ch 4 lec 4 [19:30]</span> → see the disagreement box in H8.</li>
   </ul>
 </div>
 <div class="box prof"><span class="tag">From the end-term guide</span>
@@ -277,9 +857,10 @@ $$E_{k+1}=\Big[1-\frac{(g_k^Tg_k)^2}{(g_k^TQg_k)(g_k^TQ^{-1}g_k)}\Big]E_k\le\Big
 </div>
 </section>
 
-<!-- ============ 4. PRACTICE ============ -->
+<!-- ================= PRACTICE ================= -->
 <section id="practice">
-<h2>4. Practice (try first, then open the answer)</h2>
+<h2>Practice (try first, then open the answer)</h2>
+<p class="small">Part A is the full Midterm 1 questions from this module, Part B the 12 most instructive Quiz 2 MCQs, Part C new questions in his style (N1–N13). Do P1, P2, N1, N3 and N5 fully on paper.</p>
 <div class="toolbar" data-auto></div>
 
 <h3 id="p-mid">A. Midterm 1, Questions II, III, V, VI (past paper, full)</h3>
@@ -520,7 +1101,7 @@ $$E_{k+1}=\Big[1-\frac{(g_k^Tg_k)^2}{(g_k^TQg_k)(g_k^TQ^{-1}g_k)}\Big]E_k\le\Big
     <li data-k="c"><b class="k">(c)</b> $g_i^Tg_j=0$ and $d_i^Td_j=0$</li>
     <li data-k="d"><b class="k">(d)</b> $g_i^TQg_j=0$ and $d_i^TQd_j=0$</li>
   </ol>
-  <details class="ans"><summary>Show answer</summary><div><p><b>Answer: (a).</b> Directions are Q-conjugate by construction; $g_k\perp\mathrm{span}\{d_0..d_{k-1}\}=\mathrm{span}\{g_0..g_{k-1}\}$, so gradients are Euclidean-orthogonal. (b) swaps them. (c),(d) each claim one false relation (e.g. in Problem 3 above $d_0^Td_1=-7/16+3/4\ne0$).</p></div></details>
+  <details class="ans"><summary>Show answer</summary><div><p><b>Answer: (a).</b> Directions are Q-conjugate by construction; $g_k\perp\mathrm{span}\{d_0..d_{k-1}\}=\mathrm{span}\{g_0..g_{k-1}\}$, so gradients are Euclidean-orthogonal. (b) swaps them. (c),(d) each claim one false relation (e.g. in the H6 example $d_0^Td_1=-7/16+3/4\ne0$).</p></div></details>
 </div>
 
 <div class="q mcq" data-answer="c">
@@ -695,7 +1276,7 @@ $$E_{k+1}=\Big[1-\frac{(g_k^Tg_k)^2}{(g_k^TQg_k)(g_k^TQ^{-1}g_k)}\Big]E_k\le\Big
           <tr><td>0.3</td><td>8.48</td><td>5.6</td><td>+83.2</td><td>✗</td><td>(✓ curvature only)</td><td>✗</td><td>✗</td></tr>
         </table>
       </li>
-      <li>Intervals: Armijo $(0,\,9/34]$; Wolfe $[5/68,\,9/34]$; strong Wolfe $[5/68,\,15/68]$; Goldstein $[5/68,\,15/68]$ (same here by coincidence of the constants; matches the formulas of Ex 2.3 with $p=80$, $q=544$).</li>
+      <li>Intervals: Armijo $(0,\,9/34]$; Wolfe $[5/68,\,9/34]$; strong Wolfe $[5/68,\,15/68]$; Goldstein $[5/68,\,15/68]$ (same here by coincidence of the constants; matches the formulas of Ex 2.3 in B3 with $\sigma=80$, $\omega=544$).</li>
       <li>(c) $\alpha=1$: $\phi=200\gt0$ ✗; $\alpha=\frac12$: $\phi=36\gt4$ ✗; $\alpha=\frac14$: $5\le6$ ✓. Backtracking accepts $\alpha=0.25$, which overshoots $\alpha^*$ and fails strong Wolfe: Armijo alone only caps the step.</li>
     </ol>
   </div></details>
@@ -710,7 +1291,7 @@ $$E_{k+1}=\Big[1-\frac{(g_k^Tg_k)^2}{(g_k^TQg_k)(g_k^TQ^{-1}g_k)}\Big]E_k\le\Big
       <li>Solve $H_0p=-g_0$: $p=-\frac1{27}\begin{pmatrix}2&-1\\-1&14\end{pmatrix}(6,1)=(-\frac{11}{27},-\frac8{27})$. $x_1=(\frac{16}{27},-\frac8{27})\approx(0.593,-0.296)$.</li>
       <li>(b) $H_0\succ0$ (minors 14, 27), so $g_0^Tp=-p^TH_0p=-\frac{74}{27}\lt0$: descent ✓.</li>
       <li>(c) $f(x_0)=2$, $f(x_1)\approx0.387$: decreased.</li>
-      <li>(d) $\nabla f=0$: $x_2=-x_1/2$, then $4x_1^3+\frac32x_1=0\Rightarrow x_1=0$. $x^*=(0,0)$, $\nabla^2f(x^*)=\begin{pmatrix}2&1\\1&2\end{pmatrix}\succ0$, so quadratic convergence once close. Numerically $\|x_k\|$: $0.66,\ 0.33,\ 0.088,\ 0.0028,\ 9\times10^{-8},\ 3\times10^{-21}$ (digits double at the end, not at the start).</li>
+      <li>(d) $\nabla f=0$: $x_2=-x_1/2$, then $4x_1^3+\frac32x_1=0\Rightarrow x_1=0$. $x^*=(0,0)$, $\nabla^2f(x^*)=\begin{pmatrix}2&1\\1&2\end{pmatrix}\succ0$, so quadratic convergence once close. Numerically $\|x_k\|$: $0.66,\ 0.33,\ 0.088,\ 0.0028,\ 9\times10^{-8},\ 3\times10^{-21}$ (slow at the start; at the end the digits more than double, roughly tripling: all third derivatives of $f$ vanish at $x^*=0$, so here it is even cubic. The guaranteed rate is quadratic.)</li>
     </ol>
   </div></details>
 </div>
@@ -736,7 +1317,7 @@ $$E_{k+1}=\Big[1-\frac{(g_k^Tg_k)^2}{(g_k^TQg_k)(g_k^TQ^{-1}g_k)}\Big]E_k\le\Big
     <li data-k="c"><b class="k">(c)</b> Zoutendijk gives $\sum_k\|\nabla f(x_k)\|^2\lt\infty$ without any angle condition.</li>
     <li data-k="d"><b class="k">(d)</b> The conclusion needs exact line search; strong Wolfe is not enough.</li>
   </ol>
-  <details class="ans"><summary>Show answer</summary><div><p><b>Answer: (a).</b> $-\nabla f^Td=\nabla f^TD\nabla f\ge1\cdot\|\nabla f\|^2\gt0$ and $\|d\|\le4\|\nabla f\|$, so $\cos\theta\ge1/4$; Zoutendijk then forces $\|\nabla f_k\|^2\to0$. (b) PD is all that matters. (c) the sum carries $\cos^2\theta_k$. (d) Zoutendijk is stated exactly for strong Wolfe steps.</p></div></details>
+  <details class="ans"><summary>Show answer</summary><div><p><b>Answer: (a).</b> $-\nabla f^Td=\nabla f^TD\nabla f\ge1\cdot\|\nabla f\|^2\gt0$ and $\|d\|\le4\|\nabla f\|$, so $\cos\theta\ge1/4$; Zoutendijk then forces $\|\nabla f_k\|^2\to0$. (b) PD is all that matters. (c) the sum carries $\cos^2\theta_k$. (d) Zoutendijk needs only Wolfe steps (strong Wolfe is a special case), not exact line search.</p></div></details>
 </div>
 
 <div class="q mcq" data-answer="b">
@@ -774,11 +1355,36 @@ $$E_{k+1}=\Big[1-\frac{(g_k^Tg_k)^2}{(g_k^TQg_k)(g_k^TQ^{-1}g_k)}\Big]E_k\le\Big
   </ol>
   <details class="ans"><summary>Show answer</summary><div><p><b>Answer: (c).</b> Affine-space optimality is $D^T\nabla f=0$: the gradient is orthogonal to every $d_i$, and each step decreases $f$ by $\|g\|^4/(2d^TQd)\gt0$. (a) is exactly his "memorise and make the mistake" trap. (b) directions are Q-conjugate, not orthogonal. (d) false: Quiz 2 Q10 has $\|g_1\|=3/2\gt1$.</p></div></details>
 </div>
+
+<div class="q mcq" data-answer="c">
+  <div class="qh">N12 <span class="src">New: spot the non-descent direction</span><span class="lvl">MCQ</span></div>
+  <p>$f(x)=x_1^2+x_1x_2+2x_2^2$ at $x=(1,1)$. Which direction is <b>not</b> a descent direction?</p>
+  <ol class="opts">
+    <li data-k="a"><b class="k">(a)</b> $(-1,0)$</li>
+    <li data-k="b"><b class="k">(b)</b> $(1,-1)$</li>
+    <li data-k="c"><b class="k">(c)</b> $(-5,3)$</li>
+    <li data-k="d"><b class="k">(d)</b> $(0,-1)$</li>
+  </ol>
+  <details class="ans"><summary>Show answer</summary><div><p><b>Answer: (c).</b> $\nabla f=(2x_1+x_2,\ x_1+4x_2)=(3,5)$. Slopes: (a) $-3$, (b) $3-5=-2$, (c) $-15+15=0$, (d) $-5$. A descent direction needs a <i>strictly</i> negative slope; (c) is tangent to the level curve. (b) is the tempting wrong pick: it increases $x_1$, but the slope is still negative.</p></div></details>
+</div>
+
+<div class="q">
+  <div class="qh">N13 <span class="src">New: 1-D Newton with negative curvature</span><span class="lvl">Short answer</span></div>
+  <p>$f(x)=\tfrac14x^4-\tfrac12x^2$, $x_0=0.5$. (a) Compute the Newton step $p_0=-f'(x_0)/f''(x_0)$. (b) Is it a descent direction? (c) What happens to $f$ after a damped step $x_0+0.1p_0$? (d) What should a safeguarded method do instead?</p>
+  <details class="ans"><summary>Show answer</summary><div>
+    <ol class="steps">
+      <li>(a) $f'(x)=x^3-x$, $f''(x)=3x^2-1$. At $0.5$: $f'=-\tfrac38$, $f''=-\tfrac14$. $p_0=-\frac{-3/8}{-1/4}=-\tfrac32$ (so the full step goes to $x_1=-1$).</li>
+      <li>(b) No. Slope along $p_0$: $f'(x_0)p_0=(-\tfrac38)(-\tfrac32)=+\tfrac9{16}\gt0$: ascent. Since $f''\lt0$, the model parabola opens downward and Newton heads for its top.</li>
+      <li>(c) $x=0.35$: $f(0.35)\approx-0.0575\gt f(0.5)=-0.109$: $f$ increases. (The full step happens to land on the minimiser $x=-1$, $f=-\tfrac14$, but that is luck, not a property of the method.)</li>
+      <li>(d) Newton needs $f''(x_k)\gt0$ ($H_k\succ0$ in n-D). When it fails, use a descent direction instead, e.g. $-f'(x_k)$ (here: move right), or modify the curvature to be positive, then line-search.</li>
+    </ol>
+  </div></details>
+</div>
 </section>
 
-<!-- ============ 5. SELF-TEST ============ -->
+<!-- ================= SELF-TEST ================= -->
 <section id="selftest">
-<h2>5. Self-test (no looking)</h2>
+<h2>Self-test (no looking)</h2>
 <div class="toolbar" data-auto></div>
 <div class="q"><div class="qh">S1</div><p>Fixed-step GD on a quadratic with eigenvalues $\lambda_1\le\dots\le\lambda_n$: write the error recursion, the convergence condition on $\alpha$, the best $\alpha$ and its rate.</p>
   <details class="ans"><summary>Show answer</summary><div><p>$e_{k+1}=(I-\alpha Q)e_k$, mode factors $1-\alpha\lambda_i$; $0\lt\alpha\lt2/\lambda_n$; $\alpha=2/(\lambda_1+\lambda_n)$; $\|e_{k+1}\|\le\frac{\kappa-1}{\kappa+1}\|e_k\|$.</p></div></details></div>
@@ -797,6 +1403,52 @@ $$E_{k+1}=\Big[1-\frac{(g_k^Tg_k)^2}{(g_k^TQg_k)(g_k^TQ^{-1}g_k)}\Big]E_k\le\Big
 <div class="q"><div class="qh">S8</div><p>Four changes when CG is used on a non-quadratic function; PCG orthogonality; effect of $B\to cB$.</p>
   <details class="ans"><summary>Show answer</summary><div><p>(1) $\beta_k=g_{k+1}^TF(x_k)d_k/d_k^TF(x_k)d_k$ (original formula, Hessian for $Q$); (2) $\beta_k=0$ if the denominator is $\le0$; (3) $\alpha_k$ by line search (Armijo/Wolfe); (4) if $g_k^Td_k\ge0$ reset $d_k=-g_k$. PCG: $g_i^TBg_j=0$, $d_i^TQd_j=0$. $cB$: same iterates, $d\to cd$, $\alpha\to\alpha/c$.</p></div></details></div>
 <p><label><input type="checkbox" data-key="m5-done"> I finished this module</label></p>
+</section>
+
+<!-- ================= SUMMARY ================= -->
+<section id="must">
+<h2>Summary card (for revision; the formula sheet copies this)</h2>
+<p class="small">Symbols: $x_k$ point, $g_k=\nabla f(x_k)$ gradient, $d_k$ direction, $\alpha_k$ step, $\phi(\alpha)=f(x_k+\alpha d_k)$, $f=\tfrac12x^TQx-b^Tx$ with $Q\succ0$, $x^*=Q^{-1}b$, $e_k=x_k-x^*$ (so $g_k=Qe_k$), eigenvalues $\lambda_{\min}\le\dots\le\lambda_{\max}$ of $Q$, $\kappa=\lambda_{\max}/\lambda_{\min}$, $H_k$ Hessian, $F(x_k)$ Hessian in non-quadratic CG, $B$ preconditioner, $\theta_k$ angle between $d_k$ and $-g_k$. $E=\|x-x^*\|_Q^2$ in Quiz 2; $E=\tfrac12\|x-x^*\|_Q^2=f-f^*$ in the Ch 3 notes.</p>
+<div class="box must"><span class="tag">Memorise cold: line search (Ch 2)</span>
+  <ul>
+    <li><b>Template</b> $x_{k+1}=x_k+\alpha_kd_k$. <b>Descent direction:</b> $g_k^Td_k\lt0$. Exact step on a quadratic along any $d_k$: $\alpha_k=-\dfrac{g_k^Td_k}{d_k^TQd_k}$; for $d_k=-g_k$: $\alpha_k=\dfrac{g_k^Tg_k}{g_k^TQg_k}$.</li>
+    <li>$\phi'(0)=g_k^Td_k\lt0$. With $0\lt c_1\lt c_2\lt1$:
+      <br><b>Armijo</b> (not too long): $\phi(\alpha)\le\phi(0)+c_1\alpha\phi'(0)$.
+      <br><b>Wolfe</b> = Armijo + curvature (not too short) $\phi'(\alpha)\ge c_2\phi'(0)$.
+      <br><b>Strong Wolfe</b> = Armijo + $|\phi'(\alpha)|\le c_2|\phi'(0)|$.
+      <br><b>Goldstein</b> ($0\lt c\lt\tfrac12$): $\phi(0)+(1-c)\alpha\phi'(0)\le\phi(\alpha)\le\phi(0)+c\,\alpha\phi'(0)$.
+      <br><b>Backtracking:</b> try $\alpha=1,s,s^2,\dots$ ($0\lt s\lt1$), accept the first that passes Armijo.
+      <br>Quadratic $\phi$ (Ex 2.3): Armijo $\alpha\le2(1-c_1)\alpha^*$; Wolfe $\alpha\ge(1-c_2)\alpha^*$; strong Wolfe $\alpha\le(1+c_2)\alpha^*$; Goldstein $[2c,\,2(1-c)]\alpha^*$.</li>
+    <li><b>Golden section:</b> interior points at fraction $\rho=\frac{3-\sqrt5}{2}\approx0.382$ from each end; the bracket shrinks by $\frac{\sqrt5-1}{2}\approx0.618$ per new evaluation (one old point reused).</li>
+    <li><b>1-D Newton:</b> $x_{k+1}=x_k-f'(x_k)/f''(x_k)$. Needs $f''\gt0$, and can still fail far away ($\sqrt{1+x^2}$: $x_{k+1}=-x_k^3$).</li>
+    <li><b>Zoutendijk:</b> Wolfe steps (strong Wolfe also fine) + $f$ bounded below + $\nabla f$ Lipschitz ⇒ $\sum_k\cos^2\theta_k\|g_k\|^2\lt\infty$, $\cos\theta_k=\frac{-g_k^Td_k}{\|g_k\|\|d_k\|}$. If $\cos\theta_k\ge\delta\gt0$ then $\|g_k\|\to0$. $d_k=-D_kg_k$ with eig$(D_k)\in[m,M]$ gives $\cos\theta_k\ge m/M$.</li>
+  </ul>
+</div>
+<div class="box must"><span class="tag">Memorise cold: gradient descent and Newton (Ch 3)</span>
+  <ul>
+    <li><b>Fixed step:</b> $e_{k+1}=(I-\alpha Q)e_k$; the eigen-component along $q_i$ is multiplied by $(1-\alpha\lambda_i)$ each step.</li>
+    <li>Converges from every $x_0$ ⇔ $|1-\alpha\lambda_i|\lt1\ \forall i$ ⇔ $\boxed{0\lt\alpha\lt 2/\lambda_{\max}}$. Best $\alpha=\dfrac{2}{\lambda_{\min}+\lambda_{\max}}$, worst-case factor $\dfrac{\kappa-1}{\kappa+1}$ on $\|e_k\|$.</li>
+    <li>Multiplier $=-1$ ⇒ that component flips sign forever (2-cycle, constant $f$). $|{\cdot}|\gt1$ ⇒ diverges, <i>unless</i> $e_0$ has zero component in that eigen-direction.</li>
+    <li>A gradient step with $\eta=1/\lambda$ kills the $\lambda$-component exactly ($1-\lambda/\lambda=0$).</li>
+    <li><b>Exact line search SD:</b> $g_{k+1}^Tg_k=0$ (zigzag); $f(x_{k+1})-f^*\le\left(\dfrac{\kappa-1}{\kappa+1}\right)^2(f(x_k)-f^*)$ (Kantorovich). If $g_0$ lives only in some eigen-directions, use the <b>effective</b> $\kappa$ over those only. One-step finish ⇔ $g_0$ is an eigenvector.</li>
+    <li><b>Newton:</b> $H_kp_k=-g_k$, $x_{k+1}=x_k+p_k$. One step on a quadratic with $Q\succ0$ lands on $x^*$. Quadratic convergence $\|e_{k+1}\|\le C\|e_k\|^2$ only for $x_0$ <i>sufficiently close</i>. Descent iff $H_k\succ0$ ($g_k^Tp_k=-p_k^TH_kp_k$). Damped Newton + Armijo ($c_1\lt\frac12$, start at $\alpha=1$) eventually accepts $\alpha=1$.</li>
+    <li><b>$\|x\|^p/p$, $1\lt p\lt2$:</b> $\nabla=\|x\|^{p-2}x$, not Lipschitz at 0; $r_{k+1}=r_k|1-\alpha r_k^{p-2}|$; $f$ rises for $r_k\lt(\alpha/2)^{1/(2-p)}$; converges only by an exact hit ($r=\alpha^{1/(2-p)}$); exact line search $\alpha_k=r_k^{2-p}$.</li>
+  </ul>
+</div>
+<div class="box must"><span class="tag">Memorise cold: conjugate directions / CG (Ch 4)</span>
+  <ul>
+    <li><b>Affine-sheet minimum</b> ($f$ convex, directions = columns of $D$): $x_S$ minimises $f$ on $\bar x+\mathrm{range}(D)$ ⇔ $D^T\nabla f(x_S)=0$. The gradient of $h(z)=f(\bar x+Dz)$ is zero; the gradient of $f$ is only <b>orthogonal to every $d_i$</b>, not zero.</li>
+    <li><b>Q-conjugate:</b> $d_i^TQd_j=0$ ($i\ne j$) = perpendicular after rounding the bowl ($y=Q^{1/2}x$). Nonzero Q-conjugate vectors are linearly independent. Eigenvectors of $Q$ are both orthogonal and Q-conjugate.</li>
+    <li><b>Key formula:</b> $g_i=g_0+\sum_{j\lt i}\alpha_jQd_j$. With conjugate directions: $d_i^Tg_i=d_i^Tg_0$, $\alpha_i=\beta_i^*=-c_i/h_i$, and $g_k\perp d_0,\dots,d_{k-1}$ (expanding subspace).</li>
+    <li><b>CG:</b> $d_0=-g_0$; $\ \alpha_k=\dfrac{\|g_k\|^2}{d_k^TQd_k}$; $\ x_{k+1}=x_k+\alpha_kd_k$; $\ g_{k+1}=g_k+\alpha_kQd_k$; $\ \beta_k=\dfrac{\|g_{k+1}\|^2}{\|g_k\|^2}$; $\ d_{k+1}=-g_{k+1}+\beta_kd_k$.</li>
+    <li>$g_k^Td_k=-\|g_k\|^2$. <b>Gradients orthogonal</b> ($g_i^Tg_j=0$), <b>directions Q-conjugate</b> ($d_i^TQd_j=0$). Never swap.</li>
+    <li>$x_k$ minimises $f$ over $x_0+\mathrm{span}\{g_0,Qg_0,\dots,Q^{k-1}g_0\}$ (highest power $k-1$).</li>
+    <li>CG steps to reach $x^*$ = number of <b>distinct eigenvalues whose eigenspaces $e_0$ actually touches</b> ($\le n$). Partial bound: $m$ outliers above $[a,b]$ ⇒ after $m+1$ steps $E$ shrinks by $\big(\frac{b-a}{b+a}\big)^2$.</li>
+    <li>Decrease per step: $f(x_k)-f(x_{k+1})=\dfrac{\|g_k\|^4}{2\,d_k^TQd_k}$ (for $E=\|x-x^*\|_Q^2$ the decrease is twice that). $\|g_k\|$ may increase.</li>
+    <li><b>PCG</b> ($B\approx Q^{-1}$, SPD): $d_0=-Bg_0$, $\alpha_k=\dfrac{g_k^TBg_k}{d_k^TQd_k}$, $\beta_k=\dfrac{g_{k+1}^TBg_{k+1}}{g_k^TBg_k}$, $d_{k+1}=-Bg_{k+1}+\beta_kd_k$. Then $g_i^TBg_j=0$, $d_i^TQd_j=0$, $g_k^Td_k=-g_k^TBg_k$. $B\to cB$ changes nothing in $x_k$. Speed depends on eig$(B^{1/2}QB^{1/2})$. $f(x_k)$ still decreases; $\|g_k\|$ need not.</li>
+    <li><b>Non-quadratic CG, four changes:</b> (1) $\beta$ back to the original formula with $Q\to F(x_k)$; (2) $\beta_k=0$ if $d_k^TF(x_k)d_k\le0$; (3) $\alpha_k$ by a line search; (4) if $g_k^Td_k\ge0$, reset $d_k=-g_k$. FR + strong Wolfe ($c_2\lt\frac12$): $-\frac{1}{1-c_2}\le\frac{g_k^Td_k}{\|g_k\|^2}\le\frac{2c_2-1}{1-c_2}\lt0$.</li>
+  </ul>
+</div>
 </section>
 
 </main>

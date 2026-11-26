@@ -5,7 +5,7 @@
 <script>window.MathJax = { tex: { inlineMath: [['$','$'],['\\(','\\)']], displayMath: [['$$','$$'],['\\[','\\]']] } };</script>
 <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml.js"></script>
 <style>@media print{h2{break-before:auto;margin-top:14px} .box{break-inside:avoid} .small{display:none}}</style>
-</head><body><div class="layout"><nav class="toc"><a class="home" href="./">← START HERE</a><a href="#M1">M1 · ADMM, from zero</a><a href="#M2">M2 · Constrained optimality: KKT, cones, second order</a><a href="#M3">M3 · Convexity and duality (incl. LP duality)</a><a href="#M4">M4 · LP (simplex concepts) and QP</a><a href="#M5">M5 · Unconstrained algorithms: line search, GD, Newton, CG</a><a href="#M6">M6 · Unconstrained optimality and convexity</a><a href="#traps">Trap checklist</a></nav>
+</head><body><div class="layout"><nav class="toc"><a class="home" href="./">← START HERE</a><a href="#M1">M1 · ADMM, from zero</a><a href="#M2">M2 · Constrained optimality (KKT), from zero</a><a href="#M3">M3 · Convexity and duality, from zero</a><a href="#M4">M4 · LP (simplex concepts) and QP, from zero</a><a href="#M5">M5 · Unconstrained algorithms, from zero: line search, gradient descent, Newton, CG</a><a href="#M6">M6 · Unconstrained optimality and convexity, from zero</a><a href="#traps">Trap checklist</a></nav>
 <main><h1>Formula sheet: everything to have cold</h1>
 <p class="sub">The "Must remember" boxes of all six modules on one page, plus the trap checklist. Read it aloud tomorrow morning; copy what you can't recall onto your handwritten sheet. Print with Ctrl+P (answers and buttons are hidden in print).</p>
 <section id="M1"><h2>M1 · ADMM, from zero <a class="small" href="M1_ADMM.html">open module →</a></h2>
@@ -23,136 +23,151 @@
 <li><b>Price update sign:</b> $\lambda\leftarrow\lambda+\beta\times$(whatever $\lambda$ multiplies in $L_A$).</li>
 </ul>
 </div>
-</section><section id="M2"><h2>M2 · Constrained optimality: KKT, cones, second order <a class="small" href="M2_Constrained_Optimality_KKT.html">open module →</a></h2>
+</section><section id="M2"><h2>M2 · Constrained optimality (KKT), from zero <a class="small" href="M2_Constrained_Optimality_KKT.html">open module →</a></h2>
 
-<div class="box must"><span class="tag">Memorise cold (course form, Theorem 6.3.3 and 6.4.1–6.4.2)</span>
+<div class="box must"><span class="tag">Memorise cold (course form, Theorems 6.1.1, 6.2.1, 6.3.3, 6.4.1, 6.4.2)</span>
+  <p class="small">Symbols: $f$ objective; $h_i=0$ ($i=1..m$) equalities; $g_j\le0$ ($j=1..p$) inequalities; $\Omega$ feasible set; $x^\star$ the point tested; $\mathcal A=\{j:g_j(x^\star)=0\}$ active set; $\lambda$ equality multipliers (free), $\mu$ inequality multipliers ($\ge0$); $d$ a direction; $\theta_i,q_i$ eigenvalues/unit eigenvectors of $Q$.</p>
   <ul>
-    <li><b>Problem form:</b> $\min f(x)$ s.t. $h_i(x)=0$ ($i=1..m$), $g_j(x)\le 0$ ($j=1..p$). Rewrite every constraint into this form <i>first</i>: $x_1\ge 0 \to -x_1\le 0$; $x^\top Qx\ge 1\to 1-x^\top Qx\le 0$. For a max, minimise $-F$.</li>
-    <li><b>Lagrangian:</b> $\ell(x,\lambda,\mu)=f(x)+\sum_i\lambda_i h_i(x)+\sum_j \mu_j g_j(x)$ (plus signs). Matrix form of stationarity: $\nabla f(x^\star)+J_h(x^\star)\lambda^\star+J_g(x^\star)\mu^\star=0$, with $J$ = columns are gradients.</li>
-    <li><b>KKT (five parts):</b> (1) stationarity $\nabla_x\ell=0$; (2) $h(x^\star)=0$; (3) $g(x^\star)\le 0$; (4) $\mu^\star\ge 0$; (5) $\mu_j^\star g_j(x^\star)=0$ for every $j$. $\lambda$ has <b>no sign</b>.</li>
-    <li><b>KKT is necessary only at regular points</b> (LICQ: gradients of all equalities + active inequalities linearly independent). Under LICQ the multipliers are unique.</li>
-    <li><b>Active split:</b> $\mathcal A_+=\{j\in\mathcal A:\mu_j^\star\gt 0\}$, $\mathcal A_0=\{j\in\mathcal A:\mu_j^\star=0\}$.</li>
-    <li><b>Critical cone:</b> $C=\{d:\ \nabla h_i^\top d=0\ \forall i,\ \ \nabla g_j^\top d=0\ (j\in\mathcal A_+),\ \ \nabla g_j^\top d\le 0\ (j\in\mathcal A_0)\}$. Equivalently $C=\{d\in\mathcal L_\Omega:\nabla f(x^\star)^\top d=0\}$.</li>
-    <li><b>$L_\star=\nabla^2_{xx}\ell(x^\star,\lambda^\star,\mu^\star)$</b> = $\nabla^2 f+\sum\lambda_i^\star\nabla^2h_i+\sum\mu_j^\star\nabla^2 g_j$ (multipliers held fixed).</li>
-    <li><b>SONC</b> (needs regular + local min): $d^\top L_\star d\ge 0$ for every $d\in C$. Fails ⇒ <b>not</b> a local min.</li>
-    <li><b>SOSC</b> (needs only KKT, <b>no LICQ</b>): $d^\top L_\star d\gt 0$ for every $0\ne d\in C$ ⇒ <b>strict</b> local min. $C=\{0\}$ ⇒ SOSC passes (nothing to test).</li>
-    <li><b>Cones:</b> $T_\Omega\subseteq\mathcal L_\Omega$ always; regular ⇒ $T_\Omega=\mathcal L_\Omega$; LICQ is sufficient, not necessary; all constraints linear ⇒ $T=\mathcal L$. Geometric FONC (no CQ): $\nabla f(x^\star)^\top d\ge 0$ for all $d\in T_\Omega(x^\star)$.</li>
-    <li><b>Farkas:</b> [$c^\top d\ge 0$ whenever $A^\top d=0,\ B^\top d\le 0$] ⇔ [$c+A\lambda+B\mu=0$ for some $\lambda$ free, $\mu\ge 0$].</li>
-    <li><b>Eigenvector answer:</b> $\max x^\top x$ s.t. $x^\top Qx\le 1$ → $1/\lambda_1$ at $\pm v_1/\sqrt{\lambda_1}$; $\min x^\top x$ s.t. $x^\top Qx\ge 1$ (or $=1$) → $1/\lambda_n$ at $\pm v_n/\sqrt{\lambda_n}$.</li>
+    <li><b>Problem form:</b> $\min f(x)$ s.t. $h_i(x)=0$, $g_j(x)\le0$. Rewrite <i>first</i>: $x_1\ge0\to-x_1\le0$; $x^\top Qx\ge1\to1-x^\top Qx\le0$; $\max F\to\min -F$.</li>
+    <li><b>Lagrangian:</b> $\ell(x,\lambda,\mu)=f(x)+\sum_i\lambda_ih_i(x)+\sum_j\mu_jg_j(x)$ (plus signs; Midterm 2 calls it $L$).</li>
+    <li><b>KKT (five parts):</b> (1) $\nabla f+\sum\lambda_i\nabla h_i+\sum\mu_j\nabla g_j=0$; (2) $h=0$; (3) $g\le0$; (4) $\mu\ge0$; (5) $\mu_jg_j=0$ for every $j$. $\lambda$ has <b>no sign</b>. Inactive ⇒ $\mu_j=0$; $\mu_j\gt0$ ⇒ active; active does <b>not</b> force $\mu_j\gt0$.</li>
+    <li><b>LICQ / regular point:</b> gradients of all $h_i$ and all active $g_j$ linearly independent. <b>KKT is necessary only at regular points</b>; under LICQ the multipliers are unique.</li>
+    <li><b>Cones:</b> tangent $T_\Omega$: $d$ with $x^\star+t_kd_k\in\Omega$, $t_k\downarrow0$, $d_k\to d$. Linearised $\mathcal L_\Omega=\{d:\nabla h_i^\top d=0,\ \nabla g_j^\top d\le0\ (j\in\mathcal A)\}$. $T_\Omega\subseteq\mathcal L_\Omega$ always; equal if regular (sufficient, not necessary) or all constraints linear. Counterexamples: $uv=0$, $v^3=0$.</li>
+    <li><b>Geometric FONC</b> (no CQ): local min ⇒ $\nabla f(x^\star)^\top d\ge0$ for all $d\in T_\Omega(x^\star)$. A KKT point satisfies it without LICQ.</li>
+    <li><b>Farkas:</b> [$c^\top d\ge0$ whenever $A^\top d=0,\ B^\top d\le0$] ⇔ [$c+A\lambda+B\mu=0$ for some $\lambda$ free, $\mu\ge0$]. No rank assumption.</li>
+    <li><b>Active split:</b> $\mathcal A_+=\{j\in\mathcal A:\mu_j^\star\gt0\}$, $\mathcal A_0=\{j\in\mathcal A:\mu_j^\star=0\}$.</li>
+    <li><b>Critical cone:</b> $C=\{d:\ \nabla h_i^\top d=0\ \forall i,\ \nabla g_j^\top d=0\ (j\in\mathcal A_+),\ \nabla g_j^\top d\le0\ (j\in\mathcal A_0)\}=\{d\in\mathcal L_\Omega:\nabla f(x^\star)^\top d=0\}$.</li>
+    <li><b>Hessian of the Lagrangian:</b> $\mathbf L_\star=\nabla^2f+\sum\lambda_i^\star\nabla^2h_i+\sum\mu_j^\star\nabla^2g_j$ at $x^\star$, multipliers fixed. Never $\nabla^2 f$ alone with curved constraints.</li>
+    <li><b>SONC</b> ($C^2$, local min, <b>regular</b>): $d^\top\mathbf L_\star d\ge0$ for all $d\in C$. Fails at a regular KKT point ⇒ <b>not</b> a local min.</li>
+    <li><b>SOSC</b> ($C^2$, KKT holds, <b>no LICQ needed</b>): $d^\top\mathbf L_\star d\gt0$ for all $0\ne d\in C$ ⇒ <b>strict</b> local min. $C=\{0\}$ ⇒ SOSC holds. Indefinite $\mathbf L_\star$ on $\mathbb R^n$ is irrelevant.</li>
+    <li><b>Ladder:</b> rewrite → $\ell$ → five KKT parts → active-set guesses → solve → check signs/feasibility → LICQ → $\mathcal A_+/\mathcal A_0$ → $C$ → $\mathbf L_\star$ → test on $C$ → classify (local, then global).</li>
+    <li><b>Eigenvector answers</b> ($Q\succ0$, $0\lt\theta_1\lt\dots\lt\theta_n$): $\max x^\top x$ s.t. $x^\top Qx\le1$ → $1/\theta_1$ at $\pm q_1/\sqrt{\theta_1}$; $\min x^\top x$ s.t. $x^\top Qx\ge1$ (or $=1$) → $1/\theta_n$ at $\pm q_n/\sqrt{\theta_n}$; on $C=q_i^\perp$, writing $d=\sum_{j\ne i}\alpha_jq_j$: $d^\top\mathbf L_\star d=2\sum_{j\ne i}(1-\theta_j/\theta_i)\alpha_j^2$ for the min problem.</li>
   </ul>
 </div>
-</section><section id="M3"><h2>M3 · Convexity and duality (incl. LP duality) <a class="small" href="M3_Convexity_and_Duality.html">open module →</a></h2>
+</section><section id="M3"><h2>M3 · Convexity and duality, from zero <a class="small" href="M3_Convexity_and_Duality.html">open module →</a></h2>
 
 <div class="box must"><span class="tag">Memorise cold</span>
+<p class="small">Symbols: $x\in\mathbb{R}^n$ variable; $f$ cost; $h(x)=0$ equalities with prices $\lambda$ (free); $g(x)\le0$ inequalities with prices $\mu\ge0$; $p^*$ / $d^*$ = primal / dual optimal values; LP data $c\in\mathbb{R}^n$, $A\in\mathbb{R}^{m\times n}$, $b\in\mathbb{R}^m$, $a_i^T$ = row $i$ of $A$.</p>
   <ul>
-    <li><b>Primal</b> (always rewrite into this form first): $\min_x f(x)$ s.t. $h(x)=0$, $g(x)\le 0$. <b>Lagrangian</b> $L(x,\lambda,\mu)=f(x)+\lambda^Th(x)+\mu^Tg(x)$, $\lambda$ free, $\mu\ge 0$. (The notes write the multipliers as $y=(u,v)$; same thing.)</li>
+    <li><b>Primal</b> (always rewrite into this form first): $\min_x f(x)$ s.t. $h(x)=0$, $g(x)\le 0$. <b>Lagrangian</b> $L(x,\lambda,\mu)=f(x)+\lambda^Th(x)+\mu^Tg(x)$, $\lambda$ free, $\mu\ge 0$. (The notes write the multipliers as $y=(u,v)$, Quiz 4 as $\eta$; same thing.)</li>
     <li><b>Dual function</b> $q(\lambda,\mu)=\inf_{x\in\mathbb{R}^n}L(x,\lambda,\mu)$: infimum over <b>all</b> $x$, constraints are <b>not</b> put back. Domain $\mathbb{D}=\{(\lambda,\mu):q\gt-\infty\}$. <b>Dual problem</b>: $\max q(\lambda,\mu)$ s.t. $(\lambda,\mu)\in\mathbb{D}$, $\mu\ge0$.</li>
     <li><b>Linear-in-$x$ rule:</b> $\inf_x (r^Tx+\beta)=\beta$ if $r=0$, and $-\infty$ otherwise. ("The infimum is finite if and only if the coefficient of $x$ vanishes.")</li>
     <li>$q$ is <b>concave</b> and $\mathbb{D}$ is <b>convex</b>, even when the primal is nonconvex (because $L$ is affine in the multipliers).</li>
-    <li><b>Weak duality:</b> $x$ feasible, $\mu\ge0$ ⇒ $q(\lambda,\mu)\le L(x,\lambda,\mu)\le f(x)$. Hence $d^*\le p^*$.</li>
-    <li><b>Standard LP pair:</b> $\ \min c^Tx$ s.t. $Ax=b,\ x\ge0\quad\Longleftrightarrow\quad \max b^T\lambda$ s.t. $A^T\lambda\le c$ ($\lambda$ free).</li>
+    <li><b>Weak duality:</b> $x$ feasible, $\mu\ge0$ ⇒ $q(\lambda,\mu)\le L(x,\lambda,\mu)\le f(x)$. Hence $d^*\le p^*$. Equal values for a feasible pair ⇒ both optimal.</li>
+    <li><b>Standard LP pair:</b> $\ \min c^Tx$ s.t. $Ax=b,\ x\ge0\quad\Longleftrightarrow\quad \max b^T\lambda$ s.t. $A^T\lambda\le c$ ($\lambda$ free; derived with $h=b-Ax$).</li>
     <li><b>LP KKT:</b> $A^T\lambda^*+\mu^*=c,\ \ \mu^*\ge0,\ \ Ax^*=b,\ \ x^*\ge0,\ \ (\mu^*)^Tx^*=0$. <b>Value identity</b> $c^Tx^*=b^T\lambda^*$.</li>
-    <li><b>LP duality theorem:</b> (i) one has an optimal solution ⇒ both do, equal values. (ii) one unbounded ⇒ the other <b>infeasible</b>. The converse of (ii) is FALSE: both can be infeasible.</li>
+    <li><b>LP duality theorem:</b> (i) one has an optimal solution ⇒ both do, equal values. (ii) one unbounded ⇒ the other <b>infeasible</b>. The converse of (ii) is FALSE: both can be infeasible ($A=[0]$, $b=1$, $c=-1$).</li>
     <li><b>KKT-equivalence (Thm 7.4.1)</b>, differentiable convex, full space: a KKT pair exists ⇔ $p^*=d^*\in\mathbb{R}$ <b>and both are attained</b>. Then every primal optimum with every dual optimum is a KKT pair.</li>
-    <li><b>Slater (Thm 7.4.3):</b> $f,g$ convex, $h$ affine, some $x^0$ with $h(x^0)=0$, $g(x^0)\lt 0$, and $p^*$ finite ⇒ $p^*=d^*$ and the <b>dual</b> optimum is attained. Primal attainment is NOT guaranteed.</li>
-    <li><b>Primal recovery (Cor 7.4.2):</b> KKT pair exists, $\bar y$ dual optimal, $L(\cdot,\bar y)$ has a <b>unique</b> minimiser $\bar x$ ⇒ $\bar x$ is the unique primal optimum (feasibility and complementary slackness come free). Uniqueness, not strict convexity, is the hypothesis.</li>
+    <li><b>Slater (Thm 7.4.3):</b> $f,g$ convex, $h$ affine, some $x^0$ with $h(x^0)=0$, $g(x^0)\lt 0$, and $p^*$ finite ⇒ $p^*=d^*$ and the <b>dual</b> optimum is attained. Primal attainment is NOT guaranteed ($e^x$, $x\le0$).</li>
+    <li><b>Primal recovery (Cor 7.4.2):</b> KKT pair exists, $\bar\eta=(\bar\lambda,\bar\mu)$ dual optimal, $L(\cdot,\bar\eta)$ has a <b>unique</b> minimiser $\bar x$ ⇒ $\bar x$ is the unique primal optimum (feasibility and complementary slackness come free). Uniqueness, not strict convexity, is the hypothesis.</li>
+    <li><b>Convex problems:</b> local min = global min; minimiser set convex; KKT ⇒ global min (no CQ); KKT not necessary without a CQ ($(x-1)^2$, $x^2\le0$).</li>
     <li><b>Convex feasible set from:</b> $h(x)=0$ with $h$ affine; $g(x)\le0$ with $g$ convex; $g(x)\ge0$ with $g$ concave.</li>
     <li>Never write "concave optimization problem" or "concave set".</li>
   </ul>
 </div>
-<div class="box must"><span class="tag">LP dual sign table (a check, not a replacement for the derivation)</span>
-<p>Primal is a <b>min</b> $c^Tx$; dual is a <b>max</b> $b^Ty$ with one $y_i$ per row of $A$ and one dual constraint per column $a_j$ of $A$.</p>
+<div class="box must"><span class="tag">LP dual sign table for a MIN primal (row prices multiply $b_i-a_i^Tx$)</span>
+<p>Dual is $\max b^T\lambda$ with one $\lambda_i$ per row of $A$ and one dual constraint per variable $x_j$ (column $j$ of $A$).</p>
 <table>
-<tr><th>Primal row $i$</th><th>Dual variable $y_i$</th><th>Primal variable $x_j$</th><th>Dual constraint $j$</th></tr>
-<tr><td>$a_i^Tx\ge b_i$</td><td>$y_i\ge0$</td><td>$x_j\ge0$</td><td>$a_j^Ty\le c_j$</td></tr>
-<tr><td>$a_i^Tx=b_i$</td><td>$y_i$ free</td><td>$x_j$ free</td><td>$a_j^Ty=c_j$</td></tr>
-<tr><td>$a_i^Tx\le b_i$</td><td>$y_i\le0$</td><td>$x_j\le0$</td><td>$a_j^Ty\ge c_j$</td></tr>
+<tr><th>Primal ROW $i$</th><th>→ dual VARIABLE $\lambda_i$</th><th style="border-left:3px solid var(--accent)">Primal VARIABLE $x_j$</th><th>→ dual CONSTRAINT $j$</th></tr>
+<tr><td>$a_i^Tx\ge b_i$</td><td>$\lambda_i\ge0$</td><td style="border-left:3px solid var(--accent)">$x_j\ge0$</td><td>$(A^T\lambda)_j\le c_j$</td></tr>
+<tr><td>$a_i^Tx=b_i$</td><td>$\lambda_i$ free</td><td style="border-left:3px solid var(--accent)">$x_j$ free</td><td>$(A^T\lambda)_j=c_j$</td></tr>
+<tr><td>$a_i^Tx\le b_i$</td><td>$\lambda_i\le0$</td><td style="border-left:3px solid var(--accent)">$x_j\le0$</td><td>$(A^T\lambda)_j\ge c_j$</td></tr>
 </table>
-<p class="small">Check: standard form ($=$ rows, $x\ge0$) gives $y$ free, $A^Ty\le c$. A <b>max</b> primal: first rewrite as $\min(-c^Tx)$.</p>
+<p class="small">The two halves are separate lookups (rows → price signs; variables → dual constraints); the thick line divides them. Equality rows: this page writes them $b-Ax$ in LP work (flipping to $Ax-b$ flips those prices' signs). Check: standard form ($=$ rows, $x\ge0$) gives $\lambda$ free, $A^T\lambda\le c$. A <b>max</b> primal: first rewrite as $\min(-c^Tx)$. $\max c^Tx$, $Ax\le b$, $x\ge0$ ↔ $\min b^Tw$, $A^Tw\ge c$, $w\ge0$.</p>
 </div>
-</section><section id="M4"><h2>M4 · LP (simplex concepts) and QP <a class="small" href="M4_LP_Simplex_and_QP.html">open module →</a></h2>
+</section><section id="M4"><h2>M4 · LP (simplex concepts) and QP, from zero <a class="small" href="M4_LP_Simplex_and_QP.html">open module →</a></h2>
 
-<div class="box must"><span class="tag">Memorise cold: Chapter 8 (LP, standard form $\min c^Tx,\ Ax=b,\ x\ge 0$, rank $A=m$)</span>
+<p class="small">Symbols: LP in standard form $\min c^Tx$, $Ax=b$, $x\ge0$ ($A$ is $m\times n$, rank $m$, $a_j$ = column $j$). $B$/$N$ = basic/nonbasic columns, $x_B,x_N,c_B,c_N$ their parts; $\lambda$ = multipliers of $Ax=b$, $\mu$ = multipliers of $x\ge0$ ($\mu_N$ = reduced costs); $q$ = entering index, $u=B^{-1}a_q$, $d$ = direction, $\theta$ = step, $r$ = leaving row (in the ordered basis). QP: $f=\tfrac12x^TQx-c^Tx$, $Q=Q^T$; $Z$ = basis of $\ker A$, $x_p$ any point with $Ax_p=b$, $H_r=Z^TQZ$, $g_r=Z^T(Qx_p-c)$, $S=AQ^{-1}A^T$, $P$ = projector onto $\ker A$; inequality constraints $a_i^Tx\le b_i$ ($a_i$ = normal of constraint $i$), $W_k$ = working set, $g_k=Qx_k-c$, $p_k$ = direction, $\alpha_k$ = ratio bound, $A_W$ = matrix whose rows are the working normals.</p>
+<div class="box must"><span class="tag">Memorise cold: Chapter 8 (LP)</span>
   <ul>
     <li><b>LP KKT</b> (Lagrangian $c^Tx+\lambda^T(b-Ax)-\mu^Tx$): $\;A^T\lambda+\mu=c,\quad Ax=b,\ x\ge0,\quad \mu\ge0,\quad \mu^Tx=0.$ ($\lambda$ free.)</li>
-    <li><b>Basis $A=[B\ N]$:</b> $\bar x_B=B^{-1}b,\ \bar x_N=0$ (feasible iff $B^{-1}b\ge0$) · $\bar\lambda=B^{-T}c_B$ · $\bar\mu_B=0$ · $\bar\mu_N=c_N-N^T\bar\lambda$ (reduced costs).</li>
+    <li><b>Basis $A=[B\ N]$:</b> $\bar x_B=B^{-1}b,\ \bar x_N=0$ (feasible iff $B^{-1}b\ge0$) · $\bar\lambda=B^{-T}c_B$ · $\bar\mu_B=0$ · $\bar\mu_N=c_N-N^T\bar\lambda$ (reduced costs = rate of cost change when raising that variable).</li>
     <li><b>Optimal</b> if $\bar x_B\ge0$ <i>and</i> $\bar\mu_N\ge0$. <b>Gap identity:</b> $c^Tx'-c^T\bar x=\bar\mu_N^Tx'_N$ for every feasible $x'$.</li>
     <li><b>Step:</b> pick $q$ with $\bar\mu_q\lt0$; $u=B^{-1}a_q$; direction $d_B=-u,\ d_q=1$ (so $Ad=0$, $c^Td=\bar\mu_q$).</li>
-    <li><b>Ratio test:</b> $\theta=\min_{i:\,u_i\gt0}(\bar x_B)_i/u_i$; cost change $=\theta\bar\mu_q$. <b>Unbounded</b> if $u\le0$ and $\bar\mu_q\lt0$. Degenerate ($\theta=0$ possible) iff some basic variable $=0$.</li>
+    <li><b>Ratio test:</b> $\theta=\min_{i:\,u_i\gt0}(\bar x_B)_i/u_i$; cost change $=\theta\bar\mu_q$. <b>Unbounded</b> if $u\le0$ and $\bar\mu_q\lt0$. $\theta=0$ can only happen at a degenerate corner (some basic variable $=0$); it isn't guaranteed there.</li>
     <li><b>Theorems:</b> extreme point $\Leftrightarrow$ BFS; feasible $\Rightarrow$ a BFS exists; optimum exists $\Rightarrow$ an <i>optimal BFS</i> exists. $\bar x$ is a BFS iff its positive-support columns are independent.</li>
-    <li><b>Bland:</b> enter = smallest index with $\bar\mu_j\lt0$; leave = smallest original index among ratio ties. New $B'$ nonsingular since $\det B'=u_p\det B$, $u_p\gt0$.</li>
+    <li><b>Bland:</b> enter = smallest index with $\bar\mu_j\lt0$; leave = smallest original index among ratio ties. New $B'$ nonsingular since $\det B'=u_r\det B$, $u_r\gt0$.</li>
+    <li><b>Tableau:</b> $\begin{bmatrix}I&amp;B^{-1}N&amp;B^{-1}b\\0&amp;\bar\mu_N^T&amp;-z_0\end{bmatrix}$: right column $\bar x_B$, column of $x_q$ = $u$, bottom row = reduced costs, corner = minus the cost.</li>
   </ul>
 </div>
 <div class="box must"><span class="tag">Memorise cold: Chapter 9 (QP $f=\tfrac12x^TQx-c^Tx$)</span>
   <ul>
-    <li><b>Equality QP KKT</b> ($\ell=f+\lambda^T(Ax-b)$): $\;Qx-c+A^T\lambda=0,\ Ax=b$, i.e. $\underbrace{\begin{bmatrix}Q&A^T\\A&0\end{bmatrix}}_{K}\begin{bmatrix}x\\\lambda\end{bmatrix}=\begin{bmatrix}c\\b\end{bmatrix}.$</li>
+    <li><b>Equality QP KKT</b> ($\ell=f+\lambda^T(Ax-b)$): $\;Qx-c+A^T\lambda=0,\ Ax=b$, i.e. $\underbrace{\begin{bmatrix}Q&amp;A^T\\A&amp;0\end{bmatrix}}_{K}\begin{bmatrix}x\\\lambda\end{bmatrix}=\begin{bmatrix}c\\b\end{bmatrix}.$</li>
+    <li><b>Why null(A):</b> at a KKT point, $f(x^*+d)-f(x^*)=\tfrac12d^TQd$ for every $d\in\ker A$.</li>
     <li><b>Unique global minimiser $\iff H_r=Z^TQZ\succ0$</b> $\iff d^TQd\gt0$ for all $0\ne d\in\ker A$. Then $K$ is nonsingular. <b>$Q$ need not be PD.</b> $K$ nonsingular $\iff H_r$ nonsingular (not PD!).</li>
     <li><b>Null-space:</b> $x=x_p+Zz$, $\ \phi(z)=f(x_p)+g_r^Tz+\tfrac12z^TH_rz$, $g_r=Z^T(Qx_p-c)$, solve $H_rz^*=-g_r$.</li>
     <li><b>Range-space (Schur), $Q$ nonsingular:</b> $S=AQ^{-1}A^T$, $\ S\lambda=AQ^{-1}c-b$, $\ x=Q^{-1}(c-A^T\lambda)$. $Q\succ0\Rightarrow S\succ0$.</li>
-    <li><b>Projector:</b> $P=I-A^T(AA^T)^{-1}A=Z(Z^TZ)^{-1}Z^T$; $r=-P\nabla f$ gives $\nabla f^Tr=-\|r\|^2$. Projected CG: at most $n-m$ steps.</li>
-    <li><b>Active set:</b> $g_k=Qx_k-c$, $\ q_k(p)=g_k^Tp+\tfrac12p^TQp$ on $a_i^Tp=0\ (i\in W_k)$. If $p_k\ne0$: $g_k^Tp_k=-p_k^TQp_k\lt0$, $\ f(x_k+\alpha p_k)-f(x_k)=-\alpha(1-\tfrac\alpha2)p_k^TQp_k$.</li>
+    <li><b>Projector:</b> $P=I-A^T(AA^T)^{-1}A=Z(Z^TZ)^{-1}Z^T$; $d_P=-P\nabla f$ gives $\nabla f^Td_P=-\|d_P\|^2$; $d_P=0\iff$ KKT stationarity. Projected CG: at most $n-m$ steps.</li>
+    <li><b>Active set:</b> $g_k=Qx_k-c$, $\ q_k(p)=g_k^Tp+\tfrac12p^TQp$ on $a_i^Tp=0\ (i\in W_k)$; compute $p_k$ from $\begin{bmatrix}Q&amp;A_W^T\\A_W&amp;0\end{bmatrix}\begin{bmatrix}p\\\lambda\end{bmatrix}=\begin{bmatrix}-g_k\\0\end{bmatrix}$ (if $p=0$, this $\lambda$ is the multiplier vector). If $p_k\ne0$: $g_k^Tp_k=-p_k^TQp_k\lt0$, $\ f(x_k+\alpha p_k)-f(x_k)=-\alpha(1-\tfrac\alpha2)p_k^TQp_k$.</li>
     <li><b>Ratio test:</b> $\alpha_k=\min_{i\notin W_k,\ a_i^Tp_k\gt0}\dfrac{b_i-a_i^Tx_k}{a_i^Tp_k}$; <b>step $=\min\{1,\alpha_k\}$</b>; if $\alpha_k\le1$ add the blocker. If $p_k=0$: solve $g_k+\sum_{W_k}\lambda_ia_i=0$; all $\lambda_i\ge0\Rightarrow$ stop (global min if $Q\succeq0$); else drop the most negative.</li>
   </ul>
 </div>
 <div class="box trap"><span class="tag">Sign conventions differ between the chapters</span>
   Ch 8 uses $\lambda^T(b-Ax)$ so stationarity is $c=A^T\lambda+\mu$. Ch 9 uses $\lambda^T(Ax-b)$ so stationarity is $Qx-c+A^T\lambda=0$. Use the one the question states; if none is stated, say which you use.
 </div>
-</section><section id="M5"><h2>M5 · Unconstrained algorithms: line search, GD, Newton, CG <a class="small" href="M5_Unconstrained_Algorithms.html">open module →</a></h2>
+</section><section id="M5"><h2>M5 · Unconstrained algorithms, from zero: line search, gradient descent, Newton, CG <a class="small" href="M5_Unconstrained_Algorithms.html">open module →</a></h2>
 
+<p class="small">Symbols: $x_k$ point, $g_k=\nabla f(x_k)$ gradient, $d_k$ direction, $\alpha_k$ step, $\phi(\alpha)=f(x_k+\alpha d_k)$, $f=\tfrac12x^TQx-b^Tx$ with $Q\succ0$, $x^*=Q^{-1}b$, $e_k=x_k-x^*$ (so $g_k=Qe_k$), eigenvalues $\lambda_{\min}\le\dots\le\lambda_{\max}$ of $Q$, $\kappa=\lambda_{\max}/\lambda_{\min}$, $H_k$ Hessian, $F(x_k)$ Hessian in non-quadratic CG, $B$ preconditioner, $\theta_k$ angle between $d_k$ and $-g_k$. $E=\|x-x^*\|_Q^2$ in Quiz 2; $E=\tfrac12\|x-x^*\|_Q^2=f-f^*$ in the Ch 3 notes.</p>
 <div class="box must"><span class="tag">Memorise cold: line search (Ch 2)</span>
   <ul>
-    <li><b>Descent direction:</b> $\nabla f(x_k)^Td_k\lt0$. Exact step on a quadratic along any $d_k$: $\alpha_k=-\dfrac{g_k^Td_k}{d_k^TQd_k}$; for steepest descent $d_k=-g_k$: $\alpha_k=\dfrac{g_k^Tg_k}{g_k^TQg_k}$.</li>
-    <li>Write $\phi(\alpha)=f(x_k+\alpha d_k)$, so $\phi'(0)=\nabla f(x_k)^Td_k\lt0$. With $0\lt c_1\lt c_2\lt1$:
-      <br><b>Armijo</b> (sufficient decrease): $\phi(\alpha)\le\phi(0)+c_1\alpha\phi'(0)$.
-      <br><b>Wolfe</b> = Armijo + curvature $\phi'(\alpha)\ge c_2\phi'(0)$.
+    <li><b>Template</b> $x_{k+1}=x_k+\alpha_kd_k$. <b>Descent direction:</b> $g_k^Td_k\lt0$. Exact step on a quadratic along any $d_k$: $\alpha_k=-\dfrac{g_k^Td_k}{d_k^TQd_k}$; for $d_k=-g_k$: $\alpha_k=\dfrac{g_k^Tg_k}{g_k^TQg_k}$.</li>
+    <li>$\phi'(0)=g_k^Td_k\lt0$. With $0\lt c_1\lt c_2\lt1$:
+      <br><b>Armijo</b> (not too long): $\phi(\alpha)\le\phi(0)+c_1\alpha\phi'(0)$.
+      <br><b>Wolfe</b> = Armijo + curvature (not too short) $\phi'(\alpha)\ge c_2\phi'(0)$.
       <br><b>Strong Wolfe</b> = Armijo + $|\phi'(\alpha)|\le c_2|\phi'(0)|$.
       <br><b>Goldstein</b> ($0\lt c\lt\tfrac12$): $\phi(0)+(1-c)\alpha\phi'(0)\le\phi(\alpha)\le\phi(0)+c\,\alpha\phi'(0)$.
-      <br><b>Backtracking:</b> try $\alpha=1,s,s^2,\dots$ ($0\lt s\lt1$), accept the first that passes Armijo.</li>
-    <li><b>Golden section:</b> interior points at fraction $\rho=\frac{3-\sqrt5}{2}\approx0.382$ from each end; the interval shrinks by $1-\rho=\frac{\sqrt5-1}{2}\approx0.618$ per new evaluation (one old point is reused).</li>
-    <li><b>1-D Newton:</b> $x_{k+1}=x_k-f'(x_k)/f''(x_k)$. Needs $f''\gt0$, and can still fail far away.</li>
-    <li><b>Zoutendijk:</b> strong Wolfe + $f$ bounded below + $\nabla f$ Lipschitz ⇒ $\sum_k\cos^2\theta_k\|\nabla f(x_k)\|^2\lt\infty$, $\cos\theta_k=\frac{-\nabla f_k^Td_k}{\|\nabla f_k\|\|d_k\|}$. If $\cos\theta_k\ge\delta\gt0$ then $\|\nabla f(x_k)\|\to0$. $d_k=-D_k\nabla f_k$ with eig$(D_k)\in[m,M]$ gives $\cos\theta_k\ge m/M$.</li>
+      <br><b>Backtracking:</b> try $\alpha=1,s,s^2,\dots$ ($0\lt s\lt1$), accept the first that passes Armijo.
+      <br>Quadratic $\phi$ (Ex 2.3): Armijo $\alpha\le2(1-c_1)\alpha^*$; Wolfe $\alpha\ge(1-c_2)\alpha^*$; strong Wolfe $\alpha\le(1+c_2)\alpha^*$; Goldstein $[2c,\,2(1-c)]\alpha^*$.</li>
+    <li><b>Golden section:</b> interior points at fraction $\rho=\frac{3-\sqrt5}{2}\approx0.382$ from each end; the bracket shrinks by $\frac{\sqrt5-1}{2}\approx0.618$ per new evaluation (one old point reused).</li>
+    <li><b>1-D Newton:</b> $x_{k+1}=x_k-f'(x_k)/f''(x_k)$. Needs $f''\gt0$, and can still fail far away ($\sqrt{1+x^2}$: $x_{k+1}=-x_k^3$).</li>
+    <li><b>Zoutendijk:</b> Wolfe steps (strong Wolfe also fine) + $f$ bounded below + $\nabla f$ Lipschitz ⇒ $\sum_k\cos^2\theta_k\|g_k\|^2\lt\infty$, $\cos\theta_k=\frac{-g_k^Td_k}{\|g_k\|\|d_k\|}$. If $\cos\theta_k\ge\delta\gt0$ then $\|g_k\|\to0$. $d_k=-D_kg_k$ with eig$(D_k)\in[m,M]$ gives $\cos\theta_k\ge m/M$.</li>
   </ul>
 </div>
 <div class="box must"><span class="tag">Memorise cold: gradient descent and Newton (Ch 3)</span>
   <ul>
-    <li><b>Fixed step:</b> $e_{k+1}=(I-\alpha Q)e_k$; eigen-mode $i$ is multiplied by $(1-\alpha\lambda_i)$ each step.</li>
+    <li><b>Fixed step:</b> $e_{k+1}=(I-\alpha Q)e_k$; the eigen-component along $q_i$ is multiplied by $(1-\alpha\lambda_i)$ each step.</li>
     <li>Converges from every $x_0$ ⇔ $|1-\alpha\lambda_i|\lt1\ \forall i$ ⇔ $\boxed{0\lt\alpha\lt 2/\lambda_{\max}}$. Best $\alpha=\dfrac{2}{\lambda_{\min}+\lambda_{\max}}$, worst-case factor $\dfrac{\kappa-1}{\kappa+1}$ on $\|e_k\|$.</li>
-    <li>Multiplier $=-1$ ⇒ that mode flips sign forever (2-cycle). $|{\cdot}|\gt1$ ⇒ diverges, <i>unless</i> $e_0$ has zero component in that eigen-direction (then converges along the other eigen-lines only).</li>
-    <li><b>Exact line search SD:</b> $f(x_{k+1})-f^*\le\left(\dfrac{\kappa-1}{\kappa+1}\right)^2(f(x_k)-f^*)$ (Kantorovich). Consecutive gradients are orthogonal ⇒ zigzag. If $g_0$ lives only in some eigen-directions, use the <b>effective</b> $\kappa=\lambda_{\max}/\lambda_{\min}$ over those directions only.</li>
+    <li>Multiplier $=-1$ ⇒ that component flips sign forever (2-cycle, constant $f$). $|{\cdot}|\gt1$ ⇒ diverges, <i>unless</i> $e_0$ has zero component in that eigen-direction.</li>
     <li>A gradient step with $\eta=1/\lambda$ kills the $\lambda$-component exactly ($1-\lambda/\lambda=0$).</li>
+    <li><b>Exact line search SD:</b> $g_{k+1}^Tg_k=0$ (zigzag); $f(x_{k+1})-f^*\le\left(\dfrac{\kappa-1}{\kappa+1}\right)^2(f(x_k)-f^*)$ (Kantorovich). If $g_0$ lives only in some eigen-directions, use the <b>effective</b> $\kappa$ over those only. One-step finish ⇔ $g_0$ is an eigenvector.</li>
     <li><b>Newton:</b> $H_kp_k=-g_k$, $x_{k+1}=x_k+p_k$. One step on a quadratic with $Q\succ0$ lands on $x^*$. Quadratic convergence $\|e_{k+1}\|\le C\|e_k\|^2$ only for $x_0$ <i>sufficiently close</i>. Descent iff $H_k\succ0$ ($g_k^Tp_k=-p_k^TH_kp_k$). Damped Newton + Armijo ($c_1\lt\frac12$, start at $\alpha=1$) eventually accepts $\alpha=1$.</li>
+    <li><b>$\|x\|^p/p$, $1\lt p\lt2$:</b> $\nabla=\|x\|^{p-2}x$, not Lipschitz at 0; $r_{k+1}=r_k|1-\alpha r_k^{p-2}|$; $f$ rises for $r_k\lt(\alpha/2)^{1/(2-p)}$; converges only by an exact hit ($r=\alpha^{1/(2-p)}$); exact line search $\alpha_k=r_k^{2-p}$.</li>
   </ul>
 </div>
 <div class="box must"><span class="tag">Memorise cold: conjugate directions / CG (Ch 4)</span>
   <ul>
-    <li><b>Affine-space minimum</b> ($f$ convex): $x_S$ minimises $f$ on $\bar x+\mathrm{range}(D)$ ⇔ $D^T\nabla f(x_S)=0$. The gradient of $h(z)=f(\bar x+Dz)$ is zero; the gradient of $f$ is only <b>orthogonal to every $d_i$</b>, not zero.</li>
-    <li><b>Q-conjugate:</b> $d_i^TQd_j=0$ ($i\ne j$). Nonzero Q-conjugate vectors are linearly independent (so at most $n$). Eigenvectors of $Q$ are both orthogonal and Q-conjugate.</li>
-    <li><b>Key formula:</b> $g_i=g_0+\sum_{j\lt i}\alpha_jQd_j$. With conjugate directions: $d_i^Tg_i=d_i^Tg_0$, and $g_k\perp d_0,\dots,d_{k-1}$.</li>
+    <li><b>Affine-sheet minimum</b> ($f$ convex, directions = columns of $D$): $x_S$ minimises $f$ on $\bar x+\mathrm{range}(D)$ ⇔ $D^T\nabla f(x_S)=0$. The gradient of $h(z)=f(\bar x+Dz)$ is zero; the gradient of $f$ is only <b>orthogonal to every $d_i$</b>, not zero.</li>
+    <li><b>Q-conjugate:</b> $d_i^TQd_j=0$ ($i\ne j$) = perpendicular after rounding the bowl ($y=Q^{1/2}x$). Nonzero Q-conjugate vectors are linearly independent. Eigenvectors of $Q$ are both orthogonal and Q-conjugate.</li>
+    <li><b>Key formula:</b> $g_i=g_0+\sum_{j\lt i}\alpha_jQd_j$. With conjugate directions: $d_i^Tg_i=d_i^Tg_0$, $\alpha_i=\beta_i^*=-c_i/h_i$, and $g_k\perp d_0,\dots,d_{k-1}$ (expanding subspace).</li>
     <li><b>CG:</b> $d_0=-g_0$; $\ \alpha_k=\dfrac{\|g_k\|^2}{d_k^TQd_k}$; $\ x_{k+1}=x_k+\alpha_kd_k$; $\ g_{k+1}=g_k+\alpha_kQd_k$; $\ \beta_k=\dfrac{\|g_{k+1}\|^2}{\|g_k\|^2}$; $\ d_{k+1}=-g_{k+1}+\beta_kd_k$.</li>
     <li>$g_k^Td_k=-\|g_k\|^2$. <b>Gradients orthogonal</b> ($g_i^Tg_j=0$), <b>directions Q-conjugate</b> ($d_i^TQd_j=0$). Never swap.</li>
     <li>$x_k$ minimises $f$ over $x_0+\mathrm{span}\{g_0,Qg_0,\dots,Q^{k-1}g_0\}$ (highest power $k-1$).</li>
-    <li>CG steps to reach $x^*$ = number of <b>distinct eigenvalues whose eigenspaces $e_0$ actually touches</b> ($\le n$).</li>
-    <li>Decrease per step: $f(x_k)-f(x_{k+1})=\dfrac{\|g_k\|^4}{2\,d_k^TQd_k}$ (the ½ is on $f$; for $E=\|x-x^*\|_Q^2$ the decrease is twice that).</li>
-    <li><b>PCG</b> ($B\approx Q^{-1}$, SPD): $d_0=-Bg_0$, $\alpha_k=\dfrac{g_k^TBg_k}{d_k^TQd_k}$, $\beta_k=\dfrac{g_{k+1}^TBg_{k+1}}{g_k^TBg_k}$, $d_{k+1}=-Bg_{k+1}+\beta_kd_k$. Then $g_i^TBg_j=0$, $d_i^TQd_j=0$, $g_k^Td_k=-g_k^TBg_k$. Replacing $B$ by $cB$ changes nothing in $x_k$. Speed depends on eig$(B^{1/2}QB^{1/2})$.</li>
-    <li><b>Non-quadratic CG, four changes:</b> (1) $\beta$ back to the original formula with $Q\to F(x_k)=\nabla^2f(x_k)$; (2) set $\beta_k=0$ if $d_k^TF(x_k)d_k\le0$; (3) $\alpha_k$ by a line search (no closed form); (4) check $g_k^Td_k\lt0$, else reset $d_k=-g_k$. FR + strong Wolfe ($c_2\lt\frac12$): $-\frac{1}{1-c_2}\le\frac{g_k^Td_k}{\|g_k\|^2}\le\frac{2c_2-1}{1-c_2}\lt0$.</li>
+    <li>CG steps to reach $x^*$ = number of <b>distinct eigenvalues whose eigenspaces $e_0$ actually touches</b> ($\le n$). Partial bound: $m$ outliers above $[a,b]$ ⇒ after $m+1$ steps $E$ shrinks by $\big(\frac{b-a}{b+a}\big)^2$.</li>
+    <li>Decrease per step: $f(x_k)-f(x_{k+1})=\dfrac{\|g_k\|^4}{2\,d_k^TQd_k}$ (for $E=\|x-x^*\|_Q^2$ the decrease is twice that). $\|g_k\|$ may increase.</li>
+    <li><b>PCG</b> ($B\approx Q^{-1}$, SPD): $d_0=-Bg_0$, $\alpha_k=\dfrac{g_k^TBg_k}{d_k^TQd_k}$, $\beta_k=\dfrac{g_{k+1}^TBg_{k+1}}{g_k^TBg_k}$, $d_{k+1}=-Bg_{k+1}+\beta_kd_k$. Then $g_i^TBg_j=0$, $d_i^TQd_j=0$, $g_k^Td_k=-g_k^TBg_k$. $B\to cB$ changes nothing in $x_k$. Speed depends on eig$(B^{1/2}QB^{1/2})$. $f(x_k)$ still decreases; $\|g_k\|$ need not.</li>
+    <li><b>Non-quadratic CG, four changes:</b> (1) $\beta$ back to the original formula with $Q\to F(x_k)$; (2) $\beta_k=0$ if $d_k^TF(x_k)d_k\le0$; (3) $\alpha_k$ by a line search; (4) if $g_k^Td_k\ge0$, reset $d_k=-g_k$. FR + strong Wolfe ($c_2\lt\frac12$): $-\frac{1}{1-c_2}\le\frac{g_k^Td_k}{\|g_k\|^2}\le\frac{2c_2-1}{1-c_2}\lt0$.</li>
   </ul>
 </div>
-</section><section id="M6"><h2>M6 · Unconstrained optimality and convexity <a class="small" href="M6_Unconstrained_Optimality_Convexity.html">open module →</a></h2>
+</section><section id="M6"><h2>M6 · Unconstrained optimality and convexity, from zero <a class="small" href="M6_Unconstrained_Optimality_Convexity.html">open module →</a></h2>
 
 <div class="box must"><span class="tag">Memorise cold</span>
-  <ul>
-    <li><b>FONC</b> (necessary): $x^*$ local min, $f$ differentiable $\Rightarrow \nabla f(x^*) = 0$.</li>
-    <li><b>SONC</b> (necessary): $x^*$ local min, $f \in C^2$ $\Rightarrow \nabla f(x^*) = 0$ <b>and</b> $\nabla^2 f(x^*) \succeq 0$ (PSD).</li>
-    <li><b>SOSC</b> (sufficient): $\nabla f(x^*) = 0$ <b>and</b> $\nabla^2 f(x^*) \succ 0$ (PD) $\Rightarrow x^*$ is a <b>strict</b> (strong) local min.</li>
-    <li>The gaps: $x^4$ (strict min, $f''=0$: PD is <b>not necessary</b>); $x^3$ and $-x^4$ (FONC+SONC hold, not a min: PSD is <b>not sufficient</b>).</li>
-    <li><b>Quadratics</b> $f = \tfrac12 x^\top Q x - b^\top x + r$: $\nabla f = Qx - b$, $\nabla^2 f = Q$. Here "both directions" hold: $\{\nabla f = 0,\ Q\succeq 0\}$ ⇔ (global) min; $\{\nabla f = 0,\ Q \succ 0\}$ ⇔ strict (unique) min. $Q$ has a negative eigenvalue ⇒ unbounded below. $Q \succeq 0$ singular: $b\in\text{range}(Q)$ ⇒ infinitely many minimisers; $b\notin\text{range}(Q)$ ⇒ none.</li>
-    <li><b>Directional derivatives</b>: $\frac{d}{dt}f(x+td)\big|_{0} = \nabla f(x)^\top d$, $\ \frac{d^2}{dt^2}f(x+td)\big|_{0} = d^\top \nabla^2 f(x)\, d$.</li>
-    <li><b>PD / PSD tests</b> (symmetric $A$): PD ⇔ all eigenvalues $\gt 0$ ⇔ all <b>leading</b> principal minors $\gt 0$ (Sylvester). PSD ⇔ all eigenvalues $\ge 0$ ⇔ <b>all</b> principal minors $\ge 0$ (leading ones are not enough).</li>
-    <li><b>Least squares</b> $\tfrac12\|Ax-\bar b\|^2$: normal equations $A^\top A x^* = A^\top \bar b$ (always solvable, since range$(A^\top A)$ = range$(A^\top)$). Unique ⇔ $A$ has full column rank; then $x^* = (A^\top A)^{-1}A^\top \bar b$, projector $P = A(A^\top A)^{-1}A^\top$ ($P^2=P$, $P^\top=P$), projector onto null$(A^\top)$ is $I-P$.</li>
-    <li><b>Convexity</b> ($f\in C^2$ on $\mathbb R^n$): definition $f(\theta x+(1-\theta)y)\le\theta f(x)+(1-\theta)f(y)$ ⇔ $f(y)\ge f(x)+\nabla f(x)^\top(y-x)$ for all $x,y$ ⇔ $\nabla^2 f(x)\succeq 0$ <b>for every</b> $x$ ⇔ every restriction to a line is convex. Convex: local min = global min; stationary point = global min. Max of convex functions is convex.</li>
-    <li><b>Peano-type</b>: $f(y,z) = (z-py^2)(z-qy^2)$, $0\lt p\lt q$: min at 0 along every line, but $f(y,my^2)\lt 0$ for $p\lt m\lt q$ ⇒ not a local min.</li>
-    <li><b>Weierstrass</b>: $X$ nonempty closed, $f$ proper, lsc, <b>coercive</b> ($\|x\|\to\infty \Rightarrow f(x)\to+\infty$), $X\cap\text{dom} f\ne\emptyset$ ⇒ a minimiser exists. $r(h) = o(h^2)$ means $r(h)/h^2 \to 0$.</li>
-  </ul>
+<p class="small">Symbols: $f:\mathbb R^n\to\mathbb R$ the cost; $x^*$ the point tested; $d$ a direction, $t$ a number; $\nabla f$ gradient (first partials), $\nabla^2 f$ Hessian (second partials); $S$ a symmetric matrix, $\lambda$ its eigenvalues; $\succeq0$ PSD ($d^\top Sd\ge0$ all $d$), $\succ0$ PD ($d^\top Sd\gt0$ all $d\ne0$); $Q,b$ data of a quadratic; $A,\bar b$ data of least squares; $P$ projector; $\theta\in[0,1]$ mixing weight; $r(h)=o(h^2)$ means $r(h)/h^2\to0$.</p>
+<ul>
+<li><b>Minima:</b> local = beats all points within some radius $\delta\gt0$; strict = beats them strictly; global = beats all points.</li>
+<li><b>Weierstrass (coercive):</b> $X$ nonempty closed; $f$ proper, lsc, <b>coercive</b> ($\|x\|\to\infty\Rightarrow f(x)\to+\infty$); $X\cap\text{dom}f\ne\emptyset$ ⇒ a minimiser exists (set nonempty, compact). Sufficient, not necessary.</li>
+<li><b>Line formulas:</b> $\varphi(t)=f(x^*+td)$: $\varphi'(0)=\nabla f(x^*)^\top d$, $\ \varphi''(0)=d^\top\nabla^2f(x^*)\,d$. Taylor: $f(x^*+h)=f(x^*)+\nabla f(x^*)^\top h+\frac12h^\top\nabla^2f(x^*)h+o(\|h\|^2)$.</li>
+<li><b>FONC</b> (necessary): local min, $f$ differentiable ⇒ $\nabla f(x^*)=0$.<br><b>SONC</b> (necessary): local min, $f\in C^2$ ⇒ $\nabla f(x^*)=0$ and $\nabla^2f(x^*)\succeq0$.<br><b>SOSC</b> (sufficient): $\nabla f(x^*)=0$ and $\nabla^2f(x^*)\succ0$ ⇒ <b>strict</b> local min.</li>
+<li><b>The gaps:</b> $x^4$ (strict min, $f''(0)=0$: SOSC not necessary); $x^3$ and $-x^4$ (FONC + SONC hold, not a min: not sufficient); $x_1^4+x_2^2$ (strict min, Hessian diag$(0,2)$); monkey saddle $x_1^3-3x_1x_2^2$ (Hessian 0; $t^3$ vs $-2t^3$).</li>
+<li><b>Group N</b> $=\{\nabla f=0,\nabla^2f\succeq0\}$ necessary; <b>Group S</b> $=\{\nabla f=0,\nabla^2f\succ0\}$ sufficient. For quadratics both are "iff" (Group N ⇔ global min, Group S ⇔ unique min) because Taylor is exact.</li>
+<li><b>PD/PSD tests</b> (symmetric $S$): PD ⇔ all $\lambda\gt0$ ⇔ all <b>leading</b> minors $\gt0$ (Sylvester). PSD ⇔ all $\lambda\ge0$ ⇔ <b>all</b> principal minors $\ge0$ (diag$(0,-1)$: leading minors $0,0$, not PSD). 2×2: det $\lt0$ ⇒ indefinite.</li>
+<li><b>Classify:</b> Hessian PD → strict local min; ND → strict local max; indefinite → saddle; singular semidefinite → inconclusive. Then the global question separately.</li>
+<li><b>Peano:</b> $f=(x_2-px_1^2)(x_2-qx_1^2)$, $0\lt p\lt q$: min at 0 along every line, but $f=(m-p)(m-q)x_1^4\lt0$ on $x_2=mx_1^2$, $p\lt m\lt q$ ⇒ not a local min.</li>
+<li><b>Quadratic</b> $f=\frac12x^\top Qx-b^\top x$ ($Q=Q^\top$): $\nabla f=Qx-b$, $\nabla^2f=Q$. $Q\succ0$: unique min $Q^{-1}b$. $Q\succeq0$ singular: $b\in$ range$(Q)$ ⇒ infinitely many minima; $b\notin$ range$(Q)$ ⇒ none (unbounded below). Negative eigenvalue ⇒ unbounded below.</li>
+<li><b>Least squares</b> $\frac12\|Ax-\bar b\|^2$: normal equations $A^\top Ax^*=A^\top\bar b$, always solvable (range$(A^\top A)$ = range$(A^\top)$). Unique ⇔ full column rank; then $x^*=(A^\top A)^{-1}A^\top\bar b$, $P=A(A^\top A)^{-1}A^\top$ ($P^2=P=P^\top$) projects onto range$(A)$, $I-P$ onto null$(A^\top)$; residual ⟂ columns.</li>
+<li><b>Convexity</b> ($f\in C^2$ on $\mathbb R^n$): $f(\theta x+(1-\theta)y)\le\theta f(x)+(1-\theta)f(y)$ ⇔ $f(y)\ge f(x)+\nabla f(x)^\top(y-x)$ for all $x,y$ ⇔ $\nabla^2f(x)\succeq0$ <b>for every</b> $x$ ⇔ every restriction $f(x+td)$ is convex. SONC = PSD at one point; convexity = PSD everywhere.</li>
+<li><b>Convex payoffs:</b> stationary ⇒ global min; local min ⇒ global min. Not given: existence ($e^x$), uniqueness ($(x_1+x_2)^2$). Max of convex is convex; log-sum-exp is convex (Hessian $\sigma_1\sigma_2\begin{bmatrix}1&amp;-1\\-1&amp;1\end{bmatrix}$, $\sigma_i=e^{x_i}/\sum e^{x_j}$), not strictly.</li>
+<li><b>Proof chain:</b> $\frac{f(x+td)-f(x)}{t}\le f(y)-f(x)$ → ($t\downarrow0$) $\nabla f(x)^\top d\le f(y)-f(x)$ → swap: $f(y)-f(x)\le\nabla f(y)^\top d$ → $(\nabla f(y)-\nabla f(x))^\top(y-x)\ge0$ (with $d=y-x$).</li>
+</ul>
 </div>
 </section>
 <section id="traps"><h2>Trap checklist (read the night before and in the morning)</h2>
