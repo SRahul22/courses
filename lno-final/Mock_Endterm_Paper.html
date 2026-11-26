@@ -41,7 +41,7 @@
   <li>Each MCQ group (I, II, III) counts as <b>one question</b>. Answer all parts of each selected question. All seven questions carry equal overall weight (16 marks); MCQ parts carry equal shares of their group's weight (2 marks each).</li>
   <li>The valid choices are: three MCQ groups and two descriptive questions, two MCQ groups and three descriptive questions, or one MCQ group and four descriptive questions.</li>
   <li>For every selected MCQ, choose exactly one option, (a)–(d), <b>valid in general under the stated assumptions</b>. (In the real paper you shade a bubble in a shuffled response table; here, click an option to check it.) Leave unselected groups unmarked.</li>
-  <li>Show reasoning and calculations for descriptive questions. Use the conventions stated in each question: $L=f+\lambda^Th+\mu^Tg$ with $\mu\ge 0$ for constraints written as $g(x)\le 0$, $h(x)=0$; LP standard form $\min c^Tx$ s.t. $Ax=b$, $x\ge 0$.</li>
+  <li>Show reasoning and calculations for descriptive questions. Use the conventions stated in each question: $L=f+\lambda^Th+\mu^Tg$ with $\mu\ge 0$ for constraints written as $g(x)\le 0$, $h(x)=0$; LP standard form $\min c^Tx$ s.t. $Ax=b$, $x\ge 0$, written as $h(x)=b-Ax=0$, $g(x)=-x\le0$, so $L=c^Tx+\lambda^T(b-Ax)-\mu^Tx$; QP form $f=\frac12x^TQx-c^Tx$ with $L=f+\lambda^T(Ax-b)$.</li>
   <li>Assume no negative marking in Part B unless your paper says otherwise (quizzes used $+1/-\tfrac14$; do not guess blindly).</li>
 </ul>
 </div>
@@ -57,15 +57,15 @@
 <div class="q"><div class="qh">A1 <span class="src">LP duality</span><span class="lvl">2 marks</span></div>
 <p>Write the dual of the standard-form LP $\;\min_x c^Tx$ subject to $Ax=b,\ x\ge 0$, stating the sign of the dual variable.</p>
 <details class="ans"><summary>Show answer</summary><div>
-<p>$$\max_{\nu}\ b^T\nu\quad\text{subject to}\quad A^T\nu\le c,\qquad \nu\ \text{free (unrestricted)}.$$
-(From $L=c^Tx+\nu^T(b-Ax)-\mu^Tx$, $\mu\ge0$. With the course's $L=f+\lambda^T(Ax-b)$ convention, $\lambda=-\nu$, giving $\max -b^T\lambda$ s.t. $-A^T\lambda\le c$: the same problem.)</p>
+<p>$$\max_{\lambda}\ b^T\lambda\quad\text{subject to}\quad A^T\lambda\le c,\qquad \lambda\ \text{free (unrestricted)}.$$
+(Course form: $h(x)=b-Ax=0$, $g(x)=-x\le0$, so $L=c^Tx+\lambda^T(b-Ax)-\mu^Tx=b^T\lambda+(c-A^T\lambda-\mu)^Tx$ with $\mu\ge0$. The infimum over $x$ is finite only if $c-A^T\lambda=\mu\ge0$, giving $q(\lambda)=b^T\lambda$. If you write the equality the other way round, $\lambda^T(Ax-b)$, the only change is that $\lambda$ flips sign: $\max -b^T\lambda$ s.t. $-A^T\lambda\le c$, the same problem.)</p>
 </div></details></div>
 
 <div class="q"><div class="qh">A2 <span class="src">LP KKT</span><span class="lvl">2 marks</span></div>
 <p>Write the complete KKT (optimality) system for the standard-form LP of A1.</p>
 <details class="ans"><summary>Show answer</summary><div>
-<p>$$A^T\nu+\mu=c\ \ \text{(stationarity)},\qquad Ax=b,\ x\ge0\ \ \text{(primal feasibility)},\qquad \mu\ge 0\ \ \text{(dual feasibility)},\qquad \mu_ix_i=0\ \forall i\ \ \text{(complementary slackness)}.$$
-Equivalently: $x$ primal feasible, $\nu$ dual feasible ($A^T\nu\le c$), and $x^T(c-A^T\nu)=0$. "Stationarity is the only thing you have to memorise" — the rest is feasibility.</p>
+<p>$$A^T\lambda+\mu=c\ \ \text{(stationarity)},\qquad Ax=b,\ x\ge0\ \ \text{(primal feasibility)},\qquad \mu\ge 0\ \ \text{(dual feasibility)},\qquad \mu_ix_i=0\ \forall i\ \ \text{(complementary slackness)}.$$
+(From $\nabla_xL=c-A^T\lambda-\mu=0$ with $L$ as in A1.) Equivalently: $x$ primal feasible, $\lambda$ dual feasible ($A^T\lambda\le c$), and $x^T(c-A^T\lambda)=0$. "Stationarity is the only thing you have to memorise" — the rest is feasibility.</p>
 </div></details></div>
 
 <div class="q"><div class="qh">A3 <span class="src">Ch 6 KKT</span><span class="lvl">2 marks</span></div>
@@ -341,7 +341,7 @@ i.e. $A=\begin{pmatrix}1&amp;1&amp;1&amp;0\\1&amp;-1&amp;0&amp;1\end{pmatrix}$, 
 
 <div class="q mcq" data-answer="a">
   <div class="qh">II.7 <span class="src">Ch 9 Q PD on null(A)</span><span class="lvl">MCQ</span></div>
-  <p>Consider $\min\frac12x^TQx+c^Tx$ s.t. $x_1-x_2=b$ ($x\in\mathbb{R}^2$), with $Q=\begin{pmatrix}1&amp;2\\2&amp;1\end{pmatrix}$. Which statement is correct for every $c$ and $b$?</p>
+  <p>Consider $\min\frac12x^TQx-c^Tx$ s.t. $x_1-x_2=b$ ($x\in\mathbb{R}^2$), with $Q=\begin{pmatrix}1&amp;2\\2&amp;1\end{pmatrix}$. Which statement is correct for every $c$ and $b$?</p>
   <ol class="opts">
     <li data-k="a"><b class="k">(a)</b> $Q$ is indefinite (eigenvalues $3,-1$), but $z^TQz&gt;0$ on $\operatorname{null}(A)=\operatorname{span}\{(1,1)\}$ ($Z^TQZ=6$), so the KKT matrix is nonsingular and the QP has a unique global minimiser.</li>
     <li data-k="b"><b class="k">(b)</b> $Q$ is indefinite, so the QP is unbounded below.</li>
@@ -457,15 +457,15 @@ i.e. $A=\begin{pmatrix}1&amp;1&amp;1&amp;0\\1&amp;-1&amp;0&amp;1\end{pmatrix}$, 
 
 <div class="q mcq" data-answer="d">
   <div class="qh">III.7 <span class="src">LP certificate</span><span class="lvl">MCQ</span></div>
-  <p>For the LP pair $\min c^Tx$, $Ax=b$, $x\ge0$ / $\max b^T\nu$, $A^T\nu\le c$: a primal-feasible $\hat x$ and a dual-feasible $\hat\nu$ have $c^T\hat x=b^T\hat\nu=9$. Which conclusion is correct?</p>
+  <p>For the LP pair $\min c^Tx$, $Ax=b$, $x\ge0$ / $\max b^T\lambda$, $A^T\lambda\le c$: a primal-feasible $\hat x$ and a dual-feasible $\hat\lambda$ have $c^T\hat x=b^T\hat\lambda=9$. Which conclusion is correct?</p>
   <ol class="opts">
     <li data-k="a"><b class="k">(a)</b> Only $d^*\le9\le p^*$ is known.</li>
-    <li data-k="b"><b class="k">(b)</b> $\hat x$ is optimal, but $\hat\nu$ may not be.</li>
+    <li data-k="b"><b class="k">(b)</b> $\hat x$ is optimal, but $\hat\lambda$ may not be.</li>
     <li data-k="c"><b class="k">(c)</b> Complementary slackness must be checked separately before concluding optimality.</li>
-    <li data-k="d"><b class="k">(d)</b> Both are optimal and $p^*=d^*=9$; complementary slackness $\hat x^T(c-A^T\hat\nu)=0$ then holds automatically.</li>
+    <li data-k="d"><b class="k">(d)</b> Both are optimal and $p^*=d^*=9$; complementary slackness $\hat x^T(c-A^T\hat\lambda)=0$ then holds automatically.</li>
   </ol>
   <details class="ans"><summary>Show answer</summary><div>
-    <p><b>Answer: (d).</b> $9=b^T\hat\nu\le d^*\le p^*\le c^T\hat x=9$, so all equal. And $c^T\hat x-b^T\hat\nu=\hat x^T(c-A^T\hat\nu)=0$ is exactly CS. (a) the inequality is the wrong way round ($b^T\hat\nu\le d^*$, $p^*\le c^T\hat x$). (b), (c) the equal values already settle everything.</p>
+    <p><b>Answer: (d).</b> $9=b^T\hat\lambda\le d^*\le p^*\le c^T\hat x=9$, so all equal. And $c^T\hat x-b^T\hat\lambda=\hat x^T(c-A^T\hat\lambda)=0$ is exactly CS. (a) the inequality is the wrong way round ($b^T\hat\lambda\le d^*$, $p^*\le c^T\hat x$). (b), (c) the equal values already settle everything.</p>
   </div></details>
 </div>
 
@@ -619,9 +619,9 @@ i.e. $A=\begin{pmatrix}1&amp;1&amp;1&amp;0\\1&amp;-1&amp;0&amp;1\end{pmatrix}$, 
 <h3 id="qVII">Question VII · Equality-constrained QP with indefinite $Q$; one active-set iteration (16 marks)</h3>
 <div class="q">
   <div class="qh">VII <span class="src">New, in his Ch 9 / Ch 6 Problem Set 1 style</span><span class="lvl">Descriptive</span></div>
-  <p>Consider $\min f(x)=\frac12x^TQx+c^Tx$ s.t. $Ax=b$, with
-  $$Q=\begin{pmatrix}1&amp;2&amp;0\\2&amp;1&amp;0\\0&amp;0&amp;2\end{pmatrix},\quad c=\begin{pmatrix}-2\\-1\\-2\end{pmatrix},\quad A=\begin{pmatrix}1&amp;-1&amp;0\end{pmatrix},\quad b=1,$$
-  and $L=f+\lambda(Ax-b)$.</p>
+  <p>Consider $\min f(x)=\frac12x^TQx-c^Tx$ s.t. $Ax=b$, with
+  $$Q=\begin{pmatrix}1&amp;2&amp;0\\2&amp;1&amp;0\\0&amp;0&amp;2\end{pmatrix},\quad c=\begin{pmatrix}2\\1\\2\end{pmatrix},\quad A=\begin{pmatrix}1&amp;-1&amp;0\end{pmatrix},\quad b=1,$$
+  and $L=f+\lambda(Ax-b)$ (the Ch 9 form).</p>
   <ol type="a">
     <li><b>[2]</b> Write the KKT conditions as one linear system with the KKT matrix.</li>
     <li><b>[3]</b> Show that $Q$ is indefinite, but positive definite on $\operatorname{null}(A)$.</li>
@@ -635,12 +635,12 @@ i.e. $A=\begin{pmatrix}1&amp;1&amp;1&amp;0\\1&amp;-1&amp;0&amp;1\end{pmatrix}$, 
   </ol>
   <details class="ans"><summary>Show answer</summary><div>
   <ol class="steps" type="a">
-    <li><b>KKT system.</b> $Qx+c+A^T\lambda=0$, $Ax=b$:
-    $$\begin{pmatrix}Q&amp;A^T\\A&amp;0\end{pmatrix}\begin{pmatrix}x\\\lambda\end{pmatrix}=\begin{pmatrix}-c\\b\end{pmatrix}:\quad \begin{pmatrix}1&amp;2&amp;0&amp;1\\2&amp;1&amp;0&amp;-1\\0&amp;0&amp;2&amp;0\\1&amp;-1&amp;0&amp;0\end{pmatrix}\begin{pmatrix}x_1\\x_2\\x_3\\\lambda\end{pmatrix}=\begin{pmatrix}2\\1\\2\\1\end{pmatrix}.$$</li>
+    <li><b>KKT system.</b> $\nabla_xL=Qx-c+A^T\lambda=0$, $Ax=b$:
+    $$\begin{pmatrix}Q&amp;A^T\\A&amp;0\end{pmatrix}\begin{pmatrix}x\\\lambda\end{pmatrix}=\begin{pmatrix}c\\b\end{pmatrix}:\quad \begin{pmatrix}1&amp;2&amp;0&amp;1\\2&amp;1&amp;0&amp;-1\\0&amp;0&amp;2&amp;0\\1&amp;-1&amp;0&amp;0\end{pmatrix}\begin{pmatrix}x_1\\x_2\\x_3\\\lambda\end{pmatrix}=\begin{pmatrix}2\\1\\2\\1\end{pmatrix}.$$</li>
     <li><b>Curvature.</b> Eigenvalues of $Q$: $3,-1$ (from the $2\times2$ block) and $2$ → indefinite; e.g. $v=(1,-1,0)$: $v^TQv=1-4+1=-2&lt;0$. Null space: $Ax=0\iff x_1=x_2$, basis $Z=\begin{pmatrix}1&amp;0\\1&amp;0\\0&amp;1\end{pmatrix}$, $AZ=0$, $Z^TQZ=\begin{pmatrix}6&amp;0\\0&amp;2\end{pmatrix}\succ0$. So $Q$ is PD on null$(A)$ (the bad direction $(1,-1,0)$ is not in null$(A)$).</li>
-    <li><b>Solve.</b> Row 3: $x_3=1$. Rows 1+2: $3x_1+3x_2=3\Rightarrow x_1+x_2=1$; with $x_1-x_2=1$: $x_1=1$, $x_2=0$. Row 1: $\lambda=2-1-0=1$. So $x^*=(1,0,1)$, $\lambda^*=1$. $f^*=\frac12(1+0+2)+(-2-2)=\frac32-4=-\frac52$. ($\det K=-12\ne0$.)</li>
+    <li><b>Solve.</b> Row 3: $x_3=1$. Rows 1+2: $3x_1+3x_2=3\Rightarrow x_1+x_2=1$; with $x_1-x_2=1$: $x_1=1$, $x_2=0$. Row 1: $\lambda=2-1-0=1$. So $x^*=(1,0,1)$, $\lambda^*=1$. $f^*=\frac12(1+0+2)-(2+0+2)=\frac32-4=-\frac52$. ($\det K=-12\ne0$.)</li>
     <li><b>Null-space argument.</b> Every feasible point is $x=(1,0,0)+t(1,1,0)+s(0,0,1)=(1+t,t,s)$. Substituting, $\varphi(t,s)=3t^2+s^2-2s-\frac32$, whose Hessian is $Z^TQZ=\operatorname{diag}(6,2)\succ0$: strictly convex, unique minimiser $t=0,s=1$, i.e. $x^*=(1,0,1)$, $\varphi=-\frac52$. So $x^*$ is the unique global minimiser even though $Q$ is indefinite (Q PD on null$(A)$ is enough; Q need not be PD).</li>
-    <li><b>Active set.</b> $Q=I$, $c=(-3,-2)$, $a_1=(1,1),b_1=2$; $a_2=(-1,0),b_2=0$; $a_3=(0,-1),b_3=0$.
+    <li><b>Active set.</b> In the form $\frac12x^TQx-c^Tx$: $Q=I$, $c=(3,2)$, gradient $g_k=Qx_k-c=x_k-c$; $a_1=(1,1),b_1=2$; $a_2=(-1,0),b_2=0$; $a_3=(0,-1),b_3=0$.
     <ul>
       <li>(i) $W_0=\{2,3\}$: two independent normals in $\mathbb{R}^2$ force $p_0=0$. $g_0=(-3,-2)$; $g_0+\lambda_2a_2+\lambda_3a_3=0\Rightarrow\lambda_2=-3$, $\lambda_3=-2$. Negative multipliers ⇒ not optimal; drop the most negative, constraint 2 ($x_1\ge0$).</li>
       <li>(ii) $W=\{3\}$: minimise $q(p)=g_0^Tp+\frac12\|p\|^2$ s.t. $p_2=0$ ⇒ $p=(3,0)$. Check $g_0^Tp=-9=-p^TQp$ ✓, and $a_2^Tp=-3&lt;0$: it points into the released constraint ✓.</li>

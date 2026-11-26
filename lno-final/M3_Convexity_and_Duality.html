@@ -68,7 +68,7 @@
 <li>$p^*=\inf\{f(x):x\in\Omega\}$: the <b>primal optimal value</b>. $d^*=\sup\{q(\lambda,\mu):\mu\ge0\}$: the <b>dual optimal value</b>. A star on a point ($x^*$, $\lambda^*$, $\mu^*$) means "optimal".</li>
 <li>$\nabla f(x)$: gradient, a column vector. $\nabla^2f$: Hessian. $J_h=[\nabla h_1\cdots\nabla h_m]$, $J_g=[\nabla g_1\cdots\nabla g_r]$: gradients stacked as <b>columns</b> (the course's Jacobian convention).</li>
 <li>"PSD" = positive semidefinite ($v^THv\ge0$ for all $v$); "PD" = positive definite ($\gt0$ for $v\ne0$).</li>
-<li>LP sections: $c\in\mathbb{R}^n$ cost vector, $A$ an $m\times n$ matrix, $b\in\mathbb{R}^m$; $a_i^T$ = row $i$ of $A$; $(A^T\lambda)_j$ = entry $j$ of the vector $A^T\lambda$.</li>
+<li>LP sections: $c\in\mathbb{R}^n$ cost vector, $A$ an $m\times n$ matrix, $b\in\mathbb{R}^m$; $a_i^T$ = row $i$ of $A$; $(A^T\lambda)_j$ = entry $j$ of the vector $A^T\lambda$. In mixed-form LPs (L3 on): $\lambda_i$ = price of an equality row (free), $\mu_i\ge0$ = price of an inequality row, $\sigma_j\ge0$ = price of a sign constraint on $x_j$ (an inequality price too; its own letter only so the indices don't clash).</li>
 <li>$y$ (in sections A–C): "another point", usually another feasible point. $\alpha\in[0,1]$: a mixing weight.</li>
 </ul>
 </div>
@@ -545,14 +545,15 @@ $$q(\lambda^*,\mu^*)=L(x^*,\lambda^*,\mu^*)=f(x^*)+\lambda^{*T}\underbrace{h(x^*
 <p>A <b>linear program (LP)</b> has a linear cost and linear constraints. Everything above applies, and it becomes very clean because the Lagrangian is <b>linear in $x$</b>: the rule from E2 ("coefficient of $x$ must vanish") does all the work.</p>
 
 <h3 id="l1">L1. A tiny LP, every step</h3>
-<p><b>Sign convention first (used throughout L):</b> an equality row $a_i^Tx=b_i$ can be written as $h=0$ in two ways, $a_i^Tx-b_i=0$ or $b_i-a_i^Tx=0$. Both are correct. In section L we always write <b>$b_i-a_i^Tx$</b> (his derivation in Ch 7 §7.6), because then the dual comes out as "$\max b^T\lambda$". The other choice just flips the sign of that price. Pick one and don't switch mid-problem.</p>
+<p><b>Sign convention first (used throughout L):</b> an equality row $a_i^Tx=b_i$ can be written as $h=0$ in two ways, $a_i^Tx-b_i=0$ or $b_i-a_i^Tx=0$. Both are correct. In section L we always write <b>$b_i-a_i^Tx$</b> (his derivation in Ch 7 §7.6), because then the dual comes out as "$\max b^T\lambda$". The other choice just flips the sign of that price. Pick one and don't switch mid-problem. <b>Inequality rows have no such choice:</b> they are always written in the course form $g_i(x)\le0$ with a price $\mu_i\ge0$, so an inequality price is <b>always $\ge0$</b>, everywhere on this page.</p>
 <div class="box must"><span class="tag">Convention table: which way round is $h$ written on this page?</span>
 <table>
 <tr><th>Where</th><th>Equality written as</th><th>Effect on the price $\lambda$</th></tr>
 <tr><td>Sections D–K (incl. the QP in K), Q18, Q19</td><td>$h=a^Tx-b$ (e.g. $x_1+x_2-4$)</td><td>$\lambda$ = the course's plain multiplier</td></tr>
 <tr><td>Section L, the conversion table, Q16, Q17, Q36</td><td>$h=b-a^Tx$ (e.g. $3-x_1-x_2$)</td><td>$\lambda$ is <b>minus</b> the one you'd get with $a^Tx-b$</td></tr>
+<tr><td>Every inequality row, everywhere</td><td>$g\le0$: $\ge$ row → $b_i-a_i^Tx\le0$; $\le$ row → $a_i^Tx-b_i\le0$</td><td>price $\mu_i\ge0$, never flips</td></tr>
 </table>
-<p class="small">What flips when you switch: the sign of every equality price (and of a $\le$-row price), nothing else. $x^*$, $p^*$, $d^*$ and the inequality prices $\mu$ are unchanged. Example: in K, $\lambda^*=-2$; had we written $h=4-x_1-x_2$, we'd get $\lambda^*=+2$.</p>
+<p class="small">What flips when you switch the equality form: the sign of every equality price, nothing else. $x^*$, $p^*$, $d^*$ and the inequality prices $\mu$ are unchanged. Example: in K, $\lambda^*=-2$; had we written $h=4-x_1-x_2$, we'd get $\lambda^*=+2$.</p>
 </div>
 <p>$\min x_1+2x_2$ s.t. $x_1+x_2=3$, $x_1\ge0$, $x_2\ge0$. (Obvious answer: put everything on the cheaper $x_1$: $x^*=(3,0)$, $p^*=3$.)</p>
 <ol class="steps">
@@ -596,58 +597,58 @@ $$A^T\lambda^*+\mu^*=c,\quad \mu^*\ge0,\quad Ax^*=b,\quad x^*\ge0,\quad (\mu^*)^
 <p><b>Method:</b> don't memorise many duals. Run the same recipe: rewrite each constraint, write $L$, collect the coefficient of each $x_j$, set it to zero, eliminate the sign prices. Three patterns:</p>
 <ul>
 <li><b>Free variable $x_j$</b> (no sign constraint, so no sign price): its coefficient in $L$ must be exactly 0 ⇒ an <b>equality</b> in the dual.</li>
-<li><b>$x_j\ge0$</b>: adds $-\mu_jx_j$; eliminating $\mu_j\ge0$ gives "$\le$" ⇒ an <b>inequality</b> $(A^T\lambda)_j\le c_j$. ($x_j\le0$ adds $+\mu_jx_j$ and gives "$\ge$".)</li>
-<li><b>Inequality row</b>: rewrite as $(\cdot)\le0$; its price is $\ge0$. Equality row: price free.</li>
+<li><b>$x_j\ge0$</b>: write $-x_j\le0$ with price $\sigma_j\ge0$; adds $-\sigma_jx_j$; eliminating $\sigma_j\ge0$ gives "$\le$" ⇒ an <b>inequality</b> in the dual. ($x_j\le0$ adds $+\sigma_jx_j$ and gives "$\ge$".)</li>
+<li><b>Inequality row</b>: rewrite as $g_i\le0$; its price $\mu_i\ge0$. Equality row: price $\lambda_i$ free.</li>
 </ul>
-<p><b>Row-price convention for the table (stated explicitly):</b> we write every row's term as $\lambda_i(b_i-a_i^Tx)$, so all row prices share one letter.</p>
+<p><b>How each row enters $L$ (stated explicitly):</b></p>
 <ul class="small">
-<li>$=$ row: $b_i-a_i^Tx=0$ is an $h$, so $\lambda_i$ free.</li>
-<li>$\ge$ row ($a_i^Tx\ge b_i$): $b_i-a_i^Tx\le0$ is a $g$, so $\lambda_i\ge0$ (it is the course's $\mu$ for that row; we only keep the letter $\lambda$).</li>
-<li>$\le$ row ($a_i^Tx\le b_i$): the course writes $a_i^Tx-b_i\le0$ with a price $\ge0$; writing it as $\lambda_i(b_i-a_i^Tx)$ means $\lambda_i=-(\text{that price})\le0$.</li>
+<li>$=$ row ($a_i^Tx=b_i$): $h_i=b_i-a_i^Tx$, term $\lambda_i(b_i-a_i^Tx)$, $\lambda_i$ free.</li>
+<li>$\ge$ row ($a_i^Tx\ge b_i$): $g_i=b_i-a_i^Tx\le0$, term $\mu_i(b_i-a_i^Tx)$, $\mu_i\ge0$. Same sign pattern as an equality row: $+b_i\mu_i$ in the dual objective.</li>
+<li>$\le$ row ($a_i^Tx\le b_i$): $g_i=a_i^Tx-b_i\le0$, term $\mu_i(a_i^Tx-b_i)$, $\mu_i\ge0$. Opposite sign pattern: $-b_i\mu_i$ in the dual objective, and its column entries $a_{ij}$ enter with a minus too.</li>
 </ul>
-<p>Then for every form, $L=(c-A^T\lambda)^Tx+b^T\lambda+(\text{sign terms})$ and the dual is $\max b^T\lambda$ with:</p>
+<p>Collect: the constant term of $L$ is the <b>dual objective</b> $\sum_{=,\ \ge\text{ rows}}b_i\cdot(\text{price}_i)\;-\sum_{\le\text{ rows}}b_i\mu_i$, and the coefficient of $x_j$ is $c_j-R_j\mp\sigma_j$, where $R_j=\sum_{=,\ \ge\text{ rows}}a_{ij}\cdot(\text{price}_i)\;-\sum_{\le\text{ rows}}a_{ij}\mu_i$ (the same recipe with column $j$ of $A$ in place of $b$). With only $=$ rows, $R_j=(A^T\lambda)_j$, as in L2.</p>
 <div class="box must"><span class="tag">Conversion table for a MIN primal (a check, not a replacement for the derivation)</span>
-<p><b>Table 1: each constraint ROW gives a dual VARIABLE (its sign)</b></p>
+<p><b>Table 1: each constraint ROW gives a dual VARIABLE (its sign and how it enters)</b></p>
 <table>
-<tr><th>Primal row $i$</th><th>Dual variable (price) $\lambda_i$</th></tr>
-<tr><td>$a_i^Tx\ge b_i$</td><td>$\lambda_i\ge0$</td></tr>
-<tr><td>$a_i^Tx=b_i$</td><td>$\lambda_i$ free</td></tr>
-<tr><td>$a_i^Tx\le b_i$</td><td>$\lambda_i\le0$</td></tr>
+<tr><th>Primal row $i$</th><th>Dual variable (price)</th><th>Enters objective and $R_j$ as</th></tr>
+<tr><td>$a_i^Tx\ge b_i$</td><td>$\mu_i\ge0$</td><td>$+b_i\mu_i$, $+a_{ij}\mu_i$</td></tr>
+<tr><td>$a_i^Tx=b_i$</td><td>$\lambda_i$ free</td><td>$+b_i\lambda_i$, $+a_{ij}\lambda_i$</td></tr>
+<tr><td>$a_i^Tx\le b_i$</td><td>$\mu_i\ge0$</td><td>$-b_i\mu_i$, $-a_{ij}\mu_i$</td></tr>
 </table>
 <p><b>Table 2: each primal VARIABLE gives a dual CONSTRAINT</b></p>
 <table>
 <tr><th>Primal variable $x_j$</th><th>Dual constraint $j$</th></tr>
-<tr><td>$x_j\ge0$</td><td>$(A^T\lambda)_j\le c_j$</td></tr>
-<tr><td>$x_j$ free</td><td>$(A^T\lambda)_j=c_j$</td></tr>
-<tr><td>$x_j\le0$</td><td>$(A^T\lambda)_j\ge c_j$</td></tr>
+<tr><td>$x_j\ge0$</td><td>$R_j\le c_j$</td></tr>
+<tr><td>$x_j$ free</td><td>$R_j=c_j$</td></tr>
+<tr><td>$x_j\le0$</td><td>$R_j\ge c_j$</td></tr>
 </table>
-<p class="small">Check: standard form ($=$ rows, $x\ge0$) gives $\lambda$ free, $A^T\lambda\le c$ ✓. Table 2 comes from "coefficient of $x_j$ = $c_j-(A^T\lambda)_j\mp\mu_j=0$, $\mu_j\ge0$".</p>
+<p class="small">Every inequality price is $\ge0$; only equality prices are free. Shortcut for a $\le$ row: multiply it by $-1$ ($-a_i^Tx\ge-b_i$), and it becomes a $\ge$ row with data $(-a_i,-b_i)$. Check: standard form ($=$ rows, $x\ge0$) gives $\lambda$ free, $A^T\lambda\le c$ ✓. Table 2 comes from "coefficient of $x_j$ = $c_j-R_j\mp\sigma_j=0$, $\sigma_j\ge0$". <b>Other books</b> (and some answer keys) put a $\le$ row's price on $b_i-a_i^Tx$ instead, so it appears as "$\le0$"; that variable is just $-\mu_i$, and the dual value is the same.</p>
 </div>
 <div class="box example"><span class="tag">Worked example: mixed form (a ≥ row, an = row, a free variable)</span>
 <p>$\min 2x_1+3x_2$ s.t. $x_1+x_2\ge4$, $x_1-x_2=1$, $x_1\ge0$, $x_2$ free.</p>
 <ol class="steps">
-<li><b>Rows</b> (prices multiply $b_i-a_i^Tx$): $\ge$ row → $\lambda_1(4-x_1-x_2)$, $\lambda_1\ge0$; $=$ row → $\lambda_2(1-x_1+x_2)$, $\lambda_2$ free. <b>Signs:</b> $-x_1\le0$ → $-\mu_1x_1$, $\mu_1\ge0$; $x_2$ free → no term.</li>
-<li>$L=2x_1+3x_2+\lambda_1(4-x_1-x_2)+\lambda_2(1-x_1+x_2)-\mu_1x_1=(2-\lambda_1-\lambda_2-\mu_1)x_1+(3-\lambda_1+\lambda_2)x_2+4\lambda_1+\lambda_2$.</li>
-<li>Coefficients vanish: $\mu_1=2-\lambda_1-\lambda_2\ge0$ (so $\lambda_1+\lambda_2\le2$) and $3-\lambda_1+\lambda_2=0$ (so $\lambda_1-\lambda_2=3$, an equality because $x_2$ is free).</li>
-<li><b>Dual:</b> $\max 4\lambda_1+\lambda_2$ s.t. $\lambda_1+\lambda_2\le2$, $\lambda_1-\lambda_2=3$, $\lambda_1\ge0$, $\lambda_2$ free. (Tables 1–2 agree.)</li>
-<li><b>Solve:</b> $\lambda_2=\lambda_1-3$, so $2\lambda_1-3\le2\Rightarrow\lambda_1\le2.5$, objective $5\lambda_1-3$: $\lambda^*=(2.5,-0.5)$, $d^*=9.5$.</li>
-<li><b>Primal check:</b> $x_1=1+x_2$, row 1 gives $1+2x_2\ge4\Rightarrow x_2\ge1.5$, cost $2+5x_2$: $x^*=(2.5,1.5)$, $p^*=9.5=d^*$ ✓ (linprog). CS: $\lambda_1\gt0$ and row 1 tight ($4=4$) ✓; $x_1\gt0$ and $\mu_1=2-2.5+0.5=0$ ✓.</li>
+<li><b>Rows:</b> $\ge$ row → $g_1=4-x_1-x_2\le0$, term $\mu_1(4-x_1-x_2)$, $\mu_1\ge0$; $=$ row → $h_2=1-x_1+x_2$, term $\lambda_2(1-x_1+x_2)$, $\lambda_2$ free. <b>Signs:</b> $-x_1\le0$ → $-\sigma_1x_1$, $\sigma_1\ge0$; $x_2$ free → no term.</li>
+<li>$L=2x_1+3x_2+\mu_1(4-x_1-x_2)+\lambda_2(1-x_1+x_2)-\sigma_1x_1=(2-\mu_1-\lambda_2-\sigma_1)x_1+(3-\mu_1+\lambda_2)x_2+4\mu_1+\lambda_2$.</li>
+<li>Coefficients vanish: $\sigma_1=2-\mu_1-\lambda_2\ge0$ (so $\mu_1+\lambda_2\le2$) and $3-\mu_1+\lambda_2=0$ (so $\mu_1-\lambda_2=3$, an equality because $x_2$ is free).</li>
+<li><b>Dual:</b> $\max 4\mu_1+\lambda_2$ s.t. $\mu_1+\lambda_2\le2$, $\mu_1-\lambda_2=3$, $\mu_1\ge0$, $\lambda_2$ free. (Tables 1–2 agree.)</li>
+<li><b>Solve:</b> $\lambda_2=\mu_1-3$, so $2\mu_1-3\le2\Rightarrow\mu_1\le2.5$, objective $5\mu_1-3$: $(\mu_1^*,\lambda_2^*)=(2.5,-0.5)$, $d^*=9.5$.</li>
+<li><b>Primal check:</b> $x_1=1+x_2$, row 1 gives $1+2x_2\ge4\Rightarrow x_2\ge1.5$, cost $2+5x_2$: $x^*=(2.5,1.5)$, $p^*=9.5=d^*$ ✓ (linprog). CS: $\mu_1\gt0$ and row 1 tight ($4=4$) ✓; $x_1\gt0$ and $\sigma_1=2-2.5+0.5=0$ ✓.</li>
 </ol>
 </div>
 <div class="widget" id="w-lp"><div class="wtitle">This LP: primal and dual side by side</div>
-<p class="small">Drag the red point along the primal feasible ray and the blue point along the dual feasible segment (or use the sliders). The number line compares $c^Tx$ with $b^T\lambda$.</p>
+<p class="small">Drag the red point along the primal feasible ray and the blue point along the dual feasible segment (or use the sliders). The number line compares $c^Tx$ with the dual value $4\mu_1+\lambda_2$.</p>
 <canvas width="640" height="400" aria-label="Primal feasible ray, dual feasible segment and their values"></canvas>
 <div class="wctl">
 <label>x₂ (primal point) <input type="range" name="t" min="1.5" max="4.5" step="0.01" value="3.5"><output></output></label>
-<label>λ₁ (dual point) <input type="range" name="s" min="0" max="2.5" step="0.01" value="1"><output></output></label>
+<label>μ₁ (dual point) <input type="range" name="s" min="0" max="2.5" step="0.01" value="1"><output></output></label>
 <button type="button">Both to optimum</button>
 </div>
 <div class="wout"></div>
-<div class="whint">What to notice: the blue dual value is always left of the red primal cost (LP weak duality), whichever pair you pick. Push the primal point towards lower cost and the dual point towards higher value: they meet at 9.5, at $x^*=(2.5,1.5)$ and $\lambda^*=(2.5,-0.5)$. The gap is exactly the complementary-slackness products, so zero gap ⇔ CS holds. The feasible sets are a ray and a segment (not 2-D regions) because the $=$ row and the free $x_2$ each turn into an equality.</div>
+<div class="whint">What to notice: the blue dual value is always left of the red primal cost (LP weak duality), whichever pair you pick. Push the primal point towards lower cost and the dual point towards higher value: they meet at 9.5, at $x^*=(2.5,1.5)$ and $(\mu_1^*,\lambda_2^*)=(2.5,-0.5)$. The gap is exactly the complementary-slackness products, so zero gap ⇔ CS holds. The feasible sets are a ray and a segment (not 2-D regions) because the $=$ row and the free $x_2$ each turn into an equality.</div>
 </div>
 <div class="box example"><span class="tag">Worked example: inequality form, $x$ free</span>
-<p>$\min c^Tx$ s.t. $Ax\le b$, $x$ free. Rows are $\le$, so prices $\lambda\le0$: $L=c^Tx+\lambda^T(b-Ax)=(c-A^T\lambda)^Tx+b^T\lambda$. $x$ free ⇒ $A^T\lambda=c$. Dual: $\max b^T\lambda$ s.t. $A^T\lambda=c$, $\lambda\le0$.</p>
-<p>(In plain course form with $\mu\ge0$ for $Ax-b\le0$: $L=(c+A^T\mu)^Tx-b^T\mu$, dual $\max -b^T\mu$ s.t. $A^T\mu=-c$, $\mu\ge0$. Same thing with $\mu=-\lambda$.)</p>
+<p>$\min c^Tx$ s.t. $Ax\le b$, $x$ free. Rows are $\le$, so $g=Ax-b\le0$ with prices $\mu\ge0$: $L=c^Tx+\mu^T(Ax-b)=(c+A^T\mu)^Tx-b^T\mu$. $x$ free ⇒ $A^T\mu=-c$. Dual: $\max -b^T\mu$ s.t. $A^T\mu=-c$, $\mu\ge0$.</p>
+<p>(Some books write this as $\max b^Ty$ s.t. $A^Ty=c$, $y\le0$: that is the same dual with $y=-\mu$. Same value.)</p>
 </div>
 <div class="box example"><span class="tag">Max problems</span>
 <p>Convert first: $\max c^Tx=-\min(-c^Tx)$. Derive the dual of the min, then flip back. For $\max c^Tx$ s.t. $Ax\le b$, $x\ge0$: the min problem $\min(-c^Tx)$ has (with $w\ge0$ the course price of $Ax-b\le0$) the dual $\max(-b^Tw)$ s.t. $A^Tw\ge c$, $w\ge0$. Flip back using $-\max(-b^Tw)=\min b^Tw$: the max primal's dual is $\min b^Tw$ s.t. $A^Tw\ge c$, $w\ge0$, and both optimal values equal $\max c^Tx$ (Q15 does every step).</p>
@@ -656,7 +657,7 @@ $$A^T\lambda^*+\mu^*=c,\quad \mu^*\ge0,\quad Ax^*=b,\quad x^*\ge0,\quad (\mu^*)^
 <p>Here $q\in\mathbb{R}^N$ is a <b>given vector</b> (not the dual function) and $M$ is a given matrix with $M^T=-M$. $\min q^Tz$ s.t. $Mz\ge-q$, $z\ge0$. Prices $\lambda\ge0$ for $-Mz-q\le0$, $\mu\ge0$ for $-z\le0$. Using $-\lambda^TMz=-(M^T\lambda)^Tz=(M\lambda)^Tz$: $L=(q+M\lambda-\mu)^Tz-q^T\lambda$. Finite iff $\mu=q+M\lambda$; $\mu\ge0\iff M\lambda\ge-q$. Dual: $\max -q^T\lambda$ s.t. $M\lambda\ge-q$, $\lambda\ge0$: the <b>same feasible set</b>, so $d^*=-p^*$. Since $z^TMz=0$, every feasible $z$ has $q^Tz=z^T(Mz+q)\ge0$. Feasible ⇒ bounded below by 0 ⇒ optimal (an LP that is feasible and bounded attains its minimum; stated in L4); LP strong duality ⇒ $p^*=d^*=-p^*$ ⇒ both $0$.</p>
 </div>
 <div class="check"><b>Check L3.</b> Dual of $\min 3x_1+x_2$ s.t. $x_1+x_2\ge2$, $x_1-x_2=0$, $x_1\ge0$, $x_2$ free (just write it).
-<details class="ans"><summary>Show answer</summary><div><p>$L=3x_1+x_2+\lambda_1(2-x_1-x_2)+\lambda_2(0-x_1+x_2)-\mu_1x_1=(3-\lambda_1-\lambda_2-\mu_1)x_1+(1-\lambda_1+\lambda_2)x_2+2\lambda_1$. Dual: $\max 2\lambda_1$ s.t. $\lambda_1+\lambda_2\le3$ ($x_1\ge0$), $\lambda_1-\lambda_2=1$ ($x_2$ free), $\lambda_1\ge0$ ($\ge$ row), $\lambda_2$ free ($=$ row). (Solving: $\lambda_2=\lambda_1-1$, so $2\lambda_1-1\le3$, $\lambda_1^*=2$, $d^*=4$; primal $x=(1,1)$, cost $4$ ✓.)</p></div></details></div>
+<details class="ans"><summary>Show answer</summary><div><p>$L=3x_1+x_2+\mu_1(2-x_1-x_2)+\lambda_2(0-x_1+x_2)-\sigma_1x_1=(3-\mu_1-\lambda_2-\sigma_1)x_1+(1-\mu_1+\lambda_2)x_2+2\mu_1$. Dual: $\max 2\mu_1$ s.t. $\mu_1+\lambda_2\le3$ ($x_1\ge0$), $\mu_1-\lambda_2=1$ ($x_2$ free), $\mu_1\ge0$ ($\ge$ row), $\lambda_2$ free ($=$ row). (Solving: $\lambda_2=\mu_1-1$, so $2\mu_1-1\le3$, $\mu_1^*=2$, $\lambda_2^*=1$, $d^*=4$; primal $x=(1,1)$, cost $4$ ✓.)</p></div></details></div>
 
 <h3 id="l4">L4. The LP duality theorem</h3>
 <div class="box must"><span class="tag">LP duality theorem</span>
@@ -948,7 +949,7 @@ $$A^T\lambda^*+\mu^*=c,\quad \mu^*\ge0,\quad Ax^*=b,\quad x^*\ge0,\quad (\mu^*)^
       <li>Coefficient of $x$ must vanish: $\mu=A^Tw-c$; and $\mu\ge0\iff A^Tw\ge c$. Then $q=-b^Tw$.</li>
       <li>Dual of the min problem: $\max -b^Tw$ s.t. $A^Tw\ge c$, $w\ge0$. Undo the sign flip of step 1: the original max has dual $\min b^Tw$ with the same constraints. <b>Answer (a).</b></li>
     </ol>
-    <p>(In the page's LP convention, where every row price multiplies $b_i-a_i^Tx$, the row price is $\lambda=-w\le0$: a $\le$ row in a min problem gets $\lambda\le0$. Same dual.)</p>
+    <p>(This is exactly the conversion table: in the min problem every row is a $\le$ row, so its price $w_i=\mu_i\ge0$ enters as $-b_iw_i$ and $-a_{ij}w_i$. Some books instead attach the price to $b_i-a_i^Tx$ and get a variable $-w\le0$; same dual, same value.)</p>
     <p>(b) inequality direction lost. (c) the min/max flip is missing. (d) an equality would need $x$ free.</p>
     <p>Numerical check: $c=(3,2)$, $A=\begin{pmatrix}1&amp;1\\1&amp;3\end{pmatrix}$, $b=(4,6)$: primal max $12$ at $x=(4,0)$; dual min $12$ at $w=(3,0)$ (linprog).</p>
   </div></details>
@@ -956,17 +957,17 @@ $$A^T\lambda^*+\mu^*=c,\quad \mu^*\ge0,\quad Ax^*=b,\quad x^*\ge0,\quad (\mu^*)^
 
 <div class="q mcq" data-answer="a">
   <div class="qh">Q16 <span class="src">New (free variables)</span><span class="lvl">MCQ</span></div>
-  <p>Which is the dual of $\ \min_x c^Tx$ s.t. $Ax\ge b$, with $x$ <b>free</b>? ($\lambda$ = one price per row of $A$.)</p>
+  <p>Which is the dual of $\ \min_x c^Tx$ s.t. $Ax\ge b$, with $x$ <b>free</b>? ($\mu$ = one price per row of $A$; every row is an inequality.)</p>
   <ol class="opts">
-    <li data-k="a"><b class="k">(a)</b> $\max_\lambda b^T\lambda$ s.t. $A^T\lambda=c$, $\lambda\ge0$.</li>
-    <li data-k="b"><b class="k">(b)</b> $\max_\lambda b^T\lambda$ s.t. $A^T\lambda\le c$, $\lambda\ge0$.</li>
-    <li data-k="c"><b class="k">(c)</b> $\max_\lambda b^T\lambda$ s.t. $A^T\lambda=c$, $\lambda$ free.</li>
-    <li data-k="d"><b class="k">(d)</b> $\max_\lambda -b^T\lambda$ s.t. $A^T\lambda=-c$, $\lambda\ge0$.</li>
+    <li data-k="a"><b class="k">(a)</b> $\max_\mu b^T\mu$ s.t. $A^T\mu=c$, $\mu\ge0$.</li>
+    <li data-k="b"><b class="k">(b)</b> $\max_\mu b^T\mu$ s.t. $A^T\mu\le c$, $\mu\ge0$.</li>
+    <li data-k="c"><b class="k">(c)</b> $\max_\mu b^T\mu$ s.t. $A^T\mu=c$, $\mu$ free.</li>
+    <li data-k="d"><b class="k">(d)</b> $\max_\mu -b^T\mu$ s.t. $A^T\mu=-c$, $\mu\ge0$.</li>
   </ol>
   <details class="ans"><summary>Show answer</summary><div>
-    <p><b>Answer: (a).</b> $g=b-Ax\le0$, price $\lambda\ge0$: $L=c^Tx+\lambda^T(b-Ax)=(c-A^T\lambda)^Tx+b^T\lambda$. $x$ is free, so there is no sign multiplier $\mu$ to absorb anything: the coefficient itself must be zero, $A^T\lambda=c$. $q=b^T\lambda$.</p>
-    <p>(b) is the dual when $x\ge0$ (the sign multiplier turns $=$ into $\le$). (c) is the dual of $Ax=b$ (equality rows give free prices). (d) comes from writing $Ax-b\le0$, which is the wrong direction for a $\ge$ constraint.</p>
-    <p>Check: $\min x_1+x_2$ s.t. $x_1+2x_2\ge2$, $2x_1+x_2\ge2$: $p^*=\frac43$ at $(\frac23,\frac23)$; dual $\lambda=(\frac13,\frac13)$, $d^*=\frac43$ (linprog).</p>
+    <p><b>Answer: (a).</b> $g=b-Ax\le0$, price $\mu\ge0$: $L=c^Tx+\mu^T(b-Ax)=(c-A^T\mu)^Tx+b^T\mu$. $x$ is free, so there is no sign multiplier $\sigma$ to absorb anything: the coefficient itself must be zero, $A^T\mu=c$. $q=b^T\mu$.</p>
+    <p>(b) is the dual when $x\ge0$ (the sign multiplier turns $=$ into $\le$). (c) is the dual of $Ax=b$ (equality rows give free prices). (d) is the dual of $Ax\le b$ (it comes from writing $Ax-b\le0$, the wrong direction for a $\ge$ constraint).</p>
+    <p>Check: $\min x_1+x_2$ s.t. $x_1+2x_2\ge2$, $2x_1+x_2\ge2$: $p^*=\frac43$ at $(\frac23,\frac23)$; dual $\mu=(\frac13,\frac13)$, $d^*=\frac43$ (linprog).</p>
   </div></details>
 </div>
 
@@ -975,15 +976,15 @@ $$A^T\lambda^*+\mu^*=c,\quad \mu^*\ge0,\quad Ax^*=b,\quad x^*\ge0,\quad (\mu^*)^
 <div class="q">
   <div class="qh">Q17 <span class="src">New, in his style (≥ constraints)</span><span class="lvl">Descriptive</span></div>
   <p>Consider $\ \min_{x\in\mathbb{R}^2}3x_1+2x_2$ s.t. $x_1+x_2\ge4$, $x_1+3x_2\ge6$, $x_1,x_2\ge0$.</p>
-  <p>(1) Rewrite the constraints in $g\le0$ form, build the Lagrangian, derive $q$ and its domain. (2) Eliminate the multipliers of $x\ge0$ and write the dual. (3) Show $x=(0,4)$ and $\lambda=(2,0)$ are optimal for primal and dual. (4) Verify complementary slackness.</p>
-  <details class="hint"><summary>Hint</summary><p>Rows: $4-x_1-x_2\le0$, $6-x_1-3x_2\le0$ with prices $\lambda\ge0$; signs $-x\le0$ with $\mu\ge0$. Collect the coefficient of each $x_j$.</p></details>
+  <p>(1) Rewrite the constraints in $g\le0$ form, build the Lagrangian, derive $q$ and its domain. (2) Eliminate the multipliers of $x\ge0$ and write the dual. (3) Show $x=(0,4)$ and $\mu=(2,0)$ are optimal for primal and dual. (4) Verify complementary slackness.</p>
+  <details class="hint"><summary>Hint</summary><p>Rows: $4-x_1-x_2\le0$, $6-x_1-3x_2\le0$ with prices $\mu\ge0$; signs $-x\le0$ with $\sigma\ge0$. Collect the coefficient of each $x_j$.</p></details>
   <details class="ans"><summary>Show answer</summary><div>
     <ol class="steps">
-      <li>$L=3x_1+2x_2+\lambda_1(4-x_1-x_2)+\lambda_2(6-x_1-3x_2)-\mu_1x_1-\mu_2x_2=(3-\lambda_1-\lambda_2-\mu_1)x_1+(2-\lambda_1-3\lambda_2-\mu_2)x_2+4\lambda_1+6\lambda_2$, $\lambda,\mu\ge0$.</li>
-      <li>Inf over all $x\in\mathbb{R}^2$: $q=4\lambda_1+6\lambda_2$ if $\mu_1=3-\lambda_1-\lambda_2$ and $\mu_2=2-\lambda_1-3\lambda_2$; $-\infty$ otherwise. $\mathbb{D}$ = the prices satisfying these two equations.</li>
-      <li>$\mu\ge0$ ⇒ dual: $\max\ 4\lambda_1+6\lambda_2$ s.t. $\lambda_1+\lambda_2\le3$, $\lambda_1+3\lambda_2\le2$, $\lambda\ge0$. (Matches the table: $\ge$ rows → $\lambda\ge0$; $x\ge0$ → $(A^T\lambda)_j\le c_j$.)</li>
+      <li>$L=3x_1+2x_2+\mu_1(4-x_1-x_2)+\mu_2(6-x_1-3x_2)-\sigma_1x_1-\sigma_2x_2=(3-\mu_1-\mu_2-\sigma_1)x_1+(2-\mu_1-3\mu_2-\sigma_2)x_2+4\mu_1+6\mu_2$, $\mu,\sigma\ge0$.</li>
+      <li>Inf over all $x\in\mathbb{R}^2$: $q=4\mu_1+6\mu_2$ if $\sigma_1=3-\mu_1-\mu_2$ and $\sigma_2=2-\mu_1-3\mu_2$; $-\infty$ otherwise. $\mathbb{D}$ = the prices satisfying these two equations.</li>
+      <li>$\sigma\ge0$ ⇒ dual: $\max\ 4\mu_1+6\mu_2$ s.t. $\mu_1+\mu_2\le3$, $\mu_1+3\mu_2\le2$, $\mu\ge0$. (Matches the table: $\ge$ rows → $\mu_i\ge0$ entering with $+$; $x\ge0$ → $R_j\le c_j$.)</li>
       <li>Primal feasibility of $(0,4)$: $4\ge4$ ✓, $12\ge6$ ✓, value $8$. Dual feasibility of $(2,0)$: $2\le3$ ✓, $2\le2$ ✓, value $8$. Equal values + weak duality ⇒ both optimal, $p^*=d^*=8$ (linprog ✓).</li>
-      <li>CS: row 2 slack ($12\gt6$) ⇒ $\lambda_2=0$ ✓; $x_2=4\gt0$ ⇒ dual constraint 2 tight ($\lambda_1+3\lambda_2=2$) ✓; $\lambda_1=2\gt0$ ⇒ row 1 tight ✓; $x_1=0$, no condition needed (dual constraint 1 slack: $2\lt3$, consistent with $x_1=0$).</li>
+      <li>CS: row 2 slack ($12\gt6$) ⇒ $\mu_2=0$ ✓; $x_2=4\gt0$ ⇒ dual constraint 2 tight ($\mu_1+3\mu_2=2$) ✓; $\mu_1=2\gt0$ ⇒ row 1 tight ✓; $x_1=0$, no condition needed (dual constraint 1 slack: $2\lt3$, consistent with $x_1=0$).</li>
     </ol>
   </div></details>
 </div>
@@ -999,7 +1000,7 @@ $$A^T\lambda^*+\mu^*=c,\quad \mu^*\ge0,\quad Ax^*=b,\quad x^*\ge0,\quad (\mu^*)^
       <li>Finite iff $1+\lambda+\mu_1=0$ (from free $x_1$) and $\mu_2=2+\lambda-\mu_1$. With $\mu_2\ge0$: dual is $\max\ -4\lambda-2\mu_1$ s.t. $1+\lambda+\mu_1=0$, $2+\lambda-\mu_1\ge0$, $\mu_1\ge0$, $\lambda$ free.</li>
       <li>Eliminate $\lambda=-1-\mu_1$: objective $4+4\mu_1-2\mu_1=4+2\mu_1$; constraint $1-2\mu_1\ge0\iff\mu_1\le\frac12$. Max at $\mu_1^*=\frac12$, $\lambda^*=-\frac32$, $d^*=5$.</li>
       <li>CS: $\mu_1^*\gt0$ ⇒ $x_1-x_2=2$; with $x_1+x_2=4$: $x^*=(3,1)$. $x_2=1\ge0$ ✓; $\mu_2^*=2-\frac32-\frac12=0$, consistent with $x_2\gt0$ ✓. $p^*=3+2=5=d^*$ (linprog ✓).</li>
-      <li>Table check. This question wrote $h$ as $Ax-b$ (not $b-Ax$), so the table's row prices are minus these: $\lambda_1^{\text{tab}}=-\lambda=\frac32$ (free, $=$ row) and $\lambda_2^{\text{tab}}=-\mu_1=-\frac12$ ($\le0$ for a $\le$ row). Table dual: $\max 4\lambda_1^{\text{tab}}+2\lambda_2^{\text{tab}}$ s.t. $\lambda_1^{\text{tab}}+\lambda_2^{\text{tab}}=1$ (free $x_1$), $\lambda_1^{\text{tab}}-\lambda_2^{\text{tab}}\le2$ ($x_2\ge0$): value $6-1=5$ ✓.</li>
+      <li>Table check. This question wrote $h$ as $Ax-b$ (not $b-Ax$), so the table's equality price is minus this one: $\lambda^{\text{tab}}=-\lambda=\frac32$ (free, $=$ row). The $\le$ row is in course form both here and in the table, so its price is the same $\mu_1=\frac12\ge0$, entering with a minus. Table dual: $\max 4\lambda^{\text{tab}}-2\mu_1$ s.t. $\lambda^{\text{tab}}-\mu_1=1$ (free $x_1$: $R_1=\lambda^{\text{tab}}-\mu_1=c_1$), $\lambda^{\text{tab}}+\mu_1\le2$ ($x_2\ge0$: $R_2=\lambda^{\text{tab}}-(-1)\mu_1\le c_2$): value $6-1=5$ ✓.</li>
     </ol>
   </div></details>
 </div>
@@ -1023,15 +1024,15 @@ $$A^T\lambda^*+\mu^*=c,\quad \mu^*\ge0,\quad Ax^*=b,\quad x^*\ge0,\quad (\mu^*)^
 <div class="q">
   <div class="qh">Q36 <span class="src">New, in his style (a variable with x ≤ 0)</span><span class="lvl">Descriptive</span></div>
   <p>Derive the dual of $\ \min 2x_1+x_2$ s.t. $x_1+x_2\ge1$, $x_1-x_2\le3$, $x_1\ge0$, $x_2\le0$. Solve both and verify complementary slackness.</p>
-  <details class="hint"><summary>Hint</summary><p>Row prices multiply $b_i-a_i^Tx$: $\lambda_1\ge0$ for the $\ge$ row, $\lambda_2\le0$ for the $\le$ row. Signs: $-x_1\le0$ ($\mu_1\ge0$) and $x_2\le0$ ($\mu_2\ge0$, entering as $+\mu_2x_2$).</p></details>
+  <details class="hint"><summary>Hint</summary><p>Course form for both rows: $g_1=1-x_1-x_2\le0$ ($\mu_1\ge0$) and $g_2=x_1-x_2-3\le0$ ($\mu_2\ge0$). Signs: $-x_1\le0$ ($\sigma_1\ge0$) and $x_2\le0$ ($\sigma_2\ge0$, entering as $+\sigma_2x_2$).</p></details>
   <details class="ans"><summary>Show answer</summary><div>
     <ol class="steps">
-      <li>$L=2x_1+x_2+\lambda_1(1-x_1-x_2)+\lambda_2(3-x_1+x_2)-\mu_1x_1+\mu_2x_2=(2-\lambda_1-\lambda_2-\mu_1)x_1+(1-\lambda_1+\lambda_2+\mu_2)x_2+\lambda_1+3\lambda_2$.</li>
-      <li>Coefficients must vanish: $\mu_1=2-\lambda_1-\lambda_2\ge0$ and $\mu_2=\lambda_1-\lambda_2-1\ge0$.</li>
-      <li>Dual: $\max\ \lambda_1+3\lambda_2$ s.t. $\lambda_1+\lambda_2\le2$, $\lambda_1-\lambda_2\ge1$, $\lambda_1\ge0$, $\lambda_2\le0$. (Table: $x_1\ge0$ → $\le$; $x_2\le0$ → $\ge$.)</li>
-      <li>Solve the dual: $3\lambda_2$ with $\lambda_2\le0$ can only lower the objective, and $\lambda_1\le2-\lambda_2$ gives objective $\le2+2\lambda_2\le2$. So $\lambda^*=(2,0)$, $d^*=2$ (check $\lambda_1-\lambda_2=2\ge1$ ✓).</li>
+      <li>$L=2x_1+x_2+\mu_1(1-x_1-x_2)+\mu_2(x_1-x_2-3)-\sigma_1x_1+\sigma_2x_2=(2-\mu_1+\mu_2-\sigma_1)x_1+(1-\mu_1-\mu_2+\sigma_2)x_2+\mu_1-3\mu_2$.</li>
+      <li>Coefficients must vanish: $\sigma_1=2-\mu_1+\mu_2\ge0$ and $\sigma_2=\mu_1+\mu_2-1\ge0$.</li>
+      <li>Dual: $\max\ \mu_1-3\mu_2$ s.t. $\mu_1-\mu_2\le2$, $\mu_1+\mu_2\ge1$, $\mu_1\ge0$, $\mu_2\ge0$. (Table: the $\le$ row's $\mu_2$ enters with a minus; $x_1\ge0$ → $\le$; $x_2\le0$ → $\ge$.)</li>
+      <li>Solve the dual: $-3\mu_2$ with $\mu_2\ge0$ can only lower the objective, and $\mu_1\le2+\mu_2$ gives objective $\le2-2\mu_2\le2$. So $\mu^*=(2,0)$, $d^*=2$ (check $\mu_1+\mu_2=2\ge1$ ✓).</li>
       <li>Primal: $x_1\ge1-x_2\ge1$ (since $x_2\le0$), so $2x_1+x_2\ge2(1-x_2)+x_2=2-x_2\ge2$; equality at $x^*=(1,0)$, $p^*=2=d^*$ (linprog ✓).</li>
-      <li>CS: $\lambda_1=2\gt0$ ⇒ row 1 tight ($1+0=1$ ✓). Row 2 slack ($1\lt3$) ⇒ $\lambda_2=0$ ✓. $x_1=1\gt0$ ⇒ $\mu_1=0$, i.e. $\lambda_1+\lambda_2=2$ ✓. $\mu_2=2-0-1=1\gt0$ ⇒ $x_2=0$ ✓.</li>
+      <li>CS: $\mu_1=2\gt0$ ⇒ row 1 tight ($1+0=1$ ✓). Row 2 slack ($1\lt3$) ⇒ $\mu_2=0$ ✓. $x_1=1\gt0$ ⇒ $\sigma_1=0$, i.e. $\mu_1-\mu_2=2$ ✓. $\sigma_2=2+0-1=1\gt0$ ⇒ $x_2=0$ ✓.</li>
     </ol>
   </div></details>
 </div>
@@ -1299,8 +1300,8 @@ $$A^T\lambda^*+\mu^*=c,\quad \mu^*\ge0,\quad Ax^*=b,\quad x^*\ge0,\quad (\mu^*)^
   <details class="ans"><summary>Show answer</summary><div><p>(i) If (P) or (D) has an optimal solution, so does the other and the values are equal. (ii) If one is unbounded, the other is infeasible. False: "infeasible ⇒ other unbounded". $A=[0]$, $b=1$, $c=-1$: both infeasible.</p></div></details></div>
 <div class="q"><div class="qh">S8</div><p>Which three constraint types give a convex feasible set? Is KKT necessary for a convex problem? Sufficient? Give the counter-example for one of them.</p>
   <details class="ans"><summary>Show answer</summary><div><p>$h=0$ with $h$ affine; $g\le0$ with $g$ convex; $g\ge0$ with $g$ concave. KKT is sufficient for a global minimum (no CQ needed), not necessary without a CQ: $\min(x-1)^2$ s.t. $x^2\le0$, optimum $x=0$, no multiplier. (And say "convex optimization problem", never "concave optimization problem" or "concave set".)</p></div></details></div>
-<div class="q"><div class="qh">S9</div><p>For a MIN primal, what does each of these become in the dual: a $\ge$ row, a $\le$ row, a free variable, a variable with $x_j\le0$? (Row prices multiply $b_i-a_i^Tx$.)</p>
-  <details class="ans"><summary>Show answer</summary><div><p>$\ge$ row → $\lambda_i\ge0$; $\le$ row → $\lambda_i\le0$; free $x_j$ → $(A^T\lambda)_j=c_j$; $x_j\le0$ → $(A^T\lambda)_j\ge c_j$. (And $x_j\ge0$ → $\le c_j$; $=$ row → $\lambda_i$ free.)</p></div></details></div>
+<div class="q"><div class="qh">S9</div><p>For a MIN primal, what does each of these become in the dual: a $\ge$ row, a $\le$ row, a free variable, a variable with $x_j\le0$? (Equality rows written $b_i-a_i^Tx$; inequality rows in course form $g\le0$.)</p>
+  <details class="ans"><summary>Show answer</summary><div><p>$\ge$ row → $\mu_i\ge0$, entering as $+b_i\mu_i$ (term $\mu_i(b_i-a_i^Tx)$); $\le$ row → $\mu_i\ge0$, entering as $-b_i\mu_i$ (term $\mu_i(a_i^Tx-b_i)$); free $x_j$ → $R_j=c_j$; $x_j\le0$ → $R_j\ge c_j$. (And $x_j\ge0$ → $R_j\le c_j$; $=$ row → $\lambda_i$ free, entering as $+b_i\lambda_i$.) Every inequality price is $\ge0$.</p></div></details></div>
 <p><label><input type="checkbox" data-key="m3-done"> I finished this module</label></p>
 </section>
 
@@ -1326,15 +1327,15 @@ $$A^T\lambda^*+\mu^*=c,\quad \mu^*\ge0,\quad Ax^*=b,\quad x^*\ge0,\quad (\mu^*)^
     <li>Never write "concave optimization problem" or "concave set".</li>
   </ul>
 </div>
-<div class="box must"><span class="tag">LP dual sign table for a MIN primal (row prices multiply $b_i-a_i^Tx$)</span>
-<p>Dual is $\max b^T\lambda$ with one $\lambda_i$ per row of $A$ and one dual constraint per variable $x_j$ (column $j$ of $A$).</p>
+<div class="box must"><span class="tag">LP dual sign table for a MIN primal (equality rows $\lambda_i(b_i-a_i^Tx)$; inequality rows in course form $g\le0$, $\mu_i\ge0$)</span>
+<p>One price per row of $A$ and one dual constraint per variable $x_j$ (column $j$ of $A$). Dual objective $=\sum_{=,\ \ge}b_i\cdot\text{price}_i-\sum_{\le}b_i\mu_i$; $R_j$ = the same with $a_{ij}$ in place of $b_i$ (only $=$ rows: $R_j=(A^T\lambda)_j$).</p>
 <table>
-<tr><th>Primal ROW $i$</th><th>→ dual VARIABLE $\lambda_i$</th><th style="border-left:3px solid var(--accent)">Primal VARIABLE $x_j$</th><th>→ dual CONSTRAINT $j$</th></tr>
-<tr><td>$a_i^Tx\ge b_i$</td><td>$\lambda_i\ge0$</td><td style="border-left:3px solid var(--accent)">$x_j\ge0$</td><td>$(A^T\lambda)_j\le c_j$</td></tr>
-<tr><td>$a_i^Tx=b_i$</td><td>$\lambda_i$ free</td><td style="border-left:3px solid var(--accent)">$x_j$ free</td><td>$(A^T\lambda)_j=c_j$</td></tr>
-<tr><td>$a_i^Tx\le b_i$</td><td>$\lambda_i\le0$</td><td style="border-left:3px solid var(--accent)">$x_j\le0$</td><td>$(A^T\lambda)_j\ge c_j$</td></tr>
+<tr><th>Primal ROW $i$</th><th>→ dual VARIABLE (enters as)</th><th style="border-left:3px solid var(--accent)">Primal VARIABLE $x_j$</th><th>→ dual CONSTRAINT $j$</th></tr>
+<tr><td>$a_i^Tx\ge b_i$</td><td>$\mu_i\ge0$ ($+b_i\mu_i$)</td><td style="border-left:3px solid var(--accent)">$x_j\ge0$</td><td>$R_j\le c_j$</td></tr>
+<tr><td>$a_i^Tx=b_i$</td><td>$\lambda_i$ free ($+b_i\lambda_i$)</td><td style="border-left:3px solid var(--accent)">$x_j$ free</td><td>$R_j=c_j$</td></tr>
+<tr><td>$a_i^Tx\le b_i$</td><td>$\mu_i\ge0$ ($-b_i\mu_i$)</td><td style="border-left:3px solid var(--accent)">$x_j\le0$</td><td>$R_j\ge c_j$</td></tr>
 </table>
-<p class="small">The two halves are separate lookups (rows → price signs; variables → dual constraints); the thick line divides them. Equality rows: this page writes them $b-Ax$ in LP work (flipping to $Ax-b$ flips those prices' signs). Check: standard form ($=$ rows, $x\ge0$) gives $\lambda$ free, $A^T\lambda\le c$. A <b>max</b> primal: first rewrite as $\min(-c^Tx)$. $\max c^Tx$, $Ax\le b$, $x\ge0$ ↔ $\min b^Tw$, $A^Tw\ge c$, $w\ge0$.</p>
+<p class="small">The two halves are separate lookups (rows → prices; variables → dual constraints); the thick line divides them. Every inequality price is $\ge0$. Equality rows: this page writes them $b-Ax$ in LP work (flipping to $Ax-b$ flips those prices' signs). Books that attach a $\le$ row's price to $b_i-a_i^Tx$ show it as "$\le0$": that is $-\mu_i$, same dual value. Check: standard form ($=$ rows, $x\ge0$) gives $\lambda$ free, $A^T\lambda\le c$. A <b>max</b> primal: first rewrite as $\min(-c^Tx)$. $\max c^Tx$, $Ax\le b$, $x\ge0$ ↔ $\min b^Tw$, $A^Tw\ge c$, $w\ge0$.</p>
 </div>
 </section>
 
@@ -1728,7 +1729,7 @@ w.onDrag(function(p){return A2&&A2.inside(p,10)?'p':null;},function(h,p){
   lam=Math.round(FW.clamp(A2.ix(p.x),-5,2)*100)/100; mu=Math.round(FW.clamp(A2.iy(p.y),0,5)*100)/100; FW.setRange(sL,lam); FW.setRange(sM,mu); });
 })();
 
-/* ===== Widget 4: LP primal vs dual (section L3 mixed-form example; rows written as lambda_i (b_i - a_i^T x)) ===== */
+/* ===== Widget 4: LP primal vs dual (section L3 mixed-form example; >= row price mu1 on (4 - x1 - x2), = row price lambda2 on (1 - x1 + x2), sign price sigma1) ===== */
 (function(){
 var root=document.getElementById('w-lp'); if(!root||!window.FW3) return;
 var FW=window.FW3,fmt=FW.fmt;
@@ -1755,7 +1756,7 @@ function draw(w){
   FW.text(w,'x* = (2.5, 1.5)',A1.X(2.5)+10,A1.Y(1.5)+16,c.ok,'left',11.5,true);
   var cl=P.x>A1.x0+A1.w*0.6; FW.text(w,'c: cost rises',cl?P.x-8:P.x+30,P.y-32,c.bad,cl?'right':'left',11,true);
   /* dual */
-  FW.frame(w,A2,{title:'dual: max 4λ₁ + λ₂',xl:'λ₁',yl:'λ₂'});
+  FW.frame(w,A2,{title:'dual: max 4μ₁ + λ₂',xl:'μ₁',yl:'λ₂'});
   FW.clip(w,A2);
   FW.region(w,A2,function(a,b){return a+b<=2&&a>=0;},c.accent,0.16,4);
   FW.seg(w,A2.X(-1),A2.Y(-4),A2.X(4),A2.Y(1),c.muted,1.6);
@@ -1765,19 +1766,19 @@ function draw(w){
   var D={x:A2.X(l1),y:A2.Y(l2)}; FW.arrow(w,D.x,D.y,D.x+4*8,D.y-1*8,c.accent,2);
   FW.dot(w,D.x,D.y,7,c.accent,true);
   FW.unclip(w);
-  FW.text(w,'shaded: λ₁+λ₂ ≤ 2, λ₁ ≥ 0',A2.x0+4,A2.y0+32,c.accent,'left',11,true);
-  FW.text(w,'λ₁ − λ₂ = 3',A2.X(0.3),A2.Y(-3.6),c.muted,'left',11,true);
-  FW.text(w,'λ* = (2.5, −0.5)',A2.X(2.5)-6,A2.Y(-0.5)-12,c.ok,'right',11.5,true);
+  FW.text(w,'shaded: μ₁+λ₂ ≤ 2, μ₁ ≥ 0',A2.x0+4,A2.y0+32,c.accent,'left',11,true);
+  FW.text(w,'μ₁ − λ₂ = 3',A2.X(0.3),A2.Y(-3.6),c.muted,'left',11,true);
+  FW.text(w,'(μ₁*, λ₂*) = (2.5, −0.5)',A2.X(2.5)-6,A2.Y(-0.5)-12,c.ok,'right',11.5,true);
   FW.text(w,'b: value rises',D.x+34,D.y+4,c.accent,'left',11,true);
   /* number line */
-  var NL=FW.numline(w,A1.x0,w.W-16,nlY,-4,22,'every dual value bᵀλ ≤ every primal cost cᵀx');
+  var NL=FW.numline(w,A1.x0,w.W-16,nlY,-4,22,'every dual value ≤ every primal cost cᵀx');
   FW.seg(w,NL.X(9.5),nlY-14,NL.X(9.5),nlY+14,c.ok,3); FW.text(w,'9.5',NL.X(9.5),nlY-17,c.ok,'center',11.5,true);
   if(cx_-bl>0.05) FW.seg(w,NL.X(bl),nlY-7,NL.X(cx_),nlY-7,c.ink,1.5,[3,3]);
-  FW.dot(w,NL.X(bl),nlY,6.5,c.accent); FW.text(w,'bᵀλ = '+fmt(bl),NL.X(bl),nlY+30,c.accent,cx_-bl<4?'right':'center',11.5,true);
+  FW.dot(w,NL.X(bl),nlY,6.5,c.accent); FW.text(w,'dual = '+fmt(bl),NL.X(bl),nlY+30,c.accent,cx_-bl<4?'right':'center',11.5,true);
   FW.dot(w,NL.X(cx_),nlY,6.5,c.bad); FW.text(w,'cᵀx = '+fmt(cx_),NL.X(cx_),nlY+30,c.bad,cx_-bl<4?'left':'center',11.5,true);
   var mu1=2-l1-l2, s1=x1+x2-4;
-  wout.innerHTML='x = (<b>'+fmt(x1)+'</b>, <b>'+fmt(x2)+'</b>), cᵀx = 2x₁+3x₂ = <b>'+fmt(cx_)+'</b> · λ = (<b>'+fmt(l1)+'</b>, <b>'+fmt(l2)+'</b>), bᵀλ = 4λ₁+λ₂ = <b>'+fmt(bl)+'</b> · gap cᵀx − bᵀλ = <b>'+fmt(cx_-bl)+'</b> ≥ 0 ✓<br>'+
-    'The gap is exactly the complementary-slackness products: λ₁·(x₁+x₂−4) + μ₁·x₁ = '+fmt(l1)+'·'+fmt(s1)+' + '+fmt(mu1)+'·'+fmt(x1)+' = <b>'+fmt(l1*s1+mu1*x1)+'</b>, with μ₁ = 2−λ₁−λ₂.'+(cx_-bl<5e-3?' <b>Both are 9.5: each certifies the other is optimal.</b>':'');
+  wout.innerHTML='x = (<b>'+fmt(x1)+'</b>, <b>'+fmt(x2)+'</b>), cᵀx = 2x₁+3x₂ = <b>'+fmt(cx_)+'</b> · (μ₁, λ₂) = (<b>'+fmt(l1)+'</b>, <b>'+fmt(l2)+'</b>), dual value 4μ₁+λ₂ = <b>'+fmt(bl)+'</b> · gap = <b>'+fmt(cx_-bl)+'</b> ≥ 0 ✓<br>'+
+    'The gap is exactly the complementary-slackness products: μ₁·(x₁+x₂−4) + σ₁·x₁ = '+fmt(l1)+'·'+fmt(s1)+' + '+fmt(mu1)+'·'+fmt(x1)+' = <b>'+fmt(l1*s1+mu1*x1)+'</b>, with σ₁ = 2−μ₁−λ₂ ≥ 0.'+(cx_-bl<5e-3?' <b>Both are 9.5: each certifies the other is optimal.</b>':'');
 }
 var w=FW.make('w-lp',function(cw){return cw<520?{W:360,H:800,narrow:true}:{W:640,H:420};},draw);
 if(!w) return;

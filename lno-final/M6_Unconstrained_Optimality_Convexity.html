@@ -634,7 +634,7 @@ As $\theta\to0$, $z_\theta\to x^*$: lower points arbitrarily close to $x^*$. Tha
 <li>Convexity from one point: "PD Hessian at one point" proves nothing about convexity ($x^3$ has $f''(1)=6\gt0$).</li></ul></div>
 
 <h3 id="h6">H6. The proof chain: convex ⇒ tangent below ⇒ monotone gradient (Midterm 1 Q VII)</h3>
-<p>Midterm 1 asked this as MCQ steps (Practice M3–M7). Learn the chain as a story. Assume $f$ is convex (the definition with $t\in[0,1]$) <b>and differentiable</b> (needed in Step 2). Fix $x,y$ and let $d=y-x$.</p>
+<p>Midterm 1 asked this as MCQ steps (Practice MT3–MT7). Learn the chain as a story. Assume $f$ is convex (the definition with $t\in[0,1]$) <b>and differentiable</b> (needed in Step 2). Fix $x,y$ and let $d=y-x$.</p>
 <ol class="steps">
 <li><b>Step 1 (use the definition).</b> $x+td=(1-t)x+ty$, so convexity gives $f(x+td)\le(1-t)f(x)+tf(y)=f(x)+t[f(y)-f(x)]$. Subtract $f(x)$ and divide by $t\gt0$ (direction unchanged):
 $$R(t)=\frac{f(x+td)-f(x)}{t}\le f(y)-f(x).$$</li>
@@ -691,7 +691,7 @@ $$\big(\nabla f(y)-\nabla f(x)\big)^\top(y-x)\ge0\qquad(\textbf{monotone gradien
 <!-- ================= PRACTICE ================= -->
 <section id="practice">
 <h2>Practice (try first, then open the answer)</h2>
-<p class="small">31 questions: 15 Quiz 1 MCQs and 7 Midterm 1 parts (past papers), then 9 new ones in his style. Each answer explains why every wrong option is wrong. Do M2 (Midterm 1 Q IV) and N1 fully on paper.</p>
+<p class="small">31 questions: 15 Quiz 1 MCQs and 7 Midterm 1 parts (past papers), then 9 new ones in his style. Each answer explains why every wrong option is wrong. Do MT2 (Midterm 1 Q IV) and N1 fully on paper.</p>
 <div class="toolbar" data-auto></div>
 
 <h3 id="pq">Quiz 1 (past paper, Ch 1): 15 selected MCQs</h3>
@@ -911,7 +911,7 @@ $$\big(\nabla f(y)-\nabla f(x)\big)^\top(y-x)\ge0\qquad(\textbf{monotone gradien
 <h3 id="pm">Midterm 1 (past paper): Q I, Q IV, Q VII</h3>
 
 <div class="q">
-  <div class="qh">M1 <span class="src">Midterm 1 Q I (20 marks)</span><span class="lvl">Descriptive</span></div>
+  <div class="qh">MT1 <span class="src">Midterm 1 Q I (20 marks)</span><span class="lvl">Descriptive</span></div>
   <p>Determine whether each function is convex on $\mathbb R^2$. Justify.<br>
   (1) $f_1=(x_1+x_2)^2$ (2) $f_2=x_1^2+4x_1x_2+x_2^2$ (3) $f_3=e^{x_1}+x_2^2$ (4) $f_4=x_1^4+x_2^4-2x_1^2x_2^2$.</p>
   <details class="hint"><summary>Hint</summary><p>Hessian PSD at every point? For (4) notice $f_4=(x_1^2-x_2^2)^2\ge0$, but that is irrelevant; try the midpoint of $(1,1)$ and $(1,-1)$.</p></details>
@@ -927,7 +927,7 @@ $$\big(\nabla f(y)-\nabla f(x)\big)^\top(y-x)\ge0\qquad(\textbf{monotone gradien
 </div>
 
 <div class="q">
-  <div class="qh">M2 <span class="src">Midterm 1 Q IV (20 marks)</span><span class="lvl">Descriptive</span></div>
+  <div class="qh">MT2 <span class="src">Midterm 1 Q IV (20 marks)</span><span class="lvl">Descriptive</span></div>
   <p>$M\in\mathbb R^{n\times n}$ ($n\ge2$) symmetric PD with distinct eigenvalues $0\lt\lambda_1\lt\dots\lt\lambda_n$, orthonormal eigenvectors $q_1,\dots,q_n$. $\min_z f(z)=\tfrac14\|zz^\top-M\|_F^2$.<br>
   (1) Derive $\nabla f$ and $\nabla^2 f$. (2) Find all stationary points. (3) Hessian eigenvalues at each; classify (strict local min / strict local max / saddle). (4) Gradient descent from $z_0=0$ with any fixed step: what happens, and what does it say about "zero gradient" as a stopping test?</p>
   <details class="hint"><summary>Hint</summary><p>Expand with $\|A\|_F^2=\text{tr}(A^\top A)$: $f=\tfrac14(z^\top z)^2-\tfrac12z^\top Mz+\tfrac14\text{tr}(M^2)$. At $z=\pm\sqrt{\lambda_i}q_i$, apply the Hessian to each $q_j$.</p></details>
@@ -948,7 +948,7 @@ $$\big(\nabla f(y)-\nabla f(x)\big)^\top(y-x)\ge0\qquad(\textbf{monotone gradien
 <p><b>Midterm 1 Q VII (guided proof, MCQ steps).</b> $f:\mathbb R^n\to\mathbb R$ differentiable with $f((1-t)x+ty)\le(1-t)f(x)+tf(y)$ for all $x,y$, $t\in[0,1]$. Fix $x,y$, $d=y-x$.</p>
 
 <div class="q mcq" data-answer="c">
-  <div class="qh">M3 <span class="src">Midterm 1 Q VII(1)</span><span class="lvl">MCQ</span></div>
+  <div class="qh">MT3 <span class="src">Midterm 1 Q VII(1)</span><span class="lvl">MCQ</span></div>
   <p>For $0\lt t\le1$, $R(t)=\dfrac{f(x+td)-f(x)}{t}$. Which bound follows from the given inequality?</p>
   <ol class="opts">
     <li data-k="a"><b class="k">(a)</b> $R(t)\ge f(y)-f(x)$</li>
@@ -962,7 +962,7 @@ $$\big(\nabla f(y)-\nabla f(x)\big)^\top(y-x)\ge0\qquad(\textbf{monotone gradien
 </div>
 
 <div class="q">
-  <div class="qh">M4 <span class="src">Midterm 1 Q VII(2)</span><span class="lvl">Short answer</span></div>
+  <div class="qh">MT4 <span class="src">Midterm 1 Q VII(2)</span><span class="lvl">Short answer</span></div>
   <p>Evaluate $\lim_{t\downarrow0}R(t)$.</p>
   <details class="ans"><summary>Show answer</summary><div>
     <p>$\nabla f(x)^\top d$. Differentiability: $f(x+td)-f(x)=t\nabla f(x)^\top d+o(t)$; divide by $t$, the $o(t)/t\to0$.</p>
@@ -970,7 +970,7 @@ $$\big(\nabla f(y)-\nabla f(x)\big)^\top(y-x)\ge0\qquad(\textbf{monotone gradien
 </div>
 
 <div class="q mcq" data-answer="a">
-  <div class="qh">M5 <span class="src">Midterm 1 Q VII(3)</span><span class="lvl">MCQ</span></div>
+  <div class="qh">MT5 <span class="src">Midterm 1 Q VII(3)</span><span class="lvl">MCQ</span></div>
   <p>Which inequality follows from parts (1) and (2)?</p>
   <ol class="opts">
     <li data-k="a"><b class="k">(a)</b> $f(y)-f(x)\ge\nabla f(x)^\top d$</li>
@@ -984,7 +984,7 @@ $$\big(\nabla f(y)-\nabla f(x)\big)^\top(y-x)\ge0\qquad(\textbf{monotone gradien
 </div>
 
 <div class="q mcq" data-answer="d">
-  <div class="qh">M6 <span class="src">Midterm 1 Q VII(4)</span><span class="lvl">MCQ</span></div>
+  <div class="qh">MT6 <span class="src">Midterm 1 Q VII(4)</span><span class="lvl">MCQ</span></div>
   <p>Repeat with $x$ and $y$ interchanged. Which inequality results?</p>
   <ol class="opts">
     <li data-k="a"><b class="k">(a)</b> $f(y)-f(x)\le-\nabla f(y)^\top d$</li>
@@ -998,7 +998,7 @@ $$\big(\nabla f(y)-\nabla f(x)\big)^\top(y-x)\ge0\qquad(\textbf{monotone gradien
 </div>
 
 <div class="q mcq" data-answer="b">
-  <div class="qh">M7 <span class="src">Midterm 1 Q VII(5)</span><span class="lvl">MCQ</span></div>
+  <div class="qh">MT7 <span class="src">Midterm 1 Q VII(5)</span><span class="lvl">MCQ</span></div>
   <p>What follows from parts (3) and (4)?</p>
   <ol class="opts">
     <li data-k="a"><b class="k">(a)</b> $(\nabla f(y)-\nabla f(x))^\top(y-x)=0$</li>

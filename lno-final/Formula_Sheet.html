@@ -5,9 +5,23 @@
 <script>window.MathJax = { tex: { inlineMath: [['$','$'],['\\(','\\)']], displayMath: [['$$','$$'],['\\[','\\]']] } };</script>
 <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml.js"></script>
 <style>@media print{h2{break-before:auto;margin-top:14px} .box{break-inside:avoid} .small{display:none}}</style>
-</head><body><div class="layout"><nav class="toc"><a class="home" href="./">← START HERE</a><a href="#M1">M1 · ADMM, from zero</a><a href="#M2">M2 · Constrained optimality (KKT), from zero</a><a href="#M3">M3 · Convexity and duality, from zero</a><a href="#M4">M4 · LP (simplex concepts) and QP, from zero</a><a href="#M5">M5 · Unconstrained algorithms, from zero: line search, gradient descent, Newton, CG</a><a href="#M6">M6 · Unconstrained optimality and convexity, from zero</a><a href="#traps">Trap checklist</a></nav>
+</head><body><div class="layout"><nav class="toc"><a class="home" href="./">← START HERE</a><a href="#conventions">Sign conventions</a><a href="#M1">M1 · ADMM, from zero</a><a href="#M2">M2 · Constrained optimality (KKT), from zero</a><a href="#M3">M3 · Convexity and duality, from zero</a><a href="#M4">M4 · LP (simplex concepts) and QP, from zero</a><a href="#M5">M5 · Unconstrained algorithms, from zero: line search, gradient descent, Newton, CG</a><a href="#M6">M6 · Unconstrained optimality and convexity, from zero</a><a href="#traps">Trap checklist</a></nav>
 <main><h1>Formula sheet: everything to have cold</h1>
-<p class="sub">The "Must remember" boxes of all six modules on one page, plus the trap checklist. Read it aloud tomorrow morning; copy what you can't recall onto your handwritten sheet. Print with Ctrl+P (answers and buttons are hidden in print).</p>
+<p class="sub">The Summary cards of all six modules on one page, plus the sign conventions and the trap checklist. Read it aloud tomorrow morning; copy what you can't recall onto your handwritten sheet. Print with Ctrl+P (answers and buttons are hidden in print).</p>
+<section id="conventions"><h2>Sign conventions (as the professor writes them)</h2>
+<div class="box must"><span class="tag">Use these forms in the exam</span>
+<table>
+<tr><th>Where</th><th>His form</th><th>Consequence</th></tr>
+<tr><td>General KKT (Ch 6–7)</td><td>Constraints $h(x)=0$, $g(x)\le0$; $L=f+\lambda^Th+\mu^Tg$</td><td>$\mu\ge0$, $\lambda$ free, $\mu_jg_j=0$. Rewrite every constraint into this form first.</td></tr>
+<tr><td>LP (Ch 7 notes)</td><td>$\min c^Tx$, $Ax=b$, $x\ge0$; $h(x)=b-Ax$, $g(x)=-x\le0$; $L=c^Tx+\lambda^T(b-Ax)-\mu^Tx$</td><td>KKT: $A^T\lambda+\mu=c$, $\mu\ge0$, $\mu^Tx=0$. Dual: $\max b^T\lambda$ s.t. $A^T\lambda\le c$ ($\lambda$ free).</td></tr>
+<tr><td>LP inequality rows</td><td>Write each as $g_i\le0$ in the course form: a $\ge$ row as $b_i-a_i^Tx\le0$, a $\le$ row as $a_i^Tx-b_i\le0$, each with its own $\mu_i\ge0$</td><td>Every inequality price is $\ge0$; only equality prices are free.</td></tr>
+<tr><td>LP (Ch 8 simplex)</td><td>Same as Ch 7: $\lambda=B^{-T}c_B$, reduced costs $\mu_N=c_N-N^T\lambda$</td><td>Optimal basis iff $\mu_N\ge0$.</td></tr>
+<tr><td>QP (Ch 9 notes)</td><td>$f=\tfrac12x^TQx-c^Tx$; $L=f+\lambda^T(Ax-b)$</td><td>KKT: $Qx-c+A^T\lambda=0$, $Ax=b$, i.e. $\begin{bmatrix}Q&amp;A^T\\A&amp;0\end{bmatrix}\begin{bmatrix}x\\\lambda\end{bmatrix}=\begin{bmatrix}c\\b\end{bmatrix}$. Gradient $g_k=Qx_k-c$.</td></tr>
+<tr><td>ADMM (Ch 10)</td><td>$A(x_1,x_2)=A_1x_1+A_2x_2-b$; $L_A=f_1+f_2+\lambda^TA+\tfrac{\beta}{2}\|A\|^2$</td><td>$\lambda\leftarrow\lambda+\beta A(x_1^{(k+1)},x_2^{(k+1)})$.</td></tr>
+</table>
+<p><b>If you (or a question) write an equality the other way round</b>, e.g. $\lambda^T(Ax-b)$ in an LP: only the sign of that $\lambda$ flips. $x^*$, $p^*$, $d^*$ and the inequality prices $\mu$ don't change. Always state which form you're using in an answer.</p>
+</div></section>
+
 <section id="M1"><h2>M1 · ADMM, from zero <a class="small" href="M1_ADMM.html">open module →</a></h2>
 
 <div class="box must"><span class="tag">Memorise cold</span>
@@ -65,15 +79,15 @@
     <li>Never write "concave optimization problem" or "concave set".</li>
   </ul>
 </div>
-<div class="box must"><span class="tag">LP dual sign table for a MIN primal (row prices multiply $b_i-a_i^Tx$)</span>
-<p>Dual is $\max b^T\lambda$ with one $\lambda_i$ per row of $A$ and one dual constraint per variable $x_j$ (column $j$ of $A$).</p>
+<div class="box must"><span class="tag">LP dual sign table for a MIN primal (equality rows $\lambda_i(b_i-a_i^Tx)$; inequality rows in course form $g\le0$, $\mu_i\ge0$)</span>
+<p>One price per row of $A$ and one dual constraint per variable $x_j$ (column $j$ of $A$). Dual objective $=\sum_{=,\ \ge}b_i\cdot\text{price}_i-\sum_{\le}b_i\mu_i$; $R_j$ = the same with $a_{ij}$ in place of $b_i$ (only $=$ rows: $R_j=(A^T\lambda)_j$).</p>
 <table>
-<tr><th>Primal ROW $i$</th><th>→ dual VARIABLE $\lambda_i$</th><th style="border-left:3px solid var(--accent)">Primal VARIABLE $x_j$</th><th>→ dual CONSTRAINT $j$</th></tr>
-<tr><td>$a_i^Tx\ge b_i$</td><td>$\lambda_i\ge0$</td><td style="border-left:3px solid var(--accent)">$x_j\ge0$</td><td>$(A^T\lambda)_j\le c_j$</td></tr>
-<tr><td>$a_i^Tx=b_i$</td><td>$\lambda_i$ free</td><td style="border-left:3px solid var(--accent)">$x_j$ free</td><td>$(A^T\lambda)_j=c_j$</td></tr>
-<tr><td>$a_i^Tx\le b_i$</td><td>$\lambda_i\le0$</td><td style="border-left:3px solid var(--accent)">$x_j\le0$</td><td>$(A^T\lambda)_j\ge c_j$</td></tr>
+<tr><th>Primal ROW $i$</th><th>→ dual VARIABLE (enters as)</th><th style="border-left:3px solid var(--accent)">Primal VARIABLE $x_j$</th><th>→ dual CONSTRAINT $j$</th></tr>
+<tr><td>$a_i^Tx\ge b_i$</td><td>$\mu_i\ge0$ ($+b_i\mu_i$)</td><td style="border-left:3px solid var(--accent)">$x_j\ge0$</td><td>$R_j\le c_j$</td></tr>
+<tr><td>$a_i^Tx=b_i$</td><td>$\lambda_i$ free ($+b_i\lambda_i$)</td><td style="border-left:3px solid var(--accent)">$x_j$ free</td><td>$R_j=c_j$</td></tr>
+<tr><td>$a_i^Tx\le b_i$</td><td>$\mu_i\ge0$ ($-b_i\mu_i$)</td><td style="border-left:3px solid var(--accent)">$x_j\le0$</td><td>$R_j\ge c_j$</td></tr>
 </table>
-<p class="small">The two halves are separate lookups (rows → price signs; variables → dual constraints); the thick line divides them. Equality rows: this page writes them $b-Ax$ in LP work (flipping to $Ax-b$ flips those prices' signs). Check: standard form ($=$ rows, $x\ge0$) gives $\lambda$ free, $A^T\lambda\le c$. A <b>max</b> primal: first rewrite as $\min(-c^Tx)$. $\max c^Tx$, $Ax\le b$, $x\ge0$ ↔ $\min b^Tw$, $A^Tw\ge c$, $w\ge0$.</p>
+<p class="small">The two halves are separate lookups (rows → prices; variables → dual constraints); the thick line divides them. Every inequality price is $\ge0$. Equality rows: this page writes them $b-Ax$ in LP work (flipping to $Ax-b$ flips those prices' signs). Books that attach a $\le$ row's price to $b_i-a_i^Tx$ show it as "$\le0$": that is $-\mu_i$, same dual value. Check: standard form ($=$ rows, $x\ge0$) gives $\lambda$ free, $A^T\lambda\le c$. A <b>max</b> primal: first rewrite as $\min(-c^Tx)$. $\max c^Tx$, $Ax\le b$, $x\ge0$ ↔ $\min b^Tw$, $A^Tw\ge c$, $w\ge0$.</p>
 </div>
 </section><section id="M4"><h2>M4 · LP (simplex concepts) and QP, from zero <a class="small" href="M4_LP_Simplex_and_QP.html">open module →</a></h2>
 

@@ -107,7 +107,7 @@
 <!-- ================= 0. WHY ================= -->
 <section id="why">
 <h2>0. Why this topic exists (the problem it solves)</h2>
-<p>In Chapter 1 you learnt: at a minimum of a smooth function with <b>no constraints</b>, the gradient is zero, $\nabla f(x^\star)=0$. Real problems have constraints: a budget, a capacity, "this quantity can't be negative".</p>
+<p>In Chapter 1 you learnt: at a minimum of a smooth function with <b>no constraints</b>, the gradient is zero, $\nabla f(x^\star)=0$. (If gradients, Hessians, positive definiteness or FONC/SONC/SOSC feel rusty, <a href="M6_Unconstrained_Optimality_Convexity.html">M6</a> sections C–D rebuild them from zero in about 20 minutes; this page uses them from section E on.) Real problems have constraints: a budget, a capacity, "this quantity can't be negative".</p>
 <p><b>A concrete problem.</b> Find the point closest to $(2,2)$ among the points with $x_1+x_2\le2$. As a minimisation: $\min\ f(x)=(x_1-2)^2+(x_2-2)^2$ subject to $x_1+x_2\le2$.</p>
 <ul>
 <li>Without the constraint the answer is $(2,2)$, where $\nabla f=0$. But $2+2=4\gt2$: that point is not allowed.</li>
