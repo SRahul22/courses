@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>M6 · Unconstrained optimality and convexity</title>
-<link rel="stylesheet" href="assets/fe.css">
+<link rel="stylesheet" href="assets/fe.css?v=20261126w">
 <script>
   window.MathJax = { tex: { inlineMath: [['$','$'],['\\(','\\)']], displayMath: [['$$','$$'],['\\[','\\]']] } };
 </script>
@@ -17,6 +17,8 @@
   .check > b:first-child{color:var(--accent)}
   .roadmap li{margin:3px 0}
   .kw{font-weight:700;color:var(--accent)}
+  .widget select{max-width:100%;min-width:0}
+  .widget .wctl label{flex-wrap:wrap;max-width:100%}
 </style>
 </head>
 <body>
@@ -32,6 +34,7 @@
   <a href="#b2">&nbsp;&nbsp;B2. Little-o and Taylor</a>
   <a href="#b3">&nbsp;&nbsp;B3. FONC, SONC, SOSC in 1-D</a>
   <a href="#b4">&nbsp;&nbsp;B4. x², x⁴, x³, −x⁴</a>
+  <a href="#w-1d">&nbsp;&nbsp;&nbsp;&nbsp;▶ Try: drag along a curve</a>
   <a href="#nd">C. Many variables</a>
   <a href="#c1">&nbsp;&nbsp;C1. Gradient and Hessian</a>
   <a href="#c2">&nbsp;&nbsp;C2. Look along a line</a>
@@ -46,7 +49,9 @@
   <a href="#e1">&nbsp;&nbsp;E1. Recipe</a>
   <a href="#e2">&nbsp;&nbsp;E2. Full example by hand</a>
   <a href="#e3">&nbsp;&nbsp;E3. When the Hessian is silent</a>
+  <a href="#w-2d">&nbsp;&nbsp;&nbsp;&nbsp;▶ Try: contours and Hessian</a>
   <a href="#e4">&nbsp;&nbsp;E4. Peano: lines are not enough</a>
+  <a href="#w-peano">&nbsp;&nbsp;&nbsp;&nbsp;▶ Try: Peano live</a>
   <a href="#quad">F. Quadratics</a>
   <a href="#ls">G. Least squares</a>
   <a href="#convex">H. Convexity</a>
@@ -54,6 +59,7 @@
   <a href="#h2">&nbsp;&nbsp;H2. Tangent below graph</a>
   <a href="#h3">&nbsp;&nbsp;H3. Hessian PSD everywhere</a>
   <a href="#h4">&nbsp;&nbsp;H4. Max, log-sum-exp</a>
+  <a href="#w-convex">&nbsp;&nbsp;&nbsp;&nbsp;▶ Try: chord and tangent</a>
   <a href="#h5">&nbsp;&nbsp;H5. Local = global</a>
   <a href="#h6">&nbsp;&nbsp;H6. The proof chain (Mid 1 VII)</a>
   <a href="#recipe">I. Exam recipe</a>
@@ -224,6 +230,13 @@ $$f(x^*+h)=f(x^*)+f'(x^*)\,h+\tfrac12f''(x^*)\,h^2+o(h^2).$$
 <li>"$f''(x^*)\lt0$ at a stationary point, but the remainder might still make it a minimum": false. $o(h^2)/h^2\to0$, so a remainder can never beat a nonzero $h^2$ term. Such a point is a strict local max.</li>
 <li>SONC has the <b>weak</b> inequality $\ge$; SOSC has the <b>strict</b> one $\gt$, and concludes a <b>strict</b> minimum.</li>
 </ul></div>
+<div class="widget" id="w-1d"><div class="wtitle">The 1-D tests, live</div>
+<p class="small">Pick a function, then drag along the curve (or press a "Go to" button). Watch the green tangent, the f′ and f″ numbers, and the verdict for FONC / SONC / SOSC.</p>
+<canvas width="640" height="340" aria-label="Graph of the chosen function with a draggable point, its tangent line and its second-order parabola"></canvas>
+<div class="wctl"><label>Function <select></select></label><span class="jumps"></span></div>
+<div class="wout"></div>
+<div class="whint"><b>What to notice.</b> On $x^4$, $x^3$ and $-x^4$ at 0 the purple dashed parabola (all that $f'$ and $f''$ can "see") is the same flat line, so the tests can't tell them apart: $x^4$ passes SONC, fails SOSC, yet is a strict min; $x^3$ passes FONC and SONC and is not a min. Away from a stationary point the tangent is tilted, so FONC fails. The last function is Check B below: check your answer there.</div>
+</div>
 <div class="check"><b>Check B.</b> $f(x)=x^2(x-1)$ has stationary points $0$ and $\tfrac23$. Classify them using $f''$.
 <details class="ans"><summary>Show answer</summary><div><p>$f=x^3-x^2$, $f'=3x^2-2x=x(3x-2)$, $f''=6x-2$. At 0: $f''=-2\lt0$ ⇒ strict local max (by the 1-D SONC, it can't be a min; it's a max by SOSC applied to $-f$). At $\tfrac23$: $f''=2\gt0$ ⇒ SOSC ⇒ strict local min. Not global: $f\to-\infty$ as $x\to-\infty$.</p></div></details></div>
 </section>
@@ -414,6 +427,13 @@ If $\|x\|\to\infty$ then $|x_1|\to\infty$ or $|x_2|\to\infty$ (or both); either 
 <svg viewBox="0 0 400 230" width="400" role="img" aria-label="Sign pattern of the monkey saddle"><path d="M130 115 L207.9 160.0 A90 90 0 0 0 207.9 70.0 Z" fill="#1f8a44" fill-opacity=".22" stroke="#1f8a44" stroke-opacity=".5"/><text x="186" y="121" font-size="20" fill="#1f8a44" text-anchor="middle" font-weight="700">+</text><path d="M130 115 L207.9 70.0 A90 90 0 0 0 130.0 25.0 Z" fill="#c8372d" fill-opacity=".22" stroke="#c8372d" stroke-opacity=".5"/><text x="158" y="73" font-size="20" fill="#c8372d" text-anchor="middle" font-weight="700">−</text><path d="M130 115 L130.0 25.0 A90 90 0 0 0 52.1 70.0 Z" fill="#1f8a44" fill-opacity=".22" stroke="#1f8a44" stroke-opacity=".5"/><text x="102" y="73" font-size="20" fill="#1f8a44" text-anchor="middle" font-weight="700">+</text><path d="M130 115 L52.1 70.0 A90 90 0 0 0 52.1 160.0 Z" fill="#c8372d" fill-opacity=".22" stroke="#c8372d" stroke-opacity=".5"/><text x="74" y="121" font-size="20" fill="#c8372d" text-anchor="middle" font-weight="700">−</text><path d="M130 115 L52.1 160.0 A90 90 0 0 0 130.0 205.0 Z" fill="#1f8a44" fill-opacity=".22" stroke="#1f8a44" stroke-opacity=".5"/><text x="102" y="169" font-size="20" fill="#1f8a44" text-anchor="middle" font-weight="700">+</text><path d="M130 115 L130.0 205.0 A90 90 0 0 0 207.9 160.0 Z" fill="#c8372d" fill-opacity=".22" stroke="#c8372d" stroke-opacity=".5"/><text x="158" y="169" font-size="20" fill="#c8372d" text-anchor="middle" font-weight="700">−</text><line x1="130" y1="115" x2="245" y2="115" stroke="currentColor" stroke-width="1.5"/><text x="248" y="119" font-size="12" fill="currentColor" text-anchor="start" >d = (1,0): f = t³</text><line x1="130" y1="115" x2="211.3" y2="33.7" stroke="currentColor" stroke-width="1.5"/><text x="213" y="32" font-size="12" fill="currentColor" text-anchor="start" >d = (1,1): f = −2t³</text><circle cx="130" cy="115" r="4" fill="currentColor"/></svg>
 <div class="cap">Sign of the monkey saddle $x_1^3-3x_1x_2^2$ around 0 (in polar form it is $r^3\cos3\theta$): six sectors, alternately positive (green) and negative (red). A monkey sitting at 0 has room for two legs and a tail going down. Since the Hessian is zero, only looking along directions reveals this.</div>
 </div>
+<div class="widget" id="w-2d"><div class="wtitle">Contours, gradient and Hessian in 2-D</div>
+<p class="small">Drag the dot on the contour map: the red arrow is $\nabla f$ (uphill, at right angles to the contour). Turn the angle slider to choose a direction $d$; the right panel is the slice $\varphi(t)=f(x+td)$ from C2. Near a black circle the dot snaps onto a stationary point, and the Hessian's eigenvectors appear (green = positive eigenvalue, red = negative, grey = zero).</p>
+<canvas width="640" height="400" aria-label="Contour map with draggable point, gradient arrow, direction line, and the one-dimensional slice along that direction"></canvas>
+<div class="wctl"><label>Function <select></select></label><label>Angle of $d$ <input type="range" name="ang" min="0" max="180" step="1" value="30"> <output></output></label><span class="jumps"></span></div>
+<div class="wout"></div>
+<div class="whint"><b>What to notice.</b> At $(1,1)$ for E2's function, turn the angle: $\varphi''(0)=d^\top Hd$ stays between 3 and 9, the two eigenvalues, reaching them exactly along the eigenvectors. Every slice curves up, so it's a min. At $(0,0)$ it swings from $-3$ to $+3$: a saddle. For $x_1^4+x_2^2$ and the monkey saddle some directions give $\varphi''(0)=0$ (Hessian silent), and only the shape of $\varphi$ itself tells you the answer. Away from stationary points, $\varphi'(0)=\nabla f^\top d=0$ exactly when $d$ is at right angles to the red arrow.</div>
+</div>
 
 <h3 id="e4">E4. Minimum along every line, but not a minimum (Peano; Tutorial 1, problem 8)</h3>
 <p><b>Question.</b> If $x^*$ is a minimum along <i>every</i> straight line through it, must it be a local minimum? (a) It must at least be stationary: each line gives $\varphi'(0)=\nabla f(x^*)^\top d=0$ for all $d$, so $\nabla f(x^*)=0$ (as in the FONC proof). (b) But it need <b>not</b> be a local minimum. He said: <q>the part B is important</q>.</p>
@@ -432,6 +452,17 @@ Numbers ($p=1,q=2$): along $d=(1,1)$, $\varphi=t^2-3t^3+2t^4$, which is $\gt0$ f
 <div class="fig">
 <svg viewBox="0 0 500 236" width="500" role="img" aria-label="Peano counterexample: the region between two parabolas"><line x1="5" y1="180" x2="400" y2="180" stroke="currentColor" stroke-opacity=".35"/><line x1="200" y1="5" x2="200" y2="235" stroke="currentColor" stroke-opacity=".35"/><path d="M11.5 20.2 L14.2 24.8 L16.9 29.3 L19.6 33.7 L22.3 38.1 L25.1 42.4 L27.8 46.6 L30.5 50.8 L33.2 54.9 L35.9 58.9 L38.6 62.9 L41.3 66.8 L44.0 70.6 L46.8 74.4 L49.5 78.1 L52.2 81.7 L54.9 85.3 L57.6 88.8 L60.3 92.3 L63.0 95.6 L65.7 98.9 L68.5 102.2 L71.2 105.4 L73.9 108.5 L76.6 111.5 L79.3 114.5 L82.0 117.4 L84.7 120.2 L87.4 123.0 L90.2 125.7 L92.9 128.4 L95.6 131.0 L98.3 133.5 L101.0 135.9 L103.7 138.3 L106.4 140.6 L109.1 142.9 L111.9 145.1 L114.6 147.2 L117.3 149.2 L120.0 151.2 L122.7 153.1 L125.4 155.0 L128.1 156.8 L130.8 158.5 L133.6 160.1 L136.3 161.7 L139.0 163.3 L141.7 164.7 L144.4 166.1 L147.1 167.4 L149.8 168.7 L152.5 169.9 L155.2 171.0 L158.0 172.1 L160.7 173.0 L163.4 174.0 L166.1 174.8 L168.8 175.6 L171.5 176.4 L174.2 177.0 L176.9 177.6 L179.7 178.1 L182.4 178.6 L185.1 179.0 L187.8 179.3 L190.5 179.6 L193.2 179.8 L195.9 179.9 L198.6 180.0 L201.4 180.0 L204.1 179.9 L206.8 179.8 L209.5 179.6 L212.2 179.3 L214.9 179.0 L217.6 178.6 L220.3 178.1 L223.1 177.6 L225.8 177.0 L228.5 176.4 L231.2 175.6 L233.9 174.8 L236.6 174.0 L239.3 173.0 L242.0 172.1 L244.8 171.0 L247.5 169.9 L250.2 168.7 L252.9 167.4 L255.6 166.1 L258.3 164.7 L261.0 163.3 L263.7 161.7 L266.4 160.1 L269.2 158.5 L271.9 156.8 L274.6 155.0 L277.3 153.1 L280.0 151.2 L282.7 149.2 L285.4 147.2 L288.1 145.1 L290.9 142.9 L293.6 140.6 L296.3 138.3 L299.0 135.9 L301.7 133.5 L304.4 131.0 L307.1 128.4 L309.8 125.7 L312.6 123.0 L315.3 120.2 L318.0 117.4 L320.7 114.5 L323.4 111.5 L326.1 108.5 L328.8 105.4 L331.5 102.2 L334.3 98.9 L337.0 95.6 L339.7 92.3 L342.4 88.8 L345.1 85.3 L347.8 81.7 L350.5 78.1 L353.2 74.4 L356.0 70.6 L358.7 66.8 L361.4 62.9 L364.1 58.9 L366.8 54.9 L369.5 50.8 L372.2 46.6 L374.9 42.4 L377.7 38.1 L380.4 33.7 L383.1 29.3 L385.8 24.8 L388.5 20.2 L388.5 100.1 L385.8 102.4 L383.1 104.6 L380.4 106.9 L377.7 109.0 L374.9 111.2 L372.2 113.3 L369.5 115.4 L366.8 117.4 L364.1 119.5 L361.4 121.4 L358.7 123.4 L356.0 125.3 L353.2 127.2 L350.5 129.1 L347.8 130.9 L345.1 132.7 L342.4 134.4 L339.7 136.1 L337.0 137.8 L334.3 139.5 L331.5 141.1 L328.8 142.7 L326.1 144.2 L323.4 145.8 L320.7 147.2 L318.0 148.7 L315.3 150.1 L312.6 151.5 L309.8 152.9 L307.1 154.2 L304.4 155.5 L301.7 156.7 L299.0 158.0 L296.3 159.2 L293.6 160.3 L290.9 161.4 L288.1 162.5 L285.4 163.6 L282.7 164.6 L280.0 165.6 L277.3 166.6 L274.6 167.5 L271.9 168.4 L269.2 169.2 L266.4 170.1 L263.7 170.9 L261.0 171.6 L258.3 172.4 L255.6 173.0 L252.9 173.7 L250.2 174.3 L247.5 174.9 L244.8 175.5 L242.0 176.0 L239.3 176.5 L236.6 177.0 L233.9 177.4 L231.2 177.8 L228.5 178.2 L225.8 178.5 L223.1 178.8 L220.3 179.1 L217.6 179.3 L214.9 179.5 L212.2 179.7 L209.5 179.8 L206.8 179.9 L204.1 180.0 L201.4 180.0 L198.6 180.0 L195.9 180.0 L193.2 179.9 L190.5 179.8 L187.8 179.7 L185.1 179.5 L182.4 179.3 L179.7 179.1 L176.9 178.8 L174.2 178.5 L171.5 178.2 L168.8 177.8 L166.1 177.4 L163.4 177.0 L160.7 176.5 L158.0 176.0 L155.2 175.5 L152.5 174.9 L149.8 174.3 L147.1 173.7 L144.4 173.0 L141.7 172.4 L139.0 171.6 L136.3 170.9 L133.6 170.1 L130.8 169.2 L128.1 168.4 L125.4 167.5 L122.7 166.6 L120.0 165.6 L117.3 164.6 L114.6 163.6 L111.9 162.5 L109.1 161.4 L106.4 160.3 L103.7 159.2 L101.0 158.0 L98.3 156.7 L95.6 155.5 L92.9 154.2 L90.2 152.9 L87.4 151.5 L84.7 150.1 L82.0 148.7 L79.3 147.2 L76.6 145.8 L73.9 144.2 L71.2 142.7 L68.5 141.1 L65.7 139.5 L63.0 137.8 L60.3 136.1 L57.6 134.4 L54.9 132.7 L52.2 130.9 L49.5 129.1 L46.8 127.2 L44.0 125.3 L41.3 123.4 L38.6 121.4 L35.9 119.5 L33.2 117.4 L30.5 115.4 L27.8 113.3 L25.1 111.2 L22.3 109.0 L19.6 106.9 L16.9 104.6 L14.2 102.4 L11.5 100.1 Z" fill="#c8372d" fill-opacity=".22"/><path d="M11.5 20.2 L14.2 24.8 L16.9 29.3 L19.6 33.7 L22.3 38.1 L25.1 42.4 L27.8 46.6 L30.5 50.8 L33.2 54.9 L35.9 58.9 L38.6 62.9 L41.3 66.8 L44.0 70.6 L46.8 74.4 L49.5 78.1 L52.2 81.7 L54.9 85.3 L57.6 88.8 L60.3 92.3 L63.0 95.6 L65.7 98.9 L68.5 102.2 L71.2 105.4 L73.9 108.5 L76.6 111.5 L79.3 114.5 L82.0 117.4 L84.7 120.2 L87.4 123.0 L90.2 125.7 L92.9 128.4 L95.6 131.0 L98.3 133.5 L101.0 135.9 L103.7 138.3 L106.4 140.6 L109.1 142.9 L111.9 145.1 L114.6 147.2 L117.3 149.2 L120.0 151.2 L122.7 153.1 L125.4 155.0 L128.1 156.8 L130.8 158.5 L133.6 160.1 L136.3 161.7 L139.0 163.3 L141.7 164.7 L144.4 166.1 L147.1 167.4 L149.8 168.7 L152.5 169.9 L155.2 171.0 L158.0 172.1 L160.7 173.0 L163.4 174.0 L166.1 174.8 L168.8 175.6 L171.5 176.4 L174.2 177.0 L176.9 177.6 L179.7 178.1 L182.4 178.6 L185.1 179.0 L187.8 179.3 L190.5 179.6 L193.2 179.8 L195.9 179.9 L198.6 180.0 L201.4 180.0 L204.1 179.9 L206.8 179.8 L209.5 179.6 L212.2 179.3 L214.9 179.0 L217.6 178.6 L220.3 178.1 L223.1 177.6 L225.8 177.0 L228.5 176.4 L231.2 175.6 L233.9 174.8 L236.6 174.0 L239.3 173.0 L242.0 172.1 L244.8 171.0 L247.5 169.9 L250.2 168.7 L252.9 167.4 L255.6 166.1 L258.3 164.7 L261.0 163.3 L263.7 161.7 L266.4 160.1 L269.2 158.5 L271.9 156.8 L274.6 155.0 L277.3 153.1 L280.0 151.2 L282.7 149.2 L285.4 147.2 L288.1 145.1 L290.9 142.9 L293.6 140.6 L296.3 138.3 L299.0 135.9 L301.7 133.5 L304.4 131.0 L307.1 128.4 L309.8 125.7 L312.6 123.0 L315.3 120.2 L318.0 117.4 L320.7 114.5 L323.4 111.5 L326.1 108.5 L328.8 105.4 L331.5 102.2 L334.3 98.9 L337.0 95.6 L339.7 92.3 L342.4 88.8 L345.1 85.3 L347.8 81.7 L350.5 78.1 L353.2 74.4 L356.0 70.6 L358.7 66.8 L361.4 62.9 L364.1 58.9 L366.8 54.9 L369.5 50.8 L372.2 46.6 L374.9 42.4 L377.7 38.1 L380.4 33.7 L383.1 29.3 L385.8 24.8 L388.5 20.2" fill="none" stroke="#c8372d" stroke-width="2"/><path d="M11.5 100.1 L14.2 102.4 L16.9 104.6 L19.6 106.9 L22.3 109.0 L25.1 111.2 L27.8 113.3 L30.5 115.4 L33.2 117.4 L35.9 119.5 L38.6 121.4 L41.3 123.4 L44.0 125.3 L46.8 127.2 L49.5 129.1 L52.2 130.9 L54.9 132.7 L57.6 134.4 L60.3 136.1 L63.0 137.8 L65.7 139.5 L68.5 141.1 L71.2 142.7 L73.9 144.2 L76.6 145.8 L79.3 147.2 L82.0 148.7 L84.7 150.1 L87.4 151.5 L90.2 152.9 L92.9 154.2 L95.6 155.5 L98.3 156.7 L101.0 158.0 L103.7 159.2 L106.4 160.3 L109.1 161.4 L111.9 162.5 L114.6 163.6 L117.3 164.6 L120.0 165.6 L122.7 166.6 L125.4 167.5 L128.1 168.4 L130.8 169.2 L133.6 170.1 L136.3 170.9 L139.0 171.6 L141.7 172.4 L144.4 173.0 L147.1 173.7 L149.8 174.3 L152.5 174.9 L155.2 175.5 L158.0 176.0 L160.7 176.5 L163.4 177.0 L166.1 177.4 L168.8 177.8 L171.5 178.2 L174.2 178.5 L176.9 178.8 L179.7 179.1 L182.4 179.3 L185.1 179.5 L187.8 179.7 L190.5 179.8 L193.2 179.9 L195.9 180.0 L198.6 180.0 L201.4 180.0 L204.1 180.0 L206.8 179.9 L209.5 179.8 L212.2 179.7 L214.9 179.5 L217.6 179.3 L220.3 179.1 L223.1 178.8 L225.8 178.5 L228.5 178.2 L231.2 177.8 L233.9 177.4 L236.6 177.0 L239.3 176.5 L242.0 176.0 L244.8 175.5 L247.5 174.9 L250.2 174.3 L252.9 173.7 L255.6 173.0 L258.3 172.4 L261.0 171.6 L263.7 170.9 L266.4 170.1 L269.2 169.2 L271.9 168.4 L274.6 167.5 L277.3 166.6 L280.0 165.6 L282.7 164.6 L285.4 163.6 L288.1 162.5 L290.9 161.4 L293.6 160.3 L296.3 159.2 L299.0 158.0 L301.7 156.7 L304.4 155.5 L307.1 154.2 L309.8 152.9 L312.6 151.5 L315.3 150.1 L318.0 148.7 L320.7 147.2 L323.4 145.8 L326.1 144.2 L328.8 142.7 L331.5 141.1 L334.3 139.5 L337.0 137.8 L339.7 136.1 L342.4 134.4 L345.1 132.7 L347.8 130.9 L350.5 129.1 L353.2 127.2 L356.0 125.3 L358.7 123.4 L361.4 121.4 L364.1 119.5 L366.8 117.4 L369.5 115.4 L372.2 113.3 L374.9 111.2 L377.7 109.0 L380.4 106.9 L383.1 104.6 L385.8 102.4 L388.5 100.1" fill="none" stroke="#c8372d" stroke-width="2"/><path d="M11.5 60.2 L14.2 63.6 L16.9 67.0 L19.6 70.3 L22.3 73.6 L25.1 76.8 L27.8 80.0 L30.5 83.1 L33.2 86.2 L35.9 89.2 L38.6 92.2 L41.3 95.1 L44.0 98.0 L46.8 100.8 L49.5 103.6 L52.2 106.3 L54.9 109.0 L57.6 111.6 L60.3 114.2 L63.0 116.7 L65.7 119.2 L68.5 121.6 L71.2 124.0 L73.9 126.4 L76.6 128.6 L79.3 130.9 L82.0 133.1 L84.7 135.2 L87.4 137.3 L90.2 139.3 L92.9 141.3 L95.6 143.2 L98.3 145.1 L101.0 146.9 L103.7 148.7 L106.4 150.5 L109.1 152.2 L111.9 153.8 L114.6 155.4 L117.3 156.9 L120.0 158.4 L122.7 159.8 L125.4 161.2 L128.1 162.6 L130.8 163.9 L133.6 165.1 L136.3 166.3 L139.0 167.4 L141.7 168.5 L144.4 169.6 L147.1 170.6 L149.8 171.5 L152.5 172.4 L155.2 173.2 L158.0 174.0 L160.7 174.8 L163.4 175.5 L166.1 176.1 L168.8 176.7 L171.5 177.3 L174.2 177.8 L176.9 178.2 L179.7 178.6 L182.4 179.0 L185.1 179.2 L187.8 179.5 L190.5 179.7 L193.2 179.8 L195.9 179.9 L198.6 180.0 L201.4 180.0 L204.1 179.9 L206.8 179.8 L209.5 179.7 L212.2 179.5 L214.9 179.2 L217.6 179.0 L220.3 178.6 L223.1 178.2 L225.8 177.8 L228.5 177.3 L231.2 176.7 L233.9 176.1 L236.6 175.5 L239.3 174.8 L242.0 174.0 L244.8 173.2 L247.5 172.4 L250.2 171.5 L252.9 170.6 L255.6 169.6 L258.3 168.5 L261.0 167.4 L263.7 166.3 L266.4 165.1 L269.2 163.9 L271.9 162.6 L274.6 161.2 L277.3 159.8 L280.0 158.4 L282.7 156.9 L285.4 155.4 L288.1 153.8 L290.9 152.2 L293.6 150.5 L296.3 148.7 L299.0 146.9 L301.7 145.1 L304.4 143.2 L307.1 141.3 L309.8 139.3 L312.6 137.3 L315.3 135.2 L318.0 133.1 L320.7 130.9 L323.4 128.6 L326.1 126.4 L328.8 124.0 L331.5 121.6 L334.3 119.2 L337.0 116.7 L339.7 114.2 L342.4 111.6 L345.1 109.0 L347.8 106.3 L350.5 103.6 L353.2 100.8 L356.0 98.0 L358.7 95.1 L361.4 92.2 L364.1 89.2 L366.8 86.2 L369.5 83.1 L372.2 80.0 L374.9 76.8 L377.7 73.6 L380.4 70.3 L383.1 67.0 L385.8 63.6 L388.5 60.2" fill="none" stroke="#6a5acd" stroke-width="2.5" stroke-dasharray="6 4"/><path d="M11.5 207.6 L388.5 152.4" fill="none" stroke="#1f8a44" stroke-width="2"/><path d="M11.5 113.9 L330.0 225.6" fill="none" stroke="#1f8a44" stroke-width="2"/><line x1="200" y1="229.4" x2="200" y2="12.799999999999983" stroke="#1f8a44" stroke-width="2"/><circle cx="200" cy="180" r="4.5" fill="currentColor"/><text x="394" y="21" font-size="12" fill="#c8372d" text-anchor="start" >x₂ = 2x₁²</text><text x="394" y="104" font-size="12" fill="#c8372d" text-anchor="start" >x₂ = x₁²</text><text x="394" y="157" font-size="12" fill="#1f8a44" text-anchor="start" >line x₂ = 0.5x₁</text><text x="334" y="232" font-size="12" fill="#1f8a44" text-anchor="start" >line x₂ = −1.2x₁</text><text x="205" y="226" font-size="12" fill="#1f8a44" text-anchor="start" >line x₁ = 0</text><text x="208" y="28" font-size="12.5" fill="#c8372d" text-anchor="start" font-weight="700">shaded: f &lt; 0</text><text x="208" y="45" font-size="12" fill="#6a5acd" text-anchor="start" >dashed: x₂ = 1.5x₁²</text><text x="208" y="58" font-size="12" fill="#6a5acd" text-anchor="start" >(f &lt; 0 all along it)</text><text x="398" y="176" font-size="13" fill="currentColor" text-anchor="end" >x₁</text></svg>
 <div class="cap">$f=(x_2-x_1^2)(x_2-2x_1^2)$. Red shading: where $f\lt0$, the thin region between the two parabolas, which reaches all the way into the origin. Green: straight lines through 0. Near 0 each line is outside the shaded region, so along each line 0 is a minimum. Purple dashed: the curve $x_2=1.5x_1^2$ stays inside the region, with $f\lt0$ arbitrarily close to 0. So 0 is not a local minimum.</div>
+</div>
+<div class="widget" id="w-peano"><div class="wtitle">Peano's counterexample, live</div>
+<p class="small">$f=(x_2-p\,x_1^2)(x_2-q\,x_1^2)$; red marks where $f\lt0$. Drag on the picture (or use the angle slider) to turn the green line through 0. The $m$ slider moves the purple curve $x_2=m\,x_1^2$. The zoom slider shrinks the view towards 0.</p>
+<canvas width="640" height="380" aria-label="Sign plot of the Peano function with a rotating line and a parabola through the origin, plus the function along each"></canvas>
+<div class="wctl"><label>$p$ <input type="range" name="p" min="0.2" max="2.5" step="0.05" value="1"> <output></output></label>
+<label>$q$ <input type="range" name="q" min="0.4" max="3" step="0.05" value="2"> <output></output></label>
+<label>$m$ <input type="range" name="m" min="0" max="3.5" step="0.05" value="1.5"> <output></output></label>
+<label>Line angle <input type="range" name="ang" min="0" max="179" step="1" value="35"> <output></output></label>
+<label>Zoom (view half-width) <input type="range" name="zoom" min="0" max="100" step="1" value="100"> <output></output></label></div>
+<div class="wout"></div>
+<div class="whint"><b>What to notice.</b> Every line gives a slice $\varphi(t)$ with a minimum at $t=0$ (top-right graph). The line only meets the red region away from 0 (the thick red piece). Zoom in and that piece leaves the view, but the red region never does: it reaches into 0. Put $m$ between $p$ and $q$: the purple curve stays in the red all the way, and its graph (bottom right) is negative on both sides of 0. So 0 is a min on every line but not a local min.</div>
 </div>
 <div class="box trap"><span class="tag">Lesson</span> "Min along every line through $x^*$" ⇒ $\nabla f(x^*)=0$ (and $\nabla^2f(x^*)\succeq0$), but ⇏ local min. The convexity-proofs lecture: if $x^*$ is a minimum, all line restrictions have a minimum, <q>but other way around is not true</q>.</div>
 <div class="check"><b>Check E.</b> Classify the stationary points of $f=x_1^2+x_1x_2+x_2^2-3x_1$.
@@ -583,6 +614,14 @@ $$\nabla^2f=\begin{bmatrix}\sigma_1\sigma_2&-\sigma_1\sigma_2\\-\sigma_1\sigma_2
 <li>$d^\top\nabla^2f\,d=\sigma_1\sigma_2(d_1-d_2)^2\ge0$ for every $d$, at every point ⇒ PSD everywhere ⇒ <b>convex</b>. (In $n$-D: $d^\top\nabla^2f\,d=\sum\sigma_id_i^2-(\sum\sigma_id_i)^2\ge0$ by Cauchy–Schwarz.)</li>
 <li>Not PD: direction $(1,1)$ has zero curvature, and indeed $f(x_1+t,x_2+t)=f(x_1,x_2)+t$ is a straight line. So convex but <b>not strictly</b> convex.</li>
 </ol></div>
+
+<div class="widget" id="w-convex"><div class="wtitle">Convexity: chord above, tangent below</div>
+<p class="small">This puts H1 (chord), H2 (tangent) and H3 ($f''$) side by side, with H4's max of two lines and a log-sum-exp slice in the menu. Drag the red dots $x$ and $y$ and the green dot $a$ along the curve; the $\theta$ slider moves the mixing point $\theta x+(1-\theta)y$.</p>
+<canvas width="640" height="360" aria-label="Graph of the chosen function with a draggable chord and tangent line"></canvas>
+<div class="wctl"><label>Function <select></select></label><label>$\theta$ <input type="range" name="theta" min="0" max="1" step="0.01" value="0.4"> <output></output></label><button type="button" class="hunt">Hunt for a bad chord</button></div>
+<div class="wout"></div>
+<div class="whint"><b>What to notice.</b> For a convex function, wherever you put the dots, "chord − graph" is never negative and the tangent never rises above the graph. For $(x^2-1)^2$ or $\min\{x^2,(x-2)^2\}$, put $x$ and $y$ on both sides of the hump: the chord drops below the graph, and a tangent at the hump has graph below it (shaded). $x^4$ has $f''(0)=0$, yet the hunt finds no bad chord: still strictly convex. The max of two lines has a kink, so no $f''$ there, but chords still pass.</div>
+</div>
 
 <h3 id="h5">H5. The payoff: every local minimum is global</h3>
 <div class="box example"><span class="tag">Theorem 1.8.2 and its proof</span>
@@ -1149,6 +1188,456 @@ $$\big(\nabla f(y)-\nabla f(x)\big)^\top(y-x)\ge0\qquad(\textbf{monotone gradien
 
 </main>
 </div>
-<script src="assets/fe.js"></script>
+<script src="assets/fe.js?v=20261126w"></script>
+<script>
+/* M6 interactive widgets (plain JS, no libraries). Each widget is an IIFE that does nothing if its element is missing. */
+(function(){
+'use strict';
+/* ---------- shared helpers ---------- */
+function colors(){
+  var s=getComputedStyle(document.documentElement);
+  function g(n,d){var v=s.getPropertyValue(n).trim();return v||d;}
+  return {ink:g('--ink','#222'),muted:g('--muted','#666'),line:g('--line','#ddd'),accent:g('--accent','#2457a6'),
+          ok:g('--ok','#1f8a44'),bad:g('--bad','#c8372d'),bg:g('--bg','#fff'),purple:g('--ex-line','#6a5acd')};
+}
+function rgb(c){
+  c=String(c).trim();
+  if(c.charAt(0)==='#'){ if(c.length===4) c='#'+c[1]+c[1]+c[2]+c[2]+c[3]+c[3];
+    return [parseInt(c.slice(1,3),16),parseInt(c.slice(3,5),16),parseInt(c.slice(5,7),16)]; }
+  var m=c.match(/[\d.]+/g); return m?[+m[0],+m[1],+m[2]]:[128,128,128];
+}
+function fmt(v){
+  if(!isFinite(v)) return '—';
+  if(Math.abs(v)<1e-9) return '0';
+  var s=parseFloat(v.toPrecision(3)).toString();
+  if(s.indexOf('e')>=0) s=v.toPrecision(3);
+  return s.replace('-','−');
+}
+function txt(ctx,s,x,y,col,align,size,bold){
+  ctx.fillStyle=col; ctx.textAlign=align||'left'; ctx.textBaseline='middle';
+  ctx.font=(bold?'600 ':'')+(size||13)+'px "Segoe UI",system-ui,sans-serif'; ctx.fillText(s,x,y);
+}
+function line(ctx,x1,y1,x2,y2,col,w,dash){
+  ctx.save(); ctx.strokeStyle=col; ctx.lineWidth=w||1; ctx.setLineDash(dash||[]);
+  ctx.beginPath(); ctx.moveTo(x1,y1); ctx.lineTo(x2,y2); ctx.stroke(); ctx.restore();
+}
+function arrow(ctx,x1,y1,x2,y2,col,w){
+  var a=Math.atan2(y2-y1,x2-x1), L=Math.hypot(x2-x1,y2-y1); if(L<1) return;
+  line(ctx,x1,y1,x2,y2,col,w||2.5);
+  ctx.save(); ctx.fillStyle=col; ctx.beginPath(); ctx.moveTo(x2,y2);
+  ctx.lineTo(x2-10*Math.cos(a-0.4),y2-10*Math.sin(a-0.4)); ctx.lineTo(x2-10*Math.cos(a+0.4),y2-10*Math.sin(a+0.4));
+  ctx.closePath(); ctx.fill(); ctx.restore();
+}
+function dot(ctx,x,y,r,fill,stroke){
+  ctx.beginPath(); ctx.arc(x,y,r,0,2*Math.PI);
+  if(fill){ctx.fillStyle=fill; ctx.fill();} if(stroke){ctx.strokeStyle=stroke; ctx.lineWidth=2; ctx.stroke();}
+}
+/* graph of a 1-D function in a box; returns the mapping */
+function plot1d(ctx,box,xr,yr,C){
+  var m={x0:box.x,y0:box.y,w:box.w,h:box.h,xr:xr,yr:yr};
+  m.X=function(v){return box.x+(v-xr[0])/(xr[1]-xr[0])*box.w;};
+  m.Y=function(v){return box.y+box.h-(v-yr[0])/(yr[1]-yr[0])*box.h;};
+  m.inv=function(px){return xr[0]+(px-box.x)/box.w*(xr[1]-xr[0]);};
+  ctx.save(); ctx.strokeStyle=C.line; ctx.lineWidth=1; ctx.strokeRect(box.x,box.y,box.w,box.h); ctx.restore();
+  if(yr[0]<0&&yr[1]>0) line(ctx,box.x,m.Y(0),box.x+box.w,m.Y(0),C.muted,1);
+  if(xr[0]<0&&xr[1]>0) line(ctx,m.X(0),box.y,m.X(0),box.y+box.h,C.muted,1);
+  return m;
+}
+function curve(ctx,m,fn,col,w,dash,a,b){
+  a=(a===undefined)?m.xr[0]:a; b=(b===undefined)?m.xr[1]:b;
+  ctx.save(); ctx.beginPath(); ctx.rect(m.x0,m.y0,m.w,m.h); ctx.clip();
+  ctx.strokeStyle=col; ctx.lineWidth=w||2.5; ctx.setLineDash(dash||[]); ctx.beginPath();
+  var n=240, started=false;
+  for(var i=0;i<=n;i++){var v=a+(b-a)*i/n, f=fn(v); if(!isFinite(f)){started=false;continue;}
+    var py=Math.max(-1e4,Math.min(1e4,m.Y(f))); if(!started){ctx.moveTo(m.X(v),py);started=true;} else ctx.lineTo(m.X(v),py);}
+  ctx.stroke(); ctx.restore();
+}
+function yrange(fn,a,b,extra){
+  var lo=Infinity,hi=-Infinity;
+  for(var i=0;i<=200;i++){var v=fn(a+(b-a)*i/200); if(isFinite(v)){lo=Math.min(lo,v);hi=Math.max(hi,v);}}
+  (extra||[]).forEach(function(v){lo=Math.min(lo,v);hi=Math.max(hi,v);});
+  if(hi-lo<1e-9){hi+=1;lo-=1;} var p=0.1*(hi-lo); return [lo-p,hi+p];
+}
+/* canvas sized to the widget's width, scaled for devicePixelRatio; logical units = CSS px */
+function setupCanvas(root,layout,draw){
+  var cv=root.querySelector('canvas'), ctx=cv.getContext('2d'), st={W:640,H:400,cv:cv,ctx:ctx};
+  function resize(){
+    var cs=getComputedStyle(root), avail=root.clientWidth-parseFloat(cs.paddingLeft)-parseFloat(cs.paddingRight);
+    var W=Math.max(260,Math.min(640,Math.floor(avail||640))), H=layout(W), dpr=window.devicePixelRatio||1;
+    st.W=W; st.H=H; cv.width=Math.round(W*dpr); cv.height=Math.round(H*dpr);
+    ctx.setTransform(dpr,0,0,dpr,0,0); draw();
+  }
+  st.redraw=function(){ctx.setTransform(window.devicePixelRatio||1,0,0,window.devicePixelRatio||1,0,0);ctx.clearRect(0,0,st.W,st.H);draw();};
+  var pend=false;
+  window.addEventListener('resize',function(){ if(pend) return; pend=true; requestAnimationFrame(function(){pend=false;resize();}); });
+  try{ window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change',function(){st.redraw();}); }catch(e){}
+  st.resize=resize;
+  return st;
+}
+function pointer(st,down,move){
+  var cv=st.cv, active=false;
+  function pos(e){var r=cv.getBoundingClientRect(); return {x:(e.clientX-r.left)*st.W/r.width, y:(e.clientY-r.top)*st.H/r.height};}
+  cv.addEventListener('pointerdown',function(e){var p=pos(e); if(down(p.x,p.y)===false) return; active=true;
+    try{cv.setPointerCapture(e.pointerId);}catch(err){} e.preventDefault();});
+  cv.addEventListener('pointermove',function(e){if(!active) return; var p=pos(e); move(p.x,p.y); e.preventDefault();});
+  function up(e){active=false; try{cv.releasePointerCapture(e.pointerId);}catch(err){}}
+  cv.addEventListener('pointerup',up); cv.addEventListener('pointercancel',up);
+}
+function yes(b){return b?'<b style="color:var(--ok)">✓</b>':'<b style="color:var(--bad)">✗</b>';}
+function bindOut(input){var o=input.parentNode.querySelector('output'); return function(s){ if(o) o.textContent=s; };}
+
+/* ================= Widget 1: 1-D tests ================= */
+(function(){
+  var root=document.getElementById('w-1d'); if(!root) return;
+  var F=[
+    {n:'x²',f:function(x){return x*x;},d:function(x){return 2*x;},dd:function(){return 2;},xr:[-1.5,1.5],
+     st:[{x:0,truth:'strict global minimum'}]},
+    {n:'x⁴',f:function(x){return x*x*x*x;},d:function(x){return 4*x*x*x;},dd:function(x){return 12*x*x;},xr:[-1.5,1.5],
+     st:[{x:0,truth:'strict global minimum (even though SOSC fails!)'}]},
+    {n:'x³',f:function(x){return x*x*x;},d:function(x){return 3*x*x;},dd:function(x){return 6*x;},xr:[-1.5,1.5],
+     st:[{x:0,truth:'neither a min nor a max (inflection: f < 0 just left of 0)'}]},
+    {n:'−x⁴',f:function(x){return -x*x*x*x;},d:function(x){return -4*x*x*x;},dd:function(x){return -12*x*x;},xr:[-1.5,1.5],
+     st:[{x:0,truth:'strict global MAXIMUM'}]},
+    {n:'x²(x−1) = x³ − x²  (Check B)',f:function(x){return x*x*(x-1);},d:function(x){return 3*x*x-2*x;},dd:function(x){return 6*x-2;},xr:[-0.6,1.3],
+     st:[{x:0,truth:'strict local max'},{x:2/3,truth:'strict local min, not global (f → −∞ as x → −∞)'}]}
+  ];
+  var sel=root.querySelector('select'), jumps=root.querySelector('.jumps'), out=root.querySelector('.wout');
+  var S={k:0,x:0.9}, M=null;
+  var st=setupCanvas(root,function(W){return W<480?336:360;},draw);
+  function fn(){return F[S.k];}
+  function snapX(px){
+    var F0=fn(), x=M.inv(px); x=Math.max(F0.xr[0],Math.min(F0.xr[1],x));
+    F0.st.forEach(function(s){ if(Math.abs(M.X(s.x)-px)<10) x=s.x; }); return x;
+  }
+  function draw(){
+    var C=colors(), ctx=st.ctx, W=st.W, H=st.H, F0=fn();
+    ctx.clearRect(0,0,W,H);
+    var box={x:34,y:22,w:W-48,h:H-(W<480?92:76)};
+    M=plot1d(ctx,box,F0.xr,yrange(F0.f,F0.xr[0],F0.xr[1]),C);
+    txt(ctx,'x',box.x+box.w-4,box.y+box.h+14,C.muted,'right'); txt(ctx,'f(x) = '+F0.n.split('  ')[0],box.x+4,12,C.ink,'left',13,true);
+    txt(ctx,fmt(F0.xr[0]),box.x,box.y+box.h+14,C.muted,'left',12); txt(ctx,fmt(F0.xr[1]),box.x+box.w-18,box.y+box.h+14,C.muted,'right',12);
+    curve(ctx,M,F0.f,C.accent,3);
+    F0.st.forEach(function(s){dot(ctx,M.X(s.x),M.Y(F0.f(s.x)),5,null,C.muted);});
+    var x=S.x, f=F0.f(x), d=F0.d(x), dd=F0.dd(x), h=(F0.xr[1]-F0.xr[0])*0.3;
+    curve(ctx,M,function(v){return f+d*(v-x)+0.5*dd*(v-x)*(v-x);},C.purple,2,[6,5],x-h,x+h);
+    curve(ctx,M,function(v){return f+d*(v-x);},C.ok,2.2,null,x-h,x+h);
+    line(ctx,M.X(x),M.Y(f),M.X(x),box.y+box.h,C.muted,1,[3,3]);
+    dot(ctx,M.X(x),M.Y(f),7,C.bad,null);
+    txt(ctx,'x₀',M.X(x),box.y+box.h+14,C.bad,'center',13,true);
+    txt(ctx,'green: tangent (slope f′)',box.x,H-(W<480?30:14),C.ok,'left',12);
+    txt(ctx,'purple dashed: parabola that f′, f″ see',W<480?box.x:box.x+box.w,H-14,C.purple,W<480?'left':'right',12);
+    report(x,f,d,dd);
+  }
+  function report(x,f,d,dd){
+    var F0=fn(), s=null; F0.st.forEach(function(q){ if(Math.abs(q.x-x)<1e-12) s=q; });
+    var h='x₀ = <b>'+fmt(x)+'</b> &nbsp; f(x₀) = <b>'+fmt(f)+'</b> &nbsp; f′(x₀) = <b>'+fmt(d)+'</b> &nbsp; f″(x₀) = <b>'+fmt(dd)+'</b><br>';
+    if(s){
+      h+='Stationary point. FONC (f′ = 0) '+yes(true)+' &nbsp; SONC (f″ ≥ 0) '+yes(dd>=0)+' &nbsp; SOSC (f″ &gt; 0) '+yes(dd>0)+'<br>';
+      h+='Tests say: <b>'+(dd>0?'SOSC holds ⇒ strict local min':dd<0?'SONC fails ⇒ not a min (f″ &lt; 0: strict local max)':'silent: f″ = 0, the second derivative cannot decide')+'</b>. &nbsp; Truth: <b>'+s.truth+'</b>.';
+    } else {
+      h+='Not stationary: FONC '+yes(false)+' (f′ ≠ 0), so not a local min: moving '+(d>0?'left':'right')+' lowers f. Drag close to a grey circle to snap onto a stationary point.';
+    }
+    out.innerHTML=h;
+  }
+  function setF(k){
+    S.k=k; S.x=fn().xr[0]+0.8*(fn().xr[1]-fn().xr[0]);
+    jumps.innerHTML=''; fn().st.forEach(function(s){var b=document.createElement('button'); b.type='button';
+      b.textContent='Go to x = '+(Math.abs(s.x-2/3)<1e-12?'2/3':fmt(s.x)); b.addEventListener('click',function(){S.x=s.x; st.redraw();}); jumps.appendChild(b);});
+    st.redraw();
+  }
+  F.forEach(function(q,i){var o=document.createElement('option'); o.value=i; o.textContent='f = '+q.n; sel.appendChild(o);});
+  sel.addEventListener('change',function(){setF(+sel.value);});
+  pointer(st,function(px){S.x=snapX(px); st.redraw();},function(px){S.x=snapX(px); st.redraw();});
+  st.resize(); setF(0);
+})();
+
+/* ================= Widget 2: contours, gradient, Hessian, slice ================= */
+(function(){
+  var root=document.getElementById('w-2d'); if(!root) return;
+  var F=[
+    {n:'x₁² + x₂²',f:function(a,b){return a*a+b*b;},g:function(a,b){return [2*a,2*b];},H:function(){return [2,0,2];},c:[0,0],r:2,
+     st:[{p:[0,0],t:'strict global minimum (a bowl)'}]},
+    {n:'x₁² − x₂²  (saddle)',f:function(a,b){return a*a-b*b;},g:function(a,b){return [2*a,-2*b];},H:function(){return [2,0,-2];},c:[0,0],r:2,
+     st:[{p:[0,0],t:'saddle: up along x₁, down along x₂'}]},
+    {n:'x₁⁴ + x₂²  (E3)',f:function(a,b){return a*a*a*a+b*b;},g:function(a,b){return [4*a*a*a,2*b];},H:function(a){return [12*a*a,0,2];},c:[0,0],r:1.6,
+     st:[{p:[0,0],t:'strict global minimum (f &gt; 0 for every x ≠ 0), although the Hessian is only PSD'}]},
+    {n:'x₁³ + x₂³ − 3x₁x₂  (E2)',f:function(a,b){return a*a*a+b*b*b-3*a*b;},g:function(a,b){return [3*a*a-3*b,3*b*b-3*a];},H:function(a,b){return [6*a,-3,6*b];},c:[0.3,0.3],r:1.7,
+     st:[{p:[0,0],t:'saddle'},{p:[1,1],t:'strict local min, f = −1; not global (f(t,0) = t³ → −∞)'}]},
+    {n:'x₁³ − 3x₁x₂²  (monkey saddle, E3)',f:function(a,b){return a*a*a-3*a*b*b;},g:function(a,b){return [3*a*a-3*b*b,-6*a*b];},H:function(a,b){return [6*a,-6*b,-6*a];},c:[0,0],r:1.4,
+     st:[{p:[0,0],t:'saddle (three valleys); the Hessian is the zero matrix, so only the slices show it'}]}
+  ];
+  var sel=root.querySelector('select'), ang=root.querySelector('input[name=ang]'), angOut=bindOut(ang),
+      jumps=root.querySelector('.jumps'), out=root.querySelector('.wout');
+  var S={k:3,p:[1.4,0.4]}, L=null, N=90, grid=null, gridKey='';
+  var st=setupCanvas(root,function(W){return W>=560?400:(W-20)+262;},draw);
+  function fn(){return F[S.k];}
+  function eig(h){ /* symmetric [a,b,c] = [[a,b],[b,c]] */
+    var a=h[0],b=h[1],c=h[2], m=(a+c)/2, r=Math.sqrt((a-c)*(a-c)/4+b*b), l1=m-r, l2=m+r, v1;
+    if(Math.abs(b)>1e-12) v1=[l1-c,b]; else v1=(a<=c)?[1,0]:[0,1];
+    var n=Math.hypot(v1[0],v1[1]); v1=[v1[0]/n,v1[1]/n];
+    return {l:[l1,l2],v:[v1,[-v1[1],v1[0]]]};
+  }
+  function buildGrid(F0){
+    var key=S.k; if(gridKey===key) return grid; var v=new Float64Array((N+1)*(N+1)), all=[];
+    for(var j=0;j<=N;j++) for(var i=0;i<=N;i++){var x=F0.c[0]-F0.r+2*F0.r*i/N, y=F0.c[1]-F0.r+2*F0.r*j/N, z=F0.f(x,y); v[j*(N+1)+i]=z; all.push(z);}
+    all.sort(function(a,b){return a-b;});
+    var lo=all[Math.floor(0.02*all.length)], hi=all[Math.floor(0.98*all.length)], lv=[];
+    for(var k=1;k<=15;k++) lv.push(lo+(hi-lo)*k/16);
+    if(lo<0&&hi>0) lv.push(0);
+    grid={v:v,lo:lo,hi:hi,lv:lv}; gridKey=key; return grid;
+  }
+  function draw(){
+    var C=colors(), ctx=st.ctx, W=st.W, H=st.H, F0=fn(), wide=W>=560;
+    ctx.clearRect(0,0,W,H);
+    var size=wide?H-24:W-20, P={x:10,y:14,s:size};
+    var Q=wide?{x:size+44,y:30,w:W-size-56,h:H-90}:{x:40,y:size+62,w:W-56,h:150};
+    L={P:P,F0:F0};
+    L.X=function(x){return P.x+(x-(F0.c[0]-F0.r))/(2*F0.r)*P.s;}; L.Y=function(y){return P.y+P.s-(y-(F0.c[1]-F0.r))/(2*F0.r)*P.s;};
+    L.ix=function(px){return F0.c[0]-F0.r+(px-P.x)/P.s*2*F0.r;}; L.iy=function(py){return F0.c[1]-F0.r+(P.y+P.s-py)/P.s*2*F0.r;};
+    var G=buildGrid(F0);
+    /* tinted background: blue = low, red = high */
+    var off=document.createElement('canvas'); off.width=N+1; off.height=N+1; var oc=off.getContext('2d'), im=oc.createImageData(N+1,N+1);
+    var bg=rgb(C.bg), lo=rgb(C.accent), hi=rgb(C.bad);
+    for(var j=0;j<=N;j++) for(var i=0;i<=N;i++){
+      var z=G.v[j*(N+1)+i], t=Math.max(0,Math.min(1,(z-G.lo)/(G.hi-G.lo))), c=t<0.5?lo:hi, w=Math.abs(t-0.5)*0.7, o=((N-j)*(N+1)+i)*4;
+      for(var q=0;q<3;q++) im.data[o+q]=Math.round(bg[q]*(1-w)+c[q]*w); im.data[o+3]=255;}
+    oc.putImageData(im,0,0); ctx.imageSmoothingEnabled=true; ctx.drawImage(off,P.x,P.y,P.s,P.s);
+    /* contour lines (marching squares) */
+    ctx.save(); ctx.beginPath(); ctx.rect(P.x,P.y,P.s,P.s); ctx.clip(); ctx.lineWidth=1; ctx.strokeStyle=C.muted;
+    var cell=P.s/N;
+    G.lv.forEach(function(Lv){ ctx.beginPath(); ctx.globalAlpha=(Lv===0)?0.95:0.6;
+      for(var j=0;j<N;j++) for(var i=0;i<N;i++){
+        var a=G.v[j*(N+1)+i], b=G.v[j*(N+1)+i+1], c=G.v[(j+1)*(N+1)+i+1], d=G.v[(j+1)*(N+1)+i], pts=[];
+        var x0=P.x+i*cell, y0=P.y+P.s-j*cell;
+        if((a-Lv)*(b-Lv)<0) pts.push([x0+cell*(Lv-a)/(b-a),y0]);
+        if((b-Lv)*(c-Lv)<0) pts.push([x0+cell,y0-cell*(Lv-b)/(c-b)]);
+        if((d-Lv)*(c-Lv)<0) pts.push([x0+cell*(Lv-d)/(c-d),y0-cell]);
+        if((a-Lv)*(d-Lv)<0) pts.push([x0,y0-cell*(Lv-a)/(d-a)]);
+        if(pts.length>=2){ctx.moveTo(pts[0][0],pts[0][1]);ctx.lineTo(pts[1][0],pts[1][1]);}
+        if(pts.length===4){ctx.moveTo(pts[2][0],pts[2][1]);ctx.lineTo(pts[3][0],pts[3][1]);}
+      } ctx.stroke(); });
+    ctx.restore(); ctx.globalAlpha=1;
+    ctx.strokeStyle=C.line; ctx.strokeRect(P.x,P.y,P.s,P.s);
+    /* axes */
+    if(L.Y(0)>P.y&&L.Y(0)<P.y+P.s) line(ctx,P.x,L.Y(0),P.x+P.s,L.Y(0),C.ink,0.8,[2,3]);
+    if(L.X(0)>P.x&&L.X(0)<P.x+P.s) line(ctx,L.X(0),P.y,L.X(0),P.y+P.s,C.ink,0.8,[2,3]);
+    txt(ctx,'x₁',P.x+P.s-6,L.Y(0)>P.y+P.s-16?P.y+P.s-10:L.Y(0)+10,C.ink,'right',12);
+    txt(ctx,'x₂',L.X(0)+6,P.y+10,C.ink,'left',12);
+    txt(ctx,'blue = low f, red = high f; grey lines = contours',P.x+4,P.y+P.s+(wide?-10:12),C.muted,'left',11.5);
+    F0.st.forEach(function(s){dot(ctx,L.X(s.p[0]),L.Y(s.p[1]),6,null,C.ink); txt(ctx,'('+s.p[0]+','+s.p[1]+')',L.X(s.p[0])+8,L.Y(s.p[1])+12,C.ink,'left',11.5);});
+    /* current point, direction, gradient */
+    var x=S.p, th=(+ang.value)*Math.PI/180, d=[Math.cos(th),Math.sin(th)], g=F0.g(x[0],x[1]), h=F0.H(x[0],x[1]);
+    var stat=null; F0.st.forEach(function(s){ if(s.p[0]===x[0]&&s.p[1]===x[1]) stat=s; });
+    var px=L.X(x[0]), py=L.Y(x[1]);
+    ctx.save(); ctx.beginPath(); ctx.rect(P.x,P.y,P.s,P.s); ctx.clip();
+    line(ctx,px-d[0]*2*P.s,py+d[1]*2*P.s,px+d[0]*2*P.s,py-d[1]*2*P.s,C.accent,1.6,[6,4]);
+    arrow(ctx,px,py,px+d[0]*42,py-d[1]*42,C.accent,2.2); txt(ctx,'d',px+d[0]*52,py-d[1]*52,C.accent,'center',14,true);
+    var E=eig(h);
+    if(stat){
+      for(var e=0;e<2;e++){var l=E.l[e], v=E.v[e], col=Math.abs(l)<1e-9?C.muted:(l>0?C.ok:C.bad);
+        line(ctx,px-v[0]*60,py+v[1]*60,px+v[0]*60,py-v[1]*60,col,4);
+        txt(ctx,'λ = '+fmt(l),px+v[0]*66,py-v[1]*66-(e?0:12),col,v[0]>=0?'left':'right',12.5,true);}
+    } else {
+      var gn=Math.hypot(g[0],g[1]), Lg=75*gn/(gn+1.5);
+      arrow(ctx,px,py,px+g[0]/gn*Lg,py-g[1]/gn*Lg,C.bad,3); txt(ctx,'∇f',px+g[0]/gn*(Lg+14),py-g[1]/gn*(Lg+14),C.bad,'center',13,true);
+    }
+    ctx.restore();
+    dot(ctx,px,py,7,C.ink,null); dot(ctx,px,py,4,C.bg,null);
+    /* slice panel */
+    var T=0.45*F0.r, phi=function(t){return F0.f(x[0]+t*d[0],x[1]+t*d[1]);};
+    var p0=phi(0), p1=g[0]*d[0]+g[1]*d[1], p2=d[0]*d[0]*h[0]+2*d[0]*d[1]*h[1]+d[1]*d[1]*h[2];
+    var M=plot1d(ctx,{x:Q.x,y:Q.y,w:Q.w,h:Q.h},[-T,T],yrange(phi,-T,T),C);
+    curve(ctx,M,function(t){return p0+p1*t+0.5*p2*t*t;},C.purple,2,[6,5]);
+    curve(ctx,M,phi,C.accent,3);
+    curve(ctx,M,function(t){return p0+p1*t;},C.ok,1.8);
+    dot(ctx,M.X(0),M.Y(p0),5,C.ink,null);
+    txt(ctx,'slice φ(t) = f(x + t d)',Q.x,Q.y-14,C.ink,'left',13,true);
+    txt(ctx,'t',Q.x+Q.w-4,Q.y+Q.h+12,C.muted,'right',12); txt(ctx,'t = 0',M.X(0),Q.y+Q.h+12,C.muted,'center',11.5);
+    txt(ctx,'green: slope φ′(0)',Q.x,Q.y+Q.h+(wide?30:28),C.ok,'left',11.5);
+    txt(ctx,'purple: curvature φ″(0)',Q.x,Q.y+Q.h+(wide?46:44),C.purple,'left',11.5);
+    /* readout */
+    var r='x = (<b>'+fmt(x[0])+'</b>, <b>'+fmt(x[1])+'</b>) &nbsp; f(x) = <b>'+fmt(F0.f(x[0],x[1]))+'</b> &nbsp; ∇f = (<b>'+fmt(g[0])+'</b>, <b>'+fmt(g[1])+'</b>) &nbsp; d = (<b>'+fmt(d[0])+'</b>, <b>'+fmt(d[1])+'</b>)<br>'+
+      'φ′(0) = ∇fᵀd = <b>'+fmt(p1)+'</b> &nbsp; φ″(0) = dᵀHd = <b>'+fmt(p2)+'</b> &nbsp; Hessian H = [[<b>'+fmt(h[0])+'</b>, <b>'+fmt(h[1])+'</b>], [<b>'+fmt(h[1])+'</b>, <b>'+fmt(h[2])+'</b>]], eigenvalues <b>'+fmt(E.l[0])+'</b>, <b>'+fmt(E.l[1])+'</b><br>';
+    if(stat){
+      var a=E.l[0], b=E.l[1], z=function(v){return Math.abs(v)<1e-9;}, cls;
+      if(a>0&&!z(a)) cls='both eigenvalues &gt; 0: H is PD ⇒ SOSC ⇒ <b>strict local min</b>';
+      else if(b<0&&!z(b)) cls='both eigenvalues &lt; 0: H is negative definite ⇒ <b>strict local max</b>';
+      else if(a<0&&!z(a)&&b>0&&!z(b)) cls='one eigenvalue &lt; 0, one &gt; 0: H indefinite ⇒ SONC fails ⇒ <b>saddle</b>';
+      else cls='an eigenvalue is 0 and none is negative: H is PSD but singular ⇒ SONC holds, SOSC fails ⇒ <b>the Hessian is silent</b>; look at f itself';
+      r+='Stationary point (∇f = 0, FONC '+yes(true)+'): '+cls+'. Truth: <b>'+stat.t+'</b>.';
+    } else r+='∇f ≠ 0: not stationary (FONC '+yes(false)+'), so not a minimum: walking along −∇f lowers f. Drag near a black circle to snap onto a stationary point.';
+    out.innerHTML=r;
+  }
+  function setPoint(px,py){
+    var P=L.P; px=Math.max(P.x,Math.min(P.x+P.s,px)); py=Math.max(P.y,Math.min(P.y+P.s,py));
+    var p=[L.ix(px),L.iy(py)];
+    L.F0.st.forEach(function(s){ if(Math.hypot(L.X(s.p[0])-px,L.Y(s.p[1])-py)<12) p=s.p.slice(); });
+    S.p=p; st.redraw();
+  }
+  function setF(k){
+    S.k=k; var F0=fn(); S.p=[F0.c[0]+0.55*F0.r,F0.c[1]+0.2*F0.r];
+    jumps.innerHTML=''; F0.st.forEach(function(s){var b=document.createElement('button'); b.type='button';
+      b.textContent='Go to ('+s.p[0]+', '+s.p[1]+')'; b.addEventListener('click',function(){S.p=s.p.slice(); st.redraw();}); jumps.appendChild(b);});
+    st.redraw();
+  }
+  F.forEach(function(q,i){var o=document.createElement('option'); o.value=i; o.textContent='f = '+q.n; sel.appendChild(o);});
+  sel.value=String(S.k);
+  sel.addEventListener('change',function(){setF(+sel.value);});
+  ang.addEventListener('input',function(){angOut(ang.value+'°'); st.redraw();}); angOut(ang.value+'°');
+  pointer(st,function(px,py){ if(!L) return false; var P=L.P; if(px<P.x||px>P.x+P.s||py<P.y||py>P.y+P.s) return false; setPoint(px,py);},setPoint);
+  st.resize(); setF(S.k);
+})();
+
+/* ================= Widget 3: Peano counterexample ================= */
+(function(){
+  var root=document.getElementById('w-peano'); if(!root) return;
+  var I={}; ['p','q','m','ang','zoom'].forEach(function(n){I[n]=root.querySelector('input[name='+n+']'); I[n].out=bindOut(I[n]);});
+  var out=root.querySelector('.wout'), L=null;
+  var st=setupCanvas(root,function(W){return W>=560?380:(W-20)+250;},draw);
+  function val(){var w=0.05*Math.pow(1.5/0.05,(+I.zoom.value)/100);
+    return {p:+I.p.value,q:+I.q.value,m:+I.m.value,a:(+I.ang.value)*Math.PI/180,w:w};}
+  function draw(){
+    var C=colors(), ctx=st.ctx, W=st.W, H=st.H, V=val(), wide=W>=560;
+    ctx.clearRect(0,0,W,H);
+    var size=wide?H-30:W-20, P={x:10,y:12,s:size}, w=V.w;
+    var f=function(a,b){return (b-V.p*a*a)*(b-V.q*a*a);};
+    L={P:P}; var X=function(a){return P.x+(a+w)/(2*w)*P.s;}, Y=function(b){return P.y+P.s-(b+0.5*w)/(2*w)*P.s;};
+    L.X=X; L.Y=Y;
+    /* sign plot */
+    var n=Math.round(P.s/2), off=document.createElement('canvas'); off.width=n; off.height=n;
+    var oc=off.getContext('2d'), im=oc.createImageData(n,n), bg=rgb(C.bg), neg=rgb(C.bad), pos=rgb(C.ok);
+    for(var j=0;j<n;j++) for(var i=0;i<n;i++){
+      var a=-w+2*w*(i+0.5)/n, b=1.5*w-2*w*(j+0.5)/n, z=f(a,b), c=z<0?neg:pos, k=z<0?0.5:(z===0?0:0.1), o=(j*n+i)*4;
+      for(var q=0;q<3;q++) im.data[o+q]=Math.round(bg[q]*(1-k)+c[q]*k); im.data[o+3]=255;}
+    oc.putImageData(im,0,0); ctx.imageSmoothingEnabled=false; ctx.drawImage(off,P.x,P.y,P.s,P.s); ctx.imageSmoothingEnabled=true;
+    ctx.save(); ctx.beginPath(); ctx.rect(P.x,P.y,P.s,P.s); ctx.clip();
+    line(ctx,P.x,Y(0),P.x+P.s,Y(0),C.ink,0.8,[2,3]); line(ctx,X(0),P.y,X(0),P.y+P.s,C.ink,0.8,[2,3]);
+    function para(c,col,wd,dash){ctx.save(); ctx.strokeStyle=col; ctx.lineWidth=wd; ctx.setLineDash(dash||[]); ctx.beginPath();
+      for(var i=0;i<=200;i++){var a=-w+2*w*i/200; if(i) ctx.lineTo(X(a),Y(c*a*a)); else ctx.moveTo(X(a),Y(c*a*a));} ctx.stroke(); ctx.restore();}
+    para(V.p,C.bad,1.6); para(V.q,C.bad,1.6); para(V.m,C.purple,2.6,[7,4]);
+    var d=[Math.cos(V.a),Math.sin(V.a)];
+    line(ctx,X(-3*w*d[0]),Y(-3*w*d[1]),X(3*w*d[0]),Y(3*w*d[1]),C.ok,2.6);
+    /* piece of the line inside the red region: |t| in [|d2|/(q d1^2), |d2|/(p d1^2)], same sign as d2 */
+    var t1=null,t2=null;
+    if(Math.abs(d[0])>1e-9&&Math.abs(d[1])>1e-9){
+      t1=Math.abs(d[1])/(V.q*d[0]*d[0]); t2=Math.abs(d[1])/(V.p*d[0]*d[0]);
+      [1,-1].forEach(function(sg){ /* t*d2>0 needed */ if(sg*d[1]<=0) return;
+        line(ctx,X(sg*t1*d[0]),Y(sg*t1*d[1]),X(sg*t2*d[0]),Y(sg*t2*d[1]),C.bad,6);});
+    }
+    ctx.restore();
+    ctx.strokeStyle=C.line; ctx.strokeRect(P.x,P.y,P.s,P.s);
+    dot(ctx,X(0),Y(0),4.5,C.ink,null);
+    txt(ctx,'x₁',P.x+P.s-6,Y(0)+11,C.ink,'right',12); txt(ctx,'x₂',X(0)+6,P.y+10,C.ink,'left',12);
+    txt(ctx,'red: f < 0   view: |x₁| ≤ '+fmt(w),P.x+6,P.y+P.s-10,C.ink,'left',12,true);
+    /* right panel: two slices */
+    var Q=wide?{x:size+46,w:W-size-58}:{x:40,w:W-56}, top=wide?30:size+40, hh=wide?(H-110)/2:85;
+    var phi=function(t){return f(t*d[0],t*d[1]);}, psi=function(s){return f(s,V.m*s*s);}, T=w;
+    var M1=plot1d(ctx,{x:Q.x,y:top,w:Q.w,h:hh},[-T,T],yrange(phi,-T,T,[0]),C);
+    curve(ctx,M1,phi,C.ok,2.6); dot(ctx,M1.X(0),M1.Y(0),4,C.ink,null);
+    txt(ctx,'along the green line: φ(t)',Q.x,top-12,C.ok,'left',12.5,true);
+    var top2=top+hh+(wide?42:40);
+    var M2=plot1d(ctx,{x:Q.x,y:top2,w:Q.w,h:hh},[-T,T],yrange(psi,-T,T,[0]),C);
+    curve(ctx,M2,psi,C.purple,2.6); dot(ctx,M2.X(0),M2.Y(0),4,C.ink,null);
+    txt(ctx,'along the purple curve: f(x₁, m x₁²)',Q.x,top2-12,C.purple,'left',12.5,true);
+    txt(ctx,'x₁',Q.x+Q.w-4,top2+hh+12,C.muted,'right',12);
+    /* readout */
+    var c=(V.m-V.p)*(V.m-V.q), r='p = <b>'+fmt(V.p)+'</b>, q = <b>'+fmt(V.q)+'</b>. Hessian at 0 = diag(0, 2): PSD, singular (silent).<br>';
+    if(Math.abs(d[1])<1e-9) r+='Green line is horizontal: φ(t) = pq d₁⁴t⁴ = <b>'+fmt(V.p*V.q)+'</b>·t⁴ ≥ 0 ⇒ min at t = 0. It never enters the red region.<br>';
+    else if(Math.abs(d[0])<1e-9) r+='Green line is vertical: φ(t) = t² ≥ 0, φ″(0) = 2d₂² = <b>2</b> ⇒ min at t = 0. It never enters the red region.<br>';
+    else r+='Green line at '+I.ang.value+'°: φ″(0) = 2d₂² = <b>'+fmt(2*d[1]*d[1])+'</b> &gt; 0 ⇒ strict min at t = 0. It is in the red only for distance |t| from <b>'+fmt(t1)+'</b> to <b>'+fmt(t2)+'</b> (thick red piece); closer to 0 it is ≥ 0.<br>';
+    r+='Purple curve x₂ = m x₁², m = <b>'+fmt(V.m)+'</b>: f = (m − p)(m − q)·x₁⁴ = <b>'+fmt(c)+'</b>·x₁⁴ ⇒ '+
+      (c<0?'<b style="color:var(--bad)">negative for every x₁ ≠ 0, however close to 0</b> (p &lt; m &lt; q). So 0 is NOT a local min.':'≥ 0 along this curve (m is not strictly between p and q). Move m between p and q.');
+    out.innerHTML=r;
+  }
+  function fix(which){ var p=+I.p.value, q=+I.q.value; if(q<p+0.1){ if(which==='p') I.q.value=Math.min(+I.q.max,p+0.1); else I.p.value=Math.max(+I.p.min,q-0.1); }
+    if(+I.q.value<+I.p.value+0.1) I.p.value=+I.q.value-0.1; }
+  function sync(){I.p.out(fmt(+I.p.value)); I.q.out(fmt(+I.q.value)); I.m.out(fmt(+I.m.value)); I.ang.out(I.ang.value+'°'); I.zoom.out(fmt(val().w));}
+  ['p','q','m','ang','zoom'].forEach(function(n){I[n].addEventListener('input',function(){ if(n==='p'||n==='q') fix(n); sync(); st.redraw();});});
+  function setAng(px,py){ if(!L) return; var a=Math.atan2(L.Y(0)-py,px-L.X(0)); if(a<0) a+=Math.PI; var deg=Math.round(a*180/Math.PI)%180; I.ang.value=deg; sync(); st.redraw(); }
+  pointer(st,function(px,py){ if(!L) return false; var P=L.P; if(px<P.x||px>P.x+P.s||py<P.y||py>P.y+P.s) return false; setAng(px,py);},setAng);
+  sync(); st.resize();
+})();
+
+/* ================= Widget 4: convexity, chord and tangent ================= */
+(function(){
+  var root=document.getElementById('w-convex'); if(!root) return;
+  var F=[
+    {n:'x²',f:function(x){return x*x;},d:function(x){return 2*x;},dd:function(){return 2;},r:[-2,2],cv:true,note:'convex (strictly): f″ = 2 &gt; 0 everywhere'},
+    {n:'x⁴',f:function(x){return Math.pow(x,4);},d:function(x){return 4*x*x*x;},dd:function(x){return 12*x*x;},r:[-1.5,1.5],cv:true,note:'strictly convex, although f″(0) = 0 (H3: PD everywhere is sufficient, not necessary)'},
+    {n:'eˣ',f:Math.exp,d:Math.exp,dd:Math.exp,r:[-2,2],cv:true,note:'convex: f″ = eˣ &gt; 0'},
+    {n:'log(eˣ + e⁻ˣ)  (log-sum-exp along d = (1, −1))',f:function(x){var a=Math.abs(x);return a+Math.log(1+Math.exp(-2*a));},d:function(x){return Math.tanh(x);},dd:function(x){var t=Math.tanh(x);return 1-t*t;},r:[-3,3],cv:true,note:'convex (H4): a smoothed |x| = max(x, −x)'},
+    {n:'max(−x, 0.5x + 0.5)  (max of two lines)',f:function(x){return Math.max(-x,0.5*x+0.5);},d:function(x){return x< -1/3?-1:0.5;},dd:function(){return 0;},r:[-2,2],cv:true,kink:-1/3,note:'convex (H4: max of convex functions), with a kink at x = −1/3 where f″ does not exist'},
+    {n:'x³',f:function(x){return x*x*x;},d:function(x){return 3*x*x;},dd:function(x){return 6*x;},r:[-1.5,1.5],cv:false,note:'NOT convex: f″ = 6x &lt; 0 for x &lt; 0 (it is convex only on x ≥ 0)'},
+    {n:'(x² − 1)²  (double well)',f:function(x){return (x*x-1)*(x*x-1);},d:function(x){return 4*x*(x*x-1);},dd:function(x){return 12*x*x-4;},r:[-1.6,1.6],cv:false,note:'NOT convex: f″ = 12x² − 4 &lt; 0 for |x| &lt; 1/√3 ≈ 0.577'},
+    {n:'min(x², (x − 2)²)  (H4: min is not kept)',f:function(x){return Math.min(x*x,(x-2)*(x-2));},d:function(x){return x<1?2*x:2*(x-2);},dd:function(){return 2;},r:[-1,3],cv:false,kink:1,note:'NOT convex: at x = 0, 1, 2 the values are 0, 1, 0'}
+  ];
+  var sel=root.querySelector('select'), th=root.querySelector('input[name=theta]'), thOut=bindOut(th),
+      hunt=root.querySelector('button.hunt'), out=root.querySelector('.wout'), msg='';
+  var S={k:0,x:0,y:0,a:0}, M=null, grab=null;
+  var st=setupCanvas(root,function(W){return W<480?330:376;},draw);
+  function fn(){return F[S.k];}
+  function tangentGap(F0,a){ /* min over view of f(t) - tangent_a(t) */
+    var fa=F0.f(a), s=F0.d(a), best=Infinity, at=a;
+    for(var i=0;i<=400;i++){var t=F0.r[0]+(F0.r[1]-F0.r[0])*i/400, g=F0.f(t)-(fa+s*(t-a)); if(g<best){best=g;at=t;}}
+    return {g:best,at:at};
+  }
+  function draw(){
+    var C=colors(), ctx=st.ctx, W=st.W, H=st.H, F0=fn(), th0=+th.value;
+    ctx.clearRect(0,0,W,H);
+    var box={x:34,y:24,w:W-48,h:H-(W<480?94:78)};
+    M=plot1d(ctx,box,F0.r,yrange(F0.f,F0.r[0],F0.r[1]),C);
+    txt(ctx,'f(x) = '+F0.n.split('  ')[0],box.x+4,12,C.ink,'left',13,true);
+    txt(ctx,fmt(F0.r[0]),box.x,box.y+box.h+13,C.muted,'left',12); txt(ctx,fmt(F0.r[1]),box.x+box.w,box.y+box.h+13,C.muted,'right',12);
+    /* tangent at a, with the parts where the graph dips below it */
+    var a=S.a, fa=F0.f(a), s=F0.d(a), tg=function(t){return fa+s*(t-a);};
+    curve(ctx,M,tg,C.ok,2.2);
+    ctx.save(); ctx.beginPath(); ctx.rect(box.x,box.y,box.w,box.h); ctx.clip(); ctx.fillStyle=C.bad; ctx.globalAlpha=0.25;
+    var run=[]; function flush(){ if(run.length>1){ctx.beginPath(); run.forEach(function(t,j){var px=M.X(t),py=M.Y(F0.f(t)); if(j) ctx.lineTo(px,py); else ctx.moveTo(px,py);}); for(var j=run.length-1;j>=0;j--) ctx.lineTo(M.X(run[j]),M.Y(tg(run[j]))); ctx.closePath(); ctx.fill();} run=[]; }
+    for(var i=0;i<=400;i++){var t=F0.r[0]+(F0.r[1]-F0.r[0])*i/400; if(F0.f(t)-tg(t)< -1e-9) run.push(t); else flush();} flush();
+    ctx.restore();
+    curve(ctx,M,F0.f,C.accent,3);
+    /* chord between x and y, mixing point */
+    var x=S.x, y=S.y, fx=F0.f(x), fy=F0.f(y), z=th0*x+(1-th0)*y, ch=th0*fx+(1-th0)*fy, fz=F0.f(z), gap=ch-fz;
+    line(ctx,M.X(x),M.Y(fx),M.X(y),M.Y(fy),C.bad,2.4);
+    line(ctx,M.X(z),box.y+box.h,M.X(z),Math.min(M.Y(ch),M.Y(fz)),C.muted,1,[3,3]);
+    line(ctx,M.X(z),M.Y(ch),M.X(z),M.Y(fz),gap>=-1e-12?C.ok:C.bad,4);
+    dot(ctx,M.X(z),M.Y(ch),4.5,C.bad,null); dot(ctx,M.X(z),M.Y(fz),4.5,C.accent,null);
+    txt(ctx,'θx + (1−θ)y',M.X(z),box.y+box.h+13,C.ink,'center',12);
+    dot(ctx,M.X(x),M.Y(fx),8,C.bad,null); dot(ctx,M.X(y),M.Y(fy),8,C.bad,null); dot(ctx,M.X(a),M.Y(fa),8,C.ok,null);
+    txt(ctx,'x',M.X(x),M.Y(fx)-16,C.bad,'center',14,true); txt(ctx,'y',M.X(y),M.Y(fy)-16,C.bad,'center',14,true); txt(ctx,'a',M.X(a),M.Y(fa)+18,C.ok,'center',14,true);
+    txt(ctx,'red: chord x–y    green: tangent at a',box.x,H-(W<480?30:14),C.ink,'left',12);
+    txt(ctx,'shaded: graph below the tangent',W<480?box.x:box.x+box.w,H-14,C.bad,W<480?'left':'right',12);
+    /* readout */
+    var T=tangentGap(F0,a), atKink=(F0.kink!==undefined&&Math.abs(a-F0.kink)<1e-9);
+    var mindd=Infinity, md=0; for(var k=0;k<=400;k++){var v=F0.r[0]+(F0.r[1]-F0.r[0])*k/400, q=F0.dd(v); if(q<mindd){mindd=q;md=v;}}
+    var r='<b>Chord (H1):</b> x = <b>'+fmt(x)+'</b>, y = <b>'+fmt(y)+'</b>, θ = <b>'+fmt(th0)+'</b>; at θx+(1−θ)y = <b>'+fmt(z)+'</b>: chord = <b>'+fmt(ch)+'</b>, graph = <b>'+fmt(fz)+'</b>, chord − graph = <b>'+fmt(gap)+'</b> '+yes(gap>=-1e-9)+(gap< -1e-9?' <b style="color:var(--bad)">chord is BELOW the graph: definition violated ⇒ not convex</b>':'')+'<br>';
+    r+='<b>Tangent (H2):</b> at a = <b>'+fmt(a)+'</b>, f(a) = <b>'+fmt(fa)+'</b>, slope f′(a) = <b>'+fmt(s)+'</b>'+(atKink?' (a kink: any slope between the two one-sided slopes works; this uses the right one)':'')+'; smallest graph − tangent in view = <b>'+fmt(T.g)+'</b> '+yes(T.g>=-1e-9)+(T.g< -1e-9?' at x = '+fmt(T.at)+' <b style="color:var(--bad)">(graph dips below the tangent: shaded)</b>':'')+'<br>';
+    r+='<b>f″ test (H3):</b> smallest f″ in view = <b>'+fmt(mindd)+'</b>'+(F0.kink!==undefined?' (away from the kink)':'')+(mindd<0?' at x = '+fmt(md)+' &lt; 0 ⇒ not convex':' ≥ 0')+(F0.kink!==undefined&&mindd>=0?', but f″ does not exist at the kink x = '+fmt(F0.kink)+', so the f″ test cannot decide; use chords':'')+'. &nbsp; <b>Verdict:</b> '+F0.note+'.'+(msg?'<br>'+msg:'');
+    out.innerHTML=r;
+  }
+  function setF(k){var F0=F[k], L=F0.r[1]-F0.r[0]; S.k=k; S.x=F0.r[0]+0.12*L; S.y=F0.r[0]+0.88*L; S.a=F0.r[0]+0.3*L; msg=''; st.redraw();}
+  F.forEach(function(q,i){var o=document.createElement('option'); o.value=i; o.textContent='f = '+q.n; sel.appendChild(o);});
+  sel.addEventListener('change',function(){setF(+sel.value);});
+  th.addEventListener('input',function(){thOut(fmt(+th.value)); msg=''; st.redraw();}); thOut(fmt(+th.value));
+  hunt.addEventListener('click',function(){
+    var F0=fn(), n=80, best=Infinity, bx=0, by=0;
+    for(var i=0;i<=n;i++) for(var j=i+1;j<=n;j++){var u=F0.r[0]+(F0.r[1]-F0.r[0])*i/n, v=F0.r[0]+(F0.r[1]-F0.r[0])*j/n, g=(F0.f(u)+F0.f(v))/2-F0.f((u+v)/2); if(g<best){best=g;bx=u;by=v;}}
+    var tb=Infinity, ta=S.a; for(var k=0;k<=200;k++){var a=F0.r[0]+(F0.r[1]-F0.r[0])*k/200, T=tangentGap(F0,a); if(T.g<tb){tb=T.g;ta=a;}}
+    if(best< -1e-9){S.x=bx; S.y=by; th.value=0.5; thOut('0.5'); S.a=ta;
+      msg='<b>Hunt:</b> worst midpoint chord found (θ = 0.5): chord − graph = <b>'+fmt(best)+'</b> &lt; 0. The green dot moved to the worst tangent point.';}
+    else msg='<b>Hunt:</b> searched '+(n*(n+1)/2)+' chords (θ = 0.5) and 201 tangent points: none violates convexity (smallest chord − graph = '+fmt(best)+'). As expected for a convex function.';
+    var keep=msg; st.redraw(); msg=keep;
+  });
+  function pick(px,py){ if(!M) return false; var F0=fn(), best=null, bd=34;
+    [['x',S.x],['y',S.y],['a',S.a]].forEach(function(h){var dd=Math.hypot(M.X(h[1])-px,M.Y(F0.f(h[1]))-py); if(dd<bd){bd=dd;best=h[0];}});
+    if(!best){ /* fall back to the nearest handle horizontally */
+      [['x',S.x],['y',S.y],['a',S.a]].forEach(function(h){var dd=Math.abs(M.X(h[1])-px); if(dd<bd){bd=dd;best=h[0];}}); }
+    grab=best; if(!grab) return false; move(px); }
+  function move(px){ if(!grab) return; var F0=fn(); S[grab]=Math.max(F0.r[0],Math.min(F0.r[1],M.inv(px))); msg=''; st.redraw(); }
+  pointer(st,pick,function(px){move(px);});
+  st.resize(); setF(0);
+})();
+})();
+</script>
 </body>
 </html>

@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>M2 · Constrained optimality (KKT)</title>
-<link rel="stylesheet" href="assets/fe.css">
+<link rel="stylesheet" href="assets/fe.css?v=20261126w">
 <script>
   window.MathJax = { tex: { inlineMath: [['$','$'],['\\(','\\)']], displayMath: [['$$','$$'],['\\[','\\]']] } };
 </script>
@@ -17,6 +17,9 @@
   .check > b:first-child{color:var(--accent)}
   .roadmap li{margin:3px 0}
   .kw{font-weight:700;color:var(--accent)}
+  .widget select{max-width:100%}
+  .widget .wctl label{flex-wrap:wrap;max-width:100%}
+  mjx-container[display="true"]{display:block;overflow-x:auto;overflow-y:hidden;max-width:100%}
 </style>
 </head>
 <body>
@@ -41,6 +44,7 @@
   <a href="#b3">&nbsp;&nbsp;B3. Linearised cone 𝓛</a>
   <a href="#b4">&nbsp;&nbsp;B4. Why T ⊆ 𝓛</a>
   <a href="#b5">&nbsp;&nbsp;B5. LICQ makes them equal</a>
+<a href="#w-cones">&nbsp;&nbsp;&nbsp;&nbsp;▶ Try: T vs 𝓛</a>
   <a href="#first">C. First-order condition</a>
   <a href="#c1">&nbsp;&nbsp;C1. No downhill tangent</a>
   <a href="#c2">&nbsp;&nbsp;C2. Farkas: directions → numbers</a>
@@ -49,14 +53,17 @@
   <a href="#d1">&nbsp;&nbsp;D1. The five parts</a>
   <a href="#d2">&nbsp;&nbsp;D2. Signs and rewriting</a>
   <a href="#d3">&nbsp;&nbsp;D3. Solving by hand</a>
+<a href="#w-kkt">&nbsp;&nbsp;&nbsp;&nbsp;▶ Try: KKT at a point</a>
   <a href="#d4">&nbsp;&nbsp;D4. When KKT fails</a>
   <a href="#second">E. Second order</a>
   <a href="#e1">&nbsp;&nbsp;E1. Why first order isn't enough</a>
   <a href="#e2">&nbsp;&nbsp;E2. Hessian of ℓ</a>
   <a href="#e3">&nbsp;&nbsp;E3. Critical cone C</a>
   <a href="#e4">&nbsp;&nbsp;E4. SONC and SOSC</a>
+<a href="#w-crit">&nbsp;&nbsp;&nbsp;&nbsp;▶ Try: critical cone</a>
   <a href="#e5">&nbsp;&nbsp;E5. Finishing the examples</a>
   <a href="#eig">F. Eigenvector problems</a>
+<a href="#w-eig">&nbsp;&nbsp;&nbsp;&nbsp;▶ Try: eigen ellipse</a>
   <a href="#bank">G. Counter-example bank</a>
   <a href="#proof">H. The FONC proof</a>
   <a href="#recipe">I. Exam recipe (KKT ladder)</a>
@@ -288,6 +295,14 @@ Active: $g_1=4-x_1-x_2^2$ and $g_2=3x_2-x_1$. $\nabla g_1=(-1,-2x_2)=(-1,-2)$, $
 </ul>
 <div class="check"><b>Check B5.</b> Constraints $h=x_1+x_2+x_3=0$, $g_1=-x_1\le0$, $g_2=-x_2\le0$ at $x=0$. Is it regular?
 <details class="ans"><summary>Show answer</summary><div><p>Active: $g_1,g_2$. Columns $(1,1,1)$, $(-1,0,0)$, $(0,-1,0)$; the matrix $\begin{pmatrix}1&-1&0\\1&0&-1\\1&0&0\end{pmatrix}$ has determinant $1\ne0$ ⇒ regular. (This is Midterm 2 V.)</p></div></details></div>
+
+<div class="widget" id="w-cones"><div class="wtitle">Tangent cone T vs linearised cone 𝓛</div>
+<p class="small">Pick a constraint set. The left panel shows the feasible set Ω near the origin and the constraint gradients there; the right panel shows the true tangent directions T (green) and the directions the gradients accept, 𝓛 (gold). <b>Drag the arrow d</b> on the right (or use the slider) and see whether it is in T and in 𝓛.</p>
+<canvas width="640" height="400" aria-label="Feasible set near the origin and its tangent and linearised cones"></canvas>
+<div class="wctl"><label>Constraints <select id="w-cones-case"></select></label><label>direction of d <input type="range" id="w-cones-ang" min="0" max="359" step="1" value="30"><output id="w-cones-ango">30°</output></label></div>
+<div class="wout"></div>
+<div class="whint"><b>What to notice.</b> Whenever LICQ says yes, green and gold coincide ($T=\mathcal L$). When a gradient is zero ($uv=0$, $v^3=0$) the gold fills the whole plane: 𝓛 accepts directions such as $d=(1,1)$ that no feasible points come from. $v^3=0$ and $v=0$ are the same set with different 𝓛, because LICQ is about the formula, not the set. "$v=0$ and $2v=0$": LICQ fails yet $T=\mathcal L$ (linear constraints), so LICQ is sufficient, not necessary. Cusp: 𝓛 is the whole $u$-axis but T only its left half.</div>
+</div>
 </section>
 
 <!-- ================= C. FIRST ORDER ================= -->
@@ -438,6 +453,15 @@ $$\begin{aligned}
 <div class="check"><b>Check D3.</b> $\min(x-2)^2$ s.t. $g(x)=x-1\le0$. Do both active-set cases.
 <details class="ans"><summary>Show answer</summary><div><p>$\ell=(x-2)^2+\mu(x-1)$, stationarity $2(x-2)+\mu=0$. Inactive ($\mu=0$): $x=2$, but $g=1\gt0$: reject. Active ($x=1$): $\mu=2\ge0$ ✓. KKT pair $(x^\star,\mu^\star)=(1,2)$. (Quiz 3 Q14.)</p></div></details></div>
 
+
+<div class="widget" id="w-kkt"><div class="wtitle">KKT at a point: drag the target, watch the active set and the multipliers</div>
+<p class="small">Problem: $\min f=(x_1-a)^2+(x_2-b)^2$ over the triangle $x_1\ge0,\ x_2\ge0,\ x_1+x_2\le2$, so $x^\star$ is the feasible point nearest the target $(a,b)$. <b>Drag the red target</b> (or use the sliders) and watch the active walls (gold), the red arrow $-\nabla f(x^\star)$ and how it splits into $\mu_i\nabla g_i$ (dashed gold). It starts at $(2,1)$, the D3 example.</p>
+<canvas width="640" height="400" aria-label="Triangle feasible region with draggable target, contours of f, the minimiser, minus gradient of f and active constraint normals"></canvas>
+<div class="wctl"><label>a <input type="range" id="w-kkt-a" min="-1.9" max="4.1" step="0.05" value="2"><output id="w-kkt-ao">2</output></label><label>b <input type="range" id="w-kkt-b" min="-1.1" max="2.6" step="0.05" value="1"><output id="w-kkt-bo">1</output></label></div>
+<div class="wout"></div>
+<div class="whint"><b>What to notice.</b> Target inside the triangle: nothing active, all $\mu=0$, $x^\star$ = target. Past the slanted edge: only $g_3$ active and $-\nabla f$ points straight out through it ($\mu_3\gt0$). Past a corner: two walls active and $-\nabla f$ lies <b>inside the gold cone</b> of their normals, so both $\mu$'s are $\ge0$. Put the target at $(3,1)$: $x^\star=(2,0)$ with $g_2$ active but $\mu_2=0$; that is the moment a multiplier hits 0, just before its wall drops out of the active set (move the target up a little and $g_2$ is gone). The ✓/✗ list repeats the D3 recipe live: every wrong guess dies by infeasibility or a negative $\mu$.</div>
+</div>
+
 <h3 id="d4">D4. When KKT fails at a true minimum (and why that's no contradiction)</h3>
 <p>KKT is guaranteed only at <b>regular</b> points. He stressed: <q>KKT is necessary only when the point is regular. Very important.</q> <span class="ts">Ch 6 lec 4 [22:30]</span></p>
 <div class="box example"><span class="tag">Example: min x s.t. −x³ ≤ 0</span>
@@ -563,6 +587,15 @@ $f=u+v-u^2-v^2$ on $u\ge0$, $v\ge0$, at the origin.
 <div class="check"><b>Check E4.</b> At a KKT point, $C=\{t(1,1):t\in\mathbb R\}$ and $\mathbf L_\star=\begin{pmatrix}1&-3\\-3&1\end{pmatrix}$. Conclusion?
 <details class="ans"><summary>Show answer</summary><div><p>$d=t(1,1)$: $d^\top\mathbf L_\star d=t^2(1-3-3+1)=-4t^2\lt0$. If the point is regular: SONC fails, not a local min. (Without regularity: no conclusion.)</p></div></details></div>
 
+
+<div class="widget" id="w-crit"><div class="wtitle">Critical cone and curvature: SOSC is "positive on C only"</div>
+<p class="small">Pick a KKT point and <b>rotate the direction d</b> (slider, or drag on the left). The ring plots $d^\top\mathbf L_\star d$ for every unit direction: outside the dashed circle = positive (green), inside = negative (red), drawn <b>bold where d is in the critical cone C</b>. Blue shading = 𝓛, green shading = C. The bars on the right show the slope $\nabla f^\top d$ and the curvature for the current d.</p>
+<canvas width="640" height="400" aria-label="Polar plot of the Lagrangian curvature over all directions with the critical cone highlighted"></canvas>
+<div class="wctl"><label>KKT point <select id="w-crit-case"></select></label><label>direction of d <input type="range" id="w-crit-ang" min="0" max="359" step="1" value="90"><output id="w-crit-ango">90°</output></label><label><input type="checkbox" id="w-crit-trap"> use $\nabla^2 f$ instead of $\mathbf L_\star$ (the trap)</label></div>
+<div class="wout"></div>
+<div class="whint"><b>What to notice.</b> Inside 𝓛 but outside C the slope bar is positive: those directions are already settled at first order, so their curvature does not matter. SOSC only asks for green on the bold part. Quiz 3 Q18 ($u^2+6uv+v^2$): $\mathbf L_\star$ is indefinite (red lobes), but the red lies outside the first quadrant $C$, so SOSC holds. $u-v^2$: C is the ray up the $v$-axis and the ring is red there, so not a minimum. Zero critical cone: the ring is red everywhere, but nothing is bold, so it is a strict minimum. E2 example: tick the trap box and the verdict flips, because the constraint's bending is lost.</div>
+</div>
+
 <h3 id="e5">E5. Finishing the worked examples</h3>
 <div class="box example"><span class="tag">The D3 example: x* = (3/2, 1/2), μ* = (1, 0)</span>
 <ol class="steps">
@@ -602,6 +635,15 @@ $\mu\gt0$ ⇒ $C=\{d:\ 1\cdot d=0\}=\{0\}$ ⇒ SOSC holds ⇒ strict local min (
 </svg>
 <div class="cap">Blue: $x^\top Qx\le1$ (filled) and its boundary. Red circle touches the ellipse at the ends of the long axis: the maximum of $x^\top x$ is $1/\theta_1$ at $\pm q_1/\sqrt{\theta_1}$. Green circle touches at the ends of the short axis: the minimum of $x^\top x$ on the boundary is $1/\theta_n$ at $\pm q_n/\sqrt{\theta_n}$.</div>
 </div>
+
+<div class="widget" id="w-eig"><div class="wtitle">Eigenvector problem: max / min $x^\top x$ on the ellipse $x^\top Qx=1$</div>
+<p class="small"><b>Drag the black point x</b> around the ellipse (or use the position slider), and change $\theta_1,\theta_2$ (the eigenvalues of Q) and the rotation of its eigenvectors $q_1,q_2$. Watch the two gradient arrows at x and the graph of $x^\top x$ along the ellipse.</p>
+<canvas width="640" height="400" aria-label="Ellipse x'Qx=1, level circles of x'x, eigenvector points and the gradients of objective and constraint"></canvas>
+<div class="wctl"><label>θ₁ <input type="range" id="w-eig-t1" min="0.3" max="6" step="0.05" value="1"><output id="w-eig-t1o">1</output></label><label>θ₂ <input type="range" id="w-eig-t2" min="0.3" max="6" step="0.05" value="4"><output id="w-eig-t2o">4</output></label><label>rotate q₁ <input type="range" id="w-eig-rot" min="0" max="180" step="1" value="0"><output id="w-eig-roto">0°</output></label><label>position s <input type="range" id="w-eig-s" min="0" max="359" step="1" value="40"><output id="w-eig-so">40°</output></label></div>
+<div class="wout"></div>
+<div class="whint"><b>What to notice.</b> The purple arrow (gradient of the objective, $2x$) and the gold arrow (gradient of the constraint, $2Qx$) are parallel only at the four points on the eigenvector axes; that is the KKT condition $x=\mu Qx$. There $x^\top x=1/\theta_i=\mu$: the far pair (red, smallest θ) is the max and touches the red circle, the near pair (green, largest θ) is the min. In the graph the eigen-points are exactly the peaks and valleys. Set $\theta_1=\theta_2$: the ellipse becomes a circle and every point is a KKT point.</div>
+</div>
+
 <p><b>Why eigenvectors appear:</b> stationarity always has the form "$x$ = number × $Qx$", i.e. $Qx=(\text{number})\,x$, so every boundary KKT point is an eigenvector rescaled to lie on the constraint surface.</p>
 <div class="box example"><span class="tag">Worked template: min xᵀx s.t. xᵀQx ≥ 1</span>
 <ol class="steps">
@@ -1353,6 +1395,366 @@ $$d^\top\mathbf L_\star d=2\sum_{j\ne i}\Big(1-\frac{\theta_j}{\theta_i}\Big)\al
 
 </main>
 </div>
-<script src="assets/fe.js"></script>
+<script src="assets/fe.js?v=20261126w"></script>
+<script>
+/* ===== Interactive widgets for M2 (plain JS, no libraries) ===== */
+var FEW = (function(){
+  var redrawers = [];
+  function css(n){ return getComputedStyle(document.documentElement).getPropertyValue(n).trim(); }
+  function pal(){ return {ink:css('--ink'),muted:css('--muted'),line:css('--line'),accent:css('--accent'),ok:css('--ok'),bad:css('--bad'),bg:css('--bg'),gold:css('--must-line')||'#e0b400',purple:css('--ex-line')||'#6a5acd'}; }
+  function sig(x){ if(!isFinite(x)) return String(x); if(Math.abs(x)<5e-10) return '0'; var s=Number(x.toPrecision(3)); return s===0?'0':String(s); }
+  function canvas(cv, W, H, draw){
+    var ctx = cv.getContext('2d');
+    function render(){
+      var d = window.devicePixelRatio||1, w=Math.round(W*d), h=Math.round(H*d);
+      if(cv.width!==w||cv.height!==h){ cv.width=w; cv.height=h; }
+      ctx.setTransform(d,0,0,d,0,0); ctx.clearRect(0,0,W,H);
+      var p=pal(); ctx.fillStyle=p.bg; ctx.fillRect(0,0,W,H);
+      draw(ctx,p);
+    }
+    redrawers.push(render);
+    function pt(e){ var r=cv.getBoundingClientRect(); return [(e.clientX-r.left)*W/r.width,(e.clientY-r.top)*H/r.height]; }
+    function drag(onDown,onMove){
+      var on=false;
+      cv.addEventListener('pointerdown',function(e){ var q=pt(e); if(onDown(q)){ on=true; try{cv.setPointerCapture(e.pointerId);}catch(_){} onMove(q); e.preventDefault(); } });
+      cv.addEventListener('pointermove',function(e){ if(on){ onMove(pt(e)); e.preventDefault(); } });
+      function stop(e){ if(on){ on=false; try{cv.releasePointerCapture(e.pointerId);}catch(_){} } }
+      cv.addEventListener('pointerup',stop); cv.addEventListener('pointercancel',stop);
+    }
+    render();
+    return {ctx:ctx,render:render,pt:pt,drag:drag};
+  }
+  function arrow(ctx,x1,y1,x2,y2,col,w,dash){
+    var dx=x2-x1, dy=y2-y1, L=Math.hypot(dx,dy); if(L<1) return;
+    var hl=Math.min(11,0.45*L), ux=dx/L, uy=dy/L;
+    ctx.save(); ctx.strokeStyle=col; ctx.fillStyle=col; ctx.lineWidth=w||2; ctx.setLineDash(dash||[]);
+    ctx.beginPath(); ctx.moveTo(x1,y1); ctx.lineTo(x2-ux*hl*0.8,y2-uy*hl*0.8); ctx.stroke(); ctx.setLineDash([]);
+    ctx.beginPath(); ctx.moveTo(x2,y2); ctx.lineTo(x2-ux*hl-uy*hl*0.45,y2-uy*hl+ux*hl*0.45); ctx.lineTo(x2-ux*hl+uy*hl*0.45,y2-uy*hl-ux*hl*0.45); ctx.closePath(); ctx.fill();
+    ctx.restore();
+  }
+  function text(ctx,s,x,y,col,align,size,bold){
+    ctx.save(); ctx.fillStyle=col; ctx.font=(bold?'bold ':'')+(size||13)+'px system-ui,-apple-system,"Segoe UI",sans-serif';
+    ctx.textAlign=align||'left'; ctx.textBaseline='middle';
+    // halo so labels stay readable over lines
+    ctx.lineWidth=3; ctx.strokeStyle=css('--bg'); ctx.lineJoin='round'; ctx.strokeText(s,x,y);
+    ctx.fillText(s,x,y); ctx.restore();
+  }
+  function line(ctx,x1,y1,x2,y2,col,w,dash,alpha){
+    ctx.save(); ctx.strokeStyle=col; ctx.lineWidth=w||1; ctx.setLineDash(dash||[]); if(alpha!=null) ctx.globalAlpha=alpha;
+    ctx.beginPath(); ctx.moveTo(x1,y1); ctx.lineTo(x2,y2); ctx.stroke(); ctx.restore();
+  }
+  function all(){ redrawers.forEach(function(f){ f(); }); }
+  window.addEventListener('resize',all);
+  try{ window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change',all); }catch(_){}
+  try{ new MutationObserver(all).observe(document.documentElement,{attributes:true,attributeFilter:['data-theme','class']}); }catch(_){}
+  return {canvas:canvas,arrow:arrow,text:text,line:line,sig:sig,pal:pal};
+})();
+
+/* ---------- Widget 1: KKT at a point (triangle, drag the target) ---------- */
+(function(){
+  var root=document.getElementById('w-kkt'); if(!root) return;
+  var cv=root.querySelector('canvas'), out=root.querySelector('.wout');
+  var ia=root.querySelector('#w-kkt-a'), ib=root.querySelector('#w-kkt-b'), oa=root.querySelector('#w-kkt-ao'), ob=root.querySelector('#w-kkt-bo');
+  var W=640,H=400, sc=105, cx0=1.1, cy0=0.75, S=FEW.sig;
+  function X(x){ return W/2+(x-cx0)*sc; } function Y(y){ return H/2-(y-cy0)*sc; }
+  function wx(px){ return (px-W/2)/sc+cx0; } function wy(py){ return cy0-(py-H/2)/sc; }
+  // g_i(x) = n_i . x - c_i <= 0
+  var G=[{n:[-1,0],c:0,nm:'g₁',txt:'g₁ = −x₁ ≤ 0'},{n:[0,-1],c:0,nm:'g₂',txt:'g₂ = −x₂ ≤ 0'},{n:[1,1],c:2,nm:'g₃',txt:'g₃ = x₁+x₂−2 ≤ 0'}];
+  function g(i,x){ return G[i].n[0]*x[0]+G[i].n[1]*x[1]-G[i].c; }
+  var SETS=[[],[0],[1],[2],[0,1],[0,2],[1,2]], TOL=1e-9;
+  // Exact solve for one active-set guess A: x = t - N mu/2, N^T x = c  =>  mu = 2 (N^T N)^{-1} (N^T t - c)
+  function guess(A,t){
+    var mu=[0,0,0], x;
+    if(A.length===0){ x=[t[0],t[1]]; }
+    else if(A.length===1){ var n=G[A[0]].n, nn=n[0]*n[0]+n[1]*n[1], m=2*((n[0]*t[0]+n[1]*t[1])-G[A[0]].c)/nn; mu[A[0]]=m; x=[t[0]-m*n[0]/2,t[1]-m*n[1]/2]; }
+    else { var p=G[A[0]], q=G[A[1]], a11=p.n[0]*p.n[0]+p.n[1]*p.n[1], a12=p.n[0]*q.n[0]+p.n[1]*q.n[1], a22=q.n[0]*q.n[0]+q.n[1]*q.n[1];
+      var r1=2*(p.n[0]*t[0]+p.n[1]*t[1]-p.c), r2=2*(q.n[0]*t[0]+q.n[1]*t[1]-q.c), det=a11*a22-a12*a12;
+      var m1=(a22*r1-a12*r2)/det, m2=(a11*r2-a12*r1)/det; mu[A[0]]=m1; mu[A[1]]=m2;
+      x=[t[0]-(m1*p.n[0]+m2*q.n[0])/2, t[1]-(m1*p.n[1]+m2*q.n[1])/2]; }
+    var why='';
+    for(var j=0;j<3;j++){ if(A.indexOf(j)<0 && g(j,x)>TOL){ why='infeasible: '+G[j].nm+' = '+S(g(j,x))+' > 0'; break; } }
+    if(!why) for(var k=0;k<A.length;k++){ if(mu[A[k]]< -TOL){ why='μ'+(A[k]+1)+' = '+S(mu[A[k]])+' < 0'; break; } }
+    return {A:A,x:x,mu:mu,ok:!why,why:why};
+  }
+  function solve(t){ var rows=SETS.map(function(A){ return guess(A,t); }), best=null; rows.forEach(function(r){ if(r.ok&&!best) best=r; }); return {rows:rows,best:best}; }
+  window.__w_kkt_solve=function(a,b){ var s=solve([a,b]).best; return {x:s.x,mu:s.mu,A:s.A}; }; // for checking
+  var t=[2,1];
+  function setT(a,b,snap){ if(snap){ a=Math.round(a*20)/20; b=Math.round(b*20)/20; } t=[Math.max(-1.9,Math.min(4.1,a)),Math.max(-1.1,Math.min(2.6,b))]; ia.value=t[0]; ib.value=t[1]; F.render(); }
+  var F=FEW.canvas(cv,W,H,function(ctx,P){
+    var sol=solve(t), b=sol.best, x=b.x;
+    // axes and ticks
+    FEW.line(ctx,0,Y(0),W,Y(0),P.muted,1,null,0.5); FEW.line(ctx,X(0),0,X(0),H,P.muted,1,null,0.5);
+    for(var k=-1;k<=4;k++){ if(k!==0){ FEW.line(ctx,X(k),Y(0)-3,X(k),Y(0)+3,P.muted,1); FEW.text(ctx,String(k),X(k),Y(0)+12,P.muted,'center',11);} }
+    for(k=-1;k<=2;k++){ if(k!==0){ FEW.line(ctx,X(0)-3,Y(k),X(0)+3,Y(k),P.muted,1); FEW.text(ctx,String(k),X(0)-8,Y(k),P.muted,'right',11);} }
+    FEW.text(ctx,'x₁',W-14,Y(0)-12,P.muted,'center',13); FEW.text(ctx,'x₂',X(0)+14,12,P.muted,'center',13);
+    // feasible triangle
+    ctx.save(); ctx.globalAlpha=0.14; ctx.fillStyle=P.accent; ctx.beginPath(); ctx.moveTo(X(0),Y(0)); ctx.lineTo(X(2),Y(0)); ctx.lineTo(X(0),Y(2)); ctx.closePath(); ctx.fill(); ctx.restore();
+    // constraint lines (faint, full) and edges (active = gold, thick)
+    FEW.line(ctx,X(-1.9),Y(3.9),X(4.1),Y(-2.1),P.muted,1,[4,4],0.6);
+    var act=[0,1,2].map(function(j){ return Math.abs(g(j,x))<TOL; });
+    var E=[[[0,0],[0,2]],[[0,0],[2,0]],[[2,0],[0,2]]];
+    E.forEach(function(e,j){ FEW.line(ctx,X(e[0][0]),Y(e[0][1]),X(e[1][0]),Y(e[1][1]),act[j]?P.gold:P.accent,act[j]?5:2); });
+    FEW.text(ctx,'g₁: x₁ ≥ 0',X(0)-6,Y(1.55),act[0]?P.gold:P.accent,'right',12,act[0]);
+    FEW.text(ctx,'g₂: x₂ ≥ 0',X(1.45),Y(0)+24,act[1]?P.gold:P.accent,'center',12,act[1]);
+    FEW.text(ctx,'g₃: x₁+x₂ ≤ 2',X(0.55)+10,Y(1.45)-6,act[2]?P.gold:P.accent,'left',12,act[2]);
+    FEW.text(ctx,'feasible Ω',X(0.45),Y(0.45),P.accent,'center',12);
+    // contours of f around the target
+    var rs=Math.hypot(t[0]-x[0],t[1]-x[1]), radii=rs>0.05?[0.35,0.7,1,1.45,2,2.8].map(function(m){return m*rs;}):[0.3,0.6,0.9,1.3,1.8,2.5];
+    radii.forEach(function(r){ var main=rs>0.05&&Math.abs(r-rs)<1e-9; ctx.save(); ctx.strokeStyle=P.purple; ctx.globalAlpha=main?0.95:0.4; ctx.lineWidth=main?2:1; ctx.setLineDash(main?[6,4]:[]); ctx.beginPath(); ctx.arc(X(t[0]),Y(t[1]),r*sc,0,2*Math.PI); ctx.stroke(); ctx.restore(); });
+    if(rs>0.05) FEW.text(ctx,'contour f = f(x*)',X(t[0])+rs*sc*0.72+4,Y(t[1])-rs*sc*0.72-6,P.purple,'left',11);
+    // cone of active normals at x*
+    var A=b.A.filter(function(j){return act[j];});
+    var allAct=[0,1,2].filter(function(j){return act[j];});
+    var u=allAct.map(function(j){ var n=G[j].n, L=Math.hypot(n[0],n[1]); return [n[0]/L,n[1]/L]; });
+    if(u.length===2){ var a0=Math.atan2(-u[0][1],u[0][0]), a1=Math.atan2(-u[1][1],u[1][0]), da=a1-a0; while(da>Math.PI) da-=2*Math.PI; while(da<-Math.PI) da+=2*Math.PI;
+      ctx.save(); ctx.globalAlpha=0.22; ctx.fillStyle=P.gold; ctx.beginPath(); ctx.moveTo(X(x[0]),Y(x[1])); ctx.arc(X(x[0]),Y(x[1]),95,a0,a0+da,da<0); ctx.closePath(); ctx.fill(); ctx.restore();
+      var bx=u[0][0]+u[1][0], by=u[0][1]+u[1][1], bl=Math.hypot(bx,by)||1; FEW.text(ctx,'cone of active ∇g',X(x[0])+bx/bl*80,Y(x[1])-by/bl*80+14,P.gold,'center',11); }
+    allAct.forEach(function(j,i){ FEW.arrow(ctx,X(x[0]),Y(x[1]),X(x[0])+u[i][0]*45,Y(x[1])-u[i][1]*45,P.gold,2.5); FEW.text(ctx,"∇"+G[j].nm,X(x[0])+u[i][0]*58,Y(x[1])-u[i][1]*58,P.gold,'center',12,true); });
+    // -grad f and its split into mu_i grad g_i (same scale k)
+    var k2=0.75, ng=[2*(t[0]-x[0]),2*(t[1]-x[1])];
+    if(Math.hypot(ng[0],ng[1])>1e-9){
+      var px=x[0],py=x[1];
+      allAct.forEach(function(j){ var m=b.mu[j]; if(m>1e-9){ var qx=px+k2*m*G[j].n[0], qy=py+k2*m*G[j].n[1]; FEW.arrow(ctx,X(px),Y(py),X(qx),Y(qy),P.gold,1.5,[4,3]); px=qx; py=qy; } });
+      FEW.arrow(ctx,X(x[0]),Y(x[1]),X(x[0]+k2*ng[0]),Y(x[1]+k2*ng[1]),P.bad,3);
+      FEW.text(ctx,'−∇f(x*)',X(x[0]+k2*ng[0])+8,Y(x[1]+k2*ng[1])-10,P.bad,'left',12,true);
+    }
+    // points
+    ctx.save(); ctx.fillStyle=P.ink; ctx.beginPath(); ctx.arc(X(x[0]),Y(x[1]),5,0,2*Math.PI); ctx.fill(); ctx.restore();
+    FEW.text(ctx,'x*',X(x[0])-10,Y(x[1])+12,P.ink,'right',13,true);
+    ctx.save(); ctx.strokeStyle=P.bad; ctx.lineWidth=3; ctx.beginPath(); ctx.arc(X(t[0]),Y(t[1]),9,0,2*Math.PI); ctx.stroke(); ctx.fillStyle=P.bad; ctx.beginPath(); ctx.arc(X(t[0]),Y(t[1]),3,0,2*Math.PI); ctx.fill(); ctx.restore();
+    var rt=X(t[0])>470; FEW.text(ctx,'target (a,b) — drag me',X(t[0])+(rt?-13:13),Y(t[1])-15,P.bad,rt?'right':'left',12,true);
+    // readout
+    var actNames=allAct.map(function(j){return G[j].nm;}).join(', ')||'none (interior point)';
+    var h='Target $(a,b)$ = ('+S(t[0])+', '+S(t[1])+'). &nbsp; Minimiser x* = (<b>'+S(x[0])+'</b>, <b>'+S(x[1])+'</b>), f(x*) = '+S(rs*rs)+'.<br>'+
+      'Active: <b>'+actNames+'</b>. &nbsp; Multipliers μ = (<b>'+S(b.mu[0])+'</b>, <b>'+S(b.mu[1])+'</b>, <b>'+S(b.mu[2])+'</b>) (all ≥ 0).<br>'+
+      'Check: −∇f(x*) = ('+S(ng[0])+', '+S(ng[1])+') = Σ μᵢ∇gᵢ = ('+S(b.mu[0]*-1+b.mu[2])+', '+S(-b.mu[1]+b.mu[2])+').'+
+      '<br><span style="font-size:13px">Active-set guesses (as in D3): '+sol.rows.map(function(r){ var nm=r.A.length?'{'+r.A.map(function(j){return j+1;}).join(',')+'}':'∅'; return nm+(r.ok?' <b style="color:var(--ok)">✓ KKT</b>':' ✗ '+r.why); }).join('; ')+'</span>';
+    out.innerHTML=h.replace('$(a,b)$','(a,b)');
+  });
+  F.drag(function(q){ return Math.hypot(q[0]-X(t[0]),q[1]-Y(t[1]))<30; }, function(q){ setT(wx(q[0]),wy(q[1]),true); });
+  ia.addEventListener('input',function(){ setT(+ia.value,t[1]); oa.value=S(+ia.value); });
+  ib.addEventListener('input',function(){ setT(t[0],+ib.value); ob.value=S(+ib.value); });
+  var r0=F.render; F.render=function(){ r0(); oa.value=S(t[0]); ob.value=S(t[1]); }; F.render();
+})();
+
+/* ---------- Widget 2: tangent cone vs linearised cone ---------- */
+(function(){
+  var root=document.getElementById('w-cones'); if(!root) return;
+  var cv=root.querySelector('canvas'), out=root.querySelector('.wout'), sel=root.querySelector('#w-cones-case'), ang=root.querySelector('#w-cones-ang'), ao=root.querySelector('#w-cones-ango');
+  var W=640,H=400, S=FEW.sig;
+  // cone item: {k:'poly',ns:[n..]} = {d: n.d <= 0 for all n} ; {k:'line',d} ; {k:'ray',d}
+  var PLANE={k:'poly',ns:[]}, UAX={k:'line',d:[1,0]}, VAX={k:'line',d:[0,1]};
+  var CASES=[
+    {nm:'v = u²  (h = v − u²)',grads:[['∇h',[0,1]]],T:[UAX],L:[UAX],licq:true,why:'one gradient, (0,1) ≠ 0',Tt:'the u-axis (a line)',Lt:'{d : d₂ = 0}, the u-axis',
+      omega:function(c,m,P){ curve(c,m,function(u){return u*u;},P.accent); }},
+    {nm:'v ≥ u²  (g = u² − v ≤ 0)',grads:[['∇g',[0,-1]]],T:[{k:'poly',ns:[[0,-1]]}],L:[{k:'poly',ns:[[0,-1]]}],licq:true,why:'one active gradient, (0,−1) ≠ 0',Tt:'the upper half-plane d₂ ≥ 0',Lt:'{d : −d₂ ≤ 0}, the upper half-plane',
+      omega:function(c,m,P){ region(c,m,function(u,v){return v>=u*u;},P.accent); curve(c,m,function(u){return u*u;},P.accent); }},
+    {nm:'uv = 0  (h = uv)',grads:[['∇h',[0,0]]],T:[UAX,VAX],L:[PLANE],licq:false,why:'∇h = (v,u) = (0,0) at the origin',Tt:'both axes (not convex!)',Lt:'{d : 0·d = 0} = the whole plane',
+      omega:function(c,m,P){ seg(c,m,-9,0,9,0,P.accent); seg(c,m,0,-9,0,9,P.accent); }},
+    {nm:'v³ = 0  (h = v³)',grads:[['∇h',[0,0]]],T:[UAX],L:[PLANE],licq:false,why:'∇h = (0, 3v²) = (0,0) at the origin',Tt:'the u-axis',Lt:'the whole plane',
+      omega:function(c,m,P){ seg(c,m,-9,0,9,0,P.accent); }},
+    {nm:'v = 0  (h = v, same set as v³ = 0)',grads:[['∇h',[0,1]]],T:[UAX],L:[UAX],licq:true,why:'∇h = (0,1) ≠ 0',Tt:'the u-axis',Lt:'{d : d₂ = 0}, the u-axis',
+      omega:function(c,m,P){ seg(c,m,-9,0,9,0,P.accent); }},
+    {nm:'u ≥ 0, v ≥ 0  (g₁ = −u, g₂ = −v)',grads:[['∇g₁',[-1,0]],['∇g₂',[0,-1]]],T:[{k:'poly',ns:[[-1,0],[0,-1]]}],L:[{k:'poly',ns:[[-1,0],[0,-1]]}],licq:true,why:'(−1,0), (0,−1) independent',Tt:'the first quadrant',Lt:'{−d₁ ≤ 0, −d₂ ≤ 0}, the first quadrant',
+      omega:function(c,m,P){ region(c,m,function(u,v){return u>=0&&v>=0;},P.accent); }},
+    {nm:'v = 0 and 2v = 0  (two equalities)',grads:[['∇h₁',[0,1]],['∇h₂',[0,2]]],T:[UAX],L:[UAX],licq:false,why:'(0,1) and (0,2) are dependent',Tt:'the u-axis',Lt:'{d₂ = 0, 2d₂ = 0}, the u-axis',
+      omega:function(c,m,P){ seg(c,m,-9,0,9,0,P.accent); }},
+    {nm:'cusp: v ≥ 0 and v ≤ −u³',grads:[['∇g₁',[0,-1]],['∇g₂',[0,1]]],T:[{k:'ray',d:[-1,0]}],L:[UAX],licq:false,why:'∇g₁ = (0,−1), ∇g₂ = (3u²,1) = (0,1): dependent',Tt:'the ray d = (−s, 0), s ≥ 0 (left only)',Lt:'{−d₂ ≤ 0, d₂ ≤ 0} = the whole u-axis',
+      omega:function(c,m,P){ region(c,m,function(u,v){return v>=0&&v<=-u*u*u;},P.accent); curve(c,m,function(u){return u<=0?-u*u*u:NaN;},P.accent); seg(c,m,-9,0,0,0,P.accent); }}
+  ];
+  sel.innerHTML=CASES.map(function(c,i){return '<option value="'+i+'">'+c.nm+'</option>';}).join('');
+  // left panel: Omega near the origin; right panel: cones
+  var LM={cx:160,cy:215,s:105}, RM={cx:480,cy:215,R:130};
+  function curve(c,m,fn,col){ c.save(); c.strokeStyle=col; c.lineWidth=4; c.beginPath(); var st=false; for(var u=-1.45;u<=1.45;u+=0.01){ var v=fn(u); if(!isFinite(v)||Math.abs(v)>1.6){ st=false; continue; } var px=m.cx+u*m.s, py=m.cy-v*m.s; if(!st){c.moveTo(px,py); st=true;} else c.lineTo(px,py);} c.stroke(); c.restore(); }
+  function region(c,m,ok,col){ c.save(); c.fillStyle=col; c.globalAlpha=0.22; for(var i=-145;i<145;i+=1){ for(var j=-160;j<160;j+=1){ var u=i/100,v=j/100; if(ok(u+0.005,v+0.005)) c.fillRect(m.cx+u*m.s,m.cy-(v+0.01)*m.s,m.s/100+0.6,m.s/100+0.6); } } c.restore(); }
+  function seg(c,m,u1,v1,u2,v2,col){ c.save(); c.beginPath(); c.rect(m.cx-150,m.cy-170,300,345); c.clip(); FEW.line(c,m.cx+u1*m.s,m.cy-v1*m.s,m.cx+u2*m.s,m.cy-v2*m.s,col,4); c.restore(); }
+  function inItem(it,d){ var e=1e-6;
+    if(it.k==='poly') return it.ns.every(function(n){return n[0]*d[0]+n[1]*d[1]<=e;});
+    var cr=it.d[0]*d[1]-it.d[1]*d[0]; if(Math.abs(cr)>e) return false; return it.k==='line'||(it.d[0]*d[0]+it.d[1]*d[1])>0; }
+  function inCone(items,d){ return items.some(function(it){return inItem(it,d);}); }
+  function drawCone(c,items,col,alpha,w){
+    items.forEach(function(it){
+      if(it.k==='poly'){ c.save(); c.fillStyle=col; c.globalAlpha=alpha; for(var a=0;a<360;a+=1){ var m=(a+0.5)*Math.PI/180; if(inItem(it,[Math.cos(m),Math.sin(m)])){ c.beginPath(); c.moveTo(RM.cx,RM.cy); c.arc(RM.cx,RM.cy,RM.R,-(a+1.02)*Math.PI/180,-(a-0.02)*Math.PI/180); c.closePath(); c.fill(); } } c.restore(); }
+      else { var d=it.d, L=Math.hypot(d[0],d[1]), s0=it.k==='line'?-1:0; c.save(); c.globalAlpha=Math.min(1,alpha*3); FEW.line(c,RM.cx+s0*RM.R*d[0]/L,RM.cy-s0*RM.R*d[1]/L,RM.cx+RM.R*d[0]/L,RM.cy-RM.R*d[1]/L,col,w); c.restore(); }
+    });
+  }
+  var phi=30;
+  function cur(){ return CASES[+sel.value]; }
+  var F=FEW.canvas(cv,W,H,function(c,P){
+    var C=cur(), d=[Math.cos(phi*Math.PI/180),Math.sin(phi*Math.PI/180)];
+    FEW.line(c,320,10,320,H-10,P.line,1);
+    FEW.text(c,'Ω near the origin',LM.cx,16,P.ink,'center',14,true);
+    FEW.text(c,'Directions d: T (green) vs 𝓛 (gold)',RM.cx,16,P.ink,'center',14,true);
+    // left axes
+    FEW.line(c,LM.cx-150,LM.cy,LM.cx+150,LM.cy,P.muted,1,null,0.6); FEW.line(c,LM.cx,LM.cy-175,LM.cx,LM.cy+170,P.muted,1,null,0.6);
+    FEW.text(c,'u',LM.cx+145,LM.cy+12,P.muted,'center',13); FEW.text(c,'v',LM.cx+10,LM.cy-170,P.muted,'center',13);
+    C.omega(c,LM,P);
+    FEW.text(c,'Ω (blue)',LM.cx-145,LM.cy+160,P.accent,'left',12,true);
+    var zero=C.grads.every(function(g){return g[1][0]===0&&g[1][1]===0;});
+    C.grads.forEach(function(g,i){ var v=g[1]; if(v[0]===0&&v[1]===0) return; FEW.arrow(c,LM.cx,LM.cy,LM.cx+v[0]*55,LM.cy-v[1]*55,P.gold,2.5); FEW.text(c,g[0],LM.cx+v[0]*55+(v[0]?v[0]*14:16),LM.cy-v[1]*55-(v[1]?0:0)+(i?12:-4),P.gold,'left',12,true); });
+    if(zero) FEW.text(c,C.grads[0][0]+' = (0,0) at the origin',LM.cx-140,LM.cy-150,P.gold,'left',12,true);
+    c.save(); c.fillStyle=P.ink; c.beginPath(); c.arc(LM.cx,LM.cy,4,0,2*Math.PI); c.fill(); c.restore();
+    // right: cones
+    c.save(); c.strokeStyle=P.line; c.beginPath(); c.arc(RM.cx,RM.cy,RM.R,0,2*Math.PI); c.stroke(); c.restore();
+    FEW.line(c,RM.cx-RM.R-12,RM.cy,RM.cx+RM.R+12,RM.cy,P.muted,1,null,0.5); FEW.line(c,RM.cx,RM.cy-RM.R-12,RM.cx,RM.cy+RM.R+12,P.muted,1,null,0.5);
+    FEW.text(c,'d₁',RM.cx+RM.R+18,RM.cy+10,P.muted,'center',12); FEW.text(c,'d₂',RM.cx+10,RM.cy-RM.R-14,P.muted,'center',12);
+    drawCone(c,C.L,P.gold,0.22,14);
+    drawCone(c,C.T,P.ok,0.28,5);
+    var inT=inCone(C.T,d), inL=inCone(C.L,d);
+    FEW.arrow(c,RM.cx,RM.cy,RM.cx+d[0]*(RM.R-6),RM.cy-d[1]*(RM.R-6),P.ink,2.5);
+    c.save(); c.fillStyle=P.ink; c.beginPath(); c.arc(RM.cx+d[0]*(RM.R-6),RM.cy-d[1]*(RM.R-6),7,0,2*Math.PI); c.globalAlpha=0.25; c.fill(); c.restore();
+    FEW.text(c,'d (drag)',RM.cx+d[0]*(RM.R+16),RM.cy-d[1]*(RM.R+16),P.ink,'center',12,true);
+    FEW.text(c,'gold = 𝓛 (linearised)   green = T (tangent)',RM.cx,H-14,P.muted,'center',12);
+    var eq=CASES.indexOf(C)>=0 && (JSON.stringify(C.T)===JSON.stringify(C.L));
+    out.innerHTML='Gradients at the origin: '+C.grads.map(function(g){return g[0]+' = ('+g[1][0]+', '+g[1][1]+')';}).join(', ')+'. &nbsp; LICQ: <b style="color:var('+(C.licq?'--ok':'--bad')+')">'+(C.licq?'yes':'no')+'</b> ('+C.why+').<br>'+
+      'T = '+C.Tt+'. &nbsp; 𝓛 = '+C.Lt+'. &nbsp; <b>'+(eq?'T = 𝓛':'T ⊊ 𝓛 (gradients over-promise)')+'</b>.<br>'+
+      'd = ('+S(d[0])+', '+S(d[1])+'): in T? <b style="color:var('+(inT?'--ok':'--bad')+')">'+(inT?'yes':'no')+'</b> &nbsp; in 𝓛? <b style="color:var('+(inL?'--ok':'--bad')+')">'+(inL?'yes':'no')+'</b>'+(inL&&!inT?' &nbsp;← a direction 𝓛 accepts but no feasible points come from':'');
+  });
+  function setPhi(p){ phi=((Math.round(p)%360)+360)%360; ang.value=phi; ao.value=phi+'°'; F.render(); }
+  F.drag(function(q){ return q[0]>330; }, function(q){ var a=Math.atan2(-(q[1]-RM.cy),q[0]-RM.cx)*180/Math.PI; var s=Math.round(a/45)*45; if(Math.abs(a-s)<4) a=s; setPhi(a); });
+  sel.addEventListener('change',function(){ F.render(); });
+  ang.addEventListener('input',function(){ setPhi(+ang.value); });
+  setPhi(30);
+})();
+
+/* ---------- Widget 3: critical cone and curvature ---------- */
+(function(){
+  var root=document.getElementById('w-crit'); if(!root) return;
+  var cv=root.querySelector('canvas'), out=root.querySelector('.wout'), sel=root.querySelector('#w-crit-case'), ang=root.querySelector('#w-crit-ang'), ao=root.querySelector('#w-crit-ango'), trap=root.querySelector('#w-crit-trap');
+  var W=640,H=400,S=FEW.sig;
+  // cons: n = gradient at x*, eq = equality, m = multiplier (mu for inequalities, lambda for equalities)
+  var CASES=[
+    {nm:'f = u + v² on u, v ≥ 0 at (0,0)  (notes Ex. 6.4.3.2)',gf:[1,0],cons:[{l:'g₁ = −u',n:[-1,0],m:1},{l:'g₂ = −v',n:[0,-1],m:0}],L:[[0,0],[0,2]],Hf:[[0,0],[0,2]]},
+    {nm:'f = u − v² on u, v ≥ 0 at (0,0)',gf:[1,0],cons:[{l:'g₁ = −u',n:[-1,0],m:1},{l:'g₂ = −v',n:[0,-1],m:0}],L:[[0,0],[0,-2]],Hf:[[0,0],[0,-2]]},
+    {nm:'f = u² + 6uv + v² on u, v ≥ 0 at (0,0)  (Quiz 3 Q18)',gf:[0,0],cons:[{l:'g₁ = −u',n:[-1,0],m:0},{l:'g₂ = −v',n:[0,-1],m:0}],L:[[2,6],[6,2]],Hf:[[2,6],[6,2]]},
+    {nm:'f = u + v − u² − v² on u, v ≥ 0 at (0,0)  (zero critical cone)',gf:[1,1],cons:[{l:'g₁ = −u',n:[-1,0],m:1},{l:'g₂ = −v',n:[0,-1],m:1}],L:[[-2,0],[0,-2]],Hf:[[-2,0],[0,-2]]},
+    {nm:'f = v − u² s.t. h = v − 2u² = 0 at (0,0)  (E2: λ* = −1)',gf:[0,1],cons:[{l:'h = v − 2u²',n:[0,1],m:-1,eq:true}],L:[[2,0],[0,0]],Hf:[[-2,0],[0,0]]},
+    {nm:'Midterm 2 III corner (3,1): μ = (4, 2, 0)',gf:[6,2],cons:[{l:'g₁ = 4 − x₁ − x₂²',n:[-1,-2],m:4},{l:'g₂ = 3x₂ − x₁',n:[-1,3],m:2}],L:[[2,0],[0,-6]],Hf:[[2,0],[0,2]]}
+  ];
+  sel.innerHTML=CASES.map(function(c,i){return '<option value="'+i+'">'+c.nm+'</option>';}).join('');
+  var E=1e-9, O={cx:200,cy:205,R0:92,Rmax:185};
+  function dot(a,b){ return a[0]*b[0]+a[1]*b[1]; }
+  function inL(C,d){ return C.cons.every(function(c){ var v=dot(c.n,d); return c.eq?Math.abs(v)<E:v<=E; }); }
+  function inC(C,d){ return C.cons.every(function(c){ var v=dot(c.n,d); return (c.eq||c.m>0)?Math.abs(v)<E:v<=E; }); }
+  function qf(M,d){ return M[0][0]*d[0]*d[0]+2*M[0][1]*d[0]*d[1]+M[1][1]*d[1]*d[1]; }
+  function eig(M){ var a=M[0][0],b=M[0][1],c=M[1][1],m=(a+c)/2,r=Math.sqrt((a-c)*(a-c)/4+b*b); return [m-r,m+r]; }
+  function U(a){ return [Math.cos(a*Math.PI/180),Math.sin(a*Math.PI/180)]; }
+  // candidate directions: a fine grid plus the exact boundary directions (perpendicular to each gradient)
+  function cands(C){ var A=[]; for(var a=0;a<360;a+=0.5) A.push(U(a)); C.cons.forEach(function(c){ var L=Math.hypot(c.n[0],c.n[1]); A.push([-c.n[1]/L,c.n[0]/L]); A.push([c.n[1]/L,-c.n[0]/L]); }); return A; }
+  var phi=90;
+  window.__w_crit_eval=function(i,useH){ var C=CASES[i], M=useH?C.Hf:C.L, mn=Infinity, n=0; cands(C).forEach(function(d){ if(inC(C,d)){ n++; mn=Math.min(mn,qf(M,d)); } }); return {nC:n,minQ:mn}; };
+  var F=FEW.canvas(cv,W,H,function(c,P){
+    var C=CASES[+sel.value], M=trap.checked?C.Hf:C.L, d=U(phi);
+    var all=cands(C), qmax=0; for(var a=0;a<360;a+=1) qmax=Math.max(qmax,Math.abs(qf(M,U(a)))); var k=qmax>0?80/qmax:0;
+    // L shading and C shading
+    function shade(test,col,al){ c.save(); c.fillStyle=col; c.globalAlpha=al; for(var a=0;a<360;a+=1){ if(test(U(a+0.5))){ c.beginPath(); c.moveTo(O.cx,O.cy); c.arc(O.cx,O.cy,O.Rmax,-(a+1.02)*Math.PI/180,-(a-0.02)*Math.PI/180); c.closePath(); c.fill(); } } c.restore(); }
+    shade(function(d){return inL(C,d);},P.accent,0.10);
+    shade(function(d){return inC(C,d);},P.ok,0.18);
+    C.cons.forEach(function(cn){ var L=Math.hypot(cn.n[0],cn.n[1]); [[-cn.n[1]/L,cn.n[0]/L],[cn.n[1]/L,-cn.n[0]/L]].forEach(function(b){ if(inL(C,b)) FEW.line(c,O.cx,O.cy,O.cx+b[0]*O.Rmax,O.cy-b[1]*O.Rmax,P.accent,2,null,0.5); if(inC(C,b)) FEW.line(c,O.cx,O.cy,O.cx+b[0]*O.Rmax,O.cy-b[1]*O.Rmax,P.ok,7,null,0.8); }); });
+    // axes
+    FEW.line(c,O.cx-O.Rmax-5,O.cy,O.cx+O.Rmax+5,O.cy,P.muted,1,null,0.5); FEW.line(c,O.cx,O.cy-O.Rmax-5,O.cx,O.cy+O.Rmax,P.muted,1,null,0.5);
+    FEW.text(c,'d₁',O.cx+O.Rmax+10,O.cy+12,P.muted,'center',12); FEW.text(c,'d₂',O.cx+12,O.cy-O.Rmax+4,P.muted,'center',12);
+    // base circle = zero curvature
+    c.save(); c.strokeStyle=P.muted; c.setLineDash([3,4]); c.beginPath(); c.arc(O.cx,O.cy,O.R0,0,2*Math.PI); c.stroke(); c.restore();
+    FEW.text(c,'dashed circle: dᵀMd = 0',O.cx-O.Rmax+2,O.cy+O.Rmax+4,P.muted,'left',11);
+    // polar curve r = R0 + k q(d): outside = positive (green), inside = negative (red); bold on C
+    for(var a=0;a<360;a+=1){ var d1=U(a),d2=U(a+1),q1=qf(M,d1),q2=qf(M,d2),mid=U(a+0.5),qm=qf(M,mid),onC=inC(C,mid);
+      FEW.line(c,O.cx+d1[0]*(O.R0+k*q1),O.cy-d1[1]*(O.R0+k*q1),O.cx+d2[0]*(O.R0+k*q2),O.cy-d2[1]*(O.R0+k*q2),Math.abs(qm)<1e-9?P.muted:(qm>0?P.ok:P.bad),onC?4:2,null,onC?1:0.7); }
+    // exact boundary directions that are in C: show their curvature as dots
+    all.slice(720).forEach(function(b){ if(inC(C,b)){ var q=qf(M,b); c.save(); c.fillStyle=Math.abs(q)<1e-9?P.muted:(q>0?P.ok:P.bad); c.beginPath(); c.arc(O.cx+b[0]*(O.R0+k*q),O.cy-b[1]*(O.R0+k*q),5,0,2*Math.PI); c.fill(); c.restore(); } });
+    // gradients of active constraints and grad f (short arrows)
+    C.cons.forEach(function(cn){ var L=Math.hypot(cn.n[0],cn.n[1]); FEW.arrow(c,O.cx,O.cy,O.cx+cn.n[0]/L*48,O.cy-cn.n[1]/L*48,P.gold,2); FEW.text(c,'∇'+cn.l.split(' ')[0],O.cx+cn.n[0]/L*60,O.cy-cn.n[1]/L*60+(cn.n[0]<0&&cn.n[1]===0?-10:0),P.gold,'center',11,true); });
+    var gl=Math.hypot(C.gf[0],C.gf[1]); if(gl>0){ FEW.arrow(c,O.cx,O.cy,O.cx+C.gf[0]/gl*48,O.cy-C.gf[1]/gl*48,P.purple,2); FEW.text(c,'∇f',O.cx+C.gf[0]/gl*60,O.cy-C.gf[1]/gl*60+10,P.purple,'center',11,true); }
+    // current d
+    var q=qf(M,d), gd=dot(C.gf,d), il=inL(C,d), ic=inC(C,d);
+    FEW.arrow(c,O.cx,O.cy,O.cx+d[0]*O.R0,O.cy-d[1]*O.R0,P.ink,2.5);
+    c.save(); c.fillStyle=P.ink; c.beginPath(); c.arc(O.cx+d[0]*(O.R0+k*q),O.cy-d[1]*(O.R0+k*q),5,0,2*Math.PI); c.fill(); c.restore();
+    FEW.text(c,'d',O.cx+d[0]*(O.R0-16)+(d[1]>=0?-10:10),O.cy-d[1]*(O.R0-16),P.ink,'center',13,true);
+    // bars
+    var bx=[470,575], base=215;
+    function bar(x,v,col,scale){ var h=v*scale; c.save(); c.fillStyle=col; c.fillRect(x-22,h>=0?base-h:base,44,Math.abs(h)); c.restore(); FEW.text(c,S(v),x,h>=0?base-h-10:base-h+10,P.ink,'center',12,true); }
+    FEW.line(c,435,base,630,base,P.muted,1); FEW.text(c,'0',429,base,P.muted,'right',11);
+    var gmax=0,qm2=0; for(a=0;a<360;a+=1){ gmax=Math.max(gmax,Math.abs(dot(C.gf,U(a)))); qm2=Math.max(qm2,Math.abs(qf(M,U(a)))); }
+    bar(bx[0],gd,P.purple,gmax>0?110/gmax:0); bar(bx[1],q,q>=0?P.ok:P.bad,qm2>0?110/qm2:0);
+    FEW.text(c,'∇fᵀd',bx[0],372,P.purple,'center',12,true); FEW.text(c,'(slope)',bx[0],388,P.muted,'center',11);
+    FEW.text(c,(trap.checked?'dᵀ∇²f d':'dᵀL⋆d'),bx[1],372,q>=0?P.ok:P.bad,'center',12,true); FEW.text(c,'(curvature)',bx[1],388,P.muted,'center',11);
+    FEW.text(c,'d ∈ 𝓛: '+(il?'yes':'no'),530,40,il?P.ok:P.bad,'center',13,true);
+    FEW.text(c,'d ∈ C: '+(ic?'yes':'no'),530,60,ic?P.ok:P.bad,'center',13,true);
+    FEW.text(c,'blue = 𝓛, green = C (critical cone)',O.cx,14,P.muted,'center',12);
+    // verdict on C
+    var mn=Infinity,n=0; all.forEach(function(b){ if(inC(C,b)){ n++; mn=Math.min(mn,qf(M,b)); } });
+    var verdict = n===0 ? 'C = {0}: nothing to test ⇒ SOSC holds ⇒ strict local min.' :
+      (mn>1e-9 ? 'dᵀMd > 0 on every d ≠ 0 in C ⇒ SOSC holds ⇒ strict local min.' :
+       (mn< -1e-9 ? 'Some d ∈ C has dᵀMd < 0 (point is regular) ⇒ SONC fails ⇒ not a local min.' : 'dᵀMd ≥ 0 on C but = 0 for some d ≠ 0 ⇒ undecided by SONC/SOSC.'));
+    var ev=eig(M);
+    out.innerHTML='Multipliers: '+C.cons.map(function(cn){return (cn.eq?'λ':'μ')+' for '+cn.l+' = '+S(cn.m)+(cn.eq?' (equality)':(cn.m>0?' ⇒ “=” row in C':' ⇒ “≤” row in C'));}).join('; ')+'.<br>'+
+      'd = ('+S(d[0])+', '+S(d[1])+'): ∇fᵀd = <b>'+S(gd)+'</b>, in 𝓛: <b>'+(il?'yes':'no')+'</b>, in C: <b>'+(ic?'yes':'no')+'</b>, '+(trap.checked?'dᵀ∇²f d':'dᵀL⋆d')+' = <b>'+S(q)+'</b>.<br>'+
+      'M = '+(trap.checked?'∇²f (the trap)':'L⋆')+' = [['+S(M[0][0])+', '+S(M[0][1])+'], ['+S(M[1][0])+', '+S(M[1][1])+']], eigenvalues '+S(ev[0])+', '+S(ev[1])+' (on all of ℝ²: '+(ev[0]>1e-9?'positive definite':(ev[1]< -1e-9?'negative definite':(ev[0]< -1e-9&&ev[1]>1e-9?'indefinite':'semidefinite')))+').<br>'+
+      'Verdict on C: <b>'+verdict.replace(/dᵀMd/g,trap.checked?'dᵀ∇²f d':'dᵀL⋆d')+'</b>'+(trap.checked&&C.L!==C.Hf&&JSON.stringify(C.L)!==JSON.stringify(C.Hf)?' <span style="color:var(--bad)">(wrong Hessian: untick to use L⋆)</span>':'');
+  });
+  function setPhi(p){ phi=((Math.round(p)%360)+360)%360; ang.value=phi; ao.value=phi+'°'; F.render(); }
+  F.drag(function(q){ return q[0]<400; }, function(q){ var a=Math.atan2(-(q[1]-O.cy),q[0]-O.cx)*180/Math.PI; var s=Math.round(a/45)*45; if(Math.abs(a-s)<4) a=s; setPhi(a); });
+  sel.addEventListener('change',function(){ F.render(); }); trap.addEventListener('change',function(){ F.render(); });
+  ang.addEventListener('input',function(){ setPhi(+ang.value); });
+  setPhi(90);
+})();
+
+/* ---------- Widget 4: eigenvector problem ---------- */
+(function(){
+  var root=document.getElementById('w-eig'); if(!root) return;
+  var cv=root.querySelector('canvas'), out=root.querySelector('.wout');
+  var i1=root.querySelector('#w-eig-t1'), i2=root.querySelector('#w-eig-t2'), ir=root.querySelector('#w-eig-rot'), is=root.querySelector('#w-eig-s');
+  var o1=root.querySelector('#w-eig-t1o'), o2=root.querySelector('#w-eig-t2o'), or=root.querySelector('#w-eig-roto'), os=root.querySelector('#w-eig-so');
+  var W=640,H=400,S=FEW.sig, O={cx:200,cy:200,s:95}, G={x0:430,x1:625,y0:60,y1:330};
+  function st(){ var t1=+i1.value,t2=+i2.value,r=+ir.value*Math.PI/180; return {t1:t1,t2:t2,q1:[Math.cos(r),Math.sin(r)],q2:[-Math.sin(r),Math.cos(r)]}; }
+  function pt(P,s){ var a=Math.cos(s)/Math.sqrt(P.t1), b=Math.sin(s)/Math.sqrt(P.t2); return [a*P.q1[0]+b*P.q2[0],a*P.q1[1]+b*P.q2[1]]; }
+  function Qx(P,x){ var a=x[0]*P.q1[0]+x[1]*P.q1[1], b=x[0]*P.q2[0]+x[1]*P.q2[1]; return [P.t1*a*P.q1[0]+P.t2*b*P.q2[0],P.t1*a*P.q1[1]+P.t2*b*P.q2[1]]; }
+  var F=FEW.canvas(cv,W,H,function(c,Pc){
+    var P=st(), s=+is.value*Math.PI/180, x=pt(P,s), qx=Qx(P,x), xx=x[0]*x[0]+x[1]*x[1];
+    function X(u){return O.cx+u*O.s;} function Y(v){return O.cy-v*O.s;}
+    FEW.line(c,X(-2),Y(0),X(2.1),Y(0),Pc.muted,1,null,0.5); FEW.line(c,X(0),Y(-2.05),X(0),Y(2.05),Pc.muted,1,null,0.5);
+    FEW.text(c,'x₁',X(2.05),Y(0)+12,Pc.muted,'center',12); FEW.text(c,'x₂',X(0)+12,Y(2.0),Pc.muted,'center',12);
+    // eigenvector directions
+    [[P.q1,'q₁'],[P.q2,'q₂']].forEach(function(e){ FEW.line(c,X(-2*e[0][0]),Y(-2*e[0][1]),X(2*e[0][0]),Y(2*e[0][1]),Pc.muted,1,[2,4]); FEW.text(c,e[1],X(1.95*e[0][0]),Y(1.95*e[0][1])-10,Pc.muted,'center',12,true); });
+    // level circles of x'x through the eigen-points
+    var r1=1/Math.sqrt(P.t1), r2=1/Math.sqrt(P.t2), big=P.t1<=P.t2?1:2;
+    [[r1,P.t1<=P.t2?Pc.bad:Pc.ok],[r2,P.t2<P.t1?Pc.bad:Pc.ok]].forEach(function(e){ c.save(); c.strokeStyle=e[1]; c.setLineDash([5,4]); c.lineWidth=1.5; c.beginPath(); c.arc(O.cx,O.cy,e[0]*O.s,0,2*Math.PI); c.stroke(); c.restore(); });
+    // ellipse x'Qx = 1
+    c.save(); c.strokeStyle=Pc.accent; c.lineWidth=3; c.fillStyle=Pc.accent; c.beginPath(); for(var k=0;k<=360;k++){ var p=pt(P,k*Math.PI/180); if(k===0) c.moveTo(X(p[0]),Y(p[1])); else c.lineTo(X(p[0]),Y(p[1])); } c.globalAlpha=0.1; c.fill(); c.globalAlpha=1; c.stroke(); c.restore();
+    FEW.text(c,'xᵀQx = 1',X(0)-O.s*0.15,Y(0)+O.s*0.15+6,Pc.accent,'right',12,true);
+    // KKT points ±q_i/sqrt(theta_i)
+    [[P.q1,P.t1],[P.q2,P.t2]].forEach(function(e){ var r=1/Math.sqrt(e[1]), col=(e[1]===Math.min(P.t1,P.t2)&&P.t1!==P.t2)?Pc.bad:Pc.ok; [1,-1].forEach(function(sg){ c.save(); c.fillStyle=col; c.beginPath(); c.arc(X(sg*r*e[0][0]),Y(sg*r*e[0][1]),5,0,2*Math.PI); c.fill(); c.restore(); }); });
+    // current point and the two gradient directions
+    var gl=Math.hypot(x[0],x[1]), ql=Math.hypot(qx[0],qx[1]);
+    FEW.arrow(c,X(x[0]),Y(x[1]),X(x[0])+x[0]/gl*55,Y(x[1])-x[1]/gl*55,Pc.purple,2.5);
+    FEW.arrow(c,X(x[0]),Y(x[1]),X(x[0])+qx[0]/ql*55,Y(x[1])-qx[1]/ql*55,Pc.gold,2.5);
+    c.save(); c.fillStyle=Pc.ink; c.beginPath(); c.arc(X(x[0]),Y(x[1]),6,0,2*Math.PI); c.fill(); c.restore();
+    FEW.text(c,'x (drag)',X(x[0])-x[0]/gl*18,Y(x[1])+x[1]/gl*18,Pc.ink,'center',12,true);
+    FEW.text(c,'purple: ∇(xᵀx) = 2x',8,H-30,Pc.purple,'left',12,true);
+    FEW.text(c,'gold: ∇(xᵀQx) = 2Qx',8,H-12,Pc.gold,'left',12,true);
+    FEW.text(c,'red = max of xᵀx, green = min',8,14,Pc.muted,'left',12);
+    // right: graph of x'x along the ellipse
+    var ymax=1.15*Math.max(1/P.t1,1/P.t2); function gx(a){return G.x0+(G.x1-G.x0)*a/360;} function gy(v){return G.y1-(G.y1-G.y0)*v/ymax;}
+    FEW.line(c,G.x0,G.y1,G.x1,G.y1,Pc.muted,1); FEW.line(c,G.x0,G.y0-10,G.x0,G.y1,Pc.muted,1);
+    FEW.text(c,'xᵀx along the ellipse',(G.x0+G.x1)/2,G.y0-35,Pc.ink,'center',13,true);
+    FEW.text(c,'position s (°)',(G.x0+G.x1)/2,G.y1+26,Pc.muted,'center',11);
+    [0,90,180,270,360].forEach(function(a){ FEW.text(c,String(a),gx(a),G.y1+11,Pc.muted,'center',10); });
+    [[1/P.t1,'1/θ₁'],[1/P.t2,'1/θ₂']].forEach(function(e){ FEW.line(c,G.x0,gy(e[0]),G.x1,gy(e[0]),Pc.muted,1,[3,3]); FEW.text(c,e[1]+' = '+S(e[0]),G.x0+4,gy(e[0])+(e[0]<Math.max(1/P.t1,1/P.t2)?9:-9),Pc.muted,'left',11); });
+    c.save(); c.strokeStyle=Pc.accent; c.lineWidth=2.5; c.beginPath(); for(k=0;k<=360;k++){ var v=Math.pow(Math.cos(k*Math.PI/180),2)/P.t1+Math.pow(Math.sin(k*Math.PI/180),2)/P.t2; if(k===0) c.moveTo(gx(k),gy(v)); else c.lineTo(gx(k),gy(v)); } c.stroke(); c.restore();
+    c.save(); c.fillStyle=Pc.ink; c.beginPath(); c.arc(gx(+is.value),gy(xx),5,0,2*Math.PI); c.fill(); c.restore();
+    // readout
+    var cosang=(x[0]*qx[0]+x[1]*qx[1])/(gl*ql), angd=Math.acos(Math.max(-1,Math.min(1,cosang)))*180/Math.PI, kkt=angd<0.05;
+    var tmin=Math.min(P.t1,P.t2), tmax=Math.max(P.t1,P.t2);
+    out.innerHTML='θ₁ = '+S(P.t1)+', θ₂ = '+S(P.t2)+'; q₁ = ('+S(P.q1[0])+', '+S(P.q1[1])+'), q₂ = ('+S(P.q2[0])+', '+S(P.q2[1])+').<br>'+
+      'On xᵀQx = 1: max xᵀx = 1/θ_min = <b>'+S(1/tmin)+'</b> (red points), min xᵀx = 1/θ_max = <b>'+S(1/tmax)+'</b> (green points).<br>'+
+      'At x = ('+S(x[0])+', '+S(x[1])+'): xᵀx = <b>'+S(xx)+'</b>, angle between 2x and 2Qx = <b>'+S(angd)+'°</b> ⇒ '+
+      (kkt?'<b style="color:var(--ok)">KKT point: x = μQx with μ = 1/θᵢ = xᵀx = '+S(xx)+'</b>':'<span style="color:var(--bad)">not a KKT point (gradients not parallel, no μ works)</span>');
+  });
+  function sync(){ o1.value=S(+i1.value); o2.value=S(+i2.value); or.value=ir.value+'°'; os.value=is.value+'°'; F.render(); }
+  [i1,i2,ir,is].forEach(function(e){ e.addEventListener('input',sync); });
+  F.drag(function(q){ return q[0]<400; }, function(q){ var P=st(), u=(q[0]-O.cx)/O.s, v=-(q[1]-O.cy)/O.s; var a=u*P.q1[0]+v*P.q1[1], b=u*P.q2[0]+v*P.q2[1]; var s=Math.atan2(b*Math.sqrt(P.t2),a*Math.sqrt(P.t1))*180/Math.PI; var sn=Math.round(s/90)*90; if(Math.abs(s-sn)<4) s=sn; is.value=((Math.round(s)%360)+360)%360; sync(); });
+  sync();
+})();
+</script>
 </body>
 </html>

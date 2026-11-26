@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>M3 · Convexity and duality</title>
-<link rel="stylesheet" href="assets/fe.css">
+<link rel="stylesheet" href="assets/fe.css?v=20261126w">
 <script>
   window.MathJax = { tex: { inlineMath: [['$','$'],['\\(','\\)']], displayMath: [['$$','$$'],['\\[','\\]']] } };
 </script>
@@ -25,20 +25,24 @@
   <a class="home" href="./">← START HERE</a>
   <a href="#why">0. Why duality exists</a>
   <a href="#convex">A. Convex sets and functions</a>
+  <a href="#w-chord">&nbsp;&nbsp;▶ Try: chord test</a>
   <a href="#feasible">B. Convex feasible sets</a>
   <a href="#nice">C. Why convex problems are nice</a>
   <a href="#c4">&nbsp;&nbsp;C4. KKT ⇒ global min (proof)</a>
   <a href="#lagr">D. Lagrangian = prices</a>
   <a href="#dualfn">E. The dual function q</a>
+  <a href="#w-envelope">&nbsp;&nbsp;▶ Try: q = lower envelope</a>
   <a href="#weak">F. Weak duality</a>
   <a href="#strong">G. Gap, strong duality, Slater</a>
   <a href="#kktpair">H. KKT pair ⇔ zero gap</a>
   <a href="#recovery">I. Primal recovery</a>
   <a href="#patho">J. Strange examples</a>
   <a href="#qp">K. A QP dual by hand</a>
+  <a href="#w-qp">&nbsp;&nbsp;▶ Try: QP prices</a>
   <a href="#lp">L. LP duality from scratch</a>
   <a href="#l2">&nbsp;&nbsp;L2. Standard pair + LP KKT</a>
   <a href="#l3">&nbsp;&nbsp;L3. Other LP forms</a>
+  <a href="#w-lp">&nbsp;&nbsp;▶ Try: LP primal vs dual</a>
   <a href="#l4">&nbsp;&nbsp;L4. LP duality theorem</a>
   <a href="#recipe">M. Exam recipe</a>
   <a href="#prof">What he said</a>
@@ -144,6 +148,20 @@ $$f(y)\ge f(x)+\nabla f(x)^T(y-x)\quad\text{for all }x,y.$$</li>
 </ul>
 <div class="box trap"><span class="tag">Trap: convex along a set, not everywhere (Quiz 4 Q1)</span>
 <p>$f=x_1^2-x_2^2$ is not convex on $\mathbb{R}^2$ (Hessian $\mathrm{diag}(2,-2)$ is indefinite). But on the line $\{(t,at):t\in\mathbb{R}\}$ it becomes $\phi(t)=f(t,at)=(1-a^2)t^2$, which is convex iff $1-a^2\ge0$, i.e. $|a|\le1$. Only the curvature <b>along the set</b> matters. At $a=\pm1$ the restriction is the constant 0, which still counts as convex (just not strictly).</p></div>
+<div class="widget" id="w-chord"><div class="wtitle">Chord test: convex or not?</div>
+<p class="small">Pick a function or a set, then drag the two points $x$ and $y$. Watch the chord: green where it passes the test, red where it fails. The α slider moves the in-between point $\alpha x+(1-\alpha)y$.</p>
+<canvas width="640" height="400" aria-label="Chord test for convex functions and sets"></canvas>
+<div class="wctl">
+<label>Example <select>
+<optgroup label="Functions (chord above graph?)"><option value="sq">x² (convex)</option><option value="ab">|x| (convex, not strictly)</option><option value="cu">x³</option><option value="ng">−x² (concave)</option><option value="q4">x⁴</option><option value="tr">Trap: x₁²−x₂² on the line x₂ = a·x₁</option></optgroup>
+<optgroup label="Sets (segment stays inside?)"><option value="disc">disc</option><option value="tri">triangle</option><option value="ring">half-ring</option><option value="two">two separate discs</option><option value="circ">circle (curve only)</option></optgroup>
+</select></label>
+<label>α <input type="range" name="alpha" min="0" max="1" step="0.01" value="0.5"><output></output></label>
+<label>a <input type="range" name="slope" min="-2" max="2" step="0.01" value="1.5"><output></output></label>
+</div>
+<div class="wout"></div>
+<div class="whint">What to notice: for $x^2$ and $x^4$ no pair ever fails. For $x^3$, pairs with both points $\ge0$ pass, but put one point on the left and the graph pokes above the chord: <b>one failing pair is enough</b> to say "not convex". $|x|$ passes, but the chord can lie <i>on</i> the graph (convex, not strictly). In the trap, slide $a$: for $|a|\le1$ the restriction $(1-a^2)t^2$ is a bowl (flat at $a=\pm1$), for $|a|\gt1$ a dome. For sets: the half-ring, the two discs and the circle curve each have a pair whose segment leaves; the disc and the triangle never do.</div>
+</div>
 <div class="check"><b>Check A2.</b> Convex, concave, both or neither on $\mathbb{R}$: (i) $3x-5$ (ii) $x^4$ (iii) $x^3$ (iv) $-x^2$?
 <details class="ans"><summary>Show answer</summary><div><p>(i) both (affine). (ii) convex ($f''=12x^2\ge0$). (iii) neither ($f''=6x$ changes sign). (iv) concave.</p></div></details></div>
 </section>
@@ -311,6 +329,22 @@ $$\inf_{x\in\mathbb{R}^n}(r^Tx+\beta)=\begin{cases}\beta,&amp;r=0\\-\infty,&amp;
 <p><b>Why:</b> for each fixed $x$, $L(x,\cdot,\cdot)$ is affine in the prices. Write $\eta=(\lambda,\mu)$ and take $\eta_0,\eta_1$, $\alpha\in[0,1]$:</p>
 $$\begin{aligned}q(\alpha\eta_0+(1-\alpha)\eta_1)&amp;=\inf_x\big[\alpha L(x,\eta_0)+(1-\alpha)L(x,\eta_1)\big]\\&amp;\ge\alpha\inf_xL(x,\eta_0)+(1-\alpha)\inf_xL(x,\eta_1)=\alpha q(\eta_0)+(1-\alpha)q(\eta_1).\end{aligned}$$
 <p>(The "$\ge$": minimising the two parts separately can only do better than minimising their sum together.) That is the definition of concave. And if $\eta_0,\eta_1\in\mathbb{D}$, the right side is $\gt-\infty$, so the mix is in $\mathbb{D}$: $\mathbb{D}$ is convex. No convexity of $f$, $g$, $h$ was used. So the dual is <b>always</b> a convex problem (maximise a concave function = minimise the convex $-q$).</p>
+</div>
+<div class="widget" id="w-envelope"><div class="wtitle">Dual function = lowest of the lines</div>
+<p class="small">Move μ (slider, or drag in the right panel). Left: the red bill $L(x,\mu)$ and its lowest point $x(\mu)$, found over <b>all</b> $x$. Right: that lowest value $q(\mu)$, traced out as μ changes.</p>
+<canvas width="640" height="400" aria-label="Lagrangian in x-space and dual function in mu-space"></canvas>
+<div class="wctl">
+<label>Example <select>
+<option value="e3">E3 / Quiz 4: x²+1, (x−2)(x−4) ≤ 0</option>
+<option value="e1">E1: x², x ≥ 1</option>
+<option value="j1">J1: (x−1)², x² ≤ 0</option>
+<option value="j2">J2: eˣ, x ≤ 0</option>
+</select></label>
+<label>μ <input type="range" name="mu" min="0" max="6" step="0.01" value="0.5"><output></output></label>
+<button type="button">Go to best μ</button>
+</div>
+<div class="wout"></div>
+<div class="whint">What to notice: (1) the red dot on the right never goes above the green $p^*$ line: that is weak duality (section F). (2) Each grey line is $L$ for one fixed $x$; $q$ is the lowest of them, so it bends downward (concave). The red dashed line belongs to $x(\mu)$ and touches $q$ at the current μ. (3) At $\mu^*$ the red dot touches $p^*$ (zero gap), and on the left $x(\mu^*)$ lands exactly on $x^*$: primal recovery (section I). (4) J1: $q$ creeps up to 1 but never reaches it (dual not attained). J2: any $\mu\gt0$ sends $L$ down to $-\infty$, so only $\mu=0$ gives a bound.</div>
 </div>
 
 <h3>E4. How to compute the infimum in practice</h3>
@@ -489,6 +523,17 @@ $$q(\lambda^*,\mu^*)=L(x^*,\lambda^*,\mu^*)=f(x^*)+\lambda^{*T}\underbrace{h(x^*
   <li><b>Check everything:</b> $x_1+x_2=4$ ✓; $x_1=2\ge2$ (active) ✓; $p^*=\tfrac12(8+4)=6=d^*$ ✓. Stationarity: $(2x_1,x_2)+\lambda(1,1)+\mu(-1,0)=(4-2-2,\,2-2)=(0,0)$ ✓. CS: $\mu(2-x_1)=2\cdot0=0$ ✓.</li>
 </ol>
 </div>
+<div class="widget" id="w-qp"><div class="wtitle">This QP: move the prices, watch the bound</div>
+<p class="small">Drag the red point in the price plane (or use the sliders). Left: where the minimiser $x(\lambda,\mu)$ of $L$ over all $x$ lands. Bottom: $q(\lambda,\mu)$ on a number line against $p^*=6$. Same $h=x_1+x_2-4$, $g=2-x_1$ as above.</p>
+<canvas width="640" height="400" aria-label="Price plane with q contours, x-plane, and number line"></canvas>
+<div class="wctl">
+<label>λ <input type="range" name="lam" min="-5" max="2" step="0.01" value="0"><output></output></label>
+<label>μ <input type="range" name="mu" min="0" max="5" step="0.01" value="0"><output></output></label>
+<button type="button" data-go="opt">Go to (−2, 2)</button><button type="button" data-go="zero">Reset to (0, 0)</button>
+</div>
+<div class="wout"></div>
+<div class="whint">What to notice: wherever you put the prices, $q$ stays left of 6 (weak duality). The blue rings are level curves of $q$; the top of the hill is $(\lambda^*,\mu^*)=(-2,2)$ with $q=6$, so $d^*=p^*=6$ (zero gap, as Slater promised). Only there does $x(\lambda,\mu)$ land on the green feasible ray, at $x^*=(2,2)$; elsewhere it is infeasible. $\lambda^*$ is negative only because $h$ is written $x_1+x_2-4$. Try $(0,0)$ and $(-1,1)$: $q=0$ and $4.5$, the numbers from section F.</div>
+</div>
 <div class="box trap"><span class="tag">Trap: two errors in older summaries</span> The end-term guide's one-liner says "$2x_1^2+x_2^2$ … $x^*=(1,2)$". Wrong: $(1,2)$ is not even feasible ($1+2=3\ne4$, and $1\lt2$). The objective has a $\tfrac12$ and the answer is $x^*=(2,2)$, $\lambda^*=-2$, $\mu^*=2$, $p^*=d^*=6$ (checked with sympy). The handwritten tutorial solution's completed square shows $\tfrac12(\lambda-\mu+4)^2$; the correct coefficient is $\tfrac14$ (same maximiser, same value).</div>
 <div class="check"><b>Check K.</b> Use the same steps on $\min\frac12(x_1^2+x_2^2)$ s.t. $x_1+x_2=2$ (no inequality). Find $q(\lambda)$, $\lambda^*$, $x^*$.
 <details class="ans"><summary>Show answer</summary><div><p>$L=\frac12(x_1^2+x_2^2)+\lambda(x_1+x_2-2)$; $\nabla_x L=0$: $x_1=x_2=-\lambda$. $q=\lambda^2-2\lambda^2-2\lambda=-\lambda^2-2\lambda$, max at $\lambda^*=-1$, $d^*=1$. Recover $x^*=(1,1)$, $p^*=\frac12(1+1)=1$ ✓.</p></div></details></div>
@@ -588,6 +633,17 @@ $$A^T\lambda^*+\mu^*=c,\quad \mu^*\ge0,\quad Ax^*=b,\quad x^*\ge0,\quad (\mu^*)^
 <li><b>Solve:</b> $\lambda_2=\lambda_1-3$, so $2\lambda_1-3\le2\Rightarrow\lambda_1\le2.5$, objective $5\lambda_1-3$: $\lambda^*=(2.5,-0.5)$, $d^*=9.5$.</li>
 <li><b>Primal check:</b> $x_1=1+x_2$, row 1 gives $1+2x_2\ge4\Rightarrow x_2\ge1.5$, cost $2+5x_2$: $x^*=(2.5,1.5)$, $p^*=9.5=d^*$ ✓ (linprog). CS: $\lambda_1\gt0$ and row 1 tight ($4=4$) ✓; $x_1\gt0$ and $\mu_1=2-2.5+0.5=0$ ✓.</li>
 </ol>
+</div>
+<div class="widget" id="w-lp"><div class="wtitle">This LP: primal and dual side by side</div>
+<p class="small">Drag the red point along the primal feasible ray and the blue point along the dual feasible segment (or use the sliders). The number line compares $c^Tx$ with $b^T\lambda$.</p>
+<canvas width="640" height="400" aria-label="Primal feasible ray, dual feasible segment and their values"></canvas>
+<div class="wctl">
+<label>x₂ (primal point) <input type="range" name="t" min="1.5" max="4.5" step="0.01" value="3.5"><output></output></label>
+<label>λ₁ (dual point) <input type="range" name="s" min="0" max="2.5" step="0.01" value="1"><output></output></label>
+<button type="button">Both to optimum</button>
+</div>
+<div class="wout"></div>
+<div class="whint">What to notice: the blue dual value is always left of the red primal cost (LP weak duality), whichever pair you pick. Push the primal point towards lower cost and the dual point towards higher value: they meet at 9.5, at $x^*=(2.5,1.5)$ and $\lambda^*=(2.5,-0.5)$. The gap is exactly the complementary-slackness products, so zero gap ⇔ CS holds. The feasible sets are a ray and a segment (not 2-D regions) because the $=$ row and the free $x_2$ each turn into an equality.</div>
 </div>
 <div class="box example"><span class="tag">Worked example: inequality form, $x$ free</span>
 <p>$\min c^Tx$ s.t. $Ax\le b$, $x$ free. Rows are $\le$, so prices $\lambda\le0$: $L=c^Tx+\lambda^T(b-Ax)=(c-A^T\lambda)^Tx+b^T\lambda$. $x$ free ⇒ $A^T\lambda=c$. Dual: $\max b^T\lambda$ s.t. $A^T\lambda=c$, $\lambda\le0$.</p>
@@ -1284,6 +1340,457 @@ $$A^T\lambda^*+\mu^*=c,\quad \mu^*\ge0,\quad Ax^*=b,\quad x^*\ge0,\quad (\mu^*)^
 
 </main>
 </div>
-<script src="assets/fe.js"></script>
+<script src="assets/fe.js?v=20261126w"></script>
+<script>
+/* ===== Interactive widgets for M3 (plain JS, no libraries). Shared helpers first; each widget is its own IIFE and does nothing if its element is missing. ===== */
+(function(){
+'use strict';
+var FW=window.FW3={all:[]};
+FW.colors=function(){
+  var s=getComputedStyle(document.documentElement);
+  function g(n,d){var v=s.getPropertyValue(n).trim();return v||d;}
+  return {ink:g('--ink','#222'),muted:g('--muted','#666'),line:g('--line','#ddd'),accent:g('--accent','#2457a6'),
+          ok:g('--ok','#1f8a44'),bad:g('--bad','#c8372d'),bg:g('--bg','#fff')};
+};
+FW.fmt=function(v){
+  if(v===-Infinity) return '−∞'; if(v===Infinity) return '+∞'; if(typeof v!=='number'||isNaN(v)) return '—';
+  if(Math.abs(v)<5e-4) return '0';
+  var r=parseFloat(v.toPrecision(3)); return String(r).replace('-','−');
+};
+FW.font=function(px,bold){return (bold?'600 ':'')+px+'px "Segoe UI",system-ui,-apple-system,Roboto,sans-serif';};
+FW.clamp=function(v,a,b){return Math.max(a,Math.min(b,v));};
+FW.make=function(id,layout,draw){
+  var root=document.getElementById(id); if(!root) return null;
+  var cv=root.querySelector('canvas'); if(!cv||!cv.getContext) return null;
+  var w={root:root,cv:cv,ctx:cv.getContext('2d'),W:640,H:400,narrow:false};
+  w.redraw=function(){
+    var cssW=cv.getBoundingClientRect().width||640;
+    var L=layout(cssW); w.W=L.W; w.H=L.H; w.narrow=!!L.narrow;
+    var dpr=window.devicePixelRatio||1;
+    var bw=Math.max(1,Math.round(cssW*dpr)), bh=Math.max(1,Math.round(cssW*dpr*L.H/L.W));
+    if(cv.width!==bw||cv.height!==bh){cv.width=bw;cv.height=bh;}
+    var k=bw/L.W; w.ctx.setTransform(k,0,0,k,0,0); w.ctx.clearRect(0,0,L.W,L.H);
+    w.c=FW.colors(); w.ctx.lineCap='round'; w.ctx.lineJoin='round';
+    draw(w);
+  };
+  w.pt=function(e){var r=cv.getBoundingClientRect();return {x:(e.clientX-r.left)*w.W/r.width,y:(e.clientY-r.top)*w.H/r.height};};
+  w.onDrag=function(down,move){
+    var h=null;
+    cv.addEventListener('pointerdown',function(e){
+      var p=w.pt(e); h=down(p,false);
+      if(h!=null){ try{cv.setPointerCapture(e.pointerId);}catch(_){} e.preventDefault(); move(h,p); w.redraw(); cv.style.cursor='grabbing'; }
+    });
+    cv.addEventListener('pointermove',function(e){
+      var p=w.pt(e);
+      if(h==null){ cv.style.cursor=(down(p,true)!=null)?'grab':'default'; return; }
+      e.preventDefault(); move(h,p); w.redraw();
+    });
+    function up(e){ if(h!=null){ h=null; cv.style.cursor='grab'; try{cv.releasePointerCapture(e.pointerId);}catch(_){} } }
+    cv.addEventListener('pointerup',up); cv.addEventListener('pointercancel',up);
+  };
+  FW.all.push(w); if(FW.ro) FW.ro.observe(cv);
+  w.redraw(); return w;
+};
+FW.ax=function(x0,y0,w,h,xmin,xmax,ymin,ymax){
+  var a={x0:x0,y0:y0,w:w,h:h,xmin:xmin,xmax:xmax,ymin:ymin,ymax:ymax};
+  a.X=function(x){return x0+(x-xmin)/(xmax-xmin)*w;};
+  a.Y=function(y){return y0+h-(y-ymin)/(ymax-ymin)*h;};
+  a.ix=function(px){return xmin+(px-x0)/w*(xmax-xmin);};
+  a.iy=function(py){return ymin+(y0+h-py)/h*(ymax-ymin);};
+  a.inside=function(p,m){m=m||0;return p.x>=x0-m&&p.x<=x0+w+m&&p.y>=y0-m&&p.y<=y0+h+m;};
+  return a;
+};
+FW.ticks=function(a,b,n){
+  var raw=(b-a)/n,p=Math.pow(10,Math.floor(Math.log10(raw))),m=raw/p,st=(m<1.5?1:m<3.5?2:m<7.5?5:10)*p,out=[];
+  for(var t=Math.ceil(a/st-1e-9)*st;t<=b+1e-9;t+=st) out.push(Math.abs(t)<1e-9?0:+t.toFixed(8));
+  return out;
+};
+FW.text=function(w,s,x,y,col,align,size,bold,base){
+  var c=w.ctx; c.save(); c.font=FW.font(size||12,bold); c.textAlign=align||'left'; c.textBaseline=base||'alphabetic';
+  c.lineWidth=3.5; c.strokeStyle=w.c.bg; c.strokeText(s,x,y); c.fillStyle=col||w.c.ink; c.fillText(s,x,y); c.restore();
+};
+FW.frame=function(w,a,o){
+  var c=w.c,x=w.ctx; o=o||{};
+  x.save(); x.lineWidth=1; x.strokeStyle=c.line; x.fillStyle=c.muted; x.font=FW.font(11);
+  var xt=o.xt||FW.ticks(a.xmin,a.xmax,6), yt=o.yt||FW.ticks(a.ymin,a.ymax,5);
+  xt.forEach(function(t){var X=a.X(t); x.beginPath(); x.moveTo(X,a.y0); x.lineTo(X,a.y0+a.h); x.stroke();
+    x.textAlign='center'; x.textBaseline='top'; x.fillText(FW.fmt(t),X,a.y0+a.h+3);});
+  yt.forEach(function(t){var Y=a.Y(t); x.beginPath(); x.moveTo(a.x0,Y); x.lineTo(a.x0+a.w,Y); x.stroke();
+    x.textAlign='right'; x.textBaseline='middle'; x.fillText(FW.fmt(t),a.x0-4,Y);});
+  x.strokeStyle=c.muted; x.lineWidth=1.2;
+  if(a.ymin<0&&a.ymax>0){x.beginPath();x.moveTo(a.x0,a.Y(0));x.lineTo(a.x0+a.w,a.Y(0));x.stroke();}
+  if(a.xmin<0&&a.xmax>0){x.beginPath();x.moveTo(a.X(0),a.y0);x.lineTo(a.X(0),a.y0+a.h);x.stroke();}
+  x.strokeStyle=c.line; x.lineWidth=1; x.strokeRect(a.x0,a.y0,a.w,a.h);
+  x.restore();
+  if(o.title) FW.text(w,o.title,a.x0,a.y0-8,c.ink,'left',12.5,true);
+  if(o.xl) FW.text(w,o.xl,a.x0+a.w,a.y0+a.h+28,c.ink,'right',12.5,true);
+  if(o.yl) FW.text(w,o.yl,a.x0+4,a.y0+14,c.ink,'left',12.5,true);
+};
+FW.clip=function(w,a){var c=w.ctx;c.save();c.beginPath();c.rect(a.x0,a.y0,a.w,a.h);c.clip();};
+FW.unclip=function(w){w.ctx.restore();};
+FW.curve=function(w,a,f,col,lw,dash,x1,x2){
+  var c=w.ctx,n=400,lo=(x1===undefined?a.xmin:x1),hi=(x2===undefined?a.xmax:x2),pen=false;
+  c.save(); c.strokeStyle=col; c.lineWidth=lw||2; c.setLineDash(dash||[]); c.beginPath();
+  for(var i=0;i<=n;i++){var xv=lo+(hi-lo)*i/n,yv=f(xv);
+    if(!isFinite(yv)){pen=false;continue;}
+    var Y=a.Y(yv); if(Y<a.y0-2000||Y>a.y0+a.h+2000){pen=false;continue;}
+    if(pen) c.lineTo(a.X(xv),Y); else {c.moveTo(a.X(xv),Y);pen=true;}}
+  c.stroke(); c.restore();
+};
+FW.seg=function(w,x1,y1,x2,y2,col,lw,dash,alpha){
+  var c=w.ctx; c.save(); c.strokeStyle=col; c.lineWidth=lw||1.5; c.setLineDash(dash||[]); if(alpha!=null) c.globalAlpha=alpha;
+  c.beginPath(); c.moveTo(x1,y1); c.lineTo(x2,y2); c.stroke(); c.restore();
+};
+FW.dot=function(w,x,y,r,col,handle){
+  var c=w.ctx; c.save(); c.beginPath(); c.arc(x,y,r,0,2*Math.PI); c.fillStyle=col; c.fill();
+  if(handle){c.lineWidth=2.5;c.strokeStyle=w.c.bg;c.stroke();c.beginPath();c.arc(x,y,r+3,0,2*Math.PI);c.lineWidth=1.5;c.strokeStyle=col;c.stroke();}
+  c.restore();
+};
+FW.star=function(w,x,y,r,col){
+  var c=w.ctx; c.save(); c.beginPath();
+  for(var i=0;i<10;i++){var rr=i%2?r*0.45:r,t=-Math.PI/2+i*Math.PI/5; c.lineTo(x+rr*Math.cos(t),y+rr*Math.sin(t));}
+  c.closePath(); c.fillStyle=col; c.fill(); c.lineWidth=1.5; c.strokeStyle=w.c.bg; c.stroke(); c.restore();
+};
+FW.arrow=function(w,x1,y1,x2,y2,col,lw){
+  var c=w.ctx,t=Math.atan2(y2-y1,x2-x1),hd=9; c.save(); c.strokeStyle=col; c.fillStyle=col; c.lineWidth=lw||2;
+  c.beginPath(); c.moveTo(x1,y1); c.lineTo(x2-hd*0.7*Math.cos(t),y2-hd*0.7*Math.sin(t)); c.stroke();
+  c.beginPath(); c.moveTo(x2,y2); c.lineTo(x2-hd*Math.cos(t-0.4),y2-hd*Math.sin(t-0.4)); c.lineTo(x2-hd*Math.cos(t+0.4),y2-hd*Math.sin(t+0.4)); c.closePath(); c.fill();
+  c.restore();
+};
+FW.region=function(w,a,pred,col,alpha,cell){
+  var c=w.ctx; cell=cell||3; c.save(); c.fillStyle=col; c.globalAlpha=alpha||0.15; c.beginPath();
+  for(var px=a.x0;px<a.x0+a.w;px+=cell) for(var py=a.y0;py<a.y0+a.h;py+=cell){
+    if(pred(a.ix(px+cell/2),a.iy(py+cell/2))) c.rect(px,py,Math.min(cell+0.6,a.x0+a.w-px),Math.min(cell+0.6,a.y0+a.h-py));}
+  c.fill(); c.restore();
+};
+FW.numline=function(w,x0,x1,y,lo,hi,title){
+  var a=FW.ax(x0,y-10,x1-x0,20,lo,hi,0,1),c=w.c;
+  FW.seg(w,x0,y,x1,y,c.muted,1.2);
+  w.ctx.save(); w.ctx.fillStyle=c.muted; w.ctx.font=FW.font(10.5); w.ctx.textAlign='center'; w.ctx.textBaseline='top';
+  FW.ticks(lo,hi,w.narrow?6:11).forEach(function(t){var X=a.X(t);FW.seg(w,X,y-3,X,y+3,c.muted,1);w.ctx.fillText(FW.fmt(t),X,y+5);});
+  w.ctx.restore();
+  if(title) FW.text(w,title,x0,y-34,c.ink,'left',12.5,true);
+  return a;
+};
+FW.bind=function(input,fn){ if(!input) return; var o=input.parentNode.querySelector('output');
+  function go(){ if(o) o.value=FW.fmt(parseFloat(input.value)); fn(parseFloat(input.value)); }
+  input.addEventListener('input',go); input.addEventListener('change',go); if(o) o.value=FW.fmt(parseFloat(input.value)); };
+FW.setRange=function(input,v){ if(!input) return; input.value=v; var o=input.parentNode.querySelector('output'); if(o) o.value=FW.fmt(parseFloat(input.value)); };
+var raf=0; function all(){ if(raf) return; raf=requestAnimationFrame(function(){raf=0;FW.all.forEach(function(w){w.redraw();});}); }
+FW.redrawAll=all;
+window.addEventListener('resize',all);
+if(window.ResizeObserver) FW.ro=new ResizeObserver(all);
+try{ window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change',all); }catch(_){}
+try{ new MutationObserver(all).observe(document.documentElement,{attributes:true,attributeFilter:['data-theme','class','style']}); }catch(_){}
+})();
+
+/* ===== Widget 1: dual function = lower envelope (section E) ===== */
+(function(){
+var root=document.getElementById('w-envelope'); if(!root||!window.FW3) return;
+var FW=window.FW3,fmt=FW.fmt;
+var sel=root.querySelector('select'), sl=root.querySelector('input[type=range]'), btn=root.querySelector('button'), wout=root.querySelector('.wout');
+var EX={
+  e3:{f:function(x){return x*x+1;}, g:function(x){return (x-2)*(x-4);}, feas:[2,4], xr:[-1,5], yr:[-2,14], mr:[0,6], qr:[0,10],
+      xm:function(m){return 3*m/(1+m);}, q:function(m){return 10-m-9/(1+m);}, ps:5, xs:2, ds:5, ms:2, m0:0.5,
+      lines:[0,0.5,1,1.5,2,3,3.5], fl:'f = x² + 1', gl:'g = (x−2)(x−4) ≤ 0'},
+  e1:{f:function(x){return x*x;}, g:function(x){return 1-x;}, feas:[1,99], xr:[-1,3], yr:[-1,6], mr:[0,5], qr:[-2,3],
+      xm:function(m){return m/2;}, q:function(m){return m-m*m/4;}, ps:1, xs:1, ds:1, ms:2, m0:0.5,
+      lines:[-0.5,0,0.5,1,1.5,2,2.5], fl:'f = x²', gl:'g = 1 − x ≤ 0'},
+  j1:{f:function(x){return (x-1)*(x-1);}, g:function(x){return x*x;}, feas:[0,0], xr:[-1,2], yr:[-0.5,3], mr:[0,20], qr:[-0.2,1.6],
+      xm:function(m){return 1/(1+m);}, q:function(m){return m/(1+m);}, ps:1, xs:0, ds:1, ms:null, m0:1,
+      lines:[0,0.1,0.25,0.5,1], fl:'f = (x−1)²', gl:'g = x² ≤ 0'},
+  j2:{f:function(x){return Math.exp(x);}, g:function(x){return x;}, feas:[-99,0], xr:[-4,2], yr:[-3,5], mr:[0,3], qr:[-3,3],
+      xm:function(){return null;}, q:function(m){return m<1e-9?0:-Infinity;}, ps:0, xs:null, ds:0, ms:0, m0:0.5,
+      lines:[-3,-2,-1,0,1], fl:'f = eˣ', gl:'g = x ≤ 0'}
+};
+var key=sel?sel.value:'e3', ex=EX[key], mu=ex.m0, A1, A2;
+function L(x){return ex.f(x)+mu*ex.g(x);}
+function setup(){ key=sel.value; ex=EX[key]; sl.min=ex.mr[0]; sl.max=ex.mr[1]; sl.step=(ex.mr[1]-ex.mr[0])/600; mu=ex.m0; FW.setRange(sl,mu); }
+function draw(w){
+  var c=w.c;
+  if(w.narrow){ A1=FW.ax(44,30,300,280,ex.xr[0],ex.xr[1],ex.yr[0],ex.yr[1]); A2=FW.ax(44,396,300,280,ex.mr[0],ex.mr[1],ex.qr[0],ex.qr[1]); }
+  else { A1=FW.ax(44,30,262,306,ex.xr[0],ex.xr[1],ex.yr[0],ex.yr[1]); A2=FW.ax(362,30,262,306,ex.mr[0],ex.mr[1],ex.qr[0],ex.qr[1]); }
+  /* ---- left: x-space ---- */
+  FW.frame(w,A1,{title:'x-space, prices fixed at μ = '+fmt(mu),xl:'x'});
+  FW.clip(w,A1);
+  var fa=Math.max(ex.feas[0],ex.xr[0]), fb=Math.min(ex.feas[1],ex.xr[1]);
+  w.ctx.save(); w.ctx.fillStyle=c.ok; w.ctx.globalAlpha=0.13;
+  if(fb>fa) w.ctx.fillRect(A1.X(fa),A1.y0,A1.X(fb)-A1.X(fa),A1.h); w.ctx.restore();
+  if(fb===fa) FW.seg(w,A1.X(fa),A1.y0,A1.X(fa),A1.y0+A1.h,c.ok,3,null,0.5);
+  FW.curve(w,A1,ex.f,c.accent,3);
+  FW.curve(w,A1,L,c.bad,2.5);
+  var xm=ex.xm(mu);
+  if(xm!=null){ var Xm=A1.X(xm),Ym=A1.Y(L(xm)); FW.seg(w,Xm,Ym,Xm,A1.Y(Math.max(ex.yr[0],0)),c.bad,1.2,[4,4]); FW.dot(w,Xm,Ym,5.5,c.bad);
+    FW.text(w,'x(μ) = '+fmt(xm),Xm+8,Math.min(Ym+16,A1.y0+A1.h-6),c.bad,'left',12,true); }
+  if(ex.xs!=null){ FW.star(w,A1.X(ex.xs),A1.Y(ex.f(ex.xs)),8,c.ok); FW.text(w,'x* = '+fmt(ex.xs),A1.X(ex.xs)+8,A1.Y(ex.f(ex.xs))-8,c.ok,'left',12,true); }
+  FW.unclip(w);
+  FW.text(w,'feasible: '+ex.gl,A1.x0+4,A1.y0+A1.h-6,c.ok,'left',11.5,true);
+  FW.text(w,'blue: '+ex.fl,A1.x0+4,A1.y0+16,c.accent,'left',12,true);
+  FW.text(w,'red: L(x,μ) = f + μ·g',A1.x0+4,A1.y0+32,c.bad,'left',12,true);
+  if(key==='j2'){
+    if(mu>1e-9){ FW.arrow(w,A1.x0+60,A1.y0+A1.h*0.55,A1.x0+22,A1.y0+A1.h-24,c.bad,2.5); FW.text(w,'L → −∞ as x → −∞',A1.x0+6,A1.y0+A1.h*0.5,c.bad,'left',12,true); }
+    else FW.text(w,'inf eˣ = 0, never reached',A1.x0+6,A1.y0+A1.h*0.5,c.bad,'left',12,true);
+  }
+  /* ---- right: mu-space ---- */
+  FW.frame(w,A2,{title:'μ-space: q(μ) = lowest of all lines',xl:'μ  (drag here)'});
+  FW.clip(w,A2);
+  ex.lines.forEach(function(xk){ var a0=ex.f(xk),s=ex.g(xk);
+    FW.seg(w,A2.X(ex.mr[0]),A2.Y(a0+s*ex.mr[0]),A2.X(ex.mr[1]),A2.Y(a0+s*ex.mr[1]),c.muted,1.2,null,0.65); });
+  if(xm!=null){ var a0=ex.f(xm),s=ex.g(xm); FW.seg(w,A2.X(ex.mr[0]),A2.Y(a0+s*ex.mr[0]),A2.X(ex.mr[1]),A2.Y(a0+s*ex.mr[1]),c.bad,1.6,[6,4]); }
+  FW.seg(w,A2.x0,A2.Y(ex.ps),A2.x0+A2.w,A2.Y(ex.ps),c.ok,2,[7,5]);
+  if(key==='j2'){
+    FW.seg(w,A2.X(0.03),A2.y0+A2.h-3,A2.x0+A2.w,A2.y0+A2.h-3,c.accent,4);
+    for(var k=1;k<=4;k++){var X=A2.X(ex.mr[1]*k/4.6); FW.arrow(w,X,A2.y0+A2.h-40,X,A2.y0+A2.h-8,c.accent,2);}
+    FW.dot(w,A2.X(0),A2.Y(0),5,c.accent);
+  } else FW.curve(w,A2,ex.q,c.accent,3.5);
+  if(ex.ms!=null&&key!=='j2') FW.seg(w,A2.X(ex.ms),A2.y0,A2.X(ex.ms),A2.y0+A2.h,c.accent,1,[2,4]);
+  var qv=ex.q(mu);
+  if(isFinite(qv)){ FW.dot(w,A2.X(mu),A2.Y(qv),6.5,c.bad,true); FW.text(w,'q('+fmt(mu)+') = '+fmt(qv),A2.X(mu)+(A2.X(mu)>A2.x0+A2.w*0.6?-10:10),A2.Y(qv)+20,c.bad,A2.X(mu)>A2.x0+A2.w*0.6?'right':'left',12,true); }
+  else { FW.arrow(w,A2.X(mu),A2.y0+A2.h-60,A2.X(mu),A2.y0+A2.h-6,c.bad,3); FW.text(w,'q = −∞',A2.X(mu)+6,A2.y0+A2.h-64,c.bad,mu>ex.mr[1]*0.7?'right':'left',12,true); }
+  FW.unclip(w);
+  FW.text(w,'green: p* = '+fmt(ex.ps),A2.x0+A2.w-4,A2.Y(ex.ps)-6,c.ok,'right',12,true);
+  FW.text(w,'blue: q(μ)   grey: L(x,μ) for fixed x',A2.x0+4,A2.y0+16,c.accent,'left',11.5,true);
+  if(ex.ms!=null&&key!=='j2') FW.text(w,'μ* = '+fmt(ex.ms),A2.X(ex.ms)+4,A2.y0+32,c.accent,'left',11.5,true);
+  if(key==='j2') FW.text(w,'q = −∞ for every μ > 0',A2.x0+A2.w-4,A2.y0+A2.h-46,c.accent,'right',12,true);
+  /* ---- readout ---- */
+  var h='μ = <b>'+fmt(mu)+'</b> · ';
+  if(xm!=null){ var gv=ex.g(xm); h+='minimiser of L over all x: x(μ) = <b>'+fmt(xm)+'</b>, g(x(μ)) = <b>'+fmt(gv)+'</b> ('+(gv<=1e-9?'feasible':'infeasible')+') · '; }
+  else h+=(mu>1e-9?'L has no minimiser: it goes to −∞ · ':'eˣ gets down to 0 but no x reaches it · ');
+  h+='q(μ) = <b>'+fmt(qv)+'</b> ≤ p* = <b>'+fmt(ex.ps)+'</b> ✓ · gap p* − q(μ) = <b>'+fmt(ex.ps-qv)+'</b><br>';
+  if(key==='j1') h+='Best possible: d* = sup q = 1 (q → 1 as μ → ∞, never reached: dual not attained).';
+  else if(key==='j2') h+='Best possible: d* = q(0) = 0 = p* (zero gap; the primal value 0 is never reached).';
+  else h+='Best possible: d* = <b>'+fmt(ex.ds)+'</b> at μ* = <b>'+fmt(ex.ms)+'</b>, where x(μ*) = '+fmt(ex.xm(ex.ms))+' = x*.';
+  wout.innerHTML=h;
+}
+var w=FW.make('w-envelope',function(cw){return cw<520?{W:360,H:720,narrow:true}:{W:640,H:400};},draw);
+if(!w) return;
+setup(); w.redraw();
+sel.addEventListener('change',function(){setup();w.redraw();});
+FW.bind(sl,function(v){mu=v;w.redraw();});
+btn.addEventListener('click',function(){ mu=(key==='j1')?ex.mr[1]:ex.ms; FW.setRange(sl,mu); w.redraw(); });
+w.onDrag(function(p){return A2&&A2.inside(p,12)?'mu':null;},function(h,p){ mu=FW.clamp(A2.ix(p.x),ex.mr[0],ex.mr[1]); FW.setRange(sl,mu); });
+})();
+
+/* ===== Widget 2: chord test for convex sets and functions (section A) ===== */
+(function(){
+var root=document.getElementById('w-chord'); if(!root||!window.FW3) return;
+var FW=window.FW3,fmt=FW.fmt;
+var sel=root.querySelector('select'), sA=root.querySelector('input[name=alpha]'), sa=root.querySelector('input[name=slope]'), wout=root.querySelector('.wout');
+var slopeLbl=sa?sa.closest('label'):null;
+var aSlope=1.5, alpha=0.5;
+var M={
+  sq:{t:'f',f:function(x){return x*x;},n:'f(x) = x²',p:[-1.5,1]},
+  ab:{t:'f',f:function(x){return Math.abs(x);},n:'f(x) = |x|',p:[-1.5,1.2]},
+  cu:{t:'f',f:function(x){return x*x*x;},n:'f(x) = x³',p:[-1.6,0.6]},
+  ng:{t:'f',f:function(x){return -x*x;},n:'f(x) = −x²',p:[-1.5,1]},
+  q4:{t:'f',f:function(x){return x*x*x*x;},n:'f(x) = x⁴',p:[-1.2,1.5]},
+  tr:{t:'f',f:function(x){return (1-aSlope*aSlope)*x*x;},n:'φ(t) = f(t, a·t) = (1 − a²)t²',p:[-1.5,1.2],trap:true},
+  disc:{t:'s',in:function(x,y){return x*x+y*y<=1.44;},n:'disc ‖x‖ ≤ 1.2',p:[[-0.8,0.5],[0.9,-0.4]]},
+  tri:{t:'s',in:function(x,y){return x>=0&&y>=0&&x+y<=1;},n:'triangle x₁ ≥ 0, x₂ ≥ 0, x₁ + x₂ ≤ 1',p:[[0.1,0.7],[0.7,0.1]]},
+  ring:{t:'s',in:function(x,y){var Y=y+0.8,r=Math.sqrt(x*x+Y*Y);return Y>=0&&r>=0.9&&r<=1.6;},n:'half-ring',p:[[-1.25,-0.7],[1.25,-0.7]]},
+  two:{t:'s',in:function(x,y){return (x+1.2)*(x+1.2)+y*y<=0.42||(x-1.2)*(x-1.2)+y*y<=0.42;},n:'two separate discs',p:[[-1.3,0.1],[1.1,-0.2]]},
+  circ:{t:'s',in:function(x,y){return Math.abs(Math.sqrt(x*x+y*y)-1.2)<0.03;},n:'circle x₁² + x₂² = 1.44 (the curve only)',p:[[-1.2,0],[0.6,1.0392]],snap:1.2}
+};
+var key=sel.value, m=M[key], P=[], A;
+function reset(){ key=sel.value; m=M[key]; P=JSON.parse(JSON.stringify(m.p)); if(slopeLbl) slopeLbl.style.display=m.trap?'':'none'; }
+reset();
+function snap(q){ if(!m.snap) return q; var r=Math.hypot(q[0],q[1])||1; return [q[0]*m.snap/r,q[1]*m.snap/r]; }
+function draw(w){
+  var c=w.c, box=w.narrow?[40,26,305,300]:[46,26,574,320];
+  if(m.t==='f'){
+    var lo=-2,hi=2,ymin=Infinity,ymax=-Infinity;
+    for(var i=0;i<=200;i++){var v=m.f(lo+(hi-lo)*i/200); ymin=Math.min(ymin,v); ymax=Math.max(ymax,v);}
+    if(m.trap){ymin=-6;ymax=5;}
+    var pad=(ymax-ymin)*0.1||1; A=FW.ax(box[0],box[1],box[2],box[3],lo,hi,ymin-pad,ymax+pad);
+    FW.frame(w,A,{title:m.n,xl:m.trap?'t':'input'});
+    FW.clip(w,A); FW.curve(w,A,m.f,c.accent,3);
+    var xa=P[0],xb=P[1],fa=m.f(xa),fb=m.f(xb),bad=false,worst=0;
+    for(var k=0;k<120;k++){ var s0=k/120,s1=(k+1)/120,sm=(s0+s1)/2,z=sm*xa+(1-sm)*xb,ch=sm*fa+(1-sm)*fb,ok=m.f(z)<=ch+1e-9;
+      if(!ok){bad=true;worst=Math.max(worst,m.f(z)-ch);}
+      FW.seg(w,A.X(s0*xa+(1-s0)*xb),A.Y(s0*fa+(1-s0)*fb),A.X(s1*xa+(1-s1)*xb),A.Y(s1*fa+(1-s1)*fb),ok?c.ok:c.bad,3.5); }
+    var z=alpha*xa+(1-alpha)*xb, fz=m.f(z), cz=alpha*fa+(1-alpha)*fb;
+    FW.seg(w,A.X(z),A.Y(fz),A.X(z),A.Y(cz),c.ink,1.3,[3,3]);
+    FW.dot(w,A.X(z),A.Y(fz),5,c.accent); FW.dot(w,A.X(z),A.Y(cz),5,fz<=cz+1e-9?c.ok:c.bad);
+    FW.dot(w,A.X(xa),A.Y(fa),6.5,c.ink,true); FW.dot(w,A.X(xb),A.Y(fb),6.5,c.ink,true);
+    FW.unclip(w);
+    FW.text(w,'(x, f(x))',A.X(xa),A.Y(fa)-14,c.ink,'center',12,true);
+    FW.text(w,'(y, f(y))',A.X(xb),A.Y(fb)-14,c.ink,'center',12,true);
+    var right=A.X(z)<A.x0+A.w*0.75;
+    FW.text(w,'chord',A.X(z)+(right?9:-9),A.Y(cz)+(cz>=fz?-6:14),fz<=cz+1e-9?c.ok:c.bad,right?'left':'right',11.5,true);
+    FW.text(w,'graph f(z)',A.X(z)+(right?9:-9),A.Y(fz)+(cz>=fz?14:-6),c.accent,right?'left':'right',11.5,true);
+    if(m.trap) FW.text(w,'f = x₁² − x₂² on the line x₂ = a·x₁,  a = '+fmt(aSlope)+',  1 − a² = '+fmt(1-aSlope*aSlope),A.x0+6,A.y0+A.h-8,c.muted,'left',11.5,true);
+    var h='x = <b>'+fmt(xa)+'</b>, y = <b>'+fmt(xb)+'</b>, α = <b>'+fmt(alpha)+'</b>, z = αx + (1−α)y = <b>'+fmt(z)+'</b> · graph f(z) = <b>'+fmt(fz)+'</b> vs chord αf(x) + (1−α)f(y) = <b>'+fmt(cz)+'</b> → <b>'+(fz<=cz+1e-9?'graph ≤ chord ✓':'graph above chord ✗')+'</b><br>';
+    h+= bad ? 'Somewhere on this chord the graph is <b>above</b> it (red part, by up to '+fmt(worst)+'). One such pair is enough: '+(m.trap?'φ is not convex, so f is not convex along this line.':'this f is <b>not convex</b>.')
+            : 'The whole chord is on or above the graph for this pair ✓. Convex means <i>every</i> pair passes; try to break it.';
+    if(m.trap) h+=' (Convex along the line ⇔ 1 − a² ≥ 0 ⇔ |a| ≤ 1.)';
+    wout.innerHTML=h;
+  } else {
+    var ymn=-1.7,ymx=1.8,xr=(ymx-ymn)*box[2]/box[3]/2;
+    A=FW.ax(box[0],box[1],box[2],box[3],-xr,xr,ymn,ymx);
+    FW.frame(w,A,{title:m.n+'  (drag the two points)',xl:'x₁',yl:'x₂'});
+    FW.clip(w,A);
+    if(m.snap){ var cx=w.ctx; cx.save(); cx.beginPath(); cx.arc(A.X(0),A.Y(0),A.X(m.snap)-A.X(0),0,2*Math.PI); cx.strokeStyle=c.accent; cx.lineWidth=4; cx.stroke(); cx.restore(); }
+    else FW.region(w,A,m.in,c.accent,0.22,3);
+    var p=P[0],q=P[1],inP=m.in(p[0],p[1]),inQ=m.in(q[0],q[1]),out=0;
+    for(var j=0;j<150;j++){ var t0=j/150,t1=(j+1)/150,tm=(t0+t1)/2,mx=tm*p[0]+(1-tm)*q[0],my=tm*p[1]+(1-tm)*q[1],ins=m.in(mx,my);
+      if(!ins) out++;
+      FW.seg(w,A.X(t0*p[0]+(1-t0)*q[0]),A.Y(t0*p[1]+(1-t0)*q[1]),A.X(t1*p[0]+(1-t1)*q[0]),A.Y(t1*p[1]+(1-t1)*q[1]),ins?c.ok:c.bad,3.5,ins?null:[6,5]); }
+    var zz=[alpha*p[0]+(1-alpha)*q[0],alpha*p[1]+(1-alpha)*q[1]];
+    FW.dot(w,A.X(zz[0]),A.Y(zz[1]),5,m.in(zz[0],zz[1])?c.ok:c.bad);
+    FW.dot(w,A.X(p[0]),A.Y(p[1]),6.5,inP?c.ink:c.bad,true); FW.dot(w,A.X(q[0]),A.Y(q[1]),6.5,inQ?c.ink:c.bad,true);
+    FW.unclip(w);
+    FW.text(w,'x',A.X(p[0])-12,A.Y(p[1])-10,c.ink,'center',13,true); FW.text(w,'y',A.X(q[0])+12,A.Y(q[1])-10,c.ink,'center',13,true);
+    FW.text(w,'αx + (1−α)y',A.X(zz[0])+8,A.Y(zz[1])+16,c.muted,'left',11.5,true);
+    var h='x = (<b>'+fmt(p[0])+'</b>, <b>'+fmt(p[1])+'</b>), y = (<b>'+fmt(q[0])+'</b>, <b>'+fmt(q[1])+'</b>) · ';
+    if(!inP||!inQ) h+='<b>Move both points into the set</b> (a red point is outside it).';
+    else if(out===0) h+='the whole segment stays inside ✓ (for this pair). Convex means <i>every</i> pair passes; try to break it.';
+    else h+='the segment <b>leaves the set</b> (red dashed part, '+Math.round(100*out/150)+'% of it) ✗ → this one pair proves the set is <b>not convex</b>.';
+    wout.innerHTML=h;
+  }
+}
+var w=FW.make('w-chord',function(cw){return cw<520?{W:360,H:370,narrow:true}:{W:640,H:400};},draw);
+if(!w) return;
+sel.addEventListener('change',function(){reset();w.redraw();});
+FW.bind(sA,function(v){alpha=v;w.redraw();});
+FW.bind(sa,function(v){aSlope=v;w.redraw();});
+w.onDrag(function(p,hover){
+  if(!A) return null;
+  var best=null,bd=1e9;
+  for(var i=0;i<2;i++){ var X,Y,d;
+    if(m.t==='f'){X=A.X(P[i]);Y=A.Y(m.f(P[i]));d=Math.min(Math.hypot(p.x-X,p.y-Y),Math.abs(p.x-X)+(hover?40:0));}
+    else {X=A.X(P[i][0]);Y=A.Y(P[i][1]);d=Math.hypot(p.x-X,p.y-Y);}
+    if(d<bd){bd=d;best=i;} }
+  return bd<(m.t==='f'&&!hover?60:34)?best:null;
+},function(i,p){
+  if(m.t==='f') P[i]=FW.clamp(A.ix(p.x),A.xmin,A.xmax);
+  else P[i]=snap([FW.clamp(A.ix(p.x),A.xmin,A.xmax),FW.clamp(A.iy(p.y),A.ymin,A.ymax)]);
+});
+})();
+
+/* ===== Widget 3: QP prices, weak duality (section K; h = x1 + x2 - 4 as on this page) ===== */
+(function(){
+var root=document.getElementById('w-qp'); if(!root||!window.FW3) return;
+var FW=window.FW3,fmt=FW.fmt;
+var sL=root.querySelector('input[name=lam]'), sM=root.querySelector('input[name=mu]'), bOpt=root.querySelector('button[data-go=opt]'), bZero=root.querySelector('button[data-go=zero]'), wout=root.querySelector('.wout');
+var lam=0, mu=0, A1, A2, NL;
+function q(l,m){return 6-(l-m+4)*(l-m+4)/4-(l+2)*(l+2)/2;}
+function xm(l,m){return [(m-l)/2,-l];}
+function draw(w){
+  var c=w.c, nlY;
+  if(w.narrow){ A1=FW.ax(40,28,300,300*8/7*0.85,-1.5,5.5,-2.5,5.5); A2=FW.ax(40,A1.y0+A1.h+64,300,250,-5.5,2.5,-1,5.5); nlY=A2.y0+A2.h+76; }
+  else { A1=FW.ax(40,28,250,286,-1.5,5.5,-2.5,5.5); A2=FW.ax(340,28,284,286,-5.5,2.5,-1,5.5); nlY=A1.y0+A1.h+86; }
+  /* x-plane */
+  FW.frame(w,A1,{title:'x-plane',xl:'x₁',yl:'x₂'});
+  FW.clip(w,A1);
+  [2,6,12].forEach(function(cl){ var cx=w.ctx; cx.save(); cx.beginPath();
+    for(var i=0;i<=120;i++){var t=i/120*2*Math.PI,X=A1.X(Math.sqrt(cl)*Math.cos(t)),Y=A1.Y(Math.sqrt(2*cl)*Math.sin(t)); i?cx.lineTo(X,Y):cx.moveTo(X,Y);}
+    cx.strokeStyle=c.accent; cx.globalAlpha=cl===6?0.9:0.45; cx.lineWidth=cl===6?2:1.3; cx.stroke(); cx.restore(); });
+  FW.seg(w,A1.X(-1.5),A1.Y(5.5),A1.X(6.5),A1.Y(-2.5),c.muted,1.3,[5,4]);
+  FW.seg(w,A1.X(2),A1.Y(2),A1.X(6.5),A1.Y(-2.5),c.ok,5);
+  FW.star(w,A1.X(2),A1.Y(2),9,c.ok);
+  var x=xm(lam,mu); FW.dot(w,A1.X(x[0]),A1.Y(x[1]),6.5,c.bad,true);
+  FW.unclip(w);
+  FW.text(w,'x* = (2, 2)',A1.X(2)+10,A1.Y(2)-8,c.ok,'left',12,true);
+  FW.text(w,'Ω: x₁+x₂ = 4, x₁ ≥ 2',A1.X(3.1),A1.Y(0.3),c.ok,'left',11.5,true);
+  FW.text(w,'f = 6',A1.X(-1.1),A1.Y(2.2),c.accent,'left',11.5,true);
+  var lx=FW.clamp(A1.X(x[0]),A1.x0+30,A1.x0+A1.w-30),ly=FW.clamp(A1.Y(x[1])+20,A1.y0+14,A1.y0+A1.h-6);
+  FW.text(w,'x(λ,μ)',lx,ly,c.bad,'center',12,true);
+  /* price plane */
+  FW.frame(w,A2,{title:'price plane: drag the red point',xl:'λ (free)',yl:'μ ≥ 0'});
+  FW.clip(w,A2);
+  w.ctx.save(); w.ctx.fillStyle=c.bad; w.ctx.globalAlpha=0.1; w.ctx.fillRect(A2.x0,A2.Y(0),A2.w,A2.y0+A2.h-A2.Y(0)); w.ctx.restore();
+  [5.5,5,4,2,0,-3,-7].forEach(function(lv){ var k=6-lv,cx=w.ctx; cx.save(); cx.beginPath();
+    for(var i=0;i<=160;i++){var t=i/160*2*Math.PI,u=2*Math.sqrt(k)*Math.cos(t),v=Math.sqrt(2*k)*Math.sin(t),l=v-2,m=l+4-u,X=A2.X(l),Y=A2.Y(m); i?cx.lineTo(X,Y):cx.moveTo(X,Y);}
+    cx.strokeStyle=c.accent; cx.globalAlpha=0.55; cx.lineWidth=1.2; cx.stroke(); cx.restore();
+    var lab=A2.X(-2)+0, labY=A2.Y(-2+4+2*Math.sqrt(k)); if(labY>A2.y0+10) FW.text(w,'q='+fmt(lv),lab,labY+4,c.accent,'center',10.5,false); });
+  FW.star(w,A2.X(-2),A2.Y(2),9,c.ok);
+  FW.dot(w,A2.X(lam),A2.Y(mu),7,c.bad,true);
+  FW.unclip(w);
+  FW.text(w,'μ < 0 not allowed',A2.x0+A2.w-6,A2.y0+A2.h-6,c.bad,'right',11,true);
+  FW.text(w,'(λ*, μ*) = (−2, 2)',A2.X(-2)+10,A2.Y(2)+16,c.ok,'left',12,true);
+  /* number line */
+  NL=FW.numline(w,A1.x0,w.W-16,nlY,-12,10,'values: every q sits left of p* = 6 ≤ any feasible f');
+  var qv=q(lam,mu);
+  FW.seg(w,NL.X(6),nlY-14,NL.X(6),nlY+14,c.ok,3); FW.text(w,'p* = d* = 6',NL.X(6),nlY-17,c.ok,'center',11.5,true);
+  FW.seg(w,NL.X(9.5),nlY-9,NL.X(9.5),nlY+9,c.muted,2); FW.text(w,'f(3,1) = 9.5',NL.X(9.5)+4,nlY+30,c.muted,'right',11,true);
+  if(6-qv>0.05) FW.seg(w,NL.X(qv),nlY-7,NL.X(6),nlY-7,c.bad,2,[3,3]);
+  FW.dot(w,NL.X(qv),nlY,6.5,c.bad); FW.text(w,'q = '+fmt(qv),NL.X(qv),nlY+30,c.bad,'center',11.5,true);
+  var h1=x[0]+x[1]-4,g1=2-x[0],feas=Math.abs(h1)<5e-3&&g1<=5e-3;
+  wout.innerHTML='λ = <b>'+fmt(lam)+'</b>, μ = <b>'+fmt(mu)+'</b> · minimiser of L: x(λ,μ) = ((μ−λ)/2, −λ) = (<b>'+fmt(x[0])+'</b>, <b>'+fmt(x[1])+'</b>), h = x₁+x₂−4 = <b>'+fmt(h1)+'</b>, g = 2−x₁ = <b>'+fmt(g1)+'</b> ('+(feas?'feasible':'infeasible')+')<br>'+
+    'q(λ,μ) = 6 − ¼(λ−μ+4)² − ½(λ+2)² = <b>'+fmt(qv)+'</b> ≤ p* = 6 ✓ · gap 6 − q = <b>'+fmt(6-qv)+'</b>'+(6-qv<5e-3?' → <b>zero gap: these are the optimal prices, and x(λ*,μ*) = (2, 2) = x*</b>':'');
+}
+var w=FW.make('w-qp',function(cw){return cw<520?{W:360,H:760,narrow:true}:{W:640,H:440};},draw);
+if(!w) return;
+FW.bind(sL,function(v){lam=v;w.redraw();}); FW.bind(sM,function(v){mu=v;w.redraw();});
+function go(l,m){lam=l;mu=m;FW.setRange(sL,l);FW.setRange(sM,m);w.redraw();}
+bOpt.addEventListener('click',function(){go(-2,2);}); bZero.addEventListener('click',function(){go(0,0);});
+w.onDrag(function(p){return A2&&A2.inside(p,10)?'p':null;},function(h,p){
+  lam=Math.round(FW.clamp(A2.ix(p.x),-5,2)*100)/100; mu=Math.round(FW.clamp(A2.iy(p.y),0,5)*100)/100; FW.setRange(sL,lam); FW.setRange(sM,mu); });
+})();
+
+/* ===== Widget 4: LP primal vs dual (section L3 mixed-form example; rows written as lambda_i (b_i - a_i^T x)) ===== */
+(function(){
+var root=document.getElementById('w-lp'); if(!root||!window.FW3) return;
+var FW=window.FW3,fmt=FW.fmt;
+var sT=root.querySelector('input[name=t]'), sS=root.querySelector('input[name=s]'), bOpt=root.querySelector('button'), wout=root.querySelector('.wout');
+var t=3.5, s=1, A1, A2;
+function draw(w){
+  var c=w.c, nlY;
+  if(w.narrow){ A1=FW.ax(40,28,300,300,-1,6,-1.5,5.5); A2=FW.ax(40,392,300,300,-1,4,-4,1); nlY=A2.y0+A2.h+66; }
+  else { A1=FW.ax(40,28,262,262,-1,6,-1.5,5.5); A2=FW.ax(362,28,262,262,-1,4,-4,1); nlY=A1.y0+A1.h+86; }
+  var x1=1+t,x2=t,l1=s,l2=s-3, cx_=2*x1+3*x2, bl=4*l1+l2;
+  /* primal */
+  FW.frame(w,A1,{title:'primal: min 2x₁ + 3x₂',xl:'x₁',yl:'x₂'});
+  FW.clip(w,A1);
+  FW.region(w,A1,function(a,b){return a+b>=4&&a>=0;},c.accent,0.16,4);
+  FW.seg(w,A1.X(-1),A1.Y(-2),A1.X(6.5),A1.Y(5.5),c.muted,1.6);
+  FW.seg(w,A1.X(2.5),A1.Y(1.5),A1.X(7),A1.Y(6),c.ok,5);
+  var v=cx_; FW.seg(w,A1.X(-1),A1.Y((v+2)/3),A1.X(6),A1.Y((v-12)/3),c.bad,1.3,[5,4]);
+  FW.star(w,A1.X(2.5),A1.Y(1.5),9,c.ok);
+  var P={x:A1.X(x1),y:A1.Y(x2)}; FW.arrow(w,P.x,P.y,P.x+2*13,P.y-3*13,c.bad,2);
+  FW.dot(w,P.x,P.y,7,c.bad,true);
+  FW.unclip(w);
+  FW.text(w,'shaded: x₁+x₂ ≥ 4, x₁ ≥ 0',A1.x0+4,A1.y0+32,c.accent,'left',11,true);
+  FW.text(w,'x₁ − x₂ = 1',A1.X(0.9),A1.Y(-0.9),c.muted,'left',11,true);
+  FW.text(w,'x* = (2.5, 1.5)',A1.X(2.5)+10,A1.Y(1.5)+16,c.ok,'left',11.5,true);
+  var cl=P.x>A1.x0+A1.w*0.6; FW.text(w,'c: cost rises',cl?P.x-8:P.x+30,P.y-32,c.bad,cl?'right':'left',11,true);
+  /* dual */
+  FW.frame(w,A2,{title:'dual: max 4λ₁ + λ₂',xl:'λ₁',yl:'λ₂'});
+  FW.clip(w,A2);
+  FW.region(w,A2,function(a,b){return a+b<=2&&a>=0;},c.accent,0.16,4);
+  FW.seg(w,A2.X(-1),A2.Y(-4),A2.X(4),A2.Y(1),c.muted,1.6);
+  FW.seg(w,A2.X(0),A2.Y(-3),A2.X(2.5),A2.Y(-0.5),c.ok,5);
+  FW.seg(w,A2.X(-1),A2.Y(bl+4),A2.X(4),A2.Y(bl-16),c.accent,1.3,[5,4]);
+  FW.star(w,A2.X(2.5),A2.Y(-0.5),9,c.ok);
+  var D={x:A2.X(l1),y:A2.Y(l2)}; FW.arrow(w,D.x,D.y,D.x+4*8,D.y-1*8,c.accent,2);
+  FW.dot(w,D.x,D.y,7,c.accent,true);
+  FW.unclip(w);
+  FW.text(w,'shaded: λ₁+λ₂ ≤ 2, λ₁ ≥ 0',A2.x0+4,A2.y0+32,c.accent,'left',11,true);
+  FW.text(w,'λ₁ − λ₂ = 3',A2.X(0.3),A2.Y(-3.6),c.muted,'left',11,true);
+  FW.text(w,'λ* = (2.5, −0.5)',A2.X(2.5)-6,A2.Y(-0.5)-12,c.ok,'right',11.5,true);
+  FW.text(w,'b: value rises',D.x+34,D.y+4,c.accent,'left',11,true);
+  /* number line */
+  var NL=FW.numline(w,A1.x0,w.W-16,nlY,-4,22,'every dual value bᵀλ ≤ every primal cost cᵀx');
+  FW.seg(w,NL.X(9.5),nlY-14,NL.X(9.5),nlY+14,c.ok,3); FW.text(w,'9.5',NL.X(9.5),nlY-17,c.ok,'center',11.5,true);
+  if(cx_-bl>0.05) FW.seg(w,NL.X(bl),nlY-7,NL.X(cx_),nlY-7,c.ink,1.5,[3,3]);
+  FW.dot(w,NL.X(bl),nlY,6.5,c.accent); FW.text(w,'bᵀλ = '+fmt(bl),NL.X(bl),nlY+30,c.accent,cx_-bl<4?'right':'center',11.5,true);
+  FW.dot(w,NL.X(cx_),nlY,6.5,c.bad); FW.text(w,'cᵀx = '+fmt(cx_),NL.X(cx_),nlY+30,c.bad,cx_-bl<4?'left':'center',11.5,true);
+  var mu1=2-l1-l2, s1=x1+x2-4;
+  wout.innerHTML='x = (<b>'+fmt(x1)+'</b>, <b>'+fmt(x2)+'</b>), cᵀx = 2x₁+3x₂ = <b>'+fmt(cx_)+'</b> · λ = (<b>'+fmt(l1)+'</b>, <b>'+fmt(l2)+'</b>), bᵀλ = 4λ₁+λ₂ = <b>'+fmt(bl)+'</b> · gap cᵀx − bᵀλ = <b>'+fmt(cx_-bl)+'</b> ≥ 0 ✓<br>'+
+    'The gap is exactly the complementary-slackness products: λ₁·(x₁+x₂−4) + μ₁·x₁ = '+fmt(l1)+'·'+fmt(s1)+' + '+fmt(mu1)+'·'+fmt(x1)+' = <b>'+fmt(l1*s1+mu1*x1)+'</b>, with μ₁ = 2−λ₁−λ₂.'+(cx_-bl<5e-3?' <b>Both are 9.5: each certifies the other is optimal.</b>':'');
+}
+var w=FW.make('w-lp',function(cw){return cw<520?{W:360,H:800,narrow:true}:{W:640,H:420};},draw);
+if(!w) return;
+FW.bind(sT,function(v){t=v;w.redraw();}); FW.bind(sS,function(v){s=v;w.redraw();});
+bOpt.addEventListener('click',function(){t=1.5;s=2.5;FW.setRange(sT,t);FW.setRange(sS,s);w.redraw();});
+w.onDrag(function(p){ if(!A1) return null;
+  var dP=Math.hypot(p.x-A1.X(1+t),p.y-A1.Y(t)), dD=Math.hypot(p.x-A2.X(s),p.y-A2.Y(s-3));
+  if(A1.inside(p,8)&&dP<60) return 'P'; if(A2.inside(p,8)&&dD<60) return 'D'; return null;
+},function(h,p){
+  if(h==='P'){ var a=A1.ix(p.x),b=A1.iy(p.y); t=Math.round(FW.clamp(1.5+((a-2.5)+(b-1.5))/2,1.5,4.5)*100)/100; FW.setRange(sT,t); }
+  else { var a2=A2.ix(p.x),b2=A2.iy(p.y); s=Math.round(FW.clamp((a2+(b2+3))/2,0,2.5)*100)/100; FW.setRange(sS,s); }
+});
+})();
+</script>
 </body>
 </html>

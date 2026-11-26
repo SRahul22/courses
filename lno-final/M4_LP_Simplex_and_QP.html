@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>M4 · LP (simplex concepts) and QP</title>
-<link rel="stylesheet" href="assets/fe.css">
+<link rel="stylesheet" href="assets/fe.css?v=20261126w">
 <script>
   window.MathJax = { tex: { inlineMath: [['$','$'],['\\(','\\)']], displayMath: [['$$','$$'],['\\[','\\]']] } };
 </script>
@@ -44,11 +44,13 @@
   <a href="#d4">&nbsp;&nbsp;D4. Degeneracy, cycling, Bland</a>
   <a href="#d5">&nbsp;&nbsp;D5. New basis is a basis</a>
   <a href="#byhand">E. A full run by hand</a>
+  <a href="#w-simplex">&nbsp;&nbsp;▶ Try it: simplex steps</a>
   <a href="#tableau">F. Tableau (first 4 slides)</a>
   <a href="#bridge">G. One idea, two chapters</a>
   <a href="#eqp">H. Equality QP</a>
   <a href="#h1">&nbsp;&nbsp;H1. KKT system</a>
   <a href="#h2">&nbsp;&nbsp;H2. Why only null(A) matters</a>
+  <a href="#w-nullspace">&nbsp;&nbsp;▶ Try it: Q on null(A)</a>
   <a href="#h3">&nbsp;&nbsp;H3. Null-space method</a>
   <a href="#h4">&nbsp;&nbsp;H4. Range-space (Schur)</a>
   <a href="#h5">&nbsp;&nbsp;H5. Projector (optional)</a>
@@ -58,6 +60,7 @@
   <a href="#i3">&nbsp;&nbsp;I3. Ratio test, step min{1,α}</a>
   <a href="#i4">&nbsp;&nbsp;I4. p = 0: multipliers</a>
   <a href="#i5">&nbsp;&nbsp;I5. A full run by hand</a>
+  <a href="#w-activeset">&nbsp;&nbsp;▶ Try it: active-set steps</a>
   <a href="#i6">&nbsp;&nbsp;I6. Simplex ↔ active set</a>
   <a href="#recipe">J. Exam recipe</a>
   <a href="#prof">What he said</a>
@@ -386,6 +389,20 @@ $$\det B'=u_r\,\det B\ne0,\quad\text{because the ratio test only picks rows with
 <p><b>Basis</b> $\{x_1,x_2\}$, $\bar x_B=(2,2)$, $\bar\lambda=(-1,-1)$, $\bar\mu_3=\bar\mu_4=1\ge0$ ⇒ <b>optimal</b>, $x^*=(2,2,0,0)$, cost $-10=b^T\bar\lambda$.</p>
 </div>
 <p><b>Another legal path.</b> Starting instead with the most negative reduced cost ($x_2$, $\bar\mu_2=-3$): $\theta=\min(4/1,6/2)=3$, $x_4$ leaves, corner $(0,3)$, cost $-9$. There $\bar\mu_1=-\tfrac12$ (Check C2), $u=B^{-1}a_1=(\tfrac12,\tfrac12)$ for $(x_2,x_3)=(3,1)$, ratios $6$ and $2$, so $\theta=2$, $x_3$ leaves, and we reach $(2,2)$ again (cost $-9+2\cdot(-\tfrac12)=-10$). Different entering rules, different paths, same answer.</p>
+<div class="widget" id="w-simplex">
+<div class="wtitle">Simplex on the running LP</div>
+<p class="small">Click any dot (a basic solution) to stand there, or press <b>Next simplex step</b>. Watch the reduced costs (red = negative, green = $\ge0$) and the purple arrow $d$ sliding along an edge. Then turn the cost slider: a different corner wins.</p>
+<canvas width="640" height="400" aria-label="Feasible polygon of the running LP with its basic solutions, the cost level line and the simplex direction"></canvas>
+<div class="wctl">
+<label>Downhill direction −c (angle°) <input type="range" data-k="ang" min="0" max="359" step="1" value="56"> <output data-k="ang-o">c = (−2, −3)</output></label>
+<label>Entering rule <select data-k="rule"><option value="bland">Bland: smallest index</option><option value="dantzig">most negative μ</option></select></label>
+<button type="button" data-k="step">Next simplex step</button>
+<button type="button" data-k="reset">Start again at (0,0)</button>
+<button type="button" data-k="resetc">Back to c = (−2, −3)</button>
+</div>
+<div class="wout" aria-live="polite"></div>
+<div class="whint">What to notice: (1) a corner is optimal exactly when <b>every</b> $\bar\mu_N$ is green ($\ge0$); one red one is enough to move. (2) The arrow $d$ runs along an edge, and the ratio test stops it at the first basic variable that hits 0; the dashed continuation to the × is where the <i>other</i> basic variable would hit 0, an infeasible basic solution. (3) With $-c$ at angles below 45° (or above 270°) the corner $(4,0)$ wins, between 45° and about 63° $(2,2)$ wins, up to 180° $(0,3)$ wins, and between 180° and 270° the origin is already optimal. (4) Grey hollow dots are basic but infeasible ($x_B$ has a negative entry): simplex never stands there. (5) Switch the rule to "most negative μ" to see the other path $(0,0)\to(0,3)\to(2,2)$.</div>
+</div>
 </section>
 
 <!-- ================= F. TABLEAU ================= -->
@@ -482,6 +499,21 @@ $$\text{"}Q\text{ PD on }\ker A\text{"}\iff H_r:=Z^TQZ\succ0\qquad(\text{the red
 </ul></div>
 <div class="check"><b>Check H2.</b> Same $Q=\mathrm{diag}(1,-1)$, but the constraint is $x_1+x_2=0$. Is there a unique minimiser?
 <details class="ans"><summary>Show answer</summary><div><p>$\ker A$ is spanned by $Z=(1,-1)^T$: $H_r=1\cdot1+(-1)(-1)(-1)=1-1=0$, not PD. On the line $x=(t,-t)$, $f=\tfrac12(t^2-t^2)=0$ for all $t$: every point is a minimiser, so not unique.</p></div></details></div>
+<div class="widget" id="w-nullspace">
+<div class="wtitle">$Q$ only needs to be PD on null(A)</div>
+<p class="small">Drag on the left picture to move the constraint line, and turn it with the line-angle slider. Watch the green curve on the right: it is $f$ <i>along the line</i>, and only its shape ($H_r=Z^TQZ$) decides whether there is a unique minimiser.</p>
+<canvas width="640" height="400" aria-label="Contours of a 2D quadratic with a constraint line, and f restricted to that line"></canvas>
+<div class="wctl">
+<label>Example <select data-k="preset"><option value="fig">H2 figure: Q = diag(1,−1), line x₂ = 0</option><option value="h2">Check H2: same Q, line x₁ + x₂ = 0</option><option value="chh">Check H / N7: Q = [1 2; 2 1], x₁ − x₂ = 2, c = (3,1)</option><option value="bowl">Q PD (a bowl)</option><option value="hill">Q negative definite (a hill)</option><option value="custom">(your own: move a slider)</option></select></label>
+<label>eigenvalue 1 <input type="range" data-k="e1" min="-2" max="3" step="0.1" value="1"> <output data-k="e1-o">1</output></label>
+<label>eigenvalue 2 <input type="range" data-k="e2" min="-2" max="3" step="0.1" value="-1"> <output data-k="e2-o">−1</output></label>
+<label>rotate Q (°) <input type="range" data-k="rot" min="0" max="180" step="1" value="0"> <output data-k="rot-o">0</output></label>
+<label>line angle (°) <input type="range" data-k="psi" min="0" max="179" step="1" value="0"> <output data-k="psi-o">0</output></label>
+<label>shift line <input type="range" data-k="b" min="-3" max="3" step="0.05" value="0"> <output data-k="b-o">0</output></label>
+</div>
+<div class="wout" aria-live="polite"></div>
+<div class="whint">What to notice: in the H2 figure $Q$ is indefinite (a saddle: blue and red contours), yet the green curve is a bowl, so there is one minimiser on the line. Turn the line to 45° or 135°, along the saddle's asymptotes: $H_r=0$, the green curve goes flat and the minimiser is no longer unique (Check H2). Turn it to 90° (the line $x_1=\text{const}$): $H_r\lt0$, a KKT point still exists ($K$ is nonsingular) but it is the <i>top</i> of the green curve, not a minimum. The red dashed curve (across the line) never matters.</div>
+</div>
 
 <h3 id="h3">H3. The null-space method: deriving $\phi(z)$</h3>
 <p><b>Idea:</b> describe all feasible points with free coordinates, substitute, and get an <i>unconstrained</i> problem.</p>
@@ -631,6 +663,18 @@ $$g_k+\sum_{i\in W_k}\lambda_i a_i=0.$$
 <li>Ratio: (2) $a_2^Tp^{(1)}=1$, slack $2$ ⇒ $\alpha_1=2\gt1$ ⇒ <b>full step</b> (not 2!): $x^{(2)}=(1,2)$, $W_2=\{1\}$.</li>
 <li>$p^{(2)}=0$; $g^{(2)}=(-1,0)$, $\lambda_1=1\ge0$ ⇒ optimal $x^*=x^{(2)}=(1,2)$ (the projection of $(2,2)$ onto $x_1\le1$ ✓).</li>
 </ol></div></details></div>
+<div class="widget" id="w-activeset">
+<div class="wtitle">Active-set method, one step at a time</div>
+<p class="small">Pick an example and press <b>Next step</b>: each press does one iteration (move, or drop a constraint). Watch the purple arrow $p_k$, the ratio table and whether the step is cut short. You can also click inside the blue region to start from your own point.</p>
+<canvas width="640" height="400" aria-label="Feasible region of a small QP with contours, the working set and the active-set search direction"></canvas>
+<div class="wctl">
+<label>Example <select data-k="ex"><option value="i5">I5 run: Q = I, c = (2,1)</option><option value="i3">I3 worked step: Q = diag(2,1), c = (4,4)</option><option value="chk">Check I: Q = I, c = (2,2)</option></select></label>
+<button type="button" data-k="next">Next step ▶</button>
+<button type="button" data-k="restart">Restart</button>
+</div>
+<div class="wout" aria-live="polite"></div>
+<div class="whint">What to notice: green thick lines are the working set $W_k$ (held as equalities); $p_k$ slides along them. When a constraint blocks before $x_k+p_k$ ($\alpha_k\le1$) the step is cut to $\alpha_k$ and that constraint joins $W$ (red); when nothing blocks before 1, the step is the <b>full step 1</b>, never $\alpha_k$ (I5: $\alpha=3$, step 1). When $p_k=0$ the multipliers decide: a red (negative) $\lambda_j$ means "drop $j$" and the point does not move; all green means stop. The ellipses are contours of $f$; the purple one passes through the current point.</div>
+</div>
 
 <h3 id="i6">I6. The dictionary: simplex ↔ active set</h3>
 <table>
@@ -1224,6 +1268,384 @@ $$g_k+\sum_{i\in W_k}\lambda_i a_i=0.$$
 
 </main>
 </div>
-<script src="assets/fe.js"></script>
+<script src="assets/fe.js?v=20261126w"></script>
+<script>
+/* M4 interactive widgets (plain JS). Shared helpers in H; each widget is its own IIFE and does nothing if its element is missing. */
+(function(){
+'use strict';
+var H={};
+H.col=function(){var s=getComputedStyle(document.documentElement);function g(n,d){var v=s.getPropertyValue(n).trim();return v||d;}
+  return {ink:g('--ink','#1d1f23'),muted:g('--muted','#5d636e'),line:g('--line','#e3e0d8'),accent:g('--accent','#2457a6'),soft:g('--accent-soft','#e8effa'),ok:g('--ok','#1f8a44'),bad:g('--bad','#c8372d'),bg:g('--bg','#fbfaf7'),ex:g('--ex-line','#6a5acd')};};
+H.canvas=function(cv,draw){
+  var LW=+cv.getAttribute('width')||640,LH=+cv.getAttribute('height')||400,ctx=cv.getContext('2d');
+  function paint(){var d=Math.max(1,Math.min(3,window.devicePixelRatio||1)),w=Math.round(LW*d),h=Math.round(LH*d);
+    if(cv.width!==w||cv.height!==h){cv.width=w;cv.height=h;}
+    ctx.setTransform(d,0,0,d,0,0);ctx.clearRect(0,0,LW,LH);ctx.setLineDash([]);ctx.globalAlpha=1;ctx.lineCap='round';
+    draw(ctx,H.col(),LW,LH);}
+  window.addEventListener('resize',paint);
+  try{var mq=window.matchMedia('(prefers-color-scheme: dark)');if(mq.addEventListener)mq.addEventListener('change',paint);}catch(e){}
+  try{new MutationObserver(paint).observe(document.documentElement,{attributes:true,attributeFilter:['data-theme']});}catch(e){}
+  return {paint:paint,pos:function(e){var r=cv.getBoundingClientRect();return [(e.clientX-r.left)*LW/r.width,(e.clientY-r.top)*LH/r.height];}};
+};
+H.fmt=function(v){
+  if(!isFinite(v))return v>0?'∞':'−∞';
+  if(Math.abs(v)<5e-10)return '0';
+  var s=v<0?'−':'',a=Math.abs(v);
+  for(var d=1;d<=12;d++){var n=Math.round(a*d);if(n>0&&Math.abs(a*d-n)<1e-7*Math.max(1,a*d))return s+(d===1?n:n+'/'+d);}
+  var t=a.toFixed(2);return +t===0?'0':s+t;
+};
+H.vec=function(v){return '('+v.map(H.fmt).join(', ')+')';};
+H.sub=function(j){return String(j).split('').map(function(ch){return '₀₁₂₃₄₅₆₇₈₉'[+ch];}).join('');};
+H.text=function(ctx,s,x,y,col,o){o=o||{};ctx.font=(o.bold?'600 ':'')+(o.size||14)+'px "Segoe UI",system-ui,sans-serif';
+  ctx.textAlign=o.align||'left';ctx.textBaseline=o.base||'middle';
+  if(o.halo){ctx.save();ctx.setLineDash([]);ctx.lineWidth=4;ctx.strokeStyle=o.halo;ctx.lineJoin='round';ctx.strokeText(s,x,y);ctx.restore();}
+  ctx.fillStyle=col;ctx.fillText(s,x,y);};
+H.seg=function(ctx,p,q,col,w,dash){ctx.save();ctx.strokeStyle=col;ctx.lineWidth=w||1.5;ctx.setLineDash(dash||[]);ctx.beginPath();ctx.moveTo(p[0],p[1]);ctx.lineTo(q[0],q[1]);ctx.stroke();ctx.restore();};
+H.arrow=function(ctx,p,q,col,w){var a=Math.atan2(q[1]-p[1],q[0]-p[0]),h=11;H.seg(ctx,p,[q[0]-6*Math.cos(a),q[1]-6*Math.sin(a)],col,w||2.5);
+  ctx.fillStyle=col;ctx.beginPath();ctx.moveTo(q[0],q[1]);ctx.lineTo(q[0]-h*Math.cos(a-0.4),q[1]-h*Math.sin(a-0.4));ctx.lineTo(q[0]-h*Math.cos(a+0.4),q[1]-h*Math.sin(a+0.4));ctx.closePath();ctx.fill();};
+H.dot=function(ctx,p,r,fill,stroke,w){ctx.save();ctx.setLineDash([]);ctx.beginPath();ctx.arc(p[0],p[1],r,0,2*Math.PI);if(fill){ctx.fillStyle=fill;ctx.fill();}if(stroke){ctx.strokeStyle=stroke;ctx.lineWidth=w||2;ctx.stroke();}ctx.restore();};
+/* keep the part of polygon P with a.x <= b */
+H.clip=function(P,a,b){var out=[];for(var i=0;i<P.length;i++){var p=P[i],q=P[(i+1)%P.length],fp=a[0]*p[0]+a[1]*p[1]-b,fq=a[0]*q[0]+a[1]*q[1]-b;
+  if(fp<=0)out.push(p);if((fp<0&&fq>0)||(fp>0&&fq<0)){var t=fp/(fp-fq);out.push([p[0]+t*(q[0]-p[0]),p[1]+t*(q[1]-p[1])]);}}return out;};
+/* the piece of the line a.x = b inside the box r=[xmin,xmax,ymin,ymax] */
+H.lineInRect=function(a,b,r){var n2=a[0]*a[0]+a[1]*a[1];if(n2<1e-18)return null;var m=[a[0]*b/n2,a[1]*b/n2],d=[-a[1],a[0]],t0=-1e9,t1=1e9;
+  var p=[-d[0],d[0],-d[1],d[1]],q=[m[0]-r[0],r[1]-m[0],m[1]-r[2],r[3]-m[1]];
+  for(var i=0;i<4;i++){if(Math.abs(p[i])<1e-12){if(q[i]<0)return null;}else{var t=q[i]/p[i];if(p[i]<0){if(t>t0)t0=t;}else if(t<t1)t1=t;}}
+  if(t0>t1)return null;return [[m[0]+t0*d[0],m[1]+t0*d[1]],[m[0]+t1*d[0],m[1]+t1*d[1]]];};
+H.grid=function(f,r,nx,ny){var v=[],dx=(r[1]-r[0])/nx,dy=(r[3]-r[2])/ny;for(var j=0;j<=ny;j++){v[j]=[];for(var i=0;i<=nx;i++)v[j][i]=f(r[0]+i*dx,r[2]+j*dy);}return {v:v,r:r,nx:nx,ny:ny,dx:dx,dy:dy};};
+/* marching squares: draw the level set {f = L} */
+H.contour=function(ctx,G,L,toPx){var C=[[0,0],[1,0],[1,1],[0,1]];ctx.beginPath();
+  for(var j=0;j<G.ny;j++)for(var i=0;i<G.nx;i++){var v=[G.v[j][i]-L,G.v[j][i+1]-L,G.v[j+1][i+1]-L,G.v[j+1][i]-L],pts=[];
+    for(var k=0;k<4;k++){var a=v[k],b=v[(k+1)%4];if((a<0)!==(b<0)){var t=a/(a-b),p0=C[k],p1=C[(k+1)%4];
+      pts.push(toPx([G.r[0]+(i+p0[0]+t*(p1[0]-p0[0]))*G.dx,G.r[2]+(j+p0[1]+t*(p1[1]-p0[1]))*G.dy]));}}
+    for(k=0;k+1<pts.length;k+=2){ctx.moveTo(pts[k][0],pts[k][1]);ctx.lineTo(pts[k+1][0],pts[k+1][1]);}}
+  ctx.stroke();};
+H.span=function(v,txt){return '<span style="color:var('+(v<-1e-9?'--bad':'--ok')+');font-weight:600">'+txt+'</span>';};
+
+/* ===== Widget 1: simplex on the running LP ===== */
+(function(){
+  var root=document.getElementById('w-simplex');if(!root)return;
+  var cv=root.querySelector('canvas'),out=root.querySelector('.wout');
+  function el(k){return root.querySelector('[data-k="'+k+'"]');}
+  var ang=el('ang'),angO=el('ang-o'),rule=el('rule');
+  var A=[[1,1,1,0],[1,2,0,1]],b=[4,6],c=[-2,-3,0,0],DEF=Math.atan2(3,2)*180/Math.PI;
+  var NM=['x₁','x₂','x₃','x₄'];
+  var BASES=[[2,3],[0,3],[0,1],[1,2],[0,2],[1,3]];
+  var basis=[2,3],trail=[],msg='';
+  function solve(M,r){var det=M[0][0]*M[1][1]-M[0][1]*M[1][0];if(Math.abs(det)<1e-12)return null;return [(r[0]*M[1][1]-M[0][1]*r[1])/det,(M[0][0]*r[1]-M[1][0]*r[0])/det];}
+  function analyse(bs){
+    var Bm=[[A[0][bs[0]],A[0][bs[1]]],[A[1][bs[0]],A[1][bs[1]]]];
+    var xB=solve(Bm,b),lam=solve([[Bm[0][0],Bm[1][0]],[Bm[0][1],Bm[1][1]]],[c[bs[0]],c[bs[1]]]);
+    var x=[0,0,0,0];x[bs[0]]=xB[0];x[bs[1]]=xB[1];
+    var N=[0,1,2,3].filter(function(j){return bs.indexOf(j)<0;}),mu={};
+    N.forEach(function(j){mu[j]=c[j]-(A[0][j]*lam[0]+A[1][j]*lam[1]);});
+    var R={bs:bs,xB:xB,lam:lam,x:x,N:N,mu:mu,feas:xB[0]>=-1e-9&&xB[1]>=-1e-9,cost:c[0]*x[0]+c[1]*x[1]};
+    if(!R.feas)return R;
+    var neg=N.filter(function(j){return mu[j]<-1e-9;});
+    R.optimal=!neg.length;if(R.optimal)return R;
+    var q=neg[0];
+    if(rule.value==='dantzig')neg.forEach(function(j){if(mu[j]<mu[q]-1e-12)q=j;});
+    var u=solve(Bm,[A[0][q],A[1][q]]);
+    var rows=[0,1].map(function(i){return {v:bs[i],xb:xB[i],u:u[i],ratio:u[i]>1e-12?xB[i]/u[i]:null};});
+    var th=Infinity,r=-1;
+    rows.forEach(function(w,i){if(w.ratio===null)return;if(w.ratio<th-1e-12||(Math.abs(w.ratio-th)<=1e-12&&w.v<rows[r].v)){th=w.ratio;r=i;}});
+    var d=[0,0,0,0];d[q]=1;d[bs[0]]=-u[0];d[bs[1]]=-u[1];
+    R.q=q;R.u=u;R.rows=rows;R.d=d;R.theta=th;R.r=r;
+    if(r>=0){var nb=bs.slice();nb[r]=q;R.next=nb;R.xn=x.map(function(v,j){return v+th*d[j];});}
+    return R;
+  }
+  var S=70,OX=48,OY=352,VIEW=[-0.65,8.45,-0.6,5.0];
+  function P(p){return [OX+S*p[0],OY-S*p[1]];}
+  function draw(ctx,K){
+    var R=analyse(basis),i;
+    H.seg(ctx,P([VIEW[0],0]),P([VIEW[1],0]),K.muted,1);H.seg(ctx,P([0,VIEW[2]]),P([0,VIEW[3]]),K.muted,1);
+    for(i=1;i<=8;i++){H.seg(ctx,P([i,0]),[P([i,0])[0],OY+5],K.muted,1);H.text(ctx,String(i),P([i,0])[0],OY+15,K.muted,{align:'center',size:12});}
+    for(i=1;i<=4;i++){H.seg(ctx,P([0,i]),[OX-5,P([0,i])[1]],K.muted,1);}
+    H.text(ctx,'x₁',P([8.3,0])[0],OY-12,K.ink,{size:15});H.text(ctx,'x₂',OX+10,P([0,4.85])[1],K.ink,{size:15});
+    var poly=[[0,0],[4,0],[2,2],[0,3]].map(P);
+    ctx.beginPath();poly.forEach(function(p,k){if(k)ctx.lineTo(p[0],p[1]);else ctx.moveTo(p[0],p[1]);});ctx.closePath();
+    ctx.fillStyle=K.soft;ctx.fill();ctx.strokeStyle=K.accent;ctx.lineWidth=2;ctx.stroke();
+    [[[1,1],4],[[1,2],6]].forEach(function(L){var s=H.lineInRect(L[0],L[1],VIEW);if(s)H.seg(ctx,P(s[0]),P(s[1]),K.accent,1.2,[5,4]);});
+    H.text(ctx,'x₁+x₂=4 (x₃=0)',P([4.75,0])[0],OY+35,K.accent,{size:12.5,halo:K.bg});
+    H.text(ctx,'x₁+2x₂=6 (x₄=0)',P([4.5,0.75])[0]+8,P([4.5,0.75])[1]-4,K.accent,{size:12.5,halo:K.bg});
+    /* cost level line through the current point */
+    var lv=c[0]*R.x[0]+c[1]*R.x[1],s=H.lineInRect([c[0],c[1]],lv,VIEW);
+    if(s)H.seg(ctx,P(s[0]),P(s[1]),K.muted,1.5,[2,5]);
+    H.text(ctx,'dotted line: cost = '+H.fmt(lv),P([7.0,0])[0],P([0,2.85])[1],K.muted,{size:12.5,align:'center',halo:K.bg});
+    /* -c arrow */
+    var nc=Math.hypot(c[0],c[1]),dir=[-c[0]/nc,-c[1]/nc],ctr=[7.0,3.7];
+    H.arrow(ctx,P([ctr[0]-0.55*dir[0],ctr[1]-0.55*dir[1]]),P([ctr[0]+0.55*dir[0],ctr[1]+0.55*dir[1]]),K.ex,2.5);
+    H.text(ctx,'−c: cost ↓',P(ctr)[0],P([0,4.75])[1],K.ex,{align:'center',size:13,bold:true});
+    /* trail of visited corners */
+    for(i=0;i+1<trail.length;i++)H.seg(ctx,P(trail[i]),P(trail[i+1]),K.ok,4);
+    if(trail.length)H.seg(ctx,P(trail[trail.length-1]),P([R.x[0],R.x[1]]),K.ok,4);
+    /* direction d and the ratio test along it */
+    if(R.q!==undefined){var cur=[R.x[0],R.x[1]],dd=[R.d[0],R.d[1]];
+      if(R.r<0){H.arrow(ctx,P(cur),P([cur[0]+1.5*dd[0],cur[1]+1.5*dd[1]]),K.ex,3);}
+      R.rows.forEach(function(w,k){if(w.ratio===null||k===R.r)return;var e=P([cur[0]+w.ratio*dd[0],cur[1]+w.ratio*dd[1]]);
+        H.seg(ctx,P(cur),e,K.ex,2,[6,5]);ctx.save();ctx.strokeStyle=K.ex;ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(e[0]-6,e[1]-6);ctx.lineTo(e[0]+6,e[1]+6);ctx.moveTo(e[0]+6,e[1]-6);ctx.lineTo(e[0]-6,e[1]+6);ctx.stroke();ctx.restore();});
+      if(R.r>=0){var e2=[cur[0]+R.theta*dd[0],cur[1]+R.theta*dd[1]];H.arrow(ctx,P(cur),P(e2),K.ex,3.5);
+        var mid=P([(cur[0]+e2[0])/2,(cur[1]+e2[1])/2]);H.text(ctx,'d: '+NM[R.q]+' enters, θ = '+H.fmt(R.theta),mid[0]+10,mid[1]-14,K.ex,{size:13,bold:true,halo:K.bg});}
+    }
+    /* all six basic solutions */
+    var lab={'2,3':['(0,0)',-8,-12,'right'],'0,3':['(4,0)',8,-13,'left'],'0,1':['(2,2)',10,-12,'left'],'1,2':['(0,3)',-8,-2,'right'],'0,2':['(6,0): x₃ = −2',6,-15,'left'],'1,3':['(0,4): x₄ = −2',10,-2,'left']};
+    BASES.forEach(function(bs){var Q=analyse(bs),p=P([Q.x[0],Q.x[1]]),L=lab[bs.join(',')];
+      if(Q.feas){H.dot(ctx,p,5.5,K.ink);H.text(ctx,L[0],p[0]+L[1],p[1]+L[2],K.ink,{size:13,align:L[3],halo:K.bg});}
+      else{ctx.save();ctx.setLineDash([3,3]);H.dot(ctx,p,6,null,K.muted,1.8);ctx.restore();H.text(ctx,L[0],p[0]+L[1],p[1]+L[2],K.muted,{size:12.5,align:L[3],halo:K.bg});}});
+    var cp=P([R.x[0],R.x[1]]);H.dot(ctx,cp,11,null,R.feas?(R.optimal?K.ok:K.accent):K.bad,3);
+    if(R.optimal)H.text(ctx,'optimal',cp[0]+14,cp[1]+14,K.ok,{size:13,bold:true,halo:K.bg});
+  }
+  var cvs=H.canvas(cv,draw);
+  function report(){
+    var R=analyse(basis),h='',bn=R.bs.map(function(j){return NM[j];}).join(', ');
+    if(msg)h+='<div><i>'+msg+'</i></div>';
+    h+='<div><b>Basis</b> ('+bn+') · x<sub>B</sub> = B⁻¹b = '+H.vec(R.xB)+' · x = '+H.vec(R.x)+' · cost cᵀx = '+H.fmt(R.cost)+' · '+
+      (R.feas?'<span style="color:var(--ok);font-weight:600">BFS = corner ('+H.fmt(R.x[0])+', '+H.fmt(R.x[1])+')</span>':'<span style="color:var(--bad);font-weight:600">x<sub>B</sub> has a negative entry: basic but infeasible</span>')+'</div>';
+    h+='<div><b>Prices</b> λ = B⁻ᵀc<sub>B</sub> = '+H.vec(R.lam)+' · <b>reduced costs</b> μ<sub>N</sub> = c<sub>N</sub> − Nᵀλ: '+
+      R.N.map(function(j){return H.span(R.mu[j],'μ'+H.sub(j+1)+' = '+H.fmt(R.mu[j]));}).join(', ')+'</div>';
+    if(!R.feas)h+='<div>Simplex never stands here: the optimality test needs x<sub>B</sub> ≥ 0. Click a filled dot (a corner), or press Next simplex step to go to (0,0).</div>';
+    else if(R.optimal)h+='<div><b style="color:var(--ok)">All μ<sub>N</sub> ≥ 0 ⇒ this corner is optimal.</b> Cost '+H.fmt(R.cost)+' = bᵀλ = '+H.fmt(b[0]*R.lam[0]+b[1]*R.lam[1])+'.</div>';
+    else{
+      h+='<div><b>Not optimal.</b> Entering: <b>'+NM[R.q]+'</b> ('+(rule.value==='dantzig'?'most negative μ':'Bland: smallest index with μ &lt; 0')+') · u = B⁻¹a'+H.sub(R.q+1)+' = '+H.vec(R.u)+' · direction d = '+H.vec(R.d)+' (d<sub>B</sub> = −u, d'+H.sub(R.q+1)+' = 1)</div>';
+      h+='<table><tr><th>basic variable</th><th>x̄<sub>B</sub></th><th>u</th><th>ratio x̄<sub>B</sub>/u</th></tr>'+R.rows.map(function(w,k){
+        var lead=k===R.r;return '<tr'+(lead?' style="font-weight:700;color:var(--bad)"':'')+'><td>'+NM[w.v]+'</td><td>'+H.fmt(w.xb)+'</td><td>'+H.fmt(w.u)+'</td><td>'+(w.ratio===null?'— (u ≤ 0: never blocks)':H.fmt(w.ratio)+(lead?'  ← smallest: leaves':''))+'</td></tr>';}).join('')+'</table>';
+      if(R.r>=0)h+='<div>θ = '+H.fmt(R.theta)+': <b>'+NM[R.rows[R.r].v]+' leaves</b>, '+NM[R.q]+' enters at value θ. Next corner ('+H.fmt(R.xn[0])+', '+H.fmt(R.xn[1])+'), cost '+H.fmt(R.cost)+' + θ·μ'+H.sub(R.q+1)+' = '+H.fmt(R.cost+R.theta*R.mu[R.q])+'.</div>';
+      else h+='<div>No u<sub>i</sub> &gt; 0: nothing blocks, the LP is unbounded below.</div>';
+    }
+    out.innerHTML=h;cvs.paint();
+  }
+  function setC(){var a=+ang.value;if(Math.abs(a-DEF)<0.5)c=[-2,-3,0,0];else{var r=a*Math.PI/180,L=Math.sqrt(13);c=[-L*Math.cos(r),-L*Math.sin(r),0,0];}
+    angO.textContent='c = ('+H.fmt(c[0])+', '+H.fmt(c[1])+')';}
+  ang.addEventListener('input',function(){setC();trail=[];msg='';report();});
+  rule.addEventListener('change',function(){msg='';report();});
+  el('step').addEventListener('click',function(){var R=analyse(basis);
+    if(!R.feas){basis=[2,3];trail=[];msg='Moved to the starting corner (0,0).';}
+    else if(R.optimal){msg='Already optimal: no reduced cost is negative, so simplex stops.';}
+    else if(R.r>=0){trail.push([R.x[0],R.x[1]]);msg='Pivot: '+NM[R.q]+' entered, '+NM[R.rows[R.r].v]+' left.';basis=R.next;}
+    report();});
+  el('reset').addEventListener('click',function(){basis=[2,3];trail=[];msg='';report();});
+  el('resetc').addEventListener('click',function(){ang.value=56;setC();trail=[];msg='';report();});
+  cv.style.cursor='pointer';
+  cv.addEventListener('pointerdown',function(e){var p=cvs.pos(e),best=null,bd=26;
+    BASES.forEach(function(bs){var Q=analyse(bs),q=P([Q.x[0],Q.x[1]]),dd=Math.hypot(q[0]-p[0],q[1]-p[1]);if(dd<bd){bd=dd;best=bs;}});
+    if(best){basis=best.slice();trail=[];msg='';report();}});
+  setC();report();
+})();
+
+/* ===== Widget 2: Q only needs to be PD on null(A) ===== */
+(function(){
+  var root=document.getElementById('w-nullspace');if(!root)return;
+  var cv=root.querySelector('canvas'),out=root.querySelector('.wout');
+  function el(k){return root.querySelector('[data-k="'+k+'"]');}
+  var sl={e1:el('e1'),e2:el('e2'),rot:el('rot'),psi:el('psi'),b:el('b')},pre=el('preset');
+  var PRE={fig:{e1:1,e2:-1,rot:0,a:[0,1],b:0,c:[0,0]},h2:{e1:1,e2:-1,rot:0,a:[1,1],b:0,c:[0,0]},chh:{e1:3,e2:-1,rot:45,a:[1,-1],b:2,c:[3,1]},
+    bowl:{e1:2,e2:0.6,rot:30,a:[1,2],b:2,c:[0,0]},hill:{e1:-1,e2:-0.5,rot:0,a:[1,1],b:1,c:[0,0]}};
+  var st={};
+  function Qm(){var t=st.rot*Math.PI/180,C=Math.cos(t),S=Math.sin(t),o=(st.e1-st.e2)*C*S;return [[st.e1*C*C+st.e2*S*S,o],[o,st.e1*S*S+st.e2*C*C]];}
+  function f(Q,x,y){return 0.5*(Q[0][0]*x*x+2*Q[0][1]*x*y+Q[1][1]*y*y)-st.c[0]*x-st.c[1]*y;}
+  function calc(){
+    var Q=Qm(),a=st.a,na=Math.hypot(a[0],a[1]),z=[-a[1]/na,a[0]/na],n=[a[0]/na,a[1]/na];
+    var x0=[a[0]*st.b/na/na,a[1]*st.b/na/na];
+    var Qz=[Q[0][0]*z[0]+Q[0][1]*z[1],Q[1][0]*z[0]+Q[1][1]*z[1]],Hr=z[0]*Qz[0]+z[1]*Qz[1];
+    var g0=[Q[0][0]*x0[0]+Q[0][1]*x0[1]-st.c[0],Q[1][0]*x0[0]+Q[1][1]*x0[1]-st.c[1]],gr=z[0]*g0[0]+z[1]*g0[1];
+    var R={Q:Q,a:a,z:z,n:n,x0:x0,Hr:Hr,gr:gr,m:x0};
+    if(Math.abs(Hr)>1e-9){var t=-gr/Hr,xs=[x0[0]+t*z[0],x0[1]+t*z[1]],gs=[Q[0][0]*xs[0]+Q[0][1]*xs[1]-st.c[0],Q[1][0]*xs[0]+Q[1][1]*xs[1]-st.c[1]];
+      R.xs=xs;R.m=xs;R.lam=-(a[0]*gs[0]+a[1]*gs[1])/(na*na);R.fs=f(Q,xs[0],xs[1]);}
+    return R;
+  }
+  var LX=12,LY=32,LS=340,W=[-3,3,-3,3],RX0=382,RX1=628,RY0=32,RY1=330;
+  function P(p){return [LX+(p[0]-W[0])*LS/6,LY+(W[3]-p[1])*LS/6];}
+  function draw(ctx,K){
+    var R=calc(),Q=R.Q,i;
+    H.text(ctx,'contours of f, and the constraint line',LX,16,K.ink,{size:13.5,bold:true});
+    ctx.save();ctx.beginPath();ctx.rect(LX,LY,LS,LS);ctx.clip();
+    ctx.fillStyle=K.bg;ctx.fillRect(LX,LY,LS,LS);
+    H.seg(ctx,P([W[0],0]),P([W[1],0]),K.line,1);H.seg(ctx,P([0,W[2]]),P([0,W[3]]),K.line,1);
+    var det=Q[0][0]*Q[1][1]-Q[0][1]*Q[0][1],fref=0;
+    if(Math.abs(det)>1e-6){var xs=[(Q[1][1]*st.c[0]-Q[0][1]*st.c[1])/det,(Q[0][0]*st.c[1]-Q[0][1]*st.c[0])/det];fref=f(Q,xs[0],xs[1]);}
+    var G=H.grid(function(x,y){return f(Q,x,y);},W,70,70);
+    [0.25,1,2.25,4,6.25,9,12.25].forEach(function(L){
+      ctx.globalAlpha=0.65;ctx.lineWidth=1.4;ctx.setLineDash([]);ctx.strokeStyle=K.accent;H.contour(ctx,G,fref+L,P);
+      ctx.setLineDash([5,4]);ctx.strokeStyle=K.bad;H.contour(ctx,G,fref-L,P);});
+    ctx.globalAlpha=1;ctx.setLineDash([]);
+    var s=H.lineInRect(st.a,st.b,W);
+    if(s)H.seg(ctx,P(s[0]),P(s[1]),K.ok,4);
+    var m=R.m,pm=P(m);
+    H.arrow(ctx,pm,P([m[0]+1.1*R.z[0],m[1]+1.1*R.z[1]]),K.ok,2.5);
+    H.arrow(ctx,pm,P([m[0]+1.1*R.n[0],m[1]+1.1*R.n[1]]),K.bad,2);
+    var pz=P([m[0]+1.25*R.z[0],m[1]+1.25*R.z[1]]),pn=P([m[0]+1.3*R.n[0],m[1]+1.3*R.n[1]]);
+    H.text(ctx,'allowed d = Z',pz[0]-R.n[0]*18,pz[1]+R.n[1]*18,K.ok,{size:12.5,bold:true,align:'center',halo:K.bg});
+    H.text(ctx,'forbidden',pn[0],pn[1],K.bad,{size:12.5,align:'center',halo:K.bg});
+    if(R.xs){if(R.Hr>0)H.dot(ctx,pm,6.5,K.ok,K.bg,1.5);else H.dot(ctx,pm,6.5,K.bg,K.bad,2.5);}
+    ctx.restore();
+    ctx.strokeStyle=K.line;ctx.lineWidth=1;ctx.strokeRect(LX,LY,LS,LS);
+    H.text(ctx,'blue: f above centre value · red dashed: below',LX,LY+LS+16,K.muted,{size:12});
+    /* right panel: f along the line (green) and across it (red dashed) */
+    H.text(ctx,'f along the line (green)',RX0,16,K.ok,{size:13.5,bold:true});
+    var N=120,T=3,A1=[],A2=[],lo=Infinity,hi=-Infinity,fm=f(Q,m[0],m[1]);
+    for(i=0;i<=N;i++){var t=-T+2*T*i/N,v1=f(Q,m[0]+t*R.z[0],m[1]+t*R.z[1]),v2=f(Q,m[0]+t*R.n[0],m[1]+t*R.n[1]);A1.push([t,v1]);A2.push([t,v2]);
+      lo=Math.min(lo,v1,v2);hi=Math.max(hi,v1,v2);}
+    lo=Math.max(lo,fm-12);hi=Math.min(hi,fm+12);if(hi-lo<2){hi+=1;lo-=1;}var pad=(hi-lo)*0.06;lo-=pad;hi+=pad;
+    function Y(v){return RY1-(v-lo)/(hi-lo)*(RY1-RY0);}function X(t){return RX0+(t+T)/(2*T)*(RX1-RX0);}
+    ctx.fillStyle=K.bg;ctx.fillRect(RX0,RY0,RX1-RX0,RY1-RY0);ctx.strokeStyle=K.line;ctx.strokeRect(RX0,RY0,RX1-RX0,RY1-RY0);
+    ctx.save();ctx.beginPath();ctx.rect(RX0,RY0,RX1-RX0,RY1-RY0);ctx.clip();
+    H.seg(ctx,[X(0),RY0],[X(0),RY1],K.muted,1);H.seg(ctx,[RX0,Y(fm)],[RX1,Y(fm)],K.muted,1,[2,4]);
+    function curve(Ar,col,w,dash){ctx.save();ctx.strokeStyle=col;ctx.lineWidth=w;ctx.setLineDash(dash||[]);ctx.beginPath();Ar.forEach(function(p,k){var px=X(p[0]),py=Y(p[1]);if(k)ctx.lineTo(px,py);else ctx.moveTo(px,py);});ctx.stroke();ctx.restore();}
+    curve(A2,K.bad,2,[6,4]);curve(A1,K.ok,3.5);
+    if(R.xs){if(R.Hr>0)H.dot(ctx,[X(0),Y(fm)],6,K.ok);else H.dot(ctx,[X(0),Y(fm)],6,K.bg,K.bad,2.5);}
+    ctx.restore();
+    var tag=R.Hr>1e-9?'Hr > 0: a bowl → unique min':(R.Hr<-1e-9?'Hr < 0: a hill → no min':'Hr = 0: flat or ramp → not unique');
+    H.text(ctx,tag,RX0,RY1+14,R.Hr>1e-9?K.ok:K.bad,{size:13,bold:true});
+    H.text(ctx,'red dashed: f across the line (forbidden)',RX0,RY1+32,K.bad,{size:11.5});
+    H.text(ctx,'t = distance from '+(R.xs?'the KKT point':'the foot point'),RX0,RY1+50,K.muted,{size:11.5});
+  }
+  var cvs=H.canvas(cv,draw);
+  function qtype(e1,e2){var t=1e-9;if(e1>t&&e2>t)return 'positive definite (a bowl)';if(e1<-t&&e2<-t)return 'negative definite (a hill)';
+    if((e1>t&&e2<-t)||(e1<-t&&e2>t))return 'indefinite (a saddle)';if(e1>=-t&&e2>=-t&&(e1>t||e2>t))return 'positive semidefinite (a valley)';if(e1<=t&&e2<=t&&(e1<-t||e2<-t))return 'negative semidefinite';return 'zero';}
+  function report(){
+    ['e1','e2','rot','psi','b'].forEach(function(k){el(k+'-o').textContent=H.fmt(+sl[k].value);});
+    var R=calc(),Q=R.Q,h='';
+    h+='<div><b>Q</b> = [['+H.fmt(Q[0][0])+', '+H.fmt(Q[0][1])+'], ['+H.fmt(Q[1][0])+', '+H.fmt(Q[1][1])+']] · eigenvalues '+H.fmt(st.e1)+', '+H.fmt(st.e2)+' → Q is <b>'+qtype(st.e1,st.e2)+'</b> · c = '+H.vec(st.c)+'</div>';
+    h+='<div><b>Line</b> a₁x₁ + a₂x₂ = b with a = '+H.vec(R.a)+', b = '+H.fmt(st.b)+' · null(A) is spanned by Z = '+H.vec(R.z)+' · <b>H<sub>r</sub> = ZᵀQZ = '+H.fmt(R.Hr)+'</b></div>';
+    var yes=R.Hr>1e-9;
+    h+='<div><b>Unique minimiser on the line:</b> '+(yes?'<span style="color:var(--ok);font-weight:700">yes</span>':'<span style="color:var(--bad);font-weight:700">no</span>')+
+      (yes&&/indefinite|semidefinite|negative/.test(qtype(st.e1,st.e2))?' (even though Q itself is not PD!)':'')+'</div>';
+    if(R.xs&&yes)h+='<div><b>KKT solution</b> (Qx − c + Aᵀλ = 0, Ax = b): x* = '+H.vec(R.xs)+', λ = '+H.fmt(R.lam)+', f(x*) = '+H.fmt(R.fs)+'</div>';
+    else if(R.xs)h+='<div><b>KKT point</b> x = '+H.vec(R.xs)+', λ = '+H.fmt(R.lam)+' exists (K is nonsingular since H<sub>r</sub> ≠ 0), but it is the <b>top</b> of the green curve: f → −∞ along the line. Nonsingular K ≠ minimiser.</div>';
+    else if(Math.abs(R.gr)<1e-9)h+='<div>H<sub>r</sub> = 0 and f is constant along the line: every point of the line is a minimiser (K is singular), so not unique.</div>';
+    else h+='<div>H<sub>r</sub> = 0 but f has a nonzero slope along the line: f → −∞, no minimiser, no KKT point (K is singular).</div>';
+    out.innerHTML=h;cvs.paint();
+  }
+  function load(k){var p=PRE[k];if(!p)return;st={e1:p.e1,e2:p.e2,rot:p.rot,a:p.a.slice(),b:p.b,c:p.c.slice()};
+    sl.e1.value=p.e1;sl.e2.value=p.e2;sl.rot.value=p.rot;
+    var psi=Math.atan2(p.a[0],-p.a[1])*180/Math.PI;psi=((psi%180)+180)%180;sl.psi.value=Math.round(psi)%180;
+    var un=[-Math.sin(psi*Math.PI/180),Math.cos(psi*Math.PI/180)],na=Math.hypot(p.a[0],p.a[1]),sg=(p.a[0]*un[0]+p.a[1]*un[1])>=0?1:-1;
+    sl.b.value=p.b/(sg*na);}
+  function fromLine(){var t=+sl.psi.value*Math.PI/180;st.a=[-Math.sin(t),Math.cos(t)];st.b=+sl.b.value;}
+  ['e1','e2','rot'].forEach(function(k){sl[k].addEventListener('input',function(){st[k]=+sl[k].value;pre.value='custom';report();});});
+  ['psi','b'].forEach(function(k){sl[k].addEventListener('input',function(){fromLine();pre.value='custom';report();});});
+  pre.addEventListener('change',function(){load(pre.value);report();});
+  var drag=false;
+  function dragTo(e){var p=cvs.pos(e);if(p[0]<LX||p[0]>LX+LS||p[1]<LY||p[1]>LY+LS)return;
+    var w=[W[0]+(p[0]-LX)*6/LS,W[3]-(p[1]-LY)*6/LS];fromLine();st.b=Math.max(-3,Math.min(3,st.a[0]*w[0]+st.a[1]*w[1]));sl.b.value=st.b;pre.value='custom';report();}
+  cv.addEventListener('pointerdown',function(e){drag=true;try{cv.setPointerCapture(e.pointerId);}catch(_){}dragTo(e);});
+  cv.addEventListener('pointermove',function(e){if(drag)dragTo(e);});
+  cv.addEventListener('pointerup',function(){drag=false;});cv.addEventListener('pointercancel',function(){drag=false;});
+  cv.style.cursor='grab';
+  load('fig');report();
+})();
+
+/* ===== Widget 3: active-set steps ===== */
+(function(){
+  var root=document.getElementById('w-activeset');if(!root)return;
+  var cv=root.querySelector('canvas'),out=root.querySelector('.wout');
+  function el(k){return root.querySelector('[data-k="'+k+'"]');}
+  var sel=el('ex');
+  var EX={
+    i5:{Q:[[1,0],[0,1]],c:[2,1],A:[[0,-1],[1,0],[0,1]],b:[0,1,3],x0:[0,0],W0:[0],view:[-1.5,2.7,-0.7,3.6],
+      lab:[[[1.7,-0.3],'(1) x₂ ≥ 0'],[[1.08,2.45],'(2) x₁ ≤ 1'],[[-1.4,3.22],'(3) x₂ ≤ 3']]},
+    i3:{Q:[[2,0],[0,1]],c:[4,4],A:[[1,1],[-1,0],[0,1]],b:[2,0,1],x0:[2,0],W0:[0],view:[-0.9,3.3,-1.4,4.4],
+      lab:[[[2.45,-0.35],'(1) x₁+x₂ ≤ 2'],[[0.08,-1.15],'(2) x₁ ≥ 0'],[[-0.85,1.2],'(3) x₂ ≤ 1']]},
+    chk:{Q:[[1,0],[0,1]],c:[2,2],A:[[1,0],[0,1]],b:[1,3],x0:[0,0],W0:[],view:[-1.2,2.7,-0.8,3.6],
+      lab:[[[1.08,-0.55],'(1) x₁ ≤ 1'],[[-1.1,3.22],'(2) x₂ ≤ 3']]}
+  };
+  var E,x,Wk,k,hist,msg,done;
+  function dot(u,v){return u[0]*v[0]+u[1]*v[1];}
+  function Qx(v){return [E.Q[0][0]*v[0]+E.Q[0][1]*v[1],E.Q[1][0]*v[0]+E.Q[1][1]*v[1]];}
+  function f(v){return 0.5*dot(v,Qx(v))-dot(E.c,v);}
+  function analyse(){
+    var g=Qx(x);g=[g[0]-E.c[0],g[1]-E.c[1]];var p,R={g:g};
+    if(Wk.length===0){var Q=E.Q,det=Q[0][0]*Q[1][1]-Q[0][1]*Q[1][0];p=[-(Q[1][1]*g[0]-Q[0][1]*g[1])/det,-(Q[0][0]*g[1]-Q[1][0]*g[0])/det];}
+    else if(Wk.length===1){var a=E.A[Wk[0]],z=[-a[1],a[0]],v=-dot(z,g)/dot(z,Qx(z));p=[v*z[0],v*z[1]];}
+    else p=[0,0];
+    R.p=p;R.pzero=Math.hypot(p[0],p[1])<1e-10;
+    if(R.pzero){
+      if(Wk.length===0){R.lam={};R.opt=true;return R;}
+      var lam={};
+      if(Wk.length===1){var a1=E.A[Wk[0]];lam[Wk[0]]=-dot(a1,g)/dot(a1,a1);}
+      else{var u=E.A[Wk[0]],w=E.A[Wk[1]],d=u[0]*w[1]-w[0]*u[1];lam[Wk[0]]=(-g[0]*w[1]+w[0]*g[1])/d;lam[Wk[1]]=(-u[0]*g[1]+g[0]*u[1])/d;}
+      R.lam=lam;var j=-1;Wk.forEach(function(i){if(lam[i]<-1e-10&&(j<0||lam[i]<lam[j]-1e-12))j=i;});
+      if(j>=0)R.drop=j;else R.opt=true;return R;
+    }
+    R.gp=dot(g,p);R.pQp=dot(p,Qx(p));R.rows=[];var al=Infinity,bl=-1;
+    E.A.forEach(function(a,i){if(Wk.indexOf(i)>=0)return;var ap=dot(a,p),slack=E.b[i]-dot(a,x),r=ap>1e-12?slack/ap:null;
+      R.rows.push({i:i,ap:ap,slack:slack,ratio:r});if(r!==null&&r<al-1e-12){al=r;bl=i;}});
+    R.alpha=al;R.blk=bl;R.step=Math.min(1,al);R.blocked=al<=1;return R;
+  }
+  var T={};
+  function setView(){var v=E.view,xr=v[1]-v[0],yr=v[3]-v[2],s=Math.min(600/xr,368/yr);T={s:s,ox:(640-s*xr)/2-s*v[0],oy:(400+s*yr)/2+s*v[2]};}
+  function P(p){return [T.ox+T.s*p[0],T.oy-T.s*p[1]];}
+  function Winv(q){return [(q[0]-T.ox)/T.s,(T.oy-q[1])/T.s];}
+  function draw(ctx,K){
+    var R=analyse(),v=E.view,i;
+    var box=[[v[0],v[2]],[v[1],v[2]],[v[1],v[3]],[v[0],v[3]]];E.A.forEach(function(a,i){box=H.clip(box,a,E.b[i]);});
+    if(box.length){ctx.beginPath();box.map(P).forEach(function(p,i){if(i)ctx.lineTo(p[0],p[1]);else ctx.moveTo(p[0],p[1]);});ctx.closePath();ctx.fillStyle=K.soft;ctx.fill();}
+    H.seg(ctx,P([v[0],0]),P([v[1],0]),K.line,1);H.seg(ctx,P([0,v[2]]),P([0,v[3]]),K.line,1);
+    var G=H.grid(function(a,b){return f([a,b]);},v,80,80),Q=E.Q,det=Q[0][0]*Q[1][1]-Q[0][1]*Q[1][0],xu=[(Q[1][1]*E.c[0]-Q[0][1]*E.c[1])/det,(Q[0][0]*E.c[1]-Q[1][0]*E.c[0])/det],fu=f(xu);
+    ctx.globalAlpha=0.45;ctx.lineWidth=1;ctx.strokeStyle=K.muted;
+    [0.125,0.5,1.125,2,3.125,4.5,6.125,8].forEach(function(L){H.contour(ctx,G,fu+L,P);});
+    ctx.globalAlpha=1;ctx.lineWidth=1.8;ctx.strokeStyle=K.ex;ctx.setLineDash([5,4]);H.contour(ctx,G,f(x),P);ctx.setLineDash([]);
+    E.A.forEach(function(a,i){var s=H.lineInRect(a,E.b[i],v);if(!s)return;var inW=Wk.indexOf(i)>=0,blk=(!R.pzero&&R.blocked&&R.blk===i);
+      H.seg(ctx,P(s[0]),P(s[1]),inW?K.ok:(blk?K.bad:K.accent),inW?5:(blk?3.5:1.8));});
+    E.lab.forEach(function(L,i){var p=P(L[0]),inW=Wk.indexOf(i)>=0;H.text(ctx,L[1]+(inW?'  ∈ W':''),p[0],p[1],inW?K.ok:K.accent,{size:13,bold:inW,halo:K.bg});});
+    var pu=P(xu);if(pu[0]>0&&pu[0]<640&&pu[1]>0&&pu[1]<400){H.dot(ctx,pu,5,K.muted);H.text(ctx,'unconstrained min',pu[0]+8,pu[1]-10,K.muted,{size:12,halo:K.bg});}
+    for(i=0;i+1<hist.length;i++)H.seg(ctx,P(hist[i]),P(hist[i+1]),K.ok,4);
+    var px=P(x);
+    if(!R.pzero){var full=[x[0]+R.p[0],x[1]+R.p[1]];
+      if(R.blocked){var e=[x[0]+R.alpha*R.p[0],x[1]+R.alpha*R.p[1]];H.seg(ctx,px,P(full),K.bad,2,[6,5]);H.dot(ctx,P(full),5,null,K.bad,2);
+        H.text(ctx,'x+p (blocked)',P(full)[0]+8,P(full)[1]-10,K.bad,{size:12,halo:K.bg});
+        if(R.alpha>1e-12)H.arrow(ctx,px,P(e),K.ex,3.5);H.dot(ctx,P(e),5,K.ex);
+        var mid=P([(x[0]+e[0])/2,(x[1]+e[1])/2]);H.text(ctx,'p, step α = '+H.fmt(R.alpha),mid[0]+10,mid[1]+14,K.ex,{size:13,bold:true,halo:K.bg});}
+      else{H.arrow(ctx,px,P(full),K.ex,3.5);var mid2=P([(x[0]+full[0])/2,(x[1]+full[1])/2]);H.text(ctx,'p, full step 1',mid2[0]+10,mid2[1]+14,K.ex,{size:13,bold:true,halo:K.bg});
+        if(isFinite(R.alpha)){var far=[x[0]+R.alpha*R.p[0],x[1]+R.alpha*R.p[1]];H.seg(ctx,P(full),P(far),K.muted,1.5,[2,5]);H.dot(ctx,P(far),4.5,null,K.muted,1.5);
+          H.text(ctx,'α = '+H.fmt(R.alpha)+' would end here: too far',P(far)[0]+8,P(far)[1]+12,K.muted,{size:12,halo:K.bg});}}
+    }
+    H.dot(ctx,px,6.5,K.ink);H.text(ctx,'x⁽'+String(k).split('').map(function(ch){return '⁰¹²³⁴⁵⁶⁷⁸⁹'[+ch];}).join('')+'⁾',px[0]-10,px[1]+16,K.ink,{size:14,bold:true,align:'right',halo:K.bg});
+    if(R.opt){H.dot(ctx,px,12,null,K.ok,3);H.text(ctx,'x* (optimal)',px[0]+14,px[1]-14,K.ok,{size:13.5,bold:true,halo:K.bg});}
+  }
+  var cvs=H.canvas(cv,draw);
+  function Wtxt(Ws){return '{'+Ws.map(function(i){return i+1;}).join(', ')+'}';}
+  function report(){
+    var R=analyse(),h='';
+    if(msg)h+='<div><i>'+msg+'</i></div>';
+    h+='<div><b>Iteration k = '+k+'</b> · x⁽ᵏ⁾ = '+H.vec(x)+' · W<sub>k</sub> = '+Wtxt(Wk)+' · g<sub>k</sub> = Qx − c = '+H.vec(R.g)+' · f = '+H.fmt(f(x))+'</div>';
+    if(!R.pzero){
+      h+='<div><b>p<sub>k</sub></b> = '+H.vec(R.p)+' (best step keeping W tight) · g<sub>k</sub>ᵀp<sub>k</sub> = '+H.fmt(R.gp)+' = −pᵀQp &lt; 0: downhill</div>';
+      if(R.rows.length)h+='<table><tr><th>constraint i ∉ W</th><th>a<sub>i</sub>ᵀp</th><th>slack b<sub>i</sub> − a<sub>i</sub>ᵀx</th><th>ratio</th></tr>'+R.rows.map(function(w){
+        var bk=w.i===R.blk;return '<tr'+(bk?' style="font-weight:700;color:var(--bad)"':'')+'><td>('+(w.i+1)+')</td><td>'+H.fmt(w.ap)+'</td><td>'+H.fmt(w.slack)+'</td><td>'+(w.ratio===null?'— (a<sub>i</sub>ᵀp ≤ 0: never blocks)':H.fmt(w.ratio)+(bk?' ← smallest':''))+'</td></tr>';}).join('')+'</table>';
+      var xn=[x[0]+R.step*R.p[0],x[1]+R.step*R.p[1]];
+      if(R.blocked)h+='<div>α<sub>k</sub> = '+H.fmt(R.alpha)+' ≤ 1 → step min{1, α<sub>k</sub>} = '+H.fmt(R.step)+': <b style="color:var(--bad)">blocked step</b>. Next: x = '+H.vec(xn)+', constraint ('+(R.blk+1)+') joins W.</div>';
+      else h+='<div>α<sub>k</sub> = '+H.fmt(R.alpha)+(isFinite(R.alpha)?' &gt; 1':' (nothing blocks)')+' → step min{1, α<sub>k</sub>} = 1: <b style="color:var(--ok)">full step</b>'+(isFinite(R.alpha)?' (not '+H.fmt(R.alpha)+')':'')+'. Next: x = '+H.vec(xn)+', W unchanged.</div>';
+    }else{
+      h+='<div><b>p<sub>k</sub> = 0</b>: x is already the best point on the lines of W.'+(Wk.length?' Multipliers from g + Σ λ<sub>i</sub>a<sub>i</sub> = 0: '+Wk.map(function(i){return H.span(R.lam[i],'λ'+H.sub(i+1)+' = '+H.fmt(R.lam[i]));}).join(', '):'')+'</div>';
+      if(R.drop!==undefined)h+='<div>λ'+H.sub(R.drop+1)+' &lt; 0 → <b style="color:var(--bad)">drop ('+(R.drop+1)+') from W</b>; x stays where it is.</div>';
+      else h+='<div><b style="color:var(--ok)">All λ ≥ 0 and Q ⪰ 0 ⇒ KKT holds: global minimiser x* = '+H.vec(x)+', f* = '+H.fmt(f(x))+'.</b> Done.</div>';
+    }
+    out.innerHTML=h;cvs.paint();
+  }
+  function start(xs,Ws,m){x=xs.slice();Wk=Ws.slice().sort();k=0;hist=[x.slice()];msg=m||'';done=false;}
+  function load(){E=EX[sel.value];setView();start(E.x0,E.W0);}
+  el('next').addEventListener('click',function(){var R=analyse();
+    if(R.opt){msg='Already optimal: nothing more to do. Press Restart or pick another example.';report();return;}
+    if(R.pzero){Wk=Wk.filter(function(i){return i!==R.drop;});msg='Step '+k+': dropped constraint ('+(R.drop+1)+'); the point did not move.';}
+    else{x=[x[0]+R.step*R.p[0],x[1]+R.step*R.p[1]];hist.push(x.slice());
+      if(R.blocked){Wk.push(R.blk);Wk.sort();msg='Step '+k+': blocked step α = '+H.fmt(R.step)+', added constraint ('+(R.blk+1)+').';}
+      else msg='Step '+k+': full step 1.';}
+    k++;report();});
+  el('restart').addEventListener('click',function(){load();report();});
+  sel.addEventListener('change',function(){load();report();});
+  cv.style.cursor='crosshair';
+  cv.addEventListener('pointerdown',function(e){var q=cvs.pos(e),w=Winv(q),tol=12/T.s,near=[];
+    E.A.forEach(function(a,i){var na=Math.hypot(a[0],a[1]),dv=(dot(a,w)-E.b[i])/na;if(Math.abs(dv)<tol)near.push(i);});
+    if(near.length>=2){var a=E.A[near[0]],c2=E.A[near[1]],d=a[0]*c2[1]-c2[0]*a[1];if(Math.abs(d)>1e-12){var b1=E.b[near[0]],b2=E.b[near[1]];w=[(b1*c2[1]-c2[0]*b2)/d,(a[0]*b2-b1*a[1])/d];}}
+    else if(near.length===1){var a3=E.A[near[0]],t=(dot(a3,w)-E.b[near[0]])/dot(a3,a3);w=[w[0]-t*a3[0],w[1]-t*a3[1]];}
+    var bad=-1;E.A.forEach(function(a,i){if(dot(a,w)-E.b[i]>1e-9&&bad<0)bad=i;});
+    if(bad>=0){msg='That point breaks constraint ('+(bad+1)+'); click inside the blue region.';report();return;}
+    var act=[];E.A.forEach(function(a,i){if(Math.abs(dot(a,w)-E.b[i])<1e-9&&act.length<2)act.push(i);});
+    start(w,act,'New start at '+H.vec(w)+' with W = active set '+Wtxt(act)+'.');report();});
+  load();report();
+})();
+})();
+</script>
 </body>
 </html>

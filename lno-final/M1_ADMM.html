@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>M1 · ADMM</title>
-<link rel="stylesheet" href="assets/fe.css">
+<link rel="stylesheet" href="assets/fe.css?v=20261126w">
 <script>
   window.MathJax = { tex: { inlineMath: [['$','$'],['\\(','\\)']], displayMath: [['$$','$$'],['\\[','\\]']] } };
 </script>
@@ -26,15 +26,19 @@
   <a href="#why">0. Why ADMM exists</a>
   <a href="#blocks">A. Two easy building blocks</a>
   <a href="#a1">&nbsp;&nbsp;A1. Shrink: soft thresholding</a>
+  <a href="#w-soft">&nbsp;&nbsp;&nbsp;&nbsp;▶ Try: soft threshold</a>
   <a href="#a2">&nbsp;&nbsp;A2. Completing the square</a>
+  <a href="#w-square">&nbsp;&nbsp;&nbsp;&nbsp;▶ Try: tilt a parabola</a>
   <a href="#idea">B. The ADMM idea</a>
   <a href="#b1">&nbsp;&nbsp;B1. Give each piece a copy</a>
   <a href="#b2">&nbsp;&nbsp;B2. Penalty alone fails</a>
   <a href="#b3">&nbsp;&nbsp;B3. Add a price λ</a>
   <a href="#b4">&nbsp;&nbsp;B4. The three steps</a>
   <a href="#walk">C. One example by hand</a>
+  <a href="#w-admm">&nbsp;&nbsp;&nbsp;&nbsp;▶ Try: run ADMM</a>
   <a href="#lasso">D. LASSO (vectors)</a>
   <a href="#constraint">E. Adding a constraint</a>
+  <a href="#w-box">&nbsp;&nbsp;&nbsp;&nbsp;▶ Try: project onto a box</a>
   <a href="#recipe">F. Exam recipe + theory</a>
   <a href="#prof">What he said</a>
   <a href="#practice">Practice</a>
@@ -112,6 +116,13 @@ $$S_\tau(y)=\operatorname{sign}(y)\,\max(|y|-\tau,\,0)=\begin{cases}y-\tau,&amp;
 <div class="cap">Blue: $S_\tau(y)$. Inside $[-\tau,\tau]$ the output is exactly 0; outside, the output is $y$ moved $\tau$ closer to 0 (parallel to the dashed line $z^*=y$).</div>
 </div>
 
+<div class="widget" id="w-soft"><div class="wtitle">Soft thresholding: the tug of war</div>
+<p class="small">Move $y$ (where the square pulls) and $\tau$ (how hard $|z|$ pulls to 0). The thick curve is $\tau|z|+\frac12(z-y)^2$; the dot is its lowest point $z^*$.</p>
+<canvas width="640" height="320"></canvas>
+<div class="wctl"><label>y <input type="range" min="-3" max="3" step="0.05" value="1.5" data-k="y"><output></output></label>
+<label>τ <input type="range" min="0.1" max="2" step="0.05" value="1" data-k="t"><output></output></label></div>
+<div class="wout"></div>
+<div class="whint">What to notice: while $|y|\le\tau$ the bottom sits exactly at 0 (the corner of $|z|$ wins). Outside, the bottom is $y$ moved $\tau$ towards 0.</div></div>
 <p><b>The version you'll actually meet</b> has a general weight on the square: $\gamma|z|+\frac{\beta}{2}(z-y)^2$. Divide everything by $\beta$ (dividing by a positive number doesn't move the minimum) to get $\frac{\gamma}{\beta}|z|+\frac12(z-y)^2$. So:</p>
 $$\arg\min_z\ \gamma|z|+\tfrac{\beta}{2}(z-y)^2=S_{\gamma/\beta}(y).\qquad\text{Threshold }=\frac{\text{weight on }|z|}{\text{weight on the square}}.$$
 <p><b>For vectors</b>, $\gamma\|z\|_1+\frac{\beta}{2}\|z-y\|^2=\sum_i\big[\gamma|z_i|+\frac{\beta}{2}(z_i-y_i)^2\big]$ is a sum of separate 1-variable problems, so you apply $S_{\gamma/\beta}$ to each entry.</p>
@@ -141,6 +152,14 @@ $$\lambda(z-c)+\frac{\beta}{2}(z-c)^2=\frac{\beta}{2}\Big(z-\big(c-\tfrac{\lambd
 <div class="check"><b>Check A2.</b> Write $-6(z-2)+\frac{3}{2}(z-2)^2$ as $\frac32(z-a)^2+$ const. What is $a$?
 <details class="ans"><summary>Show answer</summary><div><p>Here the coefficient of $(z-c)$ is $\lambda=-6$, with $\beta=3$, $c=2$: $a=c-\lambda/\beta=2-(-6)/3=4$. Check: the derivative $-6+3(z-2)=0$ gives $z=4$ ✓.</p></div></details></div>
 
+<div class="widget" id="w-square"><div class="wtitle">Completing the square: a tilt moves the bottom</div>
+<p class="small">The faint parabola is $\frac{\beta}{2}(z-c)^2$ (bottom at $c$). Adding the tilt $\lambda(z-c)$ gives the thick one. Watch its bottom land at $c-\lambda/\beta$.</p>
+<canvas width="640" height="300"></canvas>
+<div class="wctl"><label>λ <input type="range" min="-4" max="4" step="0.1" value="4" data-k="l"><output></output></label>
+<label>β <input type="range" min="0.5" max="4" step="0.1" value="2" data-k="b"><output></output></label>
+<label>c <input type="range" min="-2" max="2" step="0.1" value="1" data-k="c"><output></output></label></div>
+<div class="wout"></div>
+<div class="whint">What to notice: positive $\lambda$ pushes the bottom left, negative pushes it right, and a stiffer square (bigger $\beta$) moves less. The shift is always exactly $\lambda/\beta$.</div></div>
 <p><b>Why this matters:</b> after completing the square, every ADMM sub-step is "$f_i$ + $\frac{\beta}{2}\|z-\text{centre}\|^2$". If $f_i$ is $\gamma\|z\|_1$ the answer is soft thresholding (A1). If $f_i$ is an indicator of a set (0 inside, $+\infty$ outside), the answer is projection (A1 cousin). If $f_i$ is smooth, set the gradient to zero.</p>
 </section>
 
@@ -232,6 +251,14 @@ $$x_2=S_1(x_1+\lambda).$$</li>
 <li>Compare B2: the penalty-only method got stuck at $x_2=1$ with a gap. Here there's no gap, and the iterates head to the true answer 2. Round 2 briefly moves away (1.25) while $\lambda$ settles in; from round 2 on, the error halves every round.</li>
 <li>Why $\lambda$ ends at exactly 1: at the answer $x=2$, step 1 says $(2-3)+\lambda+0=0$, so $\lambda=1$. That's the slope of $|x|$ at $x=2$: <b>the final price equals the force the $|x|$ piece exerts.</b></li>
 </ul>
+<div class="widget" id="w-admm"><div class="wtitle">Run ADMM yourself: price vs penalty only</div>
+<p class="small">Same toy problem: $\min_x \frac12(x-3)^2+|x|$, answer $x^*=2$. Press <b>Step</b> to do one round (the three steps). Switch to "penalty only" to see what happens without the price $\lambda$.</p>
+<canvas width="640" height="320"></canvas>
+<div class="wctl"><label>β <input type="range" min="0.2" max="5" step="0.1" value="1" data-k="b"><output></output></label>
+<label>Method <select data-k="m"><option value="admm">ADMM (price + penalty)</option><option value="pen">Penalty only (λ stays 0)</option></select></label>
+<button type="button" data-a="step">Step</button><button type="button" data-a="run">Run 15 rounds</button><button type="button" data-a="reset">Reset</button></div>
+<div class="wout"></div>
+<div class="whint">What to notice: with ADMM the copies $x_1$ (blue) and $x_2$ (green) meet and walk to 2, and $\lambda$ (red) settles at 1. With "penalty only" they stop with a gap of exactly $1/\beta$ and $x_2$ never reaches 2. Try a big and a small $\beta$.</div></div>
 <div class="check"><b>Check C.</b> Do round 1 with $\beta=4$ instead (start $x_2=0,\lambda=0$). Hint: step 1 becomes $(x_1-3)+\lambda+4(x_1-x_2)=0$; step 2's threshold is $1/4$ and its centre $x_1+\lambda/4$.
 <details class="ans"><summary>Show answer</summary><div><p>$x_1=(3+4\cdot0-0)/5=0.6$; $x_2=S_{1/4}(0.6)=0.35$; $\lambda=0+4(0.6-0.35)=1$. (Round 2: $x_1=(3+1.4-1)/5=0.68$, $x_2=S_{1/4}(0.68+0.25)=0.68$.)</p></div></details></div>
 </section>
@@ -280,6 +307,12 @@ $$P(x)=\begin{cases}0,&amp;x\in C\\+\infty,&amp;x\notin C\end{cases}$$
 </svg>
 <div class="cap">Projection onto a box handles each coordinate separately: below 0 → 0, above $B$ → $B$, otherwise unchanged. He said he won't give an arbitrary $C$; expect a box or the orthant $x\ge0$ (then $\Pi(y)_i=\max(y_i,0)$).</div>
 </div>
+<div class="widget" id="w-box"><div class="wtitle">Projection onto a box = clipping</div>
+<p class="small">Drag the red point $y$ anywhere. The green point is $\Pi_C(y)$, the nearest point of the box $C=[0,B]^2$.</p>
+<canvas width="640" height="360"></canvas>
+<div class="wctl"><label>B <input type="range" min="0.5" max="3" step="0.1" value="2" data-k="B"><output></output></label></div>
+<div class="wout"></div>
+<div class="whint">What to notice: each coordinate is clipped on its own. Inside the box nothing moves; outside, the point snaps to the nearest wall or corner. That's why the ADMM $v$-step is one line of code.</div></div>
 <p class="small">Why clipping is right (he said you can prove it with the Ch 6 first-order condition): per coordinate, minimise $(v-y)^2$ on $[0,B]$. If $y$ is inside, $v=y$ (derivative zero). If $y&gt;B$, the function decreases all the way to $B$, so $v=B$ (the active bound). Same at 0.</p>
 
 <h3>E2. The problem: LASSO + constraint, with two copies</h3>
@@ -557,6 +590,92 @@ $$2M^T(Mz-b)+\beta(z-a_k)+\beta(z-c_k)=0\ \Longrightarrow\ \boxed{(M^TM+\beta I)
 
 </main>
 </div>
-<script src="assets/fe.js"></script>
+<script src="assets/fe.js?v=20261126w"></script>
+<script>
+/* M1 interactive widgets (plain JS, no libraries) */
+(function(){
+function css(n){return getComputedStyle(document.documentElement).getPropertyValue(n).trim()||'#888';}
+function setup(cv){var r=cv.getBoundingClientRect(),d=window.devicePixelRatio||1,W=cv.width/(cv._d||1),H=cv.height/(cv._d||1);
+  if(!cv._w){cv._w=cv.width;cv._h=cv.height;} var w=cv._w,h=cv._h; cv.width=w*d;cv.height=h*d;cv._d=d; var g=cv.getContext('2d');g.setTransform(d,0,0,d,0,0);return {g:g,w:w,h:h};}
+function axes(o,xmin,xmax,ymin,ymax,pad){pad=pad||34;var X=function(x){return pad+(x-xmin)/(xmax-xmin)*(o.w-2*pad)},Y=function(y){return o.h-pad-(y-ymin)/(ymax-ymin)*(o.h-2*pad)};
+  var g=o.g;g.clearRect(0,0,o.w,o.h);g.strokeStyle=css('--line');g.lineWidth=1;g.beginPath();
+  if(ymin<0&&ymax>0){g.moveTo(pad,Y(0));g.lineTo(o.w-pad,Y(0));} else {g.moveTo(pad,o.h-pad);g.lineTo(o.w-pad,o.h-pad);}
+  if(xmin<0&&xmax>0){g.moveTo(X(0),pad);g.lineTo(X(0),o.h-pad);} else {g.moveTo(pad,pad);g.lineTo(pad,o.h-pad);} g.stroke();
+  g.fillStyle=css('--muted');g.font='13.5px sans-serif';return {X:X,Y:Y};}
+function curve(o,T,f,a,b,col,lw,dash){var g=o.g;g.strokeStyle=col;g.lineWidth=lw;g.setLineDash(dash||[]);g.beginPath();var n=300;for(var i=0;i<=n;i++){var x=a+(b-a)*i/n,y=f(x);i?g.lineTo(T.X(x),T.Y(y)):g.moveTo(T.X(x),T.Y(y));}g.stroke();g.setLineDash([]);}
+function dot(o,x,y,col,r){var g=o.g;g.fillStyle=col;g.beginPath();g.arc(x,y,r||5,0,7);g.fill();}
+function f3(v){return (Math.abs(v)<1e-9?0:v).toFixed(3).replace(/\.?0+$/,'')||'0';}
+function bind(id,draw){var w=document.getElementById(id);if(!w)return null;var st={};
+  w.querySelectorAll('[data-k]').forEach(function(i){st[i.dataset.k]=i.tagName==='SELECT'?i.value:+i.value;var out=i.parentNode.querySelector('output');if(out)out.textContent=i.value;
+    i.addEventListener('input',function(){st[i.dataset.k]=i.tagName==='SELECT'?i.value:+i.value;if(out)out.textContent=i.value;draw();});});
+  window.addEventListener('resize',draw); if(window.matchMedia) matchMedia('(prefers-color-scheme: dark)').addEventListener('change',draw);
+  return {w:w,cv:w.querySelector('canvas'),out:w.querySelector('.wout'),st:st};}
+var S=function(t,tau){return Math.sign(t)*Math.max(Math.abs(t)-tau,0);};
+
+/* 1. soft thresholding */
+(function(){var B=bind('w-soft',draw);if(!B)return;function draw(){var y=B.st.y,t=B.st.t,o=setup(B.cv),T=axes(o,-4,4,-0.5,6);
+  var h=function(z){return t*Math.abs(z)+0.5*(z-y)*(z-y)};
+  curve(o,T,function(z){return t*Math.abs(z)},-4,4,css('--muted'),1.5,[5,4]);
+  curve(o,T,function(z){return 0.5*(z-y)*(z-y)},-4,4,css('--muted'),1.5,[2,3]);
+  curve(o,T,h,-4,4,css('--accent'),3);
+  var z=S(y,t);dot(o,T.X(z),T.Y(h(z)),css('--bad'),6);
+  o.g.strokeStyle=css('--bad');o.g.setLineDash([3,3]);o.g.beginPath();o.g.moveTo(T.X(z),T.Y(h(z)));o.g.lineTo(T.X(z),T.Y(0));o.g.stroke();o.g.setLineDash([]);
+  dot(o,T.X(y),T.Y(0),css('--ok'),4);o.g.fillStyle=css('--ok');o.g.fillText('y',T.X(y)-3,T.Y(0)+16);
+  o.g.fillStyle=css('--bad');o.g.fillText('z*',T.X(z)+6,T.Y(h(z))-8);
+  o.g.fillStyle=css('--muted');o.g.fillText('dashed: τ|z|   dotted: ½(z−y)²   thick: their sum',40,20);
+  for(var k=-4;k<=4;k++){o.g.fillText(k,T.X(k)-3,T.Y(0)+16);}
+  var cs=Math.abs(y)<=t?'|y| ≤ τ: dead zone, z* = 0':(y>0?'y > τ: z* = y − τ':'y < −τ: z* = y + τ');
+  B.out.innerHTML='z* = S<sub>τ</sub>(y) = <b>'+f3(z)+'</b> &nbsp;·&nbsp; '+cs;}
+ draw();})();
+
+/* 2. completing the square */
+(function(){var B=bind('w-square',draw);if(!B)return;function draw(){var l=B.st.l,b=B.st.b,c=B.st.c,o=setup(B.cv),T=axes(o,-5,5,-9,10);
+  var base=function(z){return b/2*(z-c)*(z-c)},tilt=function(z){return l*(z-c)+b/2*(z-c)*(z-c)};
+  curve(o,T,base,-5,5,css('--muted'),1.5,[5,4]);curve(o,T,tilt,-5,5,css('--accent'),3);
+  var a=c-l/b;dot(o,T.X(c),T.Y(0),css('--muted'),4);dot(o,T.X(a),T.Y(tilt(a)),css('--bad'),6);
+  o.g.fillStyle=css('--muted');o.g.fillText('c',T.X(c)-3,T.Y(0)+16);o.g.fillStyle=css('--bad');o.g.fillText('new bottom c − λ/β',T.X(a)+8,T.Y(tilt(a))+4);
+  B.out.innerHTML='centre c − λ/β = '+f3(c)+' − '+f3(l)+'/'+f3(b)+' = <b>'+f3(a)+'</b> &nbsp;·&nbsp; constant = −λ²/(2β) = '+f3(-l*l/(2*b));}
+ draw();})();
+
+/* 3. ADMM stepper on 1/2(x-3)^2 + |x| */
+(function(){var B=bind('w-admm',draw);if(!B)return;var hist;
+  function reset(){hist=[{x1:null,x2:0,l:0}];}
+  function step(){var b=B.st.b,pen=B.st.m==='pen',p=hist[hist.length-1],l=pen?0:p.l;
+    var x1=(3+b*p.x2-l)/(1+b),x2=S(x1+l/b,1/b),ln=pen?0:l+b*(x1-x2);hist.push({x1:x1,x2:x2,l:ln});}
+  B.w.querySelectorAll('[data-a]').forEach(function(btn){btn.addEventListener('click',function(){var a=btn.dataset.a;
+    if(a==='reset')reset();else if(a==='step'){if(hist.length<41)step();}else{for(var i=0;i<15&&hist.length<41;i++)step();}draw();});});
+  B.w.querySelectorAll('[data-k]').forEach(function(i){i.addEventListener('input',function(){reset();draw();});});
+  function draw(){var o=setup(B.cv),n=Math.max(hist.length-1,8),T=axes(o,0,n,-0.2,3.2);var g=o.g;
+    g.strokeStyle=css('--muted');g.setLineDash([4,4]);g.beginPath();g.moveTo(T.X(0),T.Y(2));g.lineTo(T.X(n),T.Y(2));g.stroke();g.setLineDash([]);
+    g.fillStyle=css('--muted');g.fillText('x* = 2',T.X(n)-44,T.Y(2)-6);g.fillText('round k →',o.w-90,o.h-8);
+    for(var t=0;t<=3;t++)g.fillText(t,10,T.Y(t)+4);
+    function line(key,col){g.strokeStyle=col;g.lineWidth=2.5;g.beginPath();var st=false;hist.forEach(function(h,k){if(h[key]===null)return;st?g.lineTo(T.X(k),T.Y(h[key])):g.moveTo(T.X(k),T.Y(h[key]));st=true;});g.stroke();
+      hist.forEach(function(h,k){if(h[key]!==null)dot(o,T.X(k),T.Y(h[key]),col,3.5);});}
+    line('x1',css('--accent'));line('x2',css('--ok'));line('l',css('--bad'));
+    g.fillStyle=css('--accent');g.fillText('x₁',44,18);g.fillStyle=css('--ok');g.fillText('x₂',74,18);g.fillStyle=css('--bad');g.fillText('λ',104,18);
+    var p=hist[hist.length-1],k=hist.length-1;
+    B.out.innerHTML=k===0?'Press <b>Step</b>. Start: x₂ = 0, λ = 0.':'round '+k+': x₁ = <b>'+f3(p.x1)+'</b>, x₂ = <b>'+f3(p.x2)+'</b>, λ = <b>'+f3(p.l)+'</b>, gap x₁ − x₂ = <b>'+f3(p.x1-p.x2)+'</b>'+(B.st.m==='pen'?' &nbsp;(penalty-only limit: gap 1/β = '+f3(1/B.st.b)+')':'');}
+  reset();draw();})();
+
+/* 4. projection onto a box */
+(function(){var B=bind('w-box',draw);if(!B)return;var y=[3.2,-0.8],drag=false;
+  function T(o){var s=Math.min((o.w-60)/6,(o.h-40)/5);return {X:function(x){return 40+(x+1.5)*s},Y:function(v){return o.h-30-(v+1.2)*s},iX:function(px){return (px-40)/s-1.5},iY:function(py){return (o.h-30-py)/s-1.2}};}
+  function draw(){var o=setup(B.cv),t=T(o),g=o.g,b=B.st.B;g.clearRect(0,0,o.w,o.h);
+    g.strokeStyle=css('--line');g.beginPath();g.moveTo(t.X(-1.5),t.Y(0));g.lineTo(t.X(4.5),t.Y(0));g.moveTo(t.X(0),t.Y(-1.2));g.lineTo(t.X(0),t.Y(3.8));g.stroke();
+    g.fillStyle=css('--accent');g.globalAlpha=.12;g.fillRect(t.X(0),t.Y(b),t.X(b)-t.X(0),t.Y(0)-t.Y(b));g.globalAlpha=1;
+    g.strokeStyle=css('--accent');g.lineWidth=2;g.strokeRect(t.X(0),t.Y(b),t.X(b)-t.X(0),t.Y(0)-t.Y(b));
+    var p=[Math.min(Math.max(y[0],0),b),Math.min(Math.max(y[1],0),b)];
+    g.strokeStyle=css('--bad');g.setLineDash([4,3]);g.beginPath();g.moveTo(t.X(y[0]),t.Y(y[1]));g.lineTo(t.X(p[0]),t.Y(p[1]));g.stroke();g.setLineDash([]);
+    dot(o,t.X(y[0]),t.Y(y[1]),css('--bad'),7);dot(o,t.X(p[0]),t.Y(p[1]),css('--ok'),6);
+    g.fillStyle=css('--muted');g.fillText('C = [0,B]²',t.X(b)-70,t.Y(b)-6);g.fillText('drag the red point',8,16);
+    B.out.innerHTML='y = ('+f3(y[0])+', '+f3(y[1])+') &nbsp;→&nbsp; Π<sub>C</sub>(y) = (<b>'+f3(p[0])+'</b>, <b>'+f3(p[1])+'</b>) &nbsp;= each coordinate clipped to [0, '+f3(b)+']';}
+  function pos(e){var r=B.cv.getBoundingClientRect(),o={w:B.cv._w,h:B.cv._h},t=T(o);var px=(e.clientX-r.left)*o.w/r.width,py=(e.clientY-r.top)*o.h/r.height;return [t.iX(px),t.iY(py)];}
+  B.cv.addEventListener('pointerdown',function(e){drag=true;B.cv.setPointerCapture(e.pointerId);y=pos(e);draw();});
+  B.cv.addEventListener('pointermove',function(e){if(drag){y=pos(e);draw();}});
+  B.cv.addEventListener('pointerup',function(){drag=false;});
+  draw();})();
+})();
+</script>
+
 </body>
 </html>

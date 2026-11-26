@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>M5 · Unconstrained algorithms</title>
-<link rel="stylesheet" href="assets/fe.css">
+<link rel="stylesheet" href="assets/fe.css?v=20261126w">
 <script>
   window.MathJax = { tex: { inlineMath: [['$','$'],['\\(','\\)']], displayMath: [['$$','$$'],['\\[','\\]']] } };
 </script>
@@ -39,14 +39,17 @@
   <a href="#b1">&nbsp;&nbsp;B1. Exact line search</a>
   <a href="#b2">&nbsp;&nbsp;B2. Armijo (not too long)</a>
   <a href="#b3">&nbsp;&nbsp;B3. Wolfe, strong Wolfe, Goldstein</a>
+  <a href="#w-ls">&nbsp;&nbsp;&nbsp;&nbsp;▶ Try: Armijo/Wolfe</a>
   <a href="#b4">&nbsp;&nbsp;B4. Backtracking</a>
   <a href="#b5">&nbsp;&nbsp;B5. Golden section</a>
   <a href="#b6">&nbsp;&nbsp;B6. Zoutendijk</a>
   <a href="#quad">C. Quadratics: the test case</a>
   <a href="#gd">D. Fixed-step gradient descent</a>
+  <a href="#w-gd">&nbsp;&nbsp;▶ Try: GD on a quadratic</a>
   <a href="#sd">E. Exact line search (steepest descent)</a>
   <a href="#pfam">F. The ‖x‖ᵖ/p family</a>
   <a href="#newton">G. Newton's method</a>
+  <a href="#w-newton">&nbsp;&nbsp;▶ Try: Newton vs gradient</a>
   <a href="#cg">H. Conjugate gradient from zero</a>
   <a href="#g1">&nbsp;&nbsp;H1. Why zigzag; the idea</a>
   <a href="#g2">&nbsp;&nbsp;H2. Q-conjugacy</a>
@@ -54,6 +57,7 @@
   <a href="#g4">&nbsp;&nbsp;H4. Expanding subspace</a>
   <a href="#g5">&nbsp;&nbsp;H5. The CG algorithm</a>
   <a href="#g6">&nbsp;&nbsp;H6. Two CG steps by hand</a>
+  <a href="#w-cg">&nbsp;&nbsp;&nbsp;&nbsp;▶ Try: CG vs steepest descent</a>
   <a href="#g7">&nbsp;&nbsp;H7. CG facts, step count</a>
   <a href="#g8">&nbsp;&nbsp;H8. Preconditioned CG</a>
   <a href="#g9">&nbsp;&nbsp;H9. CG on non-quadratics</a>
@@ -270,6 +274,23 @@ $$\phi(0)+(1-c)\,\alpha\,\phi'(0)\ \le\ \phi(\alpha)\ \le\ \phi(0)+c\,\alpha\,\p
 
 <p><b>Why you need both Wolfe conditions</b> (he stressed this, see "What he said"). Armijo alone accepts tiny steps. Curvature alone accepts huge ones: $\alpha=0.3$ has $\phi'(0.3)=83.2\ge-40$, so it passes curvature, yet $\phi(0.3)=8.48\gt8$, so $f$ went <i>up</i>.</p>
 
+<div class="widget" id="w-ls">
+<div class="wtitle">Armijo, Wolfe, strong Wolfe and Goldstein on φ(α) = 8 − 80α + 272α²</div>
+<p class="small" style="margin:0">Drag left/right on the picture to move the trial step α (the dot on the curve); move the sliders for c₁, c₂ and Goldstein's c. Watch which coloured bars the dashed vertical line crosses: exactly those rules accept this α.</p>
+<canvas width="640" height="400" aria-label="Interactive plot of phi(alpha) with the Armijo, tangent and Goldstein lines and the accepted intervals"></canvas>
+<div class="wctl">
+<label>c₁ <input type="range" name="c1" min="0.01" max="0.9" step="0.01" value="0.1"><output></output></label>
+<label>c₂ <input type="range" name="c2" min="0.02" max="0.99" step="0.01" value="0.5"><output></output></label>
+<label>Goldstein c <input type="range" name="c" min="0.01" max="0.49" step="0.01" value="0.25"><output></output></label>
+<button type="button" data-a="0.02">α = 0.02</button>
+<button type="button" data-a="0.25">α = 0.25</button>
+<button type="button" data-a="star">α* = 5/34</button>
+<button type="button" data-reset="1">page's c values</button>
+</div>
+<div class="wout"></div>
+<div class="whint"><b>What to notice.</b> With the page's values ($c_1=0.1$, $c_2=0.5$, $c=0.25$) the bars are exactly the B3 numbers: Armijo $(0,\,9/34]$, Wolfe $[5/68,\,9/34]$, strong Wolfe and Goldstein $[5/68,\,15/68]$. The Armijo bar always starts at 0 (tiny steps pass); the curvature condition is what cuts them off. Raise $c_2$ towards 1 and the lower end slides to 0; raise $c_1$ and the upper end shrinks. Plain Wolfe reaches well past $\alpha^*$ (an overshoot); strong Wolfe trims it. Try the buttons: they are the answers to Check B.</div>
+</div>
+
 <div class="box example"><span class="tag">His Exercise 2.3: the general intervals for a quadratic $\phi$</span>
 <p>$\phi(\alpha)=\phi(0)-\sigma\alpha+\tfrac{\omega}{2}\alpha^2$ with $\sigma,\omega\gt0$ (so $\phi'(0)=-\sigma$ and $\phi'(\alpha)=-\sigma+\omega\alpha$). Our example is $\sigma=80$, $\omega=544$.</p>
 <ol class="steps">
@@ -471,6 +492,23 @@ So if $\cos\theta_k\ge\delta\gt0$ for all $k$ (the angle stays bounded away from
 <li><b>Adding a linear term</b> $b^Tx$ moves $x^*$ but not the Hessian, so the range $0\lt\alpha\lt2/\lambda_{\max}$ doesn't change.</li>
 </ul>
 
+<div class="widget" id="w-gd">
+<div class="wtitle">Gradient descent on a quadratic $f=\tfrac12(\lambda_1x_1^2+\lambda_2x_2^2)$</div>
+<p class="small" style="margin:0">Drag the start point $x_0$ anywhere on the contour plot (or drag along the α strip at the bottom); move the sliders. The blue path is 30 steps of $x_{k+1}=x_k-\alpha\nabla f(x_k)$. It opens with λ = 2 and 10 (the $Q$ of D2) and the best step $\alpha=1/6$.</p>
+<canvas width="640" height="400" aria-label="Interactive contour plot of gradient descent iterates on a diagonal quadratic"></canvas>
+<div class="wctl">
+<label>λ₁ <input type="range" name="l1" min="0.5" max="10" step="0.5" value="2"><output></output></label>
+<label>λ₂ <input type="range" name="l2" min="1" max="20" step="0.5" value="10"><output></output></label>
+<label>step α <input type="range" name="a" min="0.001" max="0.4" step="0.001" value="0.167"><output></output></label>
+<label><input type="checkbox" name="ex"> exact line search (section E)</label>
+<button type="button" data-set="best">α = best</button>
+<button type="button" data-set="kill">α = 1/λ<sub>max</sub></button>
+<button type="button" data-set="lim">α = 2/λ<sub>max</sub></button>
+</div>
+<div class="wout"></div>
+<div class="whint"><b>What to notice.</b> The two multipliers $1-\alpha\lambda_i$ decide everything (D1): each step multiplies the $x_1$-piece and the $x_2$-piece of the error by them. Push α into the red part of the strip ($\alpha\gt2/\lambda_{\max}$) and the path blows up along the steep axis; at exactly $2/\lambda_{\max}$ it bounces between two points forever (a 2-cycle). Raise λ₂ (bigger κ): the zig-zag across the narrow valley grows and progress along the flat axis slows. Tick <i>exact line search</i>: no α to choose, yet the path still zig-zags with right-angle turns. Drag $x_0$ onto an axis (it snaps): only one eigen-piece is present, so even a "diverging" α can converge, and exact line search finishes in one step.</div>
+</div>
+
 <div class="box example"><span class="tag">His Ch 3 Exercise 1, the way the exam asks it</span>
 <p>Same $f=3(x_1^2+x_2^2)+4x_1x_2+5x_1+6x_2+7$. Find the largest $\alpha$ range for global convergence of $x_{k+1}=x_k-\alpha\nabla f(x_k)$.</p>
 <ol class="steps">
@@ -616,6 +654,24 @@ $$f(x_{k+1})-f^*\ \le\ \Big(\frac{\kappa-1}{\kappa+1}\Big)^2\big(f(x_k)-f^*\big)
   <text x="40" y="234" class="tp">model q (dashed): too flat, its bottom is at −3.375</text>
 </svg>
 <div class="cap">At $x_0=1.5$ the curvature $f''=0.17$ is small, so the Newton model (purple dashed) is a very flat parabola whose bottom is far to the left. The step lands at $x_1=-3.375$, higher on the curve ($f=3.52$ vs $1.80$).</div>
+</div>
+
+<div class="widget" id="w-newton">
+<div class="wtitle">Newton vs gradient in 1-D</div>
+<p class="small" style="margin:0">Pick a function, drag left/right on the picture to place the start $x_0$, then press <b>Step</b>. Purple: Newton, with its parabola model at the current point (dashed) and the jump to the model's turning point. Green: gradient steps $x-\alpha f'(x)$ with the α you choose.</p>
+<canvas width="640" height="400" aria-label="Interactive plot of Newton's method and gradient descent on a one-dimensional function"></canvas>
+<div class="wctl">
+<label>function <select name="fn">
+<option value="q">x² − 2x (quadratic)</option>
+<option value="q4">x⁴/4 − x²/2</option>
+<option value="sq">√(1+x²)</option>
+</select></label>
+<label>gradient α <input type="range" name="a" min="0.05" max="1.5" step="0.05" value="0.3"><output></output></label>
+<button type="button" data-act2="step">Step ▶</button>
+<button type="button" data-act2="reset">Reset</button>
+</div>
+<div class="wout"></div>
+<div class="whint"><b>What to notice.</b> On the quadratic the model <i>is</i> $f$, so one Newton step lands on the minimiser from any start. On $x^4/4-x^2/2$ start at $x_0=0.5$: $f''\lt0$ there, the model is an upside-down parabola, and Newton jumps to its <i>top</i> at $x_1=-1$ (it heads for where $f'=0$, which can be uphill). On $\sqrt{1+x^2}$ try $x_0=0.5$ (lightning fast: $-x^3$), $x_0=1$ (cycles $\pm1$) and $x_0=1.5$ (the flat model throws it to $-3.375$, then 38.4: diverges). The gradient steps are slower but steadier.</div>
 </div>
 
 <h3>G2. Many dimensions</h3>
@@ -765,6 +821,20 @@ $$\begin{aligned}
 <li>$Qd_1=(-\tfrac{10}{49},\tfrac{10}{49})$, $d_1^TQd_1=\tfrac{60+80}{2401}=\tfrac{20}{343}$, $\alpha_1=\frac{2/49}{20/343}=\tfrac7{10}$.</li>
 <li>$x_2=(\tfrac27,\tfrac27)+\tfrac7{10}(-\tfrac6{49},\tfrac8{49})=(\tfrac27-\tfrac3{35},\ \tfrac27+\tfrac4{35})=(\tfrac15,\tfrac25)$. $Q^{-1}b=\tfrac15\begin{pmatrix}2&amp;-1\\-1&amp;3\end{pmatrix}(1,1)=(\tfrac15,\tfrac25)$ ✓, and $g_2=0$.</li>
 </ol></div></details></div>
+
+<div class="widget" id="w-cg">
+<div class="wtitle">CG vs steepest descent on $Q=\begin{pmatrix}3&amp;1\\1&amp;2\end{pmatrix}$, $b=(1,1)$</div>
+<p class="small" style="margin:0">Drag the start $x_0$ anywhere. Blue: steepest descent with exact steps. Green: CG (the H5 box). Both take the same first step $d_0=-g_0$; then CG bends its second direction just enough to be Q-conjugate and lands on $x^*=(0.2,\,0.4)$.</p>
+<canvas width="640" height="400" aria-label="Interactive contour plot comparing conjugate gradient and steepest descent paths"></canvas>
+<div class="wctl">
+<label>SD steps <input type="range" name="n" min="1" max="15" step="1" value="10"><output></output></label>
+<label><input type="checkbox" name="sd" checked> steepest descent</label>
+<label><input type="checkbox" name="cg" checked> CG</label>
+<button type="button" data-x0="0,0">x₀ = (0, 0) (Check H6)</button>
+</div>
+<div class="wout"></div>
+<div class="whint"><b>What to notice.</b> The first steps coincide. At $x_1$ the two methods part: steepest descent turns a right angle ($g_1^Tg_0=0$) and then zig-zags forever; CG's $d_1$ is <i>not</i> perpendicular to $d_0$ ($d_0^Td_1\ne0$ in the readout) but is Q-conjugate ($d_1^TQd_0=0$), and it reaches $x^*$ in exactly 2 steps from every start. With $x_0=(0,0)$ the readout reproduces Check H6: $\alpha_0=2/7$, $\alpha_1=7/10$, $x_2=(1/5,\,2/5)$.</div>
+</div>
 
 <h3 id="g7">H7. What CG guarantees, and how many steps it needs</h3>
 <ul>
@@ -1453,6 +1523,389 @@ $$-\frac1{1-c_2}\le\frac{g_k^Td_k}{\|g_k\|^2}\le\frac{2c_2-1}{1-c_2}\lt0.$$
 
 </main>
 </div>
-<script src="assets/fe.js"></script>
+<script src="assets/fe.js?v=20261126w"></script>
+<script>
+/* ===== Interactive widgets for M5 (plain JavaScript, no libraries) =====
+   Shared helpers in M5W; each widget below is its own IIFE and does nothing if its element is missing. */
+var M5W=(function(){
+  function css(){
+    var s=getComputedStyle(document.documentElement);
+    function g(n){return s.getPropertyValue('--'+n).trim();}
+    return {ink:g('ink'),muted:g('muted'),line:g('line'),accent:g('accent'),ok:g('ok'),bad:g('bad'),bg:g('bg'),
+            purple:g('ex-line')||g('accent'),gold:g('must-line')||g('muted')};
+  }
+  function f3(x,raw){
+    if(!isFinite(x)) return isNaN(x)?'undefined':(x>0?'∞':'−∞');
+    if(x===0||(!raw&&Math.abs(x)<1e-12)) return '0';
+    var a=Math.abs(x);
+    var s=(a>=1e5||a<1e-3)?x.toExponential(2).replace('e+','e'):String(+x.toPrecision(3));
+    return s.replace(/-/g,'−');
+  }
+  function sub(n){return String(n).replace(/\d/g,function(d){return '₀₁₂₃₄₅₆₇₈₉'[+d];});}
+  function canvas(root,LW,LH,draw){
+    var cv=root.querySelector('canvas');
+    var st={cv:cv,ctx:cv.getContext('2d'),LW:LW,LH:LH,fs:1};
+    function fit(){
+      var w=cv.getBoundingClientRect().width||LW, d=window.devicePixelRatio||1;
+      var W=Math.max(1,Math.round(w*d)), H=Math.max(1,Math.round(w*LH/LW*d));
+      if(cv.width!==W||cv.height!==H){cv.width=W;cv.height=H;}
+      st.fs=Math.min(1.8,Math.max(1,0.72*LW/w));   // bigger text when the canvas is shrunk (phones)
+      st.redraw();
+    }
+    st.redraw=function(){st.ctx.setTransform(cv.width/LW,0,0,cv.height/LH,0,0);draw();};
+    st.fit=fit;
+    window.addEventListener('resize',fit);
+    try{window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change',st.redraw);}catch(e){}
+    try{new MutationObserver(st.redraw).observe(document.documentElement,{attributes:true,attributeFilter:['data-theme']});}catch(e){}
+    return st;
+  }
+  function drag(st,cb){
+    var cv=st.cv,down=false;
+    function pt(e){var r=cv.getBoundingClientRect();return {x:(e.clientX-r.left)*st.LW/r.width,y:(e.clientY-r.top)*st.LH/r.height};}
+    cv.addEventListener('pointerdown',function(e){down=true;try{cv.setPointerCapture(e.pointerId);}catch(_){} cb(pt(e),'down');e.preventDefault();});
+    cv.addEventListener('pointermove',function(e){if(down) cb(pt(e),'move');});
+    cv.addEventListener('pointerup',function(){down=false;});
+    cv.addEventListener('pointercancel',function(){down=false;});
+  }
+  function font(st,px,bold){st.ctx.font=(bold?'600 ':'')+(px*st.fs).toFixed(1)+'px "Segoe UI",system-ui,-apple-system,Roboto,sans-serif';}
+  function text(st,s,x,y,col,align,px,bold){var c=st.ctx;font(st,px||13,bold);c.fillStyle=col;c.textAlign=align||'left';c.textBaseline='alphabetic';c.fillText(s,x,y);}
+  function line(c,x1,y1,x2,y2,col,w,dash){c.beginPath();c.setLineDash(dash||[]);c.strokeStyle=col;c.lineWidth=w||1;c.moveTo(x1,y1);c.lineTo(x2,y2);c.stroke();c.setLineDash([]);}
+  function arrow(c,x1,y1,x2,y2,col,w){
+    line(c,x1,y1,x2,y2,col,w);
+    var a=Math.atan2(y2-y1,x2-x1),h=9;
+    if(Math.hypot(x2-x1,y2-y1)<4) return;
+    c.beginPath();c.fillStyle=col;c.moveTo(x2,y2);
+    c.lineTo(x2-h*Math.cos(a-0.4),y2-h*Math.sin(a-0.4));c.lineTo(x2-h*Math.cos(a+0.4),y2-h*Math.sin(a+0.4));c.closePath();c.fill();
+  }
+  function dot(c,x,y,r,col,ring){c.beginPath();c.arc(x,y,r,0,2*Math.PI);c.fillStyle=col;c.fill();if(ring){c.lineWidth=2;c.strokeStyle=ring;c.stroke();}}
+  function out(input){var o=input&&input.parentNode.querySelector('output');return function(s){if(o)o.textContent=s;};}
+  function ok(b,c){return '<b style="color:'+(b?c.ok:c.bad)+'">'+(b?'✓':'✗')+'</b>';}
+  return {css:css,f3:f3,sub:sub,canvas:canvas,drag:drag,font:font,text:text,line:line,arrow:arrow,dot:dot,out:out,ok:ok};
+})();
+
+/* ---------- 1. Gradient descent on a quadratic (section D) ---------- */
+(function(){
+  var root=document.getElementById('w-gd'); if(!root) return; var H=M5W, f3=H.f3;
+  function el(s){return root.querySelector(s);}
+  var l1In=el('[name=l1]'),l2In=el('[name=l2]'),aIn=el('[name=a]'),exIn=el('[name=ex]'),wout=el('.wout');
+  var o1=H.out(l1In),o2=H.out(l2In),oa=H.out(aIn);
+  var LW=640,LH=400,OX=320,OY=170,S=60,T={l:10,r:630,t:8,b:332};
+  var SX0=60,SX1=600,SY=374,AMAX=0.4;               // the alpha strip at the bottom
+  var alpha=1/6, x0=[4,1.5];
+  var st=H.canvas(root,LW,LH,draw);
+  function P(x){return [OX+S*x[0],OY-S*x[1]];}
+  function aPx(a){return SX0+(SX1-SX0)*a/AMAX;}
+  function run(l1,l2){
+    var pts=[x0.slice()],al=[],x=x0.slice();
+    for(var k=0;k<30;k++){
+      var a=alpha;
+      if(exIn.checked){
+        var g0=l1*x[0],g1=l2*x[1],gg=g0*g0+g1*g1,gq=l1*g0*g0+l2*g1*g1;
+        if(gg<1e-28) break;
+        a=gg/gq; al.push(a);
+      }
+      x=[x[0]-a*l1*x[0],x[1]-a*l2*x[1]]; pts.push(x);
+      if(Math.abs(x[0])+Math.abs(x[1])>1e6) break;
+    }
+    return {pts:pts,al:al};
+  }
+  function draw(){
+    var c=H.css(),ctx=st.ctx,l1=+l1In.value,l2=+l2In.value,lmax=Math.max(l1,l2),lmin=Math.min(l1,l2);
+    o1(f3(l1));o2(f3(l2));oa(f3(alpha));
+    ctx.fillStyle=c.bg;ctx.fillRect(0,0,LW,LH);
+    ctx.save();ctx.beginPath();ctx.rect(T.l,T.t,T.r-T.l,T.b-T.t);ctx.clip();
+    ctx.strokeStyle=c.muted;ctx.globalAlpha=0.6;ctx.lineWidth=1;
+    [0.5,1,2,3,4.5,6,8,10].forEach(function(r){ctx.beginPath();ctx.ellipse(OX,OY,S*r/Math.sqrt(l1),S*r/Math.sqrt(l2),0,0,2*Math.PI);ctx.stroke();});
+    ctx.globalAlpha=1;
+    H.line(ctx,T.l,OY,T.r,OY,c.line,1.5);H.line(ctx,OX,T.t,OX,T.b,c.line,1.5);
+    H.text(st,'axis 1 (eigenvalue λ₁ = '+f3(l1)+')',T.r-6,OY-7,c.muted,'right',12);
+    H.text(st,'axis 2 (eigenvalue λ₂ = '+f3(l2)+')',OX+6,T.t+14,c.muted,'left',12);
+    var R=run(l1,l2),pts=R.pts;
+    ctx.beginPath();ctx.strokeStyle=c.accent;ctx.lineWidth=2;ctx.lineJoin='round';
+    pts.forEach(function(p,i){var q=P(p);if(i)ctx.lineTo(q[0],q[1]);else ctx.moveTo(q[0],q[1]);});ctx.stroke();
+    pts.forEach(function(p,i){if(i){var q=P(p);H.dot(ctx,q[0],q[1],3,c.accent);}});
+    var q1=pts[1]&&P(pts[1]);
+    if(q1) H.text(st,'x₁',q1[0]+7,q1[1]+16,c.accent,'left',12,true);
+    H.dot(ctx,OX,OY,5,c.ok);H.text(st,'x*',OX-8,OY+18,c.ok,'right',14,true);
+    var q0=P(x0);H.dot(ctx,q0[0],q0[1],7,c.ink,c.bg);
+    H.text(st,'x₀ (drag me)',q0[0]+(q0[0]>520?-10:10),q0[1]-10,c.ink,q0[0]>520?'right':'left',13,true);
+    ctx.restore();
+    // alpha strip
+    H.line(ctx,0,T.b+4,LW,T.b+4,c.line,1);
+    var lim=2/lmax,best=2/(lmin+lmax);
+    ctx.fillStyle=c.ok;ctx.globalAlpha=0.35;ctx.fillRect(SX0,SY-5,Math.min(aPx(lim),SX1)-SX0,10);
+    if(lim<AMAX){ctx.fillStyle=c.bad;ctx.fillRect(aPx(lim),SY-5,SX1-aPx(lim),10);}
+    ctx.globalAlpha=1;
+    H.line(ctx,SX0,SY,SX1,SY,c.muted,1);
+    H.text(st,'α',SX0-14,SY+5,c.ink,'right',14,true);
+    H.text(st,'0',SX0,SY+20,c.muted,'center',11);H.text(st,'0.4',SX1,SY+20,c.muted,'center',11);
+    if(lim<AMAX){H.line(ctx,aPx(lim),SY-9,aPx(lim),SY+9,c.bad,2);H.text(st,'2/λmax = '+f3(lim),aPx(lim)+4,SY+20,c.bad,'left',11);}
+    H.line(ctx,aPx(best),SY-11,aPx(best),SY+9,c.gold,3);H.text(st,'best α = '+f3(best),aPx(best)+3,SY+20,c.gold,'right',11,true);
+    if(exIn.checked){
+      R.al.forEach(function(a){if(a<=AMAX)H.dot(ctx,aPx(a),SY,3.5,c.purple);});
+      H.text(st,'purple: the αₖ that exact line search picked',SX1,T.b+18,c.purple,'right',11);
+    }else{
+      var ax=aPx(Math.min(alpha,AMAX));ctx.beginPath();ctx.fillStyle=c.ink;ctx.moveTo(ax,SY-2);ctx.lineTo(ax-6,SY-12);ctx.lineTo(ax+6,SY-12);ctx.fill();
+      H.text(st,'green: converges · red: diverges (drag here to set α)',SX0,T.b+18,c.muted,'left',11);
+    }
+    // readout
+    var m1=1-alpha*l1,m2=1-alpha*l2,kap=lmax/lmin,last=pts[pts.length-1],err=Math.hypot(last[0],last[1]);
+    var comp=[Math.abs(x0[0])>0,Math.abs(x0[1])>0],ms=[m1,m2],status,col=c.ok;
+    var big=false,cyc=false,stuck=false;
+    for(var i=0;i<2;i++){if(!comp[i])continue;var a=Math.abs(ms[i]);if(a>1+1e-9)big=true;else if(a>1-1e-9){if(ms[i]<0)cyc=true;else stuck=true;}}
+    if(big){status='diverges';col=c.bad;}else if(cyc){status='2-cycle: bounces forever';col=c.bad;}else if(stuck){status='does not move along one axis (α·λ = 0)';col=c.bad;}else status='converges';
+    var note='';
+    if(!big&&(Math.abs(m1)>1+1e-9||Math.abs(m2)>1+1e-9)) note=' (a multiplier is beyond ±1, but x₀ has no piece along that axis)';
+    var html='λ₁ = <b>'+f3(l1)+'</b>, λ₂ = <b>'+f3(l2)+'</b>, κ = λ<sub>max</sub>/λ<sub>min</sub> = <b>'+f3(kap)+'</b>; x₀ = (<b>'+f3(x0[0])+'</b>, <b>'+f3(x0[1])+'</b>)<br>';
+    if(exIn.checked){
+      var f0=0.5*(l1*x0[0]*x0[0]+l2*x0[1]*x0[1]),p1=pts[1]||x0,f1=0.5*(l1*p1[0]*p1[0]+l2*p1[1]*p1[1]);
+      html+='Exact line search: α₀ = <b>'+(R.al.length?f3(R.al[0]):'–')+'</b>, α₁ = <b>'+(R.al.length>1?f3(R.al[1]):'–')+'</b>. f(x₁)/f(x₀) = <b>'+(f0>0?f3(f1/f0):'–')+'</b> vs Kantorovich bound ((κ−1)/(κ+1))² = <b>'+f3(Math.pow((kap-1)/(kap+1),2))+'</b><br>';
+      html+='‖x<sub>'+(pts.length-1)+'</sub> − x*‖ = <b>'+f3(err)+'</b>'+(pts.length<31?' (reached x* exactly: the gradient was an eigenvector)':'');
+    }else{
+      html+='α = <b>'+f3(alpha)+'</b>: multipliers 1−αλ₁ = <b style="color:'+(Math.abs(m1)<1-1e-9?c.ok:c.bad)+'">'+f3(m1)+'</b>, 1−αλ₂ = <b style="color:'+(Math.abs(m2)<1-1e-9?c.ok:c.bad)+'">'+f3(m2)+'</b> → <b style="color:'+col+'">'+status+'</b>'+note+'<br>';
+      html+='rate max|1−αλᵢ| = <b>'+f3(Math.max(Math.abs(m1),Math.abs(m2)))+'</b> per step · limit 2/λ<sub>max</sub> = <b>'+f3(lim)+'</b> · best α = 2/(λ<sub>min</sub>+λ<sub>max</sub>) = <b>'+f3(best)+'</b> with rate (κ−1)/(κ+1) = <b>'+f3((kap-1)/(kap+1))+'</b><br>';
+      html+='‖x<sub>'+(pts.length-1)+'</sub> − x*‖ = <b>'+f3(err)+'</b> (started at '+f3(Math.hypot(x0[0],x0[1]))+')';
+    }
+    wout.innerHTML=html;
+  }
+  H.drag(st,function(p){
+    if(p.y>T.b+4){ if(!exIn.checked){alpha=Math.max(0.001,Math.min(AMAX,(p.x-SX0)/(SX1-SX0)*AMAX));aIn.value=alpha;draw();} return; }
+    var x=(p.x-OX)/S,y=(OY-p.y)/S;
+    x=Math.max(-5,Math.min(5,x));y=Math.max(-2.7,Math.min(2.7,y));
+    if(Math.abs(x)<0.1)x=0; if(Math.abs(y)<0.1)y=0;
+    x0=[x,y];draw();
+  });
+  aIn.addEventListener('input',function(){alpha=+aIn.value;draw();});
+  [l1In,l2In,exIn].forEach(function(e){e.addEventListener('input',draw);e.addEventListener('change',draw);});
+  root.querySelectorAll('button[data-set]').forEach(function(b){b.addEventListener('click',function(){
+    var l1=+l1In.value,l2=+l2In.value,lmax=Math.max(l1,l2),lmin=Math.min(l1,l2),k=b.getAttribute('data-set');
+    alpha=k==='best'?2/(lmin+lmax):k==='lim'?2/lmax:1/lmax; alpha=Math.min(alpha,AMAX);
+    aIn.value=alpha;exIn.checked=false;draw();
+  });});
+  st.fit();
+})();
+
+/* ---------- 2. CG vs steepest descent (section H) ---------- */
+(function(){
+  var root=document.getElementById('w-cg'); if(!root) return; var H=M5W, f3=H.f3;
+  function el(s){return root.querySelector(s);}
+  var nIn=el('[name=n]'),sdIn=el('[name=sd]'),cgIn=el('[name=cg]'),wout=el('.wout'),on=H.out(nIn);
+  var LW=640,LH=400,OX=320,OY=172,S=95,T={l:10,r:630,t:8,b:340};
+  var XS=[0.2,0.4],x0=[-2.2,1.9];
+  function Qv(v){return [3*v[0]+v[1],v[0]+2*v[1]];}
+  function dt(a,b){return a[0]*b[0]+a[1]*b[1];}
+  function grad(x){var q=Qv(x);return [q[0]-1,q[1]-1];}
+  // contour ellipses: e = r*M*u with M = (L^T)^{-1}, Q = L L^T
+  var La=Math.sqrt(3),Lc=1/Math.sqrt(3),Ld=Math.sqrt(2-1/3),M=[[1/La,-Lc/(La*Ld)],[0,1/Ld]];
+  var st=H.canvas(root,LW,LH,draw);
+  function P(x){return [OX+S*(x[0]-XS[0]),OY-S*(x[1]-XS[1])];}
+  // label position: midpoint of segment a->b, pushed off the segment on the side away from x*
+  function lab(a,b,off){var m=[(a[0]+b[0])/2,(a[1]+b[1])/2],dx=b[0]-a[0],dy=b[1]-a[1],l=Math.hypot(dx,dy)||1,n=[-dy/l,dx/l],s=P(XS);
+    if(n[0]*(m[0]-s[0])+n[1]*(m[1]-s[1])<0)n=[-n[0],-n[1]];return [m[0]+n[0]*off,m[1]+n[1]*off+4];}
+  function sd(n){var x=x0.slice(),pts=[x];for(var k=0;k<n;k++){var g=grad(x),gg=dt(g,g);if(gg<1e-26)break;var a=gg/dt(g,Qv(g));x=[x[0]-a*g[0],x[1]-a*g[1]];pts.push(x);}return pts;}
+  function cg(){
+    var x=x0.slice(),g=grad(x),d=[-g[0],-g[1]],r={pts:[x],g:[g],d:[d],a:[],b:[]};
+    for(var k=0;k<2;k++){
+      var gg=dt(g,g); if(gg<1e-26) break;
+      var Qd=Qv(d),a=gg/dt(d,Qd);
+      x=[x[0]+a*d[0],x[1]+a*d[1]];var gn=[g[0]+a*Qd[0],g[1]+a*Qd[1]],be=dt(gn,gn)/gg;
+      d=[-gn[0]+be*d[0],-gn[1]+be*d[1]];g=gn;
+      r.pts.push(x);r.g.push(g);r.d.push(d);r.a.push(a);r.b.push(be);
+    }
+    return r;
+  }
+  function draw(){
+    var c=H.css(),ctx=st.ctx,n=+nIn.value;on(String(n));
+    ctx.fillStyle=c.bg;ctx.fillRect(0,0,LW,LH);
+    ctx.save();ctx.beginPath();ctx.rect(T.l,T.t,T.r-T.l,T.b-T.t);ctx.clip();
+    ctx.strokeStyle=c.muted;ctx.globalAlpha=0.6;ctx.lineWidth=1;
+    [0.3,0.6,1,1.5,2,2.7,3.5,4.5].forEach(function(r){
+      ctx.beginPath();for(var i=0;i<=120;i++){var t=i/120*2*Math.PI,u=[Math.cos(t),Math.sin(t)];
+        var e=[r*(M[0][0]*u[0]+M[0][1]*u[1]),r*(M[1][0]*u[0]+M[1][1]*u[1])],q=P([XS[0]+e[0],XS[1]+e[1]]);
+        if(i)ctx.lineTo(q[0],q[1]);else ctx.moveTo(q[0],q[1]);}
+      ctx.stroke();});
+    ctx.globalAlpha=1;
+    var C=cg(),Sd=sd(n);
+    if(sdIn.checked){
+      ctx.beginPath();ctx.strokeStyle=c.accent;ctx.lineWidth=2;ctx.lineJoin='round';
+      Sd.forEach(function(p,i){var q=P(p);if(i)ctx.lineTo(q[0],q[1]);else ctx.moveTo(q[0],q[1]);});ctx.stroke();
+      Sd.forEach(function(p,i){if(i){var q=P(p);H.dot(ctx,q[0],q[1],3,c.accent);}});
+    }
+    if(cgIn.checked){
+      for(var k=0;k+1<C.pts.length;k++){var a=P(C.pts[k]),b=P(C.pts[k+1]);H.arrow(ctx,a[0],a[1],b[0],b[1],c.ok,3.5);
+        var L=lab(a,b,18);H.text(st,'d'+H.sub(k)+(k?' (CG)':''),L[0],L[1],c.ok,'center',13,true);}
+      if(C.pts[1]){var q=P(C.pts[1]);H.dot(ctx,q[0],q[1],4.5,c.ink);H.text(st,'x₁',q[0]+8,q[1]+16,c.ink,'left',13,true);}
+    }
+    var qs=P(XS);H.dot(ctx,qs[0],qs[1],5.5,c.ok,c.bg);H.text(st,'x* = (0.2, 0.4)',qs[0]+9,qs[1]-9,c.ok,'left',13,true);
+    var q0=P(x0);H.dot(ctx,q0[0],q0[1],7,c.ink,c.bg);H.text(st,'x₀ (drag me)',q0[0]+(q0[0]>520?-10:10),q0[1]+(q0[1]<60?24:-10),c.ink,q0[0]>520?'right':'left',13,true);
+    ctx.restore();
+    H.line(ctx,0,T.b+4,LW,T.b+4,c.line,1);
+    H.line(ctx,20,368,48,368,c.accent,2.5);H.text(st,'steepest descent, exact steps ('+(Sd.length-1)+' shown)',54,372,c.ink,'left',12);
+    H.line(ctx,20,390,48,390,c.ok,4);H.text(st,'CG: 2 steps, then g₂ = 0',54,394,c.ink,'left',12);
+    // readout
+    var html;
+    if(C.a.length<2){html='x₀ is (almost) x* already'+(C.a.length===1?': one CG step reached x*':'')+'. Drag it away.';}
+    else{
+      var g0=C.g[0],g1=C.g[1],d0=C.d[0],d1=C.d[1],sdErr2=Sd[Math.min(2,Sd.length-1)],sdErrN=Sd[Sd.length-1];
+      function v(p){return '('+f3(p[0])+', '+f3(p[1])+')';}
+      var scl=Math.max(1,dt(g0,g0));
+      function z(x){return Math.abs(x)<1e-12*scl?'0':f3(x);}
+      html='x₀ = <b>'+v(x0)+'</b> · CG: α₀ = <b>'+f3(C.a[0])+'</b>, x₁ = <b>'+v(C.pts[1])+'</b>, β₀ = <b>'+f3(C.b[0])+'</b>, d₁ = <b>'+v(d1)+'</b>, α₁ = <b>'+f3(C.a[1])+'</b>, x₂ = <b>'+v(C.pts[2])+'</b><br>';
+      html+='g₁ᵀg₀ = <b>'+z(dt(g1,g0))+'</b> (exact line search) · d₁ᵀQd₀ = <b>'+z(dt(d1,Qv(d0)))+'</b> (Q-conjugate) · d₀ᵀd₁ = <b>'+f3(dt(d0,d1))+'</b> (not perpendicular)<br>';
+      html+='distance to x*: CG after 2 steps <b>'+z(Math.hypot(C.pts[2][0]-XS[0],C.pts[2][1]-XS[1]))+'</b>; steepest descent after 2 steps <b>'+f3(Math.hypot(sdErr2[0]-XS[0],sdErr2[1]-XS[1]))+'</b>, after '+(Sd.length-1)+' steps <b>'+f3(Math.hypot(sdErrN[0]-XS[0],sdErrN[1]-XS[1]))+'</b>';
+    }
+    wout.innerHTML=html;
+  }
+  H.drag(st,function(p){if(p.y>T.b)return;var x=XS[0]+(p.x-OX)/S,y=XS[1]+(OY-p.y)/S;
+    x0=[Math.max(-3,Math.min(3.4,x)),Math.max(-1.4,Math.min(2.2,y))];draw();});
+  [nIn,sdIn,cgIn].forEach(function(e){e.addEventListener('input',draw);e.addEventListener('change',draw);});
+  root.querySelectorAll('button[data-x0]').forEach(function(b){b.addEventListener('click',function(){x0=b.getAttribute('data-x0').split(',').map(Number);draw();});});
+  st.fit();
+})();
+
+/* ---------- 3. Armijo / Wolfe / strong Wolfe / Goldstein on phi (section B) ---------- */
+(function(){
+  var root=document.getElementById('w-ls'); if(!root) return; var H=M5W, f3=H.f3;
+  function el(s){return root.querySelector(s);}
+  var c1In=el('[name=c1]'),c2In=el('[name=c2]'),cIn=el('[name=c]'),wout=el('.wout');
+  var o1=H.out(c1In),o2=H.out(c2In),oc=H.out(cIn);
+  var LW=640,LH=400,X0=114,X1=620,AM=0.32,Y0=236,Y1=12,PM=11,ROW=[262,288,314,340],AXY=362;
+  var SIG=80,OM=544,AST=SIG/OM,trial=0.2;
+  function phi(a){return 8-SIG*a+OM/2*a*a;} function dphi(a){return -SIG+OM*a;}
+  function X(a){return X0+(X1-X0)*a/AM;} function Y(v){return Y0-(Y0-Y1)*v/PM;}
+  var st=H.canvas(root,LW,LH,draw);
+  function intervals(c1,c2,c){
+    var arm=2*(1-c1)*AST,lo=(1-c2)*AST;
+    return {arm:[0,arm],wolfe:[lo,arm],strong:[lo,Math.min(1+c2,2*(1-c1))*AST],gold:[2*c*AST,2*(1-c)*AST]};
+  }
+  function draw(){
+    var c=H.css(),ctx=st.ctx,c1=+c1In.value,c2=+c2In.value,gc=+cIn.value;
+    o1(f3(c1));o2(f3(c2));oc(f3(gc));
+    ctx.fillStyle=c.bg;ctx.fillRect(0,0,LW,LH);
+    // axes
+    H.line(ctx,X0,Y0,X1,Y0,c.muted,1);H.line(ctx,X0,Y0,X0,Y1,c.muted,1);
+    [0,2,4,6,8,10].forEach(function(v){H.text(st,String(v),X0-6,Y(v)+4,c.muted,'right',11);H.line(ctx,X0-3,Y(v),X0,Y(v),c.muted,1);});
+    H.text(st,'φ',X0-30,Y1+12,c.ink,'left',14,true);
+    ctx.save();ctx.beginPath();ctx.rect(X0,Y1-6,X1-X0,Y0-Y1+6);ctx.clip();
+    // lines from phi(0)
+    H.line(ctx,X(0),Y(8),X(AM),Y(8-SIG*AM),c.bad,1.8,[6,4]);
+    H.line(ctx,X(0),Y(8),X(AM),Y(8-gc*SIG*AM),c.gold,1.3,[3,3]);
+    H.line(ctx,X(0),Y(8),X(AM),Y(8-(1-gc)*SIG*AM),c.gold,1.3,[3,3]);
+    H.line(ctx,X(0),Y(8),X(AM),Y(8-c1*SIG*AM),c.purple,2.5);
+    // phi
+    ctx.beginPath();ctx.strokeStyle=c.accent;ctx.lineWidth=3;
+    for(var i=0;i<=160;i++){var a=AM*i/160,y=Y(phi(a));if(i)ctx.lineTo(X(a),y);else ctx.moveTo(X(a),y);}ctx.stroke();
+    // alpha*
+    H.line(ctx,X(AST),Y1,X(AST),AXY,c.muted,1,[2,3]);
+    // trial slope segment
+    var pa=phi(trial),sl=dphi(trial),curv=sl>=c2*(-SIG),h=0.03;
+    H.line(ctx,X(trial-h),Y(pa-sl*h),X(trial+h),Y(pa+sl*h),curv?c.ok:c.bad,3);
+    ctx.restore();
+    H.text(st,'tangent, slope φ′(0) = −80',X(0.075),Y(0.6),c.bad,'left',12);
+    H.text(st,'Armijo line, slope c₁φ′(0)',X(0.25),Y(8-c1*SIG*0.25)-12,c.purple,'center',12,true);
+    H.text(st,'φ(α)',X(0.305),Y(phi(0.305))-2,c.accent,'right',13,true);
+    H.text(st,'gold dotted: Goldstein fences (c, 1−c)',X1,Y1+10,c.gold,'right',11);
+    H.text(st,'α*',X(AST)+4,Y1+28,c.muted,'left',12);
+    // bars
+    var I=intervals(c1,c2,gc),rows=[['Armijo',I.arm,c.purple],['Wolfe',I.wolfe,c.accent],['strong Wolfe',I.strong,c.ok],['Goldstein',I.gold,c.gold]];
+    rows.forEach(function(r,k){var y=ROW[k],a=Math.max(0,r[1][0]),b=Math.min(AM,r[1][1]);
+      H.text(st,r[0],X0-6,y+4,r[2],'right',11,true);
+      H.line(ctx,X0,y,X1,y,c.line,1);
+      if(b>a){ctx.globalAlpha=0.8;H.line(ctx,X(a),y,X(b),y,r[2],9);ctx.globalAlpha=1;}
+    });
+    H.line(ctx,X0,AXY,X1,AXY,c.muted,1);
+    [0,0.05,0.1,0.15,0.2,0.25,0.3].forEach(function(a){H.line(ctx,X(a),AXY,X(a),AXY+4,c.muted,1);H.text(st,String(a),X(a),AXY+17,c.muted,'center',11);});
+    H.text(st,'α',X1,AXY+30,c.ink,'right',13,true);
+    // trial
+    H.line(ctx,X(trial),Y(pa),X(trial),AXY,c.ink,1.2,[5,4]);
+    H.dot(ctx,X(trial),Y(pa),6.5,c.ink,c.bg);
+    H.text(st,'trial α (drag)',X(trial)+(trial>0.25?-10:10),Y(pa)-12,c.ink,trial>0.25?'right':'left',12,true);
+    // readout
+    var arm=pa<=8+c1*trial*(-SIG)+1e-12,str=Math.abs(sl)<=c2*SIG+1e-12;
+    var goldOK=(pa<=8-gc*SIG*trial+1e-12)&&(pa>=8-(1-gc)*SIG*trial-1e-12);
+    function iv(p,open){return (open?'(':'[')+f3(Math.max(0,p[0]))+', '+f3(p[1])+']';}
+    var html='α = <b>'+f3(trial)+'</b>: φ(α) = <b>'+f3(pa)+'</b>, φ′(α) = <b>'+f3(sl)+'</b> (α* = 5/34 ≈ 0.147)<br>';
+    html+='Armijo φ(α) ≤ 8 − '+f3(c1*SIG)+'α = '+f3(8-c1*SIG*trial)+' '+H.ok(arm,c)+' · curvature φ′(α) ≥ c₂φ′(0) = '+f3(-c2*SIG)+' '+H.ok(curv,c)+' · <b>Wolfe</b> '+H.ok(arm&&curv,c)+' · <b>strong Wolfe</b> |φ′(α)| ≤ '+f3(c2*SIG)+' '+H.ok(arm&&str,c)+' · <b>Goldstein</b> '+H.ok(goldOK,c)+'<br>';
+    html+='Intervals: Armijo '+iv(I.arm,true)+', Wolfe '+iv(I.wolfe)+', strong Wolfe '+iv(I.strong)+', Goldstein '+iv(I.gold);
+    if(c1>=c2) html+='<br><b style="color:'+c.bad+'">c₁ ≥ c₂: the theory needs 0 &lt; c₁ &lt; c₂ &lt; 1.</b>';
+    wout.innerHTML=html;
+  }
+  H.drag(st,function(p){trial=Math.max(0.001,Math.min(AM,(p.x-X0)/(X1-X0)*AM));draw();});
+  [c1In,c2In,cIn].forEach(function(e){e.addEventListener('input',draw);});
+  root.querySelectorAll('button[data-a]').forEach(function(b){b.addEventListener('click',function(){var v=b.getAttribute('data-a');trial=v==='star'?AST:+v;draw();});});
+  root.querySelectorAll('button[data-reset]').forEach(function(b){b.addEventListener('click',function(){c1In.value=0.1;c2In.value=0.5;cIn.value=0.25;draw();});});
+  st.fit();
+})();
+
+/* ---------- 4. Newton vs gradient in 1-D (section G) ---------- */
+(function(){
+  var root=document.getElementById('w-newton'); if(!root) return; var H=M5W, f3=H.f3;
+  function el(s){return root.querySelector(s);}
+  var fnIn=el('[name=fn]'),aIn=el('[name=a]'),wout=el('.wout'),oa=H.out(aIn);
+  var FN={
+    q:{f:function(x){return x*x-2*x;},d:function(x){return 2*x-2;},h:function(){return 2;},xr:[-3,5],yr:[-2,16],x0:4,name:'x² − 2x',xs:1},
+    q4:{f:function(x){return x*x*x*x/4-x*x/2;},d:function(x){return x*x*x-x;},h:function(x){return 3*x*x-1;},xr:[-2.2,2.2],yr:[-0.6,1.6],x0:0.5,name:'x⁴/4 − x²/2',xs:'±1'},
+    sq:{f:function(x){return Math.sqrt(1+x*x);},d:function(x){return x/Math.sqrt(1+x*x);},h:function(x){return Math.pow(1+x*x,-1.5);},xr:[-4.2,4.2],yr:[0,4.6],x0:1.5,name:'√(1+x²)',xs:0}
+  };
+  var LW=640,LH=400,X0=46,X1=626,Y0=360,Y1=14,K=0,x0=4;
+  var st=H.canvas(root,LW,LH,draw);
+  function F(){return FN[fnIn.value]||FN.q;}
+  function X(x){var r=F().xr;return X0+(X1-X0)*(x-r[0])/(r[1]-r[0]);}
+  function Y(v){var r=F().yr;return Y0-(Y0-Y1)*(v-r[0])/(r[1]-r[0]);}
+  function newtonSeq(n){var f=F(),s=[x0];for(var k=0;k<n;k++){var x=s[s.length-1],h=f.h(x);if(h===0||!isFinite(x)||Math.abs(x)>1e8)break;s.push(x-f.d(x)/h);}return s;}
+  function gradSeq(n){var f=F(),a=+aIn.value,s=[x0];for(var k=0;k<n;k++){var x=s[s.length-1];if(!isFinite(x)||Math.abs(x)>1e8)break;s.push(x-a*f.d(x));}return s;}
+  function draw(){
+    var c=H.css(),ctx=st.ctx,f=F(),xr=f.xr,yr=f.yr;oa(f3(+aIn.value));
+    ctx.fillStyle=c.bg;ctx.fillRect(0,0,LW,LH);
+    if(yr[0]<0&&yr[1]>0)H.line(ctx,X0,Y(0),X1,Y(0),c.line,1.5);
+    H.line(ctx,X0,Y0,X1,Y0,c.muted,1);
+    for(var t=Math.ceil(xr[0]);t<=xr[1];t++){H.line(ctx,X(t),Y0,X(t),Y0+4,c.muted,1);H.text(st,String(t).replace('-','−'),X(t),Y0+17,c.muted,'center',11);}
+    H.text(st,'x',X1,Y0+30,c.ink,'right',13,true);
+    ctx.save();ctx.beginPath();ctx.rect(X0,Y1-4,X1-X0,Y0-Y1+4);ctx.clip();
+    ctx.beginPath();ctx.strokeStyle=c.accent;ctx.lineWidth=3;
+    for(var i=0;i<=300;i++){var x=xr[0]+(xr[1]-xr[0])*i/300,y=Y(f.f(x));if(i)ctx.lineTo(X(x),y);else ctx.moveTo(X(x),y);}ctx.stroke();
+    var N=newtonSeq(K),G=gradSeq(K),xk=N[N.length-1],stopped=N.length<K+1;
+    // gradient iterates
+    G.forEach(function(x,i){if(i&&isFinite(x))H.dot(ctx,X(x),Y(f.f(x)),4,c.ok);});
+    // Newton past hops
+    for(var k=0;k+1<N.length;k++){var a=N[k],b=N[k+1];if(!isFinite(b))break;var bb=Math.max(xr[0]-1,Math.min(xr[1]+1,b));
+      H.arrow(ctx,X(a),Y(f.f(a)),X(bb),Y(Math.min(yr[1]+1,f.f(bb))),c.purple,1.6);}
+    N.forEach(function(x,i){if(isFinite(x)&&x>=xr[0]&&x<=xr[1]){H.dot(ctx,X(x),Y(f.f(x)),i?5:7,i?c.purple:c.ink,i?null:c.bg);if(i)H.text(st,'x'+H.sub(i),X(x)+6,Y(f.f(x))+18,c.purple,'left',13,true);}});
+    // model at x_k
+    var hk=isFinite(xk)?f.h(xk):NaN,dk=isFinite(xk)?f.d(xk):NaN,fk=isFinite(xk)?f.f(xk):NaN,nx=NaN;
+    if(isFinite(xk)&&Math.abs(xk)<1e6){
+      ctx.beginPath();ctx.setLineDash([7,4]);ctx.strokeStyle=c.purple;ctx.lineWidth=2;
+      for(i=0;i<=200;i++){var x=xr[0]+(xr[1]-xr[0])*i/200,q=fk+dk*(x-xk)+0.5*hk*(x-xk)*(x-xk),y=Y(q);if(i)ctx.lineTo(X(x),y);else ctx.moveTo(X(x),y);}
+      ctx.stroke();ctx.setLineDash([]);
+      if(hk!==0){nx=xk-dk/hk;var qn=fk-0.5*dk*dk/hk;
+        if(nx>=xr[0]&&nx<=xr[1]){ctx.lineWidth=2.5;ctx.strokeStyle=c.purple;var px=X(nx),py=Y(qn);
+          ctx.beginPath();ctx.moveTo(px-6,py-6);ctx.lineTo(px+6,py+6);ctx.moveTo(px-6,py+6);ctx.lineTo(px+6,py-6);ctx.stroke();
+          H.line(ctx,px,py,px,Y(f.f(nx)),c.purple,1,[2,3]);}
+      }
+    }
+    ctx.restore();
+    var x0in=x0>=xr[0]&&x0<=xr[1];
+    if(x0in)H.text(st,'x₀ (drag)',X(x0)+(X(x0)>500?-10:10),Y(f.f(x0))-12,c.ink,X(x0)>500?'right':'left',13,true);
+    H.text(st,'f(x) = '+f.name,X0+8,Y1+14,c.accent,'left',13,true);
+    H.text(st,'purple dashed: Newton model at x'+H.sub(N.length-1)+'; × = its turning point = next x',X0+8,Y1+32,c.purple,'left',12);
+    H.text(st,'green dots: gradient steps',X0+8,Y1+50,c.ok,'left',12);
+    if(isFinite(nx)&&(nx<xr[0]||nx>xr[1]))H.text(st,'next Newton point x = '+f3(nx)+' is off the picture '+(nx<xr[0]?'←':'→'),nx<xr[0]?X0+8:X1-8,Y0-10,c.bad,nx<xr[0]?'left':'right',13,true);
+    // readout
+    var html='Step k = <b>'+K+'</b> · Newton x'+H.sub(N.length-1)+' = <b>'+f3(xk)+'</b>, f′ = <b>'+f3(dk)+'</b>, f″ = <b>'+f3(hk,true)+'</b>';
+    if(isFinite(nx)){var fn1=f.f(nx),same=Math.abs(fn1-fk)<=1e-12*(1+Math.abs(fk)),up=fn1>fk;html+=' → next x = x − f′/f″ = <b>'+f3(nx)+'</b>, f goes from '+f3(fk)+' to '+f3(f.f(nx))+' <b style="color:'+(same?c.muted:up?c.bad:c.ok)+'">('+(same?'no change: f′ = 0, a stationary point':up?'UP':'down')+')</b>';}
+    if(hk<0)html+='<br><b style="color:'+c.bad+'">f″ &lt; 0: the model is an upside-down parabola, so Newton heads for its top. The Newton direction p = −f′/f″ is uphill here (f′·p = '+f3(-dk*dk/hk)+' &gt; 0): a short step along it raises f.</b>';
+    if(Math.abs(xk)>1e6)html+='<br><b style="color:'+c.bad+'">Diverged: the iterates run off to ±∞.</b>';
+    if(hk===0)html+='<br><b style="color:'+c.bad+'">f″ = 0: the Newton step is undefined.</b>';
+    html+='<br>Newton so far: '+N.map(function(x,i){return 'x'+H.sub(i)+' = '+f3(x);}).join(', ');
+    html+='<br>Gradient (α = '+f3(+aIn.value)+') so far: '+G.map(function(x,i){return f3(x);}).join(', ')+' · minimiser x* = '+f.xs;
+    wout.innerHTML=html;
+  }
+  H.drag(st,function(p){var r=F().xr;x0=r[0]+(r[1]-r[0])*(p.x-X0)/(X1-X0);x0=Math.max(r[0],Math.min(r[1],Math.round(x0*20)/20));K=0;draw();});
+  fnIn.addEventListener('change',function(){x0=F().x0;K=0;draw();});
+  aIn.addEventListener('input',draw);
+  root.querySelectorAll('button[data-act2]').forEach(function(b){b.addEventListener('click',function(){if(b.getAttribute('data-act2')==='step'){if(K<12)K++;}else K=0;draw();});});
+  st.fit();
+})();
+</script>
 </body>
 </html>
